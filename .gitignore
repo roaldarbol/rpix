@@ -8,3 +8,7 @@
 .quarto
 renv
 docs
+# pixi environments
+.pixi
+.vscode
+
