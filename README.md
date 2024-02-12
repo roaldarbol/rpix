@@ -1,5 +1,5 @@
 
-# pixi
+# Pixi
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -11,7 +11,8 @@ The goal of pixi is to ...
 You can install the development version of pixi like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+install.packages('devtools')
+devtools::install_github('roaldarbol/r-pixi')
 ```
 
 ## Example
@@ -20,6 +21,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(pixi)
-## basic example code
+pixi::add('tidyverse')
 ```
 
