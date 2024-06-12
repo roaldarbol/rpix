@@ -1,4 +1,4 @@
-#' Add/remove dependencies
+#' Add dependencies
 
 #' @description
 #' `add()` will add dependencies to the pixi.toml.
@@ -7,10 +7,9 @@
 #' [multi-platform](https://pixi.sh/advanced/multi_platform_configuration/)
 #' configuration.
 #' 
-#' @param package_names Package name(s) to be added/removed.
+#' @param package_names Package name(s) to be added.
 #' @returns Doesn't return any objects.
 #' @export add
-#' @export remove
 #' @examples
 #' \dontrun{
 #' add("tibble")
@@ -18,10 +17,5 @@
 
 add <- function(package_names){
   cmd <- paste0('pixi add r-', package_names)
-  system(cmd)
-}
-
-remove <- function(package_names){
-  cmd <- paste0('pixi remove r-', package_names)
   system(cmd)
 }

@@ -4,7 +4,7 @@
 \alias{pixi_installed}
 \title{Check pixi installation}
 \usage{
-pixi_installed(silent = FALSE)
+pixi_installed()
 }
 \value{
 Doesn't return any objects.

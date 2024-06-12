@@ -2,18 +2,15 @@
 % Please edit documentation in R/add.R
 \name{add}
 \alias{add}
-\title{Add/remove dependencies}
+\title{Add dependencies}
 \usage{
 add(package_names)
 }
 \arguments{
-\item{package_names}{Package name(s) to be added/removed.}
+\item{package_names}{Package name(s) to be added.}
 }
 \value{
 Doesn't return any objects.
-\dontrun{
-add("tibble")
-}
 }
 \description{
 \code{add()} will add dependencies to the pixi.toml.
@@ -21,4 +18,9 @@ It will only add if the package with its version constraint is able to work
 with rest of the dependencies in the project. More info on
 \href{https://pixi.sh/advanced/multi_platform_configuration/}{multi-platform}
 configuration.
+}
+\examples{
+\dontrun{
+add("tibble")
+}
 }
