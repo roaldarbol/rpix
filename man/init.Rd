@@ -2,7 +2,7 @@
 % Please edit documentation in R/init.R
 \name{init}
 \alias{init}
-\title{Create a new `pixi` project}
+\title{Create a new \code{pixi} project}
 \usage{
 init()
 }
@@ -10,6 +10,6 @@ init()
 Doesn't return any objects.
 }
 \description{
-`init()` initializes a pixi.toml file and also prepares a .gitignore to prevent the
+\code{init()} initializes a pixi.toml file and also prepares a .gitignore to prevent the
 environment from being added to git.
 }

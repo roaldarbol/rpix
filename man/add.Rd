@@ -16,9 +16,9 @@ add("tibble")
 }
 }
 \description{
-`add()` will add dependencies to the pixi.toml.
+\code{add()} will add dependencies to the pixi.toml.
 It will only add if the package with its version constraint is able to work
 with rest of the dependencies in the project. More info on
-[multi-platform](https://pixi.sh/advanced/multi_platform_configuration/)
+\href{https://pixi.sh/advanced/multi_platform_configuration/}{multi-platform}
 configuration.
 }
