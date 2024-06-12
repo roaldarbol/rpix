@@ -9,11 +9,12 @@
 #' 
 #' @param package_names Package name(s) to be added/removed.
 #' @returns Doesn't return any objects.
+#' @export add
+#' @export remove
+#' @examples
 #' \dontrun{
 #' add("tibble")
 #' }
-#' @export add
-#' @export remove
 
 add <- function(package_names){
   cmd <- paste0('pixi add r-', package_names)
