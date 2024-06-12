@@ -11,9 +11,6 @@ add(package_names)
 }
 \value{
 Doesn't return any objects.
-\dontrun{
-add("tibble")
-}
 }
 \description{
 \code{add()} will add dependencies to the pixi.toml.
@@ -21,4 +18,9 @@ It will only add if the package with its version constraint is able to work
 with rest of the dependencies in the project. More info on
 \href{https://pixi.sh/advanced/multi_platform_configuration/}{multi-platform}
 configuration.
+}
+\examples{
+\dontrun{
+add("tibble")
+}
 }

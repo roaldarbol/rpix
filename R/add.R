@@ -9,6 +9,7 @@
 #' 
 #' @param package_names Package name(s) to be added/removed.
 #' @returns Doesn't return any objects.
+#' @examples
 #' \dontrun{
 #' add("tibble")
 #' }
