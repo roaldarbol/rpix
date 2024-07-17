@@ -22,11 +22,6 @@ The **rpix** package provides an interface to manage dependencies with [pixi](ht
 - **Project template**. For a fully-fledged, ready-to-use R project, create a project with the [r-template](https://github.com/roaldarbol/r-template)
 - **Add to existing project**. To add **rpix** to an existing pixi project: `pixi add r-rpix`
 
-``` r
-install.packages('devtools')
-devtools::install_github('roaldarbol/rpix')
-```
-
 ## Resources
 
 ## How to use rpix
