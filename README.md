@@ -2,9 +2,9 @@
 # rpix
 
 <!-- badges: start -->
-![License][license-badge]
-[![Project Chat][chat-badge]][chat-url]
 [![Pixi Badge][pixi-badge]][pixi-url]
+[![Project Chat][chat-badge]][chat-url]
+![License][license-badge]
 
 [license-badge]: https://img.shields.io/badge/license-MIT-blue
 [chat-badge]: https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2
