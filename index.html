@@ -61,9 +61,6 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p><strong>rpix</strong> depends on having <strong>pixi</strong> installed - so if you haven’t got it yet, install pixi first. - <strong>Project template</strong>. For a fully-fledged, ready-to-use R project, create a project with the <a href="https://github.com/roaldarbol/r-template" class="external-link">r-template</a> - <strong>Add to existing project</strong>. To add <strong>rpix</strong> to an existing pixi project: <code>pixi add r-rpix</code></p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'devtools'</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'roaldarbol/rpix'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
@@ -72,7 +69,7 @@
 <div class="section level2">
 <h2 id="how-to-use-rpix">How to use rpix<a class="anchor" aria-label="anchor" href="#how-to-use-rpix"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span></code></pre></div>
 <p>The primary use of rpix is the ability to add dependencies in the console like you normally would with <code>install.packages</code> or <code><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">renv::install</a></code>. With rpix, the command is <code>add</code>. Let’s try installing the <strong>tidyverse</strong>:</p>
 <pre><code><span><span class="fu">pixi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pixi/man/add.html" class="external-link">add</a></span><span class="op">(</span><span class="st">"tidyverse"</span><span class="op">)</span></span></code></pre>
