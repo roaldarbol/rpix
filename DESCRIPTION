@@ -1,6 +1,6 @@
-Package: pixi
+Package: rpix
 Type: Package
-Title: What the Package Does (Title Case)
+Title: rpix: R package to manage dependencies with pixi
 Version: 0.1.0
 Author: Mikkel Roald-Arbøl
 Maintainer: Mikkel Roald-Arbøl <yourself@somewhere.net>
@@ -12,7 +12,7 @@ LazyData: true
 Config/testthat/edition: 3
 Remotes: 
     r-lib/usethis
-URL: https://www.roald-arboel.com/r-pixi/
+URL: https://www.roald-arboel.com/rpix/
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
