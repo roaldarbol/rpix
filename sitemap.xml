@@ -1,39 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/404.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/add.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/init.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/pixi_installed.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/remove.html</loc>
-  </url>
-  <url>
-    <loc>https://www.roald-arboel.com/r-pixi/reference/search.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://www.roald-arboel.com/r-pixi/404.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/LICENSE-text.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/LICENSE.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/authors.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/index.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/news/index.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/add.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/index.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/init.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/pixi_installed.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/remove.html</loc></url>
+<url><loc>https://www.roald-arboel.com/r-pixi/reference/search.html</loc></url>
 </urlset>
+
