@@ -46,26 +46,38 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="pixi">Pixi<a class="anchor" aria-label="anchor" href="#pixi"></a>
+<div class="page-header"><h1 id="rpix">rpix<a class="anchor" aria-label="anchor" href="#rpix"></a>
 </h1></div>
 <!-- badges: start -->
+
 <!-- badges: end -->
-<p>The goal of pixi is to …</p>
+<p><strong>rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!</strong></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The <strong>rpix</strong> package provides an interface to manage dependencies with <a href="https://pixi.sh" class="external-link">pixi</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of pixi like so:</p>
+<p><strong>rpix</strong> depends on having <strong>pixi</strong> installed - so if you haven’t got it yet, install pixi first. - <strong>Project template</strong>. For a fully-fledged, ready-to-use R project, create a project with the <a href="https://github.com/roaldarbol/r-template" class="external-link">r-template</a> - <strong>Add to existing project</strong>. To add <strong>rpix</strong> to an existing pixi project: <code>pixi add r-rpix</code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'devtools'</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'roaldarbol/r-pixi'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'roaldarbol/rpix'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+</div>
+<div class="section level2">
+<h2 id="how-to-use-rpix">How to use rpix<a class="anchor" aria-label="anchor" href="#how-to-use-rpix"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.roald-arboel.com/r-pixi/">pixi</a></span><span class="op">)</span></span>
-<span><span class="fu">pixi</span><span class="fu">::</span><span class="fu"><a href="reference/add.html">add</a></span><span class="op">(</span><span class="st">'tidyverse'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rpix</span><span class="op">)</span></span></code></pre></div>
+<p>The primary use of rpix is the ability to add dependencies in the console like you normally would with <code>install.packages</code> or <code><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">renv::install</a></code>. With rpix, the command is <code>add</code>. Let’s try installing the <strong>tidyverse</strong>:</p>
+<pre><code><span><span class="fu">pixi</span><span class="fu">::</span><span class="fu"><a href="reference/add.html">add</a></span><span class="op">(</span><span class="st">"tidyverse"</span><span class="op">)</span></span></code></pre>
+<hr>
+<p><em>Fun fact: rpix is a inspired by the Danish word <strong>harpiks</strong> which means resin. I see it as the resin that binds pixi into the natural R workflow.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -91,7 +103,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://discord.gg/kKV8ZxyzY4" class="external-link"><img src="https://img.shields.io/discord/1082332781146800168.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=7389D8&amp;labelColor=6A7EC2" alt="Project Chat"></a></li>
+<li><a href="https://pixi.sh" class="external-link"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json" alt="Pixi Badge"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
