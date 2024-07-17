@@ -1,6 +1,6 @@
 Package: rpix
 Type: Package
-Title: rpix: R package to manage dependencies with pixi
+Title: R package to manage dependencies with pixi
 Version: 0.1.0
 Author: Mikkel Roald-Arbøl
 Maintainer: Mikkel Roald-Arbøl <yourself@somewhere.net>
