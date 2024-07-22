@@ -1,15 +1,15 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>https://www.roald-arboel.com/rpix/404.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/LICENSE-text.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/LICENSE.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/authors.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/index.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/news/index.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/add.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/index.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/init.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/pixi_installed.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/remove.html</loc></url>
-<url><loc>https://www.roald-arboel.com/rpix/reference/search.html</loc></url>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/add.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/init.html</loc></url>
+<url><loc>/reference/pixi_installed.html</loc></url>
+<url><loc>/reference/remove.html</loc></url>
+<url><loc>/reference/search.html</loc></url>
 </urlset>
 
