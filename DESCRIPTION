@@ -19,4 +19,5 @@ Imports:
     blogdown,
     renv
 Suggests: 
+    altdoc,
     testthat (>= 3.0.0)

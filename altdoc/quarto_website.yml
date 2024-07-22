@@ -1,0 +1,51 @@
+project:
+  type: website
+  output-dir: ../docs/
+
+# Note: freeze functionality can be set at a project level or for individual .qmd files
+# execute:
+#   freeze: false
+
+website:
+  title: "$ALTDOC_PACKAGE_NAME"
+  code-links: true
+  navbar:
+    background: "#eeeeee"
+    search: true
+    right:
+      # - text: Get started
+      #   href: vignettes/get_started.qmd
+      # - text: Article
+      #   href: files/marginaleffects_arel-bundock_greifer_heiss_jss5115.pdf
+      # - text: Help
+      #   href: vignettes/help.qmd
+      - icon: github
+        href: https://github.com/roaldarbol/rpix
+        aria-label: $ALTDOC_PACKAGE_NAME GitHub
+      - icon: twitter
+        href: https://twitter.com/roaldarbol
+  sidebar:
+    collapse-level: 1
+    contents:
+      - text: Home
+        file: index.qmd
+      - section: $ALTDOC_VIGNETTE_BLOCK
+      - section: $ALTDOC_MAN_BLOCK
+      - text: News
+        file: $ALTDOC_NEWS
+      - text: Changelog
+        file: $ALTDOC_CHANGELOG
+      - text: Code of conduct
+        file: $ALTDOC_CODE_OF_CONDUCT
+      - text: Citation
+        file: $ALTDOC_CITATION
+
+format:
+  html:
+    toc: true
+    theme:
+      - flatly
+    highlight-style: atom-one
+    code-copy: true
+    code-link: true
+    code-overflow: scroll

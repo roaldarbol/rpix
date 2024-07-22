@@ -12,3 +12,7 @@ docs
 .pixi
 .vscode
 
+.venv_altdoc
+altdoc/freeze.rds
+_quarto/*
+!_quarto/_freeze/
