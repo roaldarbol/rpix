@@ -7,7 +7,7 @@
 .DS_Store
 .quarto
 renv
-docs
+
 # pixi environments
 .pixi
 .vscode

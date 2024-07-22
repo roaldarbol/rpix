@@ -1,0 +1,179 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rpix",
+    "section": "",
+    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "rpix",
+    "section": "Overview",
+    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "rpix",
+    "section": "Installation",
+    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first. - Project template. For a fully-fledged, ready-to-use R project, create a project with the r-template - Add to existing project. To add rpix to an existing pixi project: pixi add r-rpix\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "rpix",
+    "section": "Resources",
+    "text": "Resources",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-rpix",
+    "href": "index.html#how-to-use-rpix",
+    "title": "rpix",
+    "section": "How to use rpix",
+    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\npixi::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "MIT License",
+    "section": "",
+    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "man/add.html",
+    "href": "man/add.html",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/add.html#add-dependencies",
+    "href": "man/add.html#add-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/pixi_installed.html",
+    "href": "man/pixi_installed.html",
+    "title": "rpix",
+    "section": "",
+    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "pixi_installed"
+    ]
+  },
+  {
+    "objectID": "man/pixi_installed.html#check-pixi-installation",
+    "href": "man/pixi_installed.html#check-pixi-installation",
+    "title": "rpix",
+    "section": "",
+    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "pixi_installed"
+    ]
+  },
+  {
+    "objectID": "man/search.html",
+    "href": "man/search.html",
+    "title": "rpix",
+    "section": "",
+    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "man/search.html#search-for-dependency",
+    "href": "man/search.html#search-for-dependency",
+    "title": "rpix",
+    "section": "",
+    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "man/init.html",
+    "href": "man/init.html",
+    "title": "rpix",
+    "section": "",
+    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "init"
+    ]
+  },
+  {
+    "objectID": "man/init.html#create-a-new-pixi-project",
+    "href": "man/init.html#create-a-new-pixi-project",
+    "title": "rpix",
+    "section": "",
+    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "init"
+    ]
+  },
+  {
+    "objectID": "man/remove.html",
+    "href": "man/remove.html",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nremove(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "man/remove.html#remove-dependencies",
+    "href": "man/remove.html#remove-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nremove(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "rpix 0.1.0",
+    "section": "",
+    "text": "rpix 0.1.0",
+    "crumbs": [
+      "News"
+    ]
+  }
+]
