@@ -1,1 +1,189 @@
-[{"path":"https://www.roald-arboel.com/rpix/LICENSE.html","id":null,"dir":"","previous_headings":"","what":"MIT License","title":"MIT License","text":"Copyright (c) 2024 Mikkel Roald-Arbøl Permission hereby granted, free charge, person obtaining copy software associated documentation files (“Software”), deal Software without restriction, including without limitation rights use, copy, modify, merge, publish, distribute, sublicense, /sell copies Software, permit persons Software furnished , subject following conditions: copyright notice permission notice shall included copies substantial portions Software. SOFTWARE PROVIDED “”, WITHOUT WARRANTY KIND, EXPRESS IMPLIED, INCLUDING LIMITED WARRANTIES MERCHANTABILITY, FITNESS PARTICULAR PURPOSE NONINFRINGEMENT. EVENT SHALL AUTHORS COPYRIGHT HOLDERS LIABLE CLAIM, DAMAGES LIABILITY, WHETHER ACTION CONTRACT, TORT OTHERWISE, ARISING , CONNECTION SOFTWARE USE DEALINGS SOFTWARE.","code":""},{"path":"https://www.roald-arboel.com/rpix/authors.html","id":null,"dir":"","previous_headings":"","what":"Authors","title":"Authors and Citation","text":"Mikkel Roald-Arbøl. Maintainer.","code":""},{"path":"https://www.roald-arboel.com/rpix/authors.html","id":"citation","dir":"","previous_headings":"","what":"Citation","title":"Authors and Citation","text":"Roald-Arbøl M (2024). rpix: R package manage dependencies pixi. R package version 0.1.0, https://www.roald-arboel.com/rpix/.","code":"@Manual{,   title = {rpix: R package to manage dependencies with pixi},   author = {Mikkel Roald-Arbøl},   year = {2024},   note = {R package version 0.1.0},   url = {https://www.roald-arboel.com/rpix/}, }"},{"path":"https://www.roald-arboel.com/rpix/index.html","id":"rpix","dir":"","previous_headings":"","what":"R package to manage dependencies with pixi","title":"R package to manage dependencies with pixi","text":"rpix yet installed! ’s expected available within weeks!rpix currently alpha. don’t expect support entire pixi CLI, open implement useful features - feedback welcome!","code":""},{"path":"https://www.roald-arboel.com/rpix/index.html","id":"overview","dir":"","previous_headings":"","what":"Overview","title":"R package to manage dependencies with pixi","text":"rpix package provides interface manage dependencies pixi.","code":""},{"path":"https://www.roald-arboel.com/rpix/index.html","id":"installation","dir":"","previous_headings":"","what":"Installation","title":"R package to manage dependencies with pixi","text":"rpix depends pixi installed - haven’t got yet, install pixi first. - Project template. fully-fledged, ready--use R project, create project r-template - Add existing project. add rpix existing pixi project: pixi add -c https://prefix.dev/r-forge/ r-rpix","code":""},{"path":[]},{"path":"https://www.roald-arboel.com/rpix/index.html","id":"how-to-use-rpix","dir":"","previous_headings":"","what":"How to use rpix","title":"R package to manage dependencies with pixi","text":"primary use rpix ability add dependencies console like normally install.packages renv::install. rpix, command add. Let’s try installing tidyverse: Fun fact: rpix inspired Danish word harpiks means resin. see resin binds pixi natural R workflow.","code":"library(rpix) pixi::add(\"tidyverse\")"},{"path":"https://www.roald-arboel.com/rpix/reference/add.html","id":null,"dir":"Reference","previous_headings":"","what":"Add dependencies — add","title":"Add dependencies — add","text":"add() add dependencies pixi.toml. add package version constraint able work rest dependencies project. info multi-platform configuration.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/add.html","id":"ref-usage","dir":"Reference","previous_headings":"","what":"Usage","title":"Add dependencies — add","text":"","code":"add(package_names)"},{"path":"https://www.roald-arboel.com/rpix/reference/add.html","id":"arguments","dir":"Reference","previous_headings":"","what":"Arguments","title":"Add dependencies — add","text":"package_names Package name(s) added.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/add.html","id":"value","dir":"Reference","previous_headings":"","what":"Value","title":"Add dependencies — add","text":"return objects.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/add.html","id":"ref-examples","dir":"Reference","previous_headings":"","what":"Examples","title":"Add dependencies — add","text":"","code":"if (FALSE) { # \\dontrun{ add(\"tibble\") } # }"},{"path":"https://www.roald-arboel.com/rpix/reference/init.html","id":null,"dir":"Reference","previous_headings":"","what":"Create a new pixi project — init","title":"Create a new pixi project — init","text":"init() initializes pixi.toml file also prepares .gitignore prevent environment added git.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/init.html","id":"ref-usage","dir":"Reference","previous_headings":"","what":"Usage","title":"Create a new pixi project — init","text":"","code":"init()"},{"path":"https://www.roald-arboel.com/rpix/reference/init.html","id":"value","dir":"Reference","previous_headings":"","what":"Value","title":"Create a new pixi project — init","text":"return objects.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/pixi_installed.html","id":null,"dir":"Reference","previous_headings":"","what":"Check pixi installation — pixi_installed","title":"Check pixi installation — pixi_installed","text":"Tests whether pixi installed system","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/pixi_installed.html","id":"ref-usage","dir":"Reference","previous_headings":"","what":"Usage","title":"Check pixi installation — pixi_installed","text":"","code":"pixi_installed()"},{"path":"https://www.roald-arboel.com/rpix/reference/pixi_installed.html","id":"value","dir":"Reference","previous_headings":"","what":"Value","title":"Check pixi installation — pixi_installed","text":"return objects.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/remove.html","id":null,"dir":"Reference","previous_headings":"","what":"Remove dependencies — remove","title":"Remove dependencies — remove","text":"remove() add dependencies pixi.toml. remove package version constraint able work rest dependencies project. info multi-platform configuration.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/remove.html","id":"ref-usage","dir":"Reference","previous_headings":"","what":"Usage","title":"Remove dependencies — remove","text":"","code":"remove(package_names)"},{"path":"https://www.roald-arboel.com/rpix/reference/remove.html","id":"arguments","dir":"Reference","previous_headings":"","what":"Arguments","title":"Remove dependencies — remove","text":"package_names Package name(s) removed.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/remove.html","id":"value","dir":"Reference","previous_headings":"","what":"Value","title":"Remove dependencies — remove","text":"return objects.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/remove.html","id":"ref-examples","dir":"Reference","previous_headings":"","what":"Examples","title":"Remove dependencies — remove","text":"","code":"if (FALSE) { # \\dontrun{ remove(\"tibble\") } # }"},{"path":"https://www.roald-arboel.com/rpix/reference/search.html","id":null,"dir":"Reference","previous_headings":"","what":"Search for dependency — search","title":"Search for dependency — search","text":"Search package, output list latest version package.","code":""},{"path":"https://www.roald-arboel.com/rpix/reference/search.html","id":"ref-usage","dir":"Reference","previous_headings":"","what":"Usage","title":"Search for dependency — search","text":"","code":"search(package_name = NULL)"},{"path":"https://www.roald-arboel.com/rpix/reference/search.html","id":"arguments","dir":"Reference","previous_headings":"","what":"Arguments","title":"Search for dependency — search","text":"package_name Package name added.","code":""},{"path":[]}]
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rpix",
+    "section": "",
+    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "rpix",
+    "section": "Overview",
+    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "rpix",
+    "section": "Installation",
+    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "rpix",
+    "section": "Resources",
+    "text": "Resources",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-rpix",
+    "href": "index.html#how-to-use-rpix",
+    "title": "rpix",
+    "section": "How to use rpix",
+    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\npixi::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "man/init.html",
+    "href": "man/init.html",
+    "title": "rpix",
+    "section": "",
+    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "init"
+    ]
+  },
+  {
+    "objectID": "man/init.html#create-a-new-pixi-project",
+    "href": "man/init.html#create-a-new-pixi-project",
+    "title": "rpix",
+    "section": "",
+    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "init"
+    ]
+  },
+  {
+    "objectID": "man/remove.html",
+    "href": "man/remove.html",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\n\n\nremove(package_names)\n\n\n\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\n\n\n\n\nDoesn’t return any objects.\n\n\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "man/remove.html#remove-dependencies",
+    "href": "man/remove.html#remove-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\n\n\nremove(package_names)\n\n\n\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\n\n\n\n\nDoesn’t return any objects.\n\n\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "man/search.html",
+    "href": "man/search.html",
+    "title": "rpix",
+    "section": "",
+    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "man/search.html#search-for-dependency",
+    "href": "man/search.html#search-for-dependency",
+    "title": "rpix",
+    "section": "",
+    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "CITATION.html",
+    "href": "CITATION.html",
+    "title": "Citation",
+    "section": "",
+    "text": "Citation\nTo cite package ‘rpix’ in publications use:\n\nRoald-Arbøl M (????). rpix: R package to manage dependencies with pixi. R package version 0.1.0, https://www.roald-arboel.com/rpix/.",
+    "crumbs": [
+      "Citation"
+    ]
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "MIT License",
+    "section": "",
+    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "man/pixi_installed.html",
+    "href": "man/pixi_installed.html",
+    "title": "rpix",
+    "section": "",
+    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "pixi_installed"
+    ]
+  },
+  {
+    "objectID": "man/pixi_installed.html#check-pixi-installation",
+    "href": "man/pixi_installed.html#check-pixi-installation",
+    "title": "rpix",
+    "section": "",
+    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
+    "crumbs": [
+      "Reference",
+      "pixi_installed"
+    ]
+  },
+  {
+    "objectID": "man/add.html",
+    "href": "man/add.html",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\n\n\nadd(package_names)\n\n\n\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\n\n\n\n\nDoesn’t return any objects.\n\n\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/add.html#add-dependencies",
+    "href": "man/add.html#add-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\n\n\nadd(package_names)\n\n\n\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\n\n\n\n\nDoesn’t return any objects.\n\n\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "rpix 0.1.0",
+    "section": "",
+    "text": "rpix 0.1.0",
+    "crumbs": [
+      "News"
+    ]
+  }
+]
