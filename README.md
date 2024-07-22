@@ -22,11 +22,13 @@ The **rpix** package provides an interface to manage dependencies with
 ## Installation
 
 **rpix** depends on having **pixi** installed - so if you haven’t got it
-yet, install pixi first. - **Project template**. For a fully-fledged,
-ready-to-use R project, create a project with the
-[r-template](https://github.com/roaldarbol/r-template) - **Add to
-existing project**. To add **rpix** to an existing pixi project:
-`pixi add r-rpix`
+yet, install pixi first.
+
+-   **Project template**. For a fully-fledged, ready-to-use R project,
+    create a project with the
+    [r-template](https://github.com/roaldarbol/r-template)
+-   **Add to existing project**. To add **rpix** to an existing pixi
+    project: `pixi add r-rpix`
 
 ``` r
 install.packages('devtools')

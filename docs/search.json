@@ -24,7 +24,7 @@
     "href": "index.html#installation",
     "title": "rpix",
     "section": "Installation",
-    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first. - Project template. For a fully-fledged, ready-to-use R project, create a project with the r-template - Add to existing project. To add rpix to an existing pixi project: pixi add r-rpix\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')",
+    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')",
     "crumbs": [
       "Home"
     ]
