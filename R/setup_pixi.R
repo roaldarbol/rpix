@@ -129,9 +129,9 @@ setup_pixi <- function(add_to_rprofile = TRUE, global = FALSE, init_if_missing =
   current_libpaths <- current_libpaths[current_libpaths != pixi_r_libs]
   
   # Add pixi library as first entry
-  # new_libpaths <- c(pixi_r_libs, current_libpaths)
-  new_libpaths <- c(pixi_r_libs)
-  .libPaths(pixi_r_libs)
+  new_libpaths <- c(pixi_r_libs, current_libpaths)
+  # new_libpaths <- c(pixi_r_libs)
+  .libPaths(new_libpaths)
   # if (length(.libPaths()) > 1){
   #   .libPaths(.libPaths()[1])
   # }
@@ -228,11 +228,16 @@ local({
       
       # Only use pixi library if it exists
       if (dir.exists(pixi_r_libs)) {
-        # Set .libPaths() to ONLY include pixi library
-        .libPaths(pixi_r_libs)
-        if (length(.libPaths()) > 1){
-          .libPaths(.libPaths()[1])
-        }
+        # Get current library paths
+        current_libpaths <- .libPaths()
+        
+        # Remove pixi path if already present to avoid duplicates
+        current_libpaths <- current_libpaths[current_libpaths != pixi_r_libs]
+        
+        # Add pixi library as first entry
+        new_libpaths <- c(pixi_r_libs, current_libpaths)
+        # new_libpaths <- c(pixi_r_libs)
+        .libPaths(new_libpaths)
         message("Using pixi R library: ", pixi_r_libs)
       }
     }, error = function(e) {
