@@ -1,5 +1,8 @@
 
 
+<p style="text-align:center;">
+<img style="padding-bottom: 20px; padding-top: 20px;" src="man/figures/logo.png" alt="rpix logo">
+</p>
 <!-- badges: start -->
 
 ![License](https://img.shields.io/badge/license-MIT-blue.png)

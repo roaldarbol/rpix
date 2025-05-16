@@ -8,8 +8,11 @@ project:
 
 website:
   title: "$ALTDOC_PACKAGE_NAME"
+  favicon: "images/pixi.png"
   code-links: true
   navbar:
+    logo: "images/pixi.png"
+    logo-alt: "pixi logo"
     background: "#eeeeee"
     search: true
     right:

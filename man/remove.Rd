@@ -4,20 +4,20 @@
 \alias{remove}
 \title{Remove dependencies}
 \usage{
-remove(package_names)
+remove(packages, dry_run = FALSE)
 }
 \arguments{
-\item{package_names}{Package name(s) to be removed.}
+\item{packages}{Package name(s) to be removed.}
+
+\item{dry_run}{Just show command or also run.}
 }
 \value{
 Doesn't return any objects.
 }
 \description{
-\code{remove()} will add dependencies to the pixi.toml.
-It will only remove if the package with its version constraint is able to work
-with rest of the dependencies in the project. More info on
-\href{https://pixi.sh/advanced/multi_platform_configuration/}{multi-platform}
-configuration.
+\code{remove()} will remove dependencies from the pixi.toml.
+
+For more information, see https://pixi.sh/latest/reference/cli/pixi/remove/
 }
 \examples{
 \dontrun{

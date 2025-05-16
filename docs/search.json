@@ -1,5 +1,164 @@
 [
   {
+    "objectID": "CITATION.html",
+    "href": "CITATION.html",
+    "title": "Citation",
+    "section": "",
+    "text": "Citation\nTo cite package ‘rpix’ in publications use:\n\nRoald-Arbøl M (????). rpix: R package to manage dependencies with pixi. R package version 0.1.0, https://www.roald-arboel.com/rpix/.",
+    "crumbs": [
+      "Citation"
+    ]
+  },
+  {
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "rpix 0.1.0",
+    "section": "",
+    "text": "rpix 0.1.0",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "man/remove.html",
+    "href": "man/remove.html",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will remove dependencies from the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/remove/\n\nremove(packages, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be removed.\n\n\n\n\ndry_run\n\n\nJust show command or also run.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "man/remove.html#remove-dependencies",
+    "href": "man/remove.html#remove-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "remove() will remove dependencies from the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/remove/\n\nremove(packages, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be removed.\n\n\n\n\ndry_run\n\n\nJust show command or also run.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "remove"
+    ]
+  },
+  {
+    "objectID": "man/pixi_to_path.html",
+    "href": "man/pixi_to_path.html",
+    "title": "rpix",
+    "section": "",
+    "text": "pixi_to_path() checks if pixi’s installation directory is in the current PATH and adds it if not found. The function automatically detects the operating system and uses the appropriate default installation path for each platform.\n\npixi_to_path()\n\n\nThe function checks if the pixi binary directory is already present in the PATH environment variable. If not found, it appends the default installation directory:\n\n\nmacOS/Linux: ~/.pixi/bin\n\n\nWindows: %USERPROFILE%\\.pixi\\bin\n\n\nThis modification only affects the current R session.\n\nInvisibly returns NULL. The function is called for its side effects of modifying the PATH environment variable.\n\nSys.setenv(), Sys.getenv(), Sys.info()\n\n\nlibrary(\"rpix\")\n\n# Check if pixi is available and add to PATH if needed\npixi_to_path()\n\n# Verify pixi is now available\nsystem(\"pixi --version\")",
+    "crumbs": [
+      "Reference",
+      "pixi_to_path"
+    ]
+  },
+  {
+    "objectID": "man/pixi_to_path.html#add-pixi-to-path",
+    "href": "man/pixi_to_path.html#add-pixi-to-path",
+    "title": "rpix",
+    "section": "",
+    "text": "pixi_to_path() checks if pixi’s installation directory is in the current PATH and adds it if not found. The function automatically detects the operating system and uses the appropriate default installation path for each platform.\n\npixi_to_path()\n\n\nThe function checks if the pixi binary directory is already present in the PATH environment variable. If not found, it appends the default installation directory:\n\n\nmacOS/Linux: ~/.pixi/bin\n\n\nWindows: %USERPROFILE%\\.pixi\\bin\n\n\nThis modification only affects the current R session.\n\nInvisibly returns NULL. The function is called for its side effects of modifying the PATH environment variable.\n\nSys.setenv(), Sys.getenv(), Sys.info()\n\n\nlibrary(\"rpix\")\n\n# Check if pixi is available and add to PATH if needed\npixi_to_path()\n\n# Verify pixi is now available\nsystem(\"pixi --version\")",
+    "crumbs": [
+      "Reference",
+      "pixi_to_path"
+    ]
+  },
+  {
+    "objectID": "man/add.html",
+    "href": "man/add.html",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/add.html#add-dependencies",
+    "href": "man/add.html#add-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/search.html",
+    "href": "man/search.html",
+    "title": "rpix",
+    "section": "",
+    "text": "search() searches for available versions of a conda package and displays their dependencies. This is useful for exploring what versions are available before adding a package to your pixi project. The search shows version information and dependency requirements for each version found.\nWhen called without arguments, it behaves like base R’s search() function and returns the current search path.\n\nsearch(package, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackage\n\n\nPackage name to search for. Will be automatically prefixed with \"r-\" for R packages. If missing, returns the search path like base R’s search().\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified to search in specific repositories.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nWhen package is provided: doesn’t return objects, displays search results in console. When package is missing: returns character vector of search path (like base R’s search()).\n\n\nlibrary(\"rpix\")\n\n# Search for available versions of tibble\nsearch(\"tibble\")\n\n# Search in a specific channel\nsearch(\"numpy\", channel = \"conda-forge\")\n\n# Just show the command without running it\nsearch(\"dplyr\", dry_run = TRUE)\n\n# Get search path (like base R)\nsearch()",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "man/search.html#search-for-package-versions-and-dependencies",
+    "href": "man/search.html#search-for-package-versions-and-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "search() searches for available versions of a conda package and displays their dependencies. This is useful for exploring what versions are available before adding a package to your pixi project. The search shows version information and dependency requirements for each version found.\nWhen called without arguments, it behaves like base R’s search() function and returns the current search path.\n\nsearch(package, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackage\n\n\nPackage name to search for. Will be automatically prefixed with \"r-\" for R packages. If missing, returns the search path like base R’s search().\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified to search in specific repositories.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nWhen package is provided: doesn’t return objects, displays search results in console. When package is missing: returns character vector of search path (like base R’s search()).\n\n\nlibrary(\"rpix\")\n\n# Search for available versions of tibble\nsearch(\"tibble\")\n\n# Search in a specific channel\nsearch(\"numpy\", channel = \"conda-forge\")\n\n# Just show the command without running it\nsearch(\"dplyr\", dry_run = TRUE)\n\n# Get search path (like base R)\nsearch()",
+    "crumbs": [
+      "Reference",
+      "search"
+    ]
+  },
+  {
+    "objectID": "man/setup_pixi.html",
+    "href": "man/setup_pixi.html",
+    "title": "rpix",
+    "section": "",
+    "text": "setup_pixi() provides a complete pixi setup for R projects. It checks for pixi availability, initializes a pixi project if needed, and configures R to use pixi-managed packages. The function prioritizes safety and uses .libPaths() instead of environment variables to avoid shared library conflicts.\n\nsetup_pixi(add_to_rprofile = TRUE, global = FALSE, init_if_missing = TRUE)\n\n\n\n\n\nadd_to_rprofile\n\n\nLogical. If TRUE, adds the pixi library configuration to .Rprofile for persistence across sessions. Default is FALSE.\n\n\n\n\nglobal\n\n\nLogical. If TRUE and add_to_rprofile = TRUE, adds to global ~/.Rprofile instead of project-local .Rprofile. Default is FALSE.\n\n\n\n\ninit_if_missing\n\n\nLogical. If TRUE, runs pixi init if pixi.toml is not found. Default is TRUE.\n\n\n\nThe function performs the following steps:\n\n\nChecks if pixi is available in PATH (adds it if not found)\n\n\nChecks for pixi.toml in project root (runs pixi init if not found)\n\n\nConfigures R to use the pixi library as the primary package source\n\n\nOptionally adds the configuration to .Rprofile for persistence\n\n\nInstead of setting environment variables (which can cause shared library conflicts), this function modifies .libPaths() to prioritize the pixi library.\n\nInvisibly returns a list with the status of each setup step.\n\npixi_to_path(), .libPaths()\n\n\nlibrary(\"rpix\")\n\n# Basic setup - just configure for current session\nsetup_pixi()\n\n# Full setup - add to .Rprofile for persistence\nsetup_pixi(add_to_rprofile = TRUE)\n\n# Setup without auto-initializing pixi project\nsetup_pixi(init_if_missing = FALSE)",
+    "crumbs": [
+      "Reference",
+      "setup_pixi"
+    ]
+  },
+  {
+    "objectID": "man/setup_pixi.html#setup-pixi-environment-safely",
+    "href": "man/setup_pixi.html#setup-pixi-environment-safely",
+    "title": "rpix",
+    "section": "",
+    "text": "setup_pixi() provides a complete pixi setup for R projects. It checks for pixi availability, initializes a pixi project if needed, and configures R to use pixi-managed packages. The function prioritizes safety and uses .libPaths() instead of environment variables to avoid shared library conflicts.\n\nsetup_pixi(add_to_rprofile = TRUE, global = FALSE, init_if_missing = TRUE)\n\n\n\n\n\nadd_to_rprofile\n\n\nLogical. If TRUE, adds the pixi library configuration to .Rprofile for persistence across sessions. Default is FALSE.\n\n\n\n\nglobal\n\n\nLogical. If TRUE and add_to_rprofile = TRUE, adds to global ~/.Rprofile instead of project-local .Rprofile. Default is FALSE.\n\n\n\n\ninit_if_missing\n\n\nLogical. If TRUE, runs pixi init if pixi.toml is not found. Default is TRUE.\n\n\n\nThe function performs the following steps:\n\n\nChecks if pixi is available in PATH (adds it if not found)\n\n\nChecks for pixi.toml in project root (runs pixi init if not found)\n\n\nConfigures R to use the pixi library as the primary package source\n\n\nOptionally adds the configuration to .Rprofile for persistence\n\n\nInstead of setting environment variables (which can cause shared library conflicts), this function modifies .libPaths() to prioritize the pixi library.\n\nInvisibly returns a list with the status of each setup step.\n\npixi_to_path(), .libPaths()\n\n\nlibrary(\"rpix\")\n\n# Basic setup - just configure for current session\nsetup_pixi()\n\n# Full setup - add to .Rprofile for persistence\nsetup_pixi(add_to_rprofile = TRUE)\n\n# Setup without auto-initializing pixi project\nsetup_pixi(init_if_missing = FALSE)",
+    "crumbs": [
+      "Reference",
+      "setup_pixi"
+    ]
+  },
+  {
+    "objectID": "man/reset_r_libraries.html",
+    "href": "man/reset_r_libraries.html",
+    "title": "rpix",
+    "section": "",
+    "text": "reset_r_libraries() resets R’s library configuration to default settings, removing any pixi-specific configurations. This is useful for troubleshooting or when you want to stop using pixi-managed packages.\n\nreset_r_libraries(remove_from_rprofile = FALSE, global = FALSE)\n\n\n\n\n\nremove_from_rprofile\n\n\nLogical. If TRUE, attempts to remove pixi setup from .Rprofile files. Default is FALSE.\n\n\n\n\nglobal\n\n\nLogical. If TRUE and remove_from_rprofile = TRUE, removes from global ~/.Rprofile. Default is FALSE.\n\n\n\n\nlibrary(\"rpix\")\n\n# Reset library paths to default\nreset_r_libraries()\n\n# Reset and clean .Rprofile\nreset_r_libraries(remove_from_rprofile = TRUE)",
+    "crumbs": [
+      "Reference",
+      "reset_r_libraries"
+    ]
+  },
+  {
+    "objectID": "man/reset_r_libraries.html#reset-r-library-configuration",
+    "href": "man/reset_r_libraries.html#reset-r-library-configuration",
+    "title": "rpix",
+    "section": "",
+    "text": "reset_r_libraries() resets R’s library configuration to default settings, removing any pixi-specific configurations. This is useful for troubleshooting or when you want to stop using pixi-managed packages.\n\nreset_r_libraries(remove_from_rprofile = FALSE, global = FALSE)\n\n\n\n\n\nremove_from_rprofile\n\n\nLogical. If TRUE, attempts to remove pixi setup from .Rprofile files. Default is FALSE.\n\n\n\n\nglobal\n\n\nLogical. If TRUE and remove_from_rprofile = TRUE, removes from global ~/.Rprofile. Default is FALSE.\n\n\n\n\nlibrary(\"rpix\")\n\n# Reset library paths to default\nreset_r_libraries()\n\n# Reset and clean .Rprofile\nreset_r_libraries(remove_from_rprofile = TRUE)",
+    "crumbs": [
+      "Reference",
+      "reset_r_libraries"
+    ]
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "MIT License",
+    "section": "",
+    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "rpix",
@@ -47,133 +206,6 @@
     "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\npixi::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow.",
     "crumbs": [
       "Home"
-    ]
-  },
-  {
-    "objectID": "LICENSE.html",
-    "href": "LICENSE.html",
-    "title": "MIT License",
-    "section": "",
-    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-  },
-  {
-    "objectID": "man/add.html",
-    "href": "man/add.html",
-    "title": "rpix",
-    "section": "",
-    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
-    "crumbs": [
-      "Reference",
-      "add"
-    ]
-  },
-  {
-    "objectID": "man/add.html#add-dependencies",
-    "href": "man/add.html#add-dependencies",
-    "title": "rpix",
-    "section": "",
-    "text": "add() will add dependencies to the pixi.toml. It will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be added.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
-    "crumbs": [
-      "Reference",
-      "add"
-    ]
-  },
-  {
-    "objectID": "man/pixi_installed.html",
-    "href": "man/pixi_installed.html",
-    "title": "rpix",
-    "section": "",
-    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
-    "crumbs": [
-      "Reference",
-      "pixi_installed"
-    ]
-  },
-  {
-    "objectID": "man/pixi_installed.html#check-pixi-installation",
-    "href": "man/pixi_installed.html#check-pixi-installation",
-    "title": "rpix",
-    "section": "",
-    "text": "Tests whether pixi is installed on the system\n\n\n\npixi_installed()\n\n\n\n\nDoesn’t return any objects.",
-    "crumbs": [
-      "Reference",
-      "pixi_installed"
-    ]
-  },
-  {
-    "objectID": "man/search.html",
-    "href": "man/search.html",
-    "title": "rpix",
-    "section": "",
-    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
-    "crumbs": [
-      "Reference",
-      "search"
-    ]
-  },
-  {
-    "objectID": "man/search.html#search-for-dependency",
-    "href": "man/search.html#search-for-dependency",
-    "title": "rpix",
-    "section": "",
-    "text": "Search a package, output will list the latest version of the package.\n\n\n\nsearch(package_name = NULL)\n\n\n\n\n\n\n\npackage_name\n\n\nPackage name to be added.",
-    "crumbs": [
-      "Reference",
-      "search"
-    ]
-  },
-  {
-    "objectID": "man/init.html",
-    "href": "man/init.html",
-    "title": "rpix",
-    "section": "",
-    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
-    "crumbs": [
-      "Reference",
-      "init"
-    ]
-  },
-  {
-    "objectID": "man/init.html#create-a-new-pixi-project",
-    "href": "man/init.html#create-a-new-pixi-project",
-    "title": "rpix",
-    "section": "",
-    "text": "init() initializes a pixi.toml file and also prepares a .gitignore to prevent the environment from being added to git.\n\n\n\ninit()\n\n\n\n\nDoesn’t return any objects.",
-    "crumbs": [
-      "Reference",
-      "init"
-    ]
-  },
-  {
-    "objectID": "man/remove.html",
-    "href": "man/remove.html",
-    "title": "rpix",
-    "section": "",
-    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nremove(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
-    "crumbs": [
-      "Reference",
-      "remove"
-    ]
-  },
-  {
-    "objectID": "man/remove.html#remove-dependencies",
-    "href": "man/remove.html#remove-dependencies",
-    "title": "rpix",
-    "section": "",
-    "text": "remove() will add dependencies to the pixi.toml. It will only remove if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nremove(package_names)\n\n\n\n\npackage_names\n\n\nPackage name(s) to be removed.\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nremove(\"tibble\")",
-    "crumbs": [
-      "Reference",
-      "remove"
-    ]
-  },
-  {
-    "objectID": "NEWS.html",
-    "href": "NEWS.html",
-    "title": "rpix 0.1.0",
-    "section": "",
-    "text": "rpix 0.1.0",
-    "crumbs": [
-      "News"
     ]
   }
 ]
