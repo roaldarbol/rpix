@@ -15,6 +15,7 @@
 #' @param channel Optional. Defaults to conda-forge, but other conda channels can be specified.
 #' @param dry_run Should the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.
 #' @returns Doesn't return any objects.
+#' @import cli
 #' @export add
 #' @examples
 #' \dontrun{
@@ -29,7 +30,7 @@ add <- function(packages, versions=NULL, channel=NULL, dry_run = FALSE){
   # Append version constraints
   if (!is.null(versions)){
     # Clean up versions - add = if missing and version doesn't start with =, <, >, ~, etc.
-    cleaned_versions <- stringr::str_replace(versions, "^(?![=<>~^])", "=")
+    cleaned_versions <- sub("^(?![=<>~^])", "=", versions, perl = TRUE)
     
     prepended_names <- paste0("r-", packages, cleaned_versions)
     prepended_names <- paste0("\"", prepended_names, "\"")

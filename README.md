@@ -1,11 +1,12 @@
 
-
 <p style="text-align:center;">
+
 <img style="padding-bottom: 20px; padding-top: 20px;" src="man/figures/logo.png" alt="rpix logo">
 </p>
+
 <!-- badges: start -->
 
-![License](https://img.shields.io/badge/license-MIT-blue.png)
+![License](https://img.shields.io/badge/license-MIT-blue)
 <img src="https://github.com/roaldarbol/rpix/workflows/R-CMD-check/badge.svg">
 [![Project
 Chat](https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/kKV8ZxyzY4)
@@ -27,11 +28,11 @@ The **rpix** package provides an interface to manage dependencies with
 **rpix** depends on having **pixi** installed - so if you haven’t got it
 yet, install pixi first.
 
--   **Project template**. For a fully-fledged, ready-to-use R project,
-    create a project with the
-    [r-template](https://github.com/roaldarbol/r-template)
--   **Add to existing project**. To add **rpix** to an existing pixi
-    project: `pixi add r-rpix`
+- **Project template**. For a fully-fledged, ready-to-use R project,
+  create a project with the
+  [r-template](https://github.com/roaldarbol/r-template)
+- **Add to existing project**. To add **rpix** to an existing pixi
+  project: `pixi add r-rpix`
 
 ``` r
 install.packages('devtools')
@@ -51,7 +52,7 @@ console like you normally would with `install.packages` or
 `renv::install`. With rpix, the command is `add`. Let’s try installing
 the **tidyverse**:
 
-    pixi::add("tidyverse")
+    rpix::add("tidyverse")
 
 ------------------------------------------------------------------------
 

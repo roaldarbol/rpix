@@ -10,3 +10,4 @@
 .venv_altdoc
 ^altdoc$
 ^_quarto$
+^README\.Rmd$

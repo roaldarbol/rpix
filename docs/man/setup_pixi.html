@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">
+  <a href="../index.qmd" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -233,14 +233,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/add.html">Reference</a></li><li class="breadcrumb-item"><a href="../man/setup_pixi.html">setup_pixi</a></li></ol></nav></header><section id="setup-pixi-environment-safely" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="setup-pixi-environment-safely">Setup pixi environment safely</h2>
 <section id="description" class="level3"><h3 class="anchored" data-anchor-id="description">Description</h3>
-<p><code>setup_pixi()</code> provides a complete pixi setup for R projects. It checks for pixi availability, initializes a pixi project if needed, and configures R to use pixi-managed packages. The function prioritizes safety and uses .libPaths() instead of environment variables to avoid shared library conflicts.</p>
+<p><code><a href="https:/www.roald-arboel.com/rpix/man/setup_pixi.html">setup_pixi()</a></code> provides a complete pixi setup for R projects. It checks for pixi availability, initializes a pixi project if needed, and configures R to use pixi-managed packages. The function prioritizes safety and uses .libPaths() instead of environment variables to avoid shared library conflicts.</p>
 </section><section id="usage" class="level3"><h3 class="anchored" data-anchor-id="usage">Usage</h3>
 <pre><code class="language-R">setup_pixi(add_to_rprofile = TRUE, global = FALSE, init_if_missing = TRUE)
 </code></pre>
 </section><section id="arguments" class="level3"><h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
 <table>
 <tbody><tr>
-<td style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<td style="white-space: collapse; font-family: monospace; vertical-align: top">
 <code id="add_to_rprofile">add_to_rprofile</code>
 </td>
 <td>
@@ -248,7 +248,7 @@ Logical. If TRUE, adds the pixi library configuration to .Rprofile for persisten
 </td>
 </tr>
 <tr>
-<td style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<td style="white-space: collapse; font-family: monospace; vertical-align: top">
 <code id="global">global</code>
 </td>
 <td>
@@ -256,7 +256,7 @@ Logical. If TRUE and <code>add_to_rprofile = TRUE</code>, adds to global ~/.Rpro
 </td>
 </tr>
 <tr>
-<td style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<td style="white-space: collapse; font-family: monospace; vertical-align: top">
 <code id="init_if_missing">init_if_missing</code>
 </td>
 <td>
@@ -283,19 +283,19 @@ Logical. If TRUE, runs <code style="white-space: pre;">pixi init</code> if pixi.
 </section><section id="value" class="level3"><h3 class="anchored" data-anchor-id="value">Value</h3>
 <p>Invisibly returns a list with the status of each setup step.</p>
 </section><section id="see-also" class="level3"><h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p><code>pixi_to_path()</code>, <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code></p>
+<p><code><a href="https:/www.roald-arboel.com/rpix/man/pixi_to_path.html">pixi_to_path()</a></code>, <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code></p>
 </section><section id="examples" class="level3"><h3 class="anchored" data-anchor-id="examples">Examples</h3>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"rpix"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://www.roald-arboel.com/rpix/">"rpix"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Basic setup - just configure for current session</span></span>
-<span><span class="fu">setup_pixi</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https:/www.roald-arboel.com/rpix/man/setup_pixi.html">setup_pixi</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Full setup - add to .Rprofile for persistence</span></span>
-<span><span class="fu">setup_pixi</span><span class="op">(</span>add_to_rprofile <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https:/www.roald-arboel.com/rpix/man/setup_pixi.html">setup_pixi</a></span><span class="op">(</span>add_to_rprofile <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Setup without auto-initializing pixi project</span></span>
-<span><span class="fu">setup_pixi</span><span class="op">(</span>init_if_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https:/www.roald-arboel.com/rpix/man/setup_pixi.html">setup_pixi</a></span><span class="op">(</span>init_if_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

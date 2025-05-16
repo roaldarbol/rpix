@@ -4,7 +4,7 @@
     "href": "CITATION.html",
     "title": "Citation",
     "section": "",
-    "text": "Citation\nTo cite package ‘rpix’ in publications use:\n\nRoald-Arbøl M (????). rpix: R package to manage dependencies with pixi. R package version 0.1.0, https://www.roald-arboel.com/rpix/.",
+    "text": "Citation\nTo cite package ‘rpix’ in publications use:\n\nRoald-Arbøl M (????). rpix: R package to manage dependencies with pixi. R package version 0.2.0, https://www.roald-arboel.com/rpix/.",
     "crumbs": [
       "Citation"
     ]
@@ -12,9 +12,9 @@
   {
     "objectID": "NEWS.html",
     "href": "NEWS.html",
-    "title": "rpix 0.1.0",
+    "title": "rpix 0.2.0",
     "section": "",
-    "text": "rpix 0.1.0",
+    "text": "rpix 0.2.0\n\nadd can now add multiple packages simultaneously\ndry_run parameter added to multiple functions to allow inspections of pixi commands\nsetup_pixi command to setup a pixi project from within R. Still very alpha, expect to break.\nsearch allows to search dependencies, their versions and their own dependencies.\n\n\n\nrpix 0.1.0",
     "crumbs": [
       "News"
     ]
@@ -163,49 +163,34 @@
     "href": "index.html",
     "title": "rpix",
     "section": "",
-    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!"
   },
   {
     "objectID": "index.html#overview",
     "href": "index.html#overview",
     "title": "rpix",
     "section": "Overview",
-    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi.",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi."
   },
   {
     "objectID": "index.html#installation",
     "href": "index.html#installation",
     "title": "rpix",
     "section": "Installation",
-    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')"
   },
   {
     "objectID": "index.html#resources",
     "href": "index.html#resources",
     "title": "rpix",
     "section": "Resources",
-    "text": "Resources",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "Resources"
   },
   {
     "objectID": "index.html#how-to-use-rpix",
     "href": "index.html#how-to-use-rpix",
     "title": "rpix",
     "section": "How to use rpix",
-    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\npixi::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow.",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\nrpix::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow."
   }
 ]

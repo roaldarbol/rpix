@@ -15,6 +15,8 @@
 #' 
 #' This modification only affects the current R session.
 #'
+#' @import cli
+#'
 #' @return Invisibly returns `NULL`. The function is called for its side effects
 #'   of modifying the PATH environment variable.
 #'

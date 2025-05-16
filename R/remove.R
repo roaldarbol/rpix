@@ -8,6 +8,7 @@
 #' @param packages Package name(s) to be removed.
 #' @param dry_run Just show command or also run.
 #' @returns Doesn't return any objects.
+#' @import cli
 #' @export remove
 #' @examples
 #' \dontrun{

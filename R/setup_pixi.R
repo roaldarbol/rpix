@@ -26,6 +26,8 @@
 #'   found. Default is TRUE.
 #'
 #' @returns Invisibly returns a list with the status of each setup step.
+#' 
+#' @import cli
 #'
 #' @examples
 #' \dontrun{

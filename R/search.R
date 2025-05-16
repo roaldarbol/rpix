@@ -18,6 +18,7 @@
 #' @returns When `package` is provided: doesn't return objects, displays search 
 #'   results in console. When `package` is missing: returns character vector of 
 #'   search path (like base R's search()).
+#' @import cli
 #' @export search
 #' @examples
 #' \dontrun{
