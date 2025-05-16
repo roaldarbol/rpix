@@ -84,7 +84,9 @@ setup_pixi <- function(add_to_rprofile = TRUE, global = FALSE, init_if_missing =
       cli::cli_alert_info("Initializing pixi project...")
       init_result <- system("pixi init", ignore.stdout = FALSE, ignore.stderr = FALSE)
       cli::cli_alert_info("Adding base R packages")
-      base_results <- system("pixi add r-base", ignore.stdout = FALSE, ignore.stderr = FALSE)
+      paste0(R.version$major, ".", R.version$minor)
+      base_cmd <- paste0("pixi add \"r-base=", R.version$major, ".", R.version$minor, "\"")
+      base_results <- system(base_cmd, ignore.stdout = FALSE, ignore.stderr = FALSE)
       
       if (init_result == 0 && file.exists("pixi.toml")) {
         status$pixi_project_exists <- TRUE
