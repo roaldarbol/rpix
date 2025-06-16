@@ -19,3 +19,5 @@ _quarto/*
 # pixi environments
 .pixi
 *.egg-info
+inst/doc
+**/.quarto/

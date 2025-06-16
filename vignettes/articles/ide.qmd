@@ -1,0 +1,47 @@
+---
+title: Using rpix with an IDE
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+Although it is possible to run R directly in the terminal, R is most commonly used with an "interactive development environment" (IDE). The most common IDE for R users is RStudio, but other options exist such as VS Code or, more recently, Positron. 
+
+As most IDEs are not available (or up-to-date) as conda packages, we recommend using a global installation. That can be either from the provider, or a package manager such as [homebrew](https://brew.sh) (macOS).
+
+## RStudio
+
+::: {.panel-tabset group="os"}
+## Windows
+
+```sh
+pixi run rstudio
+```
+
+## macOS
+
+```sh
+pixi run open -a rstudio
+```
+
+## Linux
+
+```sh
+pixi run rstudio
+```
+:::
+
+It is also possible to create a `task`, a shorthand, for opening RStudio. First, add the following to `tasks` in `pixi.toml`:
+
+```yaml
+[tasks]
+rstudio = "open -a rstudio"
+```
+
+## VSCode
+
+
+## Positron
+
+

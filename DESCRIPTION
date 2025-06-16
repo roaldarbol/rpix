@@ -20,4 +20,8 @@ Imports:
     cli
 Suggests: 
     altdoc,
+    knitr,
+    rmarkdown,
+    quarto,
     testthat (>= 3.0.0)
+Config/Needs/website: quarto

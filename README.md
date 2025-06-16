@@ -32,7 +32,8 @@ yet, install pixi first.
   create a project with the
   [r-template](https://github.com/roaldarbol/r-template)
 - **Add to existing project**. To add **rpix** to an existing pixi
-  project: `pixi add r-rpix`
+  project: `pixi add r-rpix` (**THIS DOES NOT YET WORK, SEE
+  [ISSUE](https://github.com/roaldarbol/rpix/issues/2)**)
 
 ``` r
 install.packages('devtools')

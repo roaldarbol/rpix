@@ -11,3 +11,6 @@
 ^altdoc$
 ^_quarto$
 ^README\.Rmd$
+^vignettes/articles/\.quarto$
+^vignettes/articles/*_files$
+^vignettes/articles$

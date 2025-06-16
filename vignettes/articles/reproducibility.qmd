@@ -1,0 +1,7 @@
+---
+title: Reproducibility
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---

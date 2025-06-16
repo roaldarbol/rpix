@@ -28,10 +28,18 @@ website:
       - icon: twitter
         href: https://twitter.com/roaldarbol
   sidebar:
-    collapse-level: 1
+    collapse-level: 2
     contents:
       - text: Home
         file: index.qmd
+      - section: Articles
+        contents:
+          - text: Getting started
+            file: vignettes/articles/getting-started.qmd
+          - text: Reproducibility
+            file: vignettes/articles/reproducibility.qmd
+          - text: Using an IDE
+            file: vignettes/articles/ide.qmd
       - section: $ALTDOC_VIGNETTE_BLOCK
       - section: $ALTDOC_MAN_BLOCK
       - text: News

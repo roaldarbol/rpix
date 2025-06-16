@@ -1,22 +1,77 @@
 [
   {
-    "objectID": "CITATION.html",
-    "href": "CITATION.html",
-    "title": "Citation",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "rpix",
     "section": "",
-    "text": "Citation\nTo cite package ‘rpix’ in publications use:\n\nRoald-Arbøl M (????). rpix: R package to manage dependencies with pixi. R package version 0.2.0, https://www.roald-arboel.com/rpix/.",
+    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!"
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "rpix",
+    "section": "Overview",
+    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi."
+  },
+  {
+    "objectID": "index.html#installation",
+    "href": "index.html#installation",
+    "title": "rpix",
+    "section": "Installation",
+    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix (THIS DOES NOT YET WORK, SEE ISSUE)\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')"
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "rpix",
+    "section": "Resources",
+    "text": "Resources"
+  },
+  {
+    "objectID": "index.html#how-to-use-rpix",
+    "href": "index.html#how-to-use-rpix",
+    "title": "rpix",
+    "section": "How to use rpix",
+    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\nrpix::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow."
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "MIT License",
+    "section": "",
+    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html",
+    "href": "vignettes/articles/getting-started.html",
+    "title": "Getting started",
+    "section": "",
+    "text": "The first thing that we need to do is install Pixi, which is the engine underlying rpix. To do so, follow the installation instructions on pixi.sh.",
     "crumbs": [
-      "Citation"
+      "Articles",
+      "Getting started"
     ]
   },
   {
-    "objectID": "NEWS.html",
-    "href": "NEWS.html",
-    "title": "rpix 0.2.0",
+    "objectID": "vignettes/articles/getting-started.html#install-pixi",
+    "href": "vignettes/articles/getting-started.html#install-pixi",
+    "title": "Getting started",
     "section": "",
-    "text": "rpix 0.2.0\n\nadd can now add multiple packages simultaneously\ndry_run parameter added to multiple functions to allow inspections of pixi commands\nsetup_pixi command to setup a pixi project from within R. Still very alpha, expect to break.\nsearch allows to search dependencies, their versions and their own dependencies.\n\n\n\nrpix 0.1.0",
+    "text": "The first thing that we need to do is install Pixi, which is the engine underlying rpix. To do so, follow the installation instructions on pixi.sh.",
     "crumbs": [
-      "News"
+      "Articles",
+      "Getting started"
+    ]
+  },
+  {
+    "objectID": "vignettes/articles/getting-started.html#install-rpix",
+    "href": "vignettes/articles/getting-started.html#install-rpix",
+    "title": "Getting started",
+    "section": "Install rpix\n",
+    "text": "Install rpix\n\nNext, you’ll need to install rpix. For this guide, we’ll assume you are using RStudio.\n\nOpen RStudio\nCreate new project (without renv)\nInstall rpix\n\ninstall.packages(\"rpix\", repos = \"https://roaldarbol.r-universe.dev\")\n\n\nInitiate pixi project\n\nrpix::setup_rpix()",
+    "crumbs": [
+      "Articles",
+      "Getting started"
     ]
   },
   {
@@ -64,25 +119,25 @@
     ]
   },
   {
-    "objectID": "man/add.html",
-    "href": "man/add.html",
+    "objectID": "man/restart_rstudio_with_pixi.html",
+    "href": "man/restart_rstudio_with_pixi.html",
     "title": "rpix",
     "section": "",
-    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "text": "To ensure that RStudio uses the correct version of R and avoid errors when loading libraries, use this command to restart RStudio.\n\n\n\nrestart_rstudio_with_pixi()",
     "crumbs": [
       "Reference",
-      "add"
+      "restart_rstudio_with_pixi"
     ]
   },
   {
-    "objectID": "man/add.html#add-dependencies",
-    "href": "man/add.html#add-dependencies",
+    "objectID": "man/restart_rstudio_with_pixi.html#restart-rstudio-with-pixi",
+    "href": "man/restart_rstudio_with_pixi.html#restart-rstudio-with-pixi",
     "title": "rpix",
     "section": "",
-    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "text": "To ensure that RStudio uses the correct version of R and avoid errors when loading libraries, use this command to restart RStudio.\n\n\n\nrestart_rstudio_with_pixi()",
     "crumbs": [
       "Reference",
-      "add"
+      "restart_rstudio_with_pixi"
     ]
   },
   {
@@ -105,6 +160,28 @@
     "crumbs": [
       "Reference",
       "search"
+    ]
+  },
+  {
+    "objectID": "man/add.html",
+    "href": "man/add.html",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
+    ]
+  },
+  {
+    "objectID": "man/add.html#add-dependencies",
+    "href": "man/add.html#add-dependencies",
+    "title": "rpix",
+    "section": "",
+    "text": "add() will add dependencies to the pixi.toml.\nFor more information, see https://pixi.sh/latest/reference/cli/pixi/add/.\nIt will only add if the package with its version constraint is able to work with rest of the dependencies in the project. More info on multi-platform configuration.\n\nadd(packages, versions = NULL, channel = NULL, dry_run = FALSE)\n\n\n\n\n\npackages\n\n\nPackage name(s) to be added.\n\n\n\n\nversions\n\n\nOptional. Version constraints for all packages.\n\n\n\n\nchannel\n\n\nOptional. Defaults to conda-forge, but other conda channels can be specified.\n\n\n\n\ndry_run\n\n\nShould the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.\n\n\n\nDoesn’t return any objects.\n\n\nlibrary(\"rpix\")\n\nadd(\"tibble\")",
+    "crumbs": [
+      "Reference",
+      "add"
     ]
   },
   {
@@ -152,45 +229,57 @@
     ]
   },
   {
-    "objectID": "LICENSE.html",
-    "href": "LICENSE.html",
-    "title": "MIT License",
+    "objectID": "vignettes/articles/ide.html",
+    "href": "vignettes/articles/ide.html",
+    "title": "Using rpix with an IDE",
     "section": "",
-    "text": "MIT License\nCopyright (c) 2024 Mikkel Roald-Arbøl\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+    "text": "Although it is possible to run R directly in the terminal, R is most commonly used with an “interactive development environment” (IDE). The most common IDE for R users is RStudio, but other options exist such as VS Code or, more recently, Positron.\nAs most IDEs are not available (or up-to-date) as conda packages, we recommend using a global installation. That can be either from the provider, or a package manager such as homebrew (macOS).",
+    "crumbs": [
+      "Articles",
+      "Using an IDE"
+    ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "rpix",
+    "objectID": "vignettes/articles/ide.html#rstudio",
+    "href": "vignettes/articles/ide.html#rstudio",
+    "title": "Using rpix with an IDE",
+    "section": "RStudio",
+    "text": "RStudio\n\n\nWindows\nmacOS\nLinux\n\n\n\npixi run rstudio\n\n\npixi run open -a rstudio\n\n\npixi run rstudio\n\n\n\nIt is also possible to create a task, a shorthand, for opening RStudio. First, add the following to tasks in pixi.toml:\n[tasks]\nrstudio = \"open -a rstudio\"",
+    "crumbs": [
+      "Articles",
+      "Using an IDE"
+    ]
+  },
+  {
+    "objectID": "vignettes/articles/ide.html#vscode",
+    "href": "vignettes/articles/ide.html#vscode",
+    "title": "Using rpix with an IDE",
+    "section": "VSCode",
+    "text": "VSCode",
+    "crumbs": [
+      "Articles",
+      "Using an IDE"
+    ]
+  },
+  {
+    "objectID": "vignettes/articles/ide.html#positron",
+    "href": "vignettes/articles/ide.html#positron",
+    "title": "Using rpix with an IDE",
+    "section": "Positron",
+    "text": "Positron",
+    "crumbs": [
+      "Articles",
+      "Using an IDE"
+    ]
+  },
+  {
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "rpix 0.2.0",
     "section": "",
-    "text": "rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!"
-  },
-  {
-    "objectID": "index.html#overview",
-    "href": "index.html#overview",
-    "title": "rpix",
-    "section": "Overview",
-    "text": "Overview\nThe rpix package provides an interface to manage dependencies with pixi."
-  },
-  {
-    "objectID": "index.html#installation",
-    "href": "index.html#installation",
-    "title": "rpix",
-    "section": "Installation",
-    "text": "Installation\nrpix depends on having pixi installed - so if you haven’t got it yet, install pixi first.\n\nProject template. For a fully-fledged, ready-to-use R project, create a project with the r-template\nAdd to existing project. To add rpix to an existing pixi project: pixi add r-rpix\n\ninstall.packages('devtools')\ndevtools::install_github('roaldarbol/rpix')"
-  },
-  {
-    "objectID": "index.html#resources",
-    "href": "index.html#resources",
-    "title": "rpix",
-    "section": "Resources",
-    "text": "Resources"
-  },
-  {
-    "objectID": "index.html#how-to-use-rpix",
-    "href": "index.html#how-to-use-rpix",
-    "title": "rpix",
-    "section": "How to use rpix",
-    "text": "How to use rpix\nlibrary(rpix)\nThe primary use of rpix is the ability to add dependencies in the console like you normally would with install.packages or renv::install. With rpix, the command is add. Let’s try installing the tidyverse:\nrpix::add(\"tidyverse\")\n\nFun fact: rpix is a inspired by the Danish word harpiks which means resin. I see it as the resin that binds pixi into the natural R workflow."
+    "text": "rpix 0.2.0\n\nadd can now add multiple packages simultaneously\ndry_run parameter added to multiple functions to allow inspections of pixi commands\nsetup_pixi command to setup a pixi project from within R. Still very alpha, expect to break.\nsearch allows to search dependencies, their versions and their own dependencies.\n\n\n\nrpix 0.1.0",
+    "crumbs": [
+      "News"
+    ]
   }
 ]
