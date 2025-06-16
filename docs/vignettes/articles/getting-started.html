@@ -110,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../index.qmd" class="sidebar-item-text sidebar-link">
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -212,6 +212,8 @@ ul.task-list li input[type="checkbox"] {
   <ul>
 <li><a href="#install-pixi" id="toc-install-pixi" class="nav-link active" data-scroll-target="#install-pixi">Install Pixi</a></li>
   <li><a href="#install-rpix" id="toc-install-rpix" class="nav-link" data-scroll-target="#install-rpix">Install <em>rpix</em></a></li>
+  <li><a href="#setup-pixi-project" id="toc-setup-pixi-project" class="nav-link" data-scroll-target="#setup-pixi-project">Setup pixi project</a></li>
+  <li><a href="#start-coding" id="toc-start-coding" class="nav-link" data-scroll-target="#start-coding">Start coding!</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="undefined"><i class="bi bi-link-45deg"></i></a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -235,7 +237,7 @@ ul.task-list li input[type="checkbox"] {
 </section><section id="install-rpix" class="level2"><h2 class="anchored" data-anchor-id="install-rpix">Install <em>rpix</em>
 </h2>
 <p>Next, you’ll need to install <em>rpix</em>. For this guide, we’ll assume you are using RStudio.</p>
-<ol type="1">
+<ul>
 <li>Open RStudio</li>
 <li>Create new project (without <em>renv</em>)</li>
 <li>Install <em>rpix</em>
@@ -243,12 +245,13 @@ ul.task-list li input[type="checkbox"] {
 <li><code>install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")</code></li>
 </ul>
 </li>
-<li>Initiate pixi project
+</ul></section><section id="setup-pixi-project" class="level2"><h2 class="anchored" data-anchor-id="setup-pixi-project">Setup pixi project</h2>
 <ul>
-<li><code>rpix::setup_rpix()</code></li>
-</ul>
+<li>Initiate pixi project with <code>rpix::setup_pixi()</code>
 </li>
-</ol>
+<li>Restart RStudio with <code>rpix::restart_rstudio_with_pixi()</code> for changes to take effect</li>
+</ul></section><section id="start-coding" class="level2"><h2 class="anchored" data-anchor-id="start-coding">Start coding!</h2>
+<p>When you need new packages, run <code>rpix::add("package_name")</code>. If you wish to remove packages, simply <code>rpix::remove("package_name")</code></p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

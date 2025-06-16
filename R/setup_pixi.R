@@ -146,7 +146,7 @@ setup_pixi <- function(add_to_rprofile = TRUE, global = FALSE, init_if_missing =
   }
   
   # Install {rpix} into the pixi library
-  cli::cli_alert_info("Installing {rpix} to project")
+  cli::cli_alert_info("Installing rpix to project")
   utils::install.packages("rpix", 
                    repos = "https://roaldarbol.r-universe.dev", 
                    lib = pixi_r_libs)
