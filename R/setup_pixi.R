@@ -28,6 +28,7 @@
 #' @returns Invisibly returns a list with the status of each setup step.
 #' 
 #' @import cli
+#' @importFrom utils install.packages
 #'
 #' @examples
 #' \dontrun{
@@ -143,6 +144,12 @@ setup_pixi <- function(add_to_rprofile = TRUE, global = FALSE, init_if_missing =
   for (i in seq_along(current_paths)) {
     cli::cli_alert_info("  {i}. {.path {current_paths[i]}}")
   }
+  
+  # Install {rpix} into the pixi library
+  cli::cli_alert_info("Installing {rpix} to project")
+  utils::install.packages("rpix", 
+                   repos = "https://roaldarbol.r-universe.dev", 
+                   lib = pixi_r_libs)
   
   # Step 5: Add to .Rprofile if requested
   if (add_to_rprofile) {
