@@ -67,6 +67,35 @@ read_url <- function(url) {
   suppressWarnings(readLines(connection, warn = FALSE))
 }
 
+# GitHub packages with `versions` as their ref, e.g. "github::cran/praise"
+# with "1.0.0" becomes "github::cran/praise@1.0.0"
+with_github_refs <- function(packages, versions, call = parent.frame()) {
+  if (length(versions) == 0) {
+    return(packages)
+  }
+  given <- !is.na(versions) & nzchar(versions)
+  ref <- sub("^==?", "", versions)
+  range <- given & grepl("^[<>!~]|[,*|]", ref)
+  if (any(range)) {
+    cli::cli_abort(
+      c(
+        "A package from GitHub takes a branch, tag or commit, not a range like {.val {versions[range][1]}}.",
+        "i" = "Pixi builds it from that point in its history."
+      ),
+      call = call
+    )
+  }
+  both <- given & grepl("@", packages, fixed = TRUE)
+  if (any(both)) {
+    cli::cli_abort(
+      "Give the branch, tag or commit of {.val {packages[both][1]}} either with {.code @ref} or in {.arg versions}, not both.",
+      call = call
+    )
+  }
+  packages[given] <- paste0(packages[given], "@", ref[given])
+  packages
+}
+
 add_github_packages <- function(
   packages,
   feature = NULL,
