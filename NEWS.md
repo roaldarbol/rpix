@@ -1,18 +1,30 @@
-# rpix (development version)
+# rpix 0.5.0
 
-- `pixi_add()`, `pixi_remove()`, `pixi_search()` and `use_pixi()` gain a `path` argument, like the other functions, to work on a project other than the one in the working directory.
-- The documentation covers the new workflow (#31): the IDE guide has tabs for Positron, RStudio and VS Code, with daily use, other environments and troubleshooting; Get started covers rendering Quarto documents and `pixi_sitrep()`; and a contributing guide describes rpix's own development environment.
-- Features and environments (#30): `pixi_add()` and `pixi_remove()` gain `feature` and `platform` arguments, and new `pixi_environments()`, `pixi_add_environment()` and `pixi_remove_environment()` manage a project's environments. New article: "Several environments".
-- New `pixi_add_channel()` and `pixi_add_platform()`, and `pixi_install()`, `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
-- New `pixi_sitrep()` reports on the project's Pixi setup, with hints for what's wrong (#28): Pixi itself, whether the lock file is up to date, whether R is the project's Pixi R and is activated, libraries and packages from outside the project, the `.Rprofile` block, and whether the IDE is set up.
-- New `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns the packages in an environment as a data frame, including the name of each R package as R spells it (`Rcpp` for `r-rcpp`).
-- New `use_pixi()` replaces `setup_pixi()`, which is deprecated (#26). Its new `ide` argument sets the project up for RStudio, Positron or VS Code, with the new `use_pixi_rstudio()`, `use_pixi_positron()` and `use_pixi_vscode()` (#27):
+rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
+
+## Setting up a project
+
+- New `use_pixi()` replaces `setup_pixi()`, which is deprecated (#26). Its `ide` argument sets the project up for an IDE, with the new `use_pixi_rstudio()`, `use_pixi_positron()` and `use_pixi_vscode()` (#27):
   - `use_pixi_rstudio()` adds an `rstudio` task for each of the project's platforms, so `pixi run rstudio` starts a new RStudio with the environment's R, in the project.
   - `use_pixi_positron()` turns on Positron's discovery of R in Pixi environments. Positron then activates the environment itself when it starts that R.
   - `use_pixi_vscode()` adds languageserver to the environment, and points the R extension for VS Code and VSCodium at the environment's R.
-- New `pixi_activate()` activates the project's Pixi environment in R that an IDE such as Positron or VS Code started directly, without Pixi (#25). It sets the environment variables Pixi would set, and removes your personal library from `.libPaths()`. `use_pixi()` adds a block to the project's `.Rprofile` that calls it, and removes the personal library before any package loads. Activation is fast, using Pixi's activation cache.
-- `use_pixi()` keeps your personal R library out of the environment's R, by adding conda-forge's `conda-ecosystem-user-package-isolation` to the project. conda-forge's R otherwise puts the personal library first on `.libPaths()`, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37).
-- The IDE guide's RStudio commands now work as expected: `open -n` on macOS, so a running RStudio doesn't keep its R, and a task that sets `RSTUDIO_WHICH_R` on Windows (#24). It also explains that on Windows, Positron and VS Code have to be started through Pixi.
+- New `pixi_activate()` activates the project's Pixi environment in R that an IDE started directly, without Pixi (#25). It sets the environment variables Pixi would set, and removes your personal library from `.libPaths()`. `use_pixi()` adds a block to the project's `.Rprofile` that calls it, and removes the personal library before any package loads.
+- `use_pixi()` keeps your personal R library out of the environment's R, by adding conda-forge's `conda-ecosystem-user-package-isolation` to the project. conda-forge's R otherwise puts the personal library first on `.libPaths()`, so packages built for your usual R could be loaded, and crash it (conda-forge/r-base-feedstock#37).
+
+## Environments
+
+- `pixi_add()` and `pixi_remove()` gain `feature` and `platform` arguments, and new `pixi_environments()`, `pixi_add_environment()` and `pixi_remove_environment()` manage a project's environments, e.g. one with another version of R (#30).
+- New `pixi_add_channel()` and `pixi_add_platform()`, and `pixi_install()`, `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
+
+## Inspecting a project
+
+- New `pixi_sitrep()` checks the project's Pixi setup, and suggests fixes for what's wrong (#28): Pixi itself, whether the lock file is up to date, whether R is the project's Pixi R and is activated, libraries and packages from outside the project, the `.Rprofile` block, and whether the IDE is set up.
+- New `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns the packages in an environment as a data frame, with the name of each R package as R spells it (`Rcpp` for `r-rcpp`).
+
+## Other changes
+
+- `pixi_add()`, `pixi_remove()`, `pixi_search()` and `use_pixi()` gain a `path` argument, like the other functions, to work on a project other than the one in the working directory.
+- The documentation covers the new workflow (#31): the IDE guide has a section for each IDE, with daily use, other environments and troubleshooting; "Several environments" is a new guide; Get started covers rendering Quarto documents and `pixi_sitrep()`; and a contributing guide describes rpix's own development environment.
 
 # rpix 0.4.0
 
