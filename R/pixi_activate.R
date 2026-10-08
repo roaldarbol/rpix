@@ -3,7 +3,7 @@
 #' @description
 #' Make R that was started directly from a Pixi environment, as IDEs such as
 #' Positron and VS Code do, behave like R started with `pixi run R`. Called
-#' from the project's `.Rprofile`, which [setup_pixi()] sets up.
+#' from the project's `.Rprofile`, which [use_pixi()] sets up.
 #'
 #' * If Pixi didn't activate the environment, its environment variables are
 #'   set, as `pixi shell-hook` reports them. Some packages need them, e.g. to

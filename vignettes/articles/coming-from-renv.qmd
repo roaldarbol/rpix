@@ -19,7 +19,7 @@ renv and Pixi solve the same problem: giving each project its own, recorded set 
 
 | renv | rpix or Pixi |
 |---|---|
-| `renv::init()` | `rpix::setup_pixi()` |
+| `renv::init()` | `rpix::use_pixi()` |
 | `renv::install("dplyr")` | `rpix::pixi_add("dplyr")` |
 | `renv::remove("dplyr")` | `rpix::pixi_remove("dplyr")` |
 | `renv::snapshot()` | Not needed |
@@ -40,7 +40,7 @@ renv and Pixi solve the same problem: giving each project its own, recorded set 
 2. Set the project up with Pixi:
 
    ```r
-   rpix::setup_pixi()
+   rpix::use_pixi()
    ```
 
 3. Start R from the project's environment, with `pixi run R`, and add the packages that were in the lock file:

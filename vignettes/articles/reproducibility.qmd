@@ -12,7 +12,7 @@ A Pixi project records everything it needs, including R itself, in two files. Sh
 
 - **Commit `pixi.toml`**: the packages you asked for, with any version constraints.
 - **Commit `pixi.lock`**: the exact version of every package, including the ones they depend on, for every platform the project supports.
-- **Don't commit `.pixi/`**: the installed environment. `pixi init` (and so `setup_pixi()`) adds it to `.gitignore`.
+- **Don't commit `.pixi/`**: the installed environment. `pixi init` (and so `use_pixi()`) adds it to `.gitignore`.
 
 ## Recreate the environment
 

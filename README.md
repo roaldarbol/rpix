@@ -47,7 +47,7 @@ Set up the project in the working directory. This creates a Pixi
 project, adds R to it, and installs rpix into its environment:
 
 ``` r
-rpix::setup_pixi()
+rpix::use_pixi()
 ```
 
 From then on, work in R started by Pixi: run `pixi run R` in a terminal

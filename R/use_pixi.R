@@ -9,7 +9,7 @@
 #' conda-forge's R loads packages installed for your usual R first.
 #'
 #' It can be run from any R. Afterwards, work in R started by Pixi: run
-#' `pixi run R` in a terminal, or point your IDE at the environment's R (see
+#' `pixi run R` in a terminal, or use an IDE set up with `ide` (see
 #' <https://roald-arboel.com/rpix/articles/ide.html>). Each Pixi environment
 #' has its own R and package library, so rpix doesn't point a running R at a
 #' Pixi library: packages built for a different R can crash it.
@@ -22,6 +22,9 @@
 #'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
 #'   to the latest on conda-forge.
+#' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
+#'   `"positron"` and `"vscode"`. See [use_pixi_rstudio()],
+#'   [use_pixi_positron()] and [use_pixi_vscode()].
 #' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
 #' @param install_rpix If `TRUE`, install rpix into the project's environment.
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
@@ -30,14 +33,18 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' setup_pixi()
-#' setup_pixi(r_version = "4.5")
+#' use_pixi()
+#' use_pixi(r_version = "4.5", ide = "positron")
 #' }
-setup_pixi <- function(
+use_pixi <- function(
   r_version = NULL,
+  ide = NULL,
   init_if_missing = TRUE,
   install_rpix = TRUE
 ) {
+  if (!is.null(ide)) {
+    ide <- match.arg(ide, c("rstudio", "positron", "vscode"), several.ok = TRUE)
+  }
   pixi_binary()
   dir <- getwd()
 
@@ -46,7 +53,7 @@ setup_pixi <- function(
     if (!init_if_missing) {
       cli::cli_abort(c(
         "There's no Pixi project in {.path {dir}}.",
-        "i" = "Create one with {.code setup_pixi()} or {.code pixi init}."
+        "i" = "Create one with {.code use_pixi()} or {.code pixi init}."
       ))
     }
     run_pixi(c("init", dir), project = "none", echo = TRUE)
@@ -76,10 +83,21 @@ setup_pixi <- function(
   warn_legacy_rprofile(file.path(home_dir(), ".Rprofile"))
   add_rprofile_block(file.path(path, ".Rprofile"))
 
-  cli::cli_alert_success("Set up {.path {path}} for R.")
-  cli::cli_alert_info(
-    "Start R from the project's environment, e.g. with {.code pixi run R}, or point your IDE at it: {.url https://roald-arboel.com/rpix/articles/ide.html}."
+  setup_ide <- list(
+    rstudio = use_pixi_rstudio,
+    positron = use_pixi_positron,
+    vscode = use_pixi_vscode
   )
+  for (i in ide) {
+    setup_ide[[i]](path)
+  }
+
+  cli::cli_alert_success("Set up {.path {path}} for R.")
+  if (is.null(ide)) {
+    cli::cli_alert_info(
+      "Start R from the project's environment, e.g. with {.code pixi run R}, or set up your IDE with {.code use_pixi(ide = ...)}."
+    )
+  }
   invisible(manifest)
 }
 
@@ -96,7 +114,7 @@ rpix_imports <- function() {
   unname(read.dcf(file.path(path, "DESCRIPTION"), fields = "Imports")[1, 1])
 }
 
-# The block setup_pixi() adds to the project's .Rprofile
+# The block use_pixi() adds to the project's .Rprofile
 rprofile_block <- c(
   "# >>> rpix >>>",
   "# Activates the project's Pixi environment when an IDE starts R directly.",

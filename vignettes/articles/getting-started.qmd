@@ -38,7 +38,7 @@ install.packages(
 In R, make your project folder the working directory (an RStudio project does this for you), then run:
 
 ```r
-rpix::setup_pixi()
+rpix::use_pixi()
 ```
 
 This adds to your project:
@@ -57,7 +57,7 @@ The environment has its own R, separate from the R you normally use (see [How rp
 pixi run R
 ```
 
-For RStudio, Positron and VS Code, see [Using rpix with an IDE](ide.html).
+For RStudio, Positron and VS Code, set the project up with `use_pixi(ide = ...)`; see [Using rpix with an IDE](ide.html).
 
 To check that you're in the right R, look at where it lives. It should be inside the project's `.pixi` folder:
 
