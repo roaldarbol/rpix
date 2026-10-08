@@ -1,5 +1,7 @@
 # rpix (development version)
 
+- New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
+
 # rpix 0.5.0
 
 rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
