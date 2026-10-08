@@ -79,6 +79,7 @@ reference:
       - pixi_add
       - pixi_remove
       - pixi_search
+      - pixi_scan
       - pixi_install
 
   - title: "Environments, channels and platforms"

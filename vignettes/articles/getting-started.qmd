@@ -90,6 +90,14 @@ To remove a package again:
 pixi_remove("ggplot2")
 ```
 
+To check that `pixi.toml` has every package your code uses, in `.R` files and in `.qmd` and `.Rmd` documents:
+
+```r
+pixi_scan()
+```
+
+It lists the packages that are missing, and adds them with `pixi_scan(add = TRUE)`. It also lists packages your code never uses.
+
 ## Render documents
 
 Quarto and R Markdown documents are rendered by R, so render them with the environment's R too. Add Quarto to the environment, and render from a terminal:
