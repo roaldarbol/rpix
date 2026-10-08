@@ -114,22 +114,6 @@ use_pixi_check_matrix <- function(r_versions, path = NULL) {
   invisible(names)
 }
 
-# The packages a package needs, from its DESCRIPTION, without R and the
-# packages that come with it
-package_dependencies <- function(description) {
-  if (!file.exists(description)) {
-    cli::cli_abort("There's no package here: {.file {description}} is missing.")
-  }
-  fields <- read.dcf(
-    description,
-    fields = c("Depends", "Imports", "LinkingTo", "Suggests")
-  )
-  packages <- trimws(unlist(strsplit(stats::na.omit(fields[1, ]), ",")))
-  packages <- sub("[[:space:]]*\\(.*$", "", packages)
-  base <- rownames(utils::installed.packages(priority = "base"))
-  setdiff(packages[nzchar(packages)], c("R", base))
-}
-
 # Start a run in an environment, in the background
 start_run <- function(environment, what, task, root, package = root) {
   job <- run_job(environment, what, task, package)

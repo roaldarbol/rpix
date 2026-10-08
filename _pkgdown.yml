@@ -86,8 +86,12 @@ reference:
       - pixi_environments
       - pixi_switch
       - pixi_r
-      - pixi_check_matrix
       - pixi_add_channel
+
+  - title: "Developing a package"
+    contents:
+      - pixi_import_description
+      - pixi_check_matrix
 
   - title: "Tasks"
     contents:
