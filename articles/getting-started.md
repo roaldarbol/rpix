@@ -112,6 +112,33 @@ To remove a package again:
 pixi_remove("ggplot2")
 ```
 
+## Render documents
+
+Quarto and R Markdown documents are rendered by R, so render them with
+the environment’s R too. Add Quarto to the environment, and render from
+a terminal:
+
+``` r
+
+pixi_add("conda::quarto")
+```
+
+``` sh
+pixi run quarto render report.qmd
+```
+
+## Check your setup
+
+If something doesn’t work as expected, start with:
+
+``` r
+
+pixi_sitrep()
+```
+
+It checks that R, its packages and your IDE use the project’s
+environment, and suggests fixes.
+
 ## Share the project
 
 Commit `pixi.toml` and `pixi.lock`. A collaborator installs Pixi, clones

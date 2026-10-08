@@ -101,6 +101,7 @@ Names containing <code>-</code> or <code>_</code>, such as <code>"c-compiler"</c
 <span>  channel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feature <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  platform <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -133,6 +134,11 @@ the default one. See <code><a href="pixi_environments.html">pixi_add_environment
 <dt id="arg-platform">platform<a class="anchor" aria-label="anchor" href="#arg-platform"></a></dt>
 <dd><p>Optional. Only add the packages for this platform, such as
 <code>"linux-64"</code>.</p></dd>
+
+
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>The project. Defaults to the project of the running Pixi
+environment, or the working directory.</p></dd>
 
 
 <dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>

@@ -74,7 +74,7 @@ For more information, see https://pixi.sh/latest/reference/cli/pixi/search/."><m
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_search</span><span class="op">(</span><span class="va">package</span>, channel <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_search</span><span class="op">(</span><span class="va">package</span>, channel <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -88,6 +88,11 @@ For more information, see https://pixi.sh/latest/reference/cli/pixi/search/."><m
 <dt id="arg-channel">channel<a class="anchor" aria-label="anchor" href="#arg-channel"></a></dt>
 <dd><p>Optional. A conda channel to search. Inside a project, the
 project's channels are searched by default, and conda-forge otherwise.</p></dd>
+
+
+<dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
+<dd><p>The project. Defaults to the project of the running Pixi
+environment, or the working directory.</p></dd>
 
 
 <dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>

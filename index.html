@@ -99,16 +99,17 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>Set up the project in the working directory. This creates a Pixi project, adds R to it, and installs rpix into its environment:</p>
+<p>Set up the project in the working directory, for your IDE. This creates a Pixi project, adds R to it, installs rpix into its environment, and points the IDE at that R:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="reference/use_pixi.html">use_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>From then on, work in R started by Pixi: run <code>pixi run R</code> in a terminal in the project folder, or see <a href="https://roald-arboel.com/rpix/articles/ide.html">Using rpix with an IDE</a>. Add and remove packages from there:</p>
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span> <span class="co"># or "rstudio", or "vscode"</span></span></code></pre></div>
+<p>From then on, work in R started by Pixi: in your IDE (see <a href="https://roald-arboel.com/rpix/articles/ide.html">Using rpix with an IDE</a>), or with <code>pixi run R</code> in a terminal in the project folder. Add and remove packages from there:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"bioc::DESeq2"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/pixi_remove.html">pixi_remove</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/pixi_sitrep.html">pixi_sitrep()</a></code> checks the setup, and suggests fixes if something’s off.</p>
 <p>To start a new project from a template instead, see <a href="https://github.com/roaldarbol/r-template" class="external-link">r-template</a>.</p>
 </div>
 <div class="section level2">
@@ -121,6 +122,8 @@
 <a href="https://roald-arboel.com/rpix/articles/how-rpix-works.html">How rpix works</a>: why each environment has its own R.</li>
 <li>
 <a href="https://roald-arboel.com/rpix/articles/finding-packages.html">Finding packages</a>: CRAN, Bioconductor and other conda packages.</li>
+<li>
+<a href="https://roald-arboel.com/rpix/articles/environments.html">Several environments</a>: another version of R, or extra packages for tests.</li>
 <li>
 <a href="https://roald-arboel.com/rpix/articles/coming-from-renv.html">Coming from renv</a>: renv’s functions and their rpix counterparts.</li>
 </ul>
@@ -149,6 +152,12 @@
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>

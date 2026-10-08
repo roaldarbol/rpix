@@ -29,6 +29,7 @@ pixi_add(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  path = NULL,
   dry_run = FALSE
 )
 ```
@@ -61,6 +62,11 @@ pixi_add(
 
   Optional. Only add the packages for this platform, such as
   `"linux-64"`.
+
+- path:
+
+  The project. Defaults to the project of the running Pixi environment,
+  or the working directory.
 
 - dry_run:
 

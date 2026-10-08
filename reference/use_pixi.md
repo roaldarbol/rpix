@@ -29,7 +29,8 @@ use_pixi(
   r_version = NULL,
   ide = NULL,
   init_if_missing = TRUE,
-  install_rpix = TRUE
+  install_rpix = TRUE,
+  path = NULL
 )
 ```
 
@@ -58,6 +59,10 @@ use_pixi(
   If `TRUE`, install rpix into the project's environment. Its
   dependencies come from conda-forge, and rpix itself from R-universe
   until it's on conda-forge.
+
+- path:
+
+  The folder to set up. Defaults to the working directory.
 
 ## Value
 

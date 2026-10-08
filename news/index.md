@@ -2,6 +2,20 @@
 
 ## rpix (development version)
 
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md),
+  [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
+  and
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  gain a `path` argument, like the other functions, to work on a project
+  other than the one in the working directory.
+- The documentation covers the new workflow
+  ([\#31](https://github.com/roaldarbol/rpix/issues/31)): the IDE guide
+  has tabs for Positron, RStudio and VS Code, with daily use, other
+  environments and troubleshooting; Get started covers rendering Quarto
+  documents and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md);
+  and a contributing guide describes rpix’s own development environment.
 - Features and environments
   ([\#30](https://github.com/roaldarbol/rpix/issues/30)):
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)

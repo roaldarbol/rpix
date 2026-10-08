@@ -12,7 +12,13 @@ For more information, see
 ## Usage
 
 ``` r
-pixi_remove(packages, feature = NULL, platform = NULL, dry_run = FALSE)
+pixi_remove(
+  packages,
+  feature = NULL,
+  platform = NULL,
+  path = NULL,
+  dry_run = FALSE
+)
 ```
 
 ## Arguments
@@ -31,6 +37,11 @@ pixi_remove(packages, feature = NULL, platform = NULL, dry_run = FALSE)
 
   Optional. Only add the packages for this platform, such as
   `"linux-64"`.
+
+- path:
+
+  The project. Defaults to the project of the running Pixi environment,
+  or the working directory.
 
 - dry_run:
 

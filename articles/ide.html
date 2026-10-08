@@ -95,31 +95,80 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span></span></code></pre></div>
 <p>or later, for one IDE at a time, with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> or <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code>.</p>
-<section class="level2"><h2 id="rstudio">RStudio<a class="anchor" aria-label="anchor" href="#rstudio"></a>
+<p>Whichever IDE you use, <code><a href="../reference/pixi_sitrep.html">rpix::pixi_sitrep()</a></code> checks that it runs the project’s R, and suggests fixes if it doesn’t.</p>
+<section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
 </h2>
+<section class="level3"><h3 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_rstudio</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This adds an <code>rstudio</code> task to <code>pixi.toml</code>, and creates an <code>.Rproj</code> file if the project doesn’t have one. Start RStudio with it, in a terminal in the project folder:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run rstudio</span></code></pre></div>
-<p>RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running (on macOS, <code>open -a RStudio</code> would bring the running one to the front instead, with its R), and opens the project, so RStudio starts in the project folder.</p>
-<p>On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>. If it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
-</section><section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
-</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_positron</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This turns on Positron’s discovery of R in Pixi environments, in the project’s <code>.vscode/settings.json</code>. In Positron, pick <strong>R (Pixi: default)</strong> in the interpreter picker. Positron remembers it for the project, and activates the environment when it starts R, on Windows too.</p>
-</section><section class="level2"><h2 id="vs-code">VS Code<a class="anchor" aria-label="anchor" href="#vs-code"></a>
+<p>This turns on Positron’s discovery of R in Pixi environments, in the project’s <code>.vscode/settings.json</code>.</p>
+</section><section class="level3"><h3 id="every-day">Every day<a class="anchor" aria-label="anchor" href="#every-day"></a>
+</h3>
+<p>In Positron’s interpreter picker, pick <strong>R (Pixi: default)</strong>: the R from the project’s default environment. Positron remembers it for the project, and starts it whenever you open the project. It activates the environment when it starts R, on Windows too.</p>
+</section><section class="level3"><h3 id="another-environment">Another environment<a class="anchor" aria-label="anchor" href="#another-environment"></a>
+</h3>
+<p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker.</p>
+</section><section class="level3"><h3 id="if-somethings-off">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off"></a>
+</h3>
+<ul>
+<li>
+<strong>Positron starts another R.</strong> Positron prefers the R you last used in the project. If you used another R there before setting up Pixi, pick <strong>R (Pixi: default)</strong> once.</li>
+<li>
+<strong>R (Pixi: default) isn’t listed.</strong> Positron may still show the R installations it found before. Run <strong>Interpreter: Discover All Interpreters</strong> from the Command Palette. Restart Positron if you’ve only just turned on discovery.</li>
+</ul></section></section><section class="level2"><h2 id="rstudio">RStudio<a class="anchor" aria-label="anchor" href="#rstudio"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<section class="level3"><h3 id="set-up-1">Set up<a class="anchor" aria-label="anchor" href="#set-up-1"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_rstudio</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This adds an <code>rstudio</code> task to <code>pixi.toml</code>, and creates an <code>.Rproj</code> file if the project doesn’t have one.</p>
+</section><section class="level3"><h3 id="every-day-1">Every day<a class="anchor" aria-label="anchor" href="#every-day-1"></a>
+</h3>
+<p>Start RStudio with the task, in a terminal in the project folder:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run rstudio</span></code></pre></div>
+<p>RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.</p>
+<p>On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>. If it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
+</section><section class="level3"><h3 id="another-environment-1">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-1"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run <span class="at">--environment</span> test rstudio</span></code></pre></div>
+<p>This works for environments that include the default feature, which the task belongs to.</p>
+</section><section class="level3"><h3 id="if-somethings-off-1">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-1"></a>
+</h3>
+<ul>
+<li>
+<strong>RStudio uses another R.</strong> You probably opened the project another way, e.g. by double-clicking the <code>.Rproj</code> file. Close RStudio and use <code>pixi run rstudio</code>.</li>
+</ul></section></section><section class="level2"><h2 id="vs-code">VS Code<a class="anchor" aria-label="anchor" href="#vs-code"></a>
+</h2>
+<section class="level3"><h3 id="set-up-2">Set up<a class="anchor" aria-label="anchor" href="#set-up-2"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_vscode</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This adds the languageserver package to the environment, and points the <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r" class="external-link">R extension</a> at the environment’s R, in the project’s <code>.vscode/settings.json</code>. It works the same in VSCodium.</p>
 <p>When the R extension offers to install its sess package, accept: it installs into the environment.</p>
+</section><section class="level3"><h3 id="every-day-2">Every day<a class="anchor" aria-label="anchor" href="#every-day-2"></a>
+</h3>
+<p>Open the project folder in VS Code. The R extension uses the environment’s R, and the project’s <code>.Rprofile</code> activates the environment.</p>
 <p>On Windows, the environment’s R only starts when the environment is activated, because it needs the environment’s <code>Library\bin</code> folder on the <code>PATH</code>. So start VS Code from the project’s environment:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run code .</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run code .</span></code></pre></div>
+</section><section class="level3"><h3 id="another-environment-2">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-2"></a>
+</h3>
+<p>Change <code>r.executablePath</code> and <code>r.consolePath</code> in <code>.vscode/settings.json</code> to the environment’s R, e.g. <code>${workspaceFolder}/.pixi/envs/r44/bin/R</code>, and reload the window. On Windows, start VS Code with <code>pixi run --environment r44 code .</code>.</p>
+</section><section class="level3"><h3 id="if-somethings-off-2">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-2"></a>
+</h3>
+<ul>
+<li>
+<strong>The R extension can’t find R.</strong> Check that the environment is installed (<code>pixi install</code>), and that the paths in <code>.vscode/settings.json</code> exist.</li>
+</ul></section></section><section class="level2"><h2 id="the-message-at-startup">The message at startup<a class="anchor" aria-label="anchor" href="#the-message-at-startup"></a>
+</h2>
+<p>If you start R in a Pixi project with an R that isn’t from the project’s environment, e.g. by double-clicking the <code>.Rproj</code> file, which opens your usual R, the project’s <code>.Rprofile</code> says so, as long as rpix is installed in that R:</p>
+<pre><code>! This R isn't from the project's Pixi environment, so it doesn't use the project's packages.
+ℹ Start R with `pixi run R`, or see https://roald-arboel.com/rpix/articles/ide.html.</code></pre>
+<p>Your usual R can’t use the environment’s packages: they’re built for the environment’s R, and loading them can crash another R. So rpix doesn’t try; start the environment’s R instead, as above.</p>
 </section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
 </h2>
 <p>In the IDE’s R console, <code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/path/to/project/.pixi/envs/default/lib/R"</span></span></code></pre></div>
 </section><script id="quarto-html-after-body" type="application/javascript">

@@ -13,7 +13,7 @@ For more information, see
 ## Usage
 
 ``` r
-pixi_search(package, channel = NULL, dry_run = FALSE)
+pixi_search(package, channel = NULL, path = NULL, dry_run = FALSE)
 ```
 
 ## Arguments
@@ -26,6 +26,11 @@ pixi_search(package, channel = NULL, dry_run = FALSE)
 
   Optional. A conda channel to search. Inside a project, the project's
   channels are searched by default, and conda-forge otherwise.
+
+- path:
+
+  The project. Defaults to the project of the running Pixi environment,
+  or the working directory.
 
 - dry_run:
 
