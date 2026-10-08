@@ -32,10 +32,11 @@ test_that("pixi_list() returns the useful columns, with R package names", {
   expect_equal(calls[[1]], c("list", "--environment", "dev", "--explicit"))
   expect_named(
     packages,
-    c("name", "version", "build", "channel", "kind", "explicit", "r_package")
+    c("name", "version", "r_package", "explicit", "channel", "kind", "build")
   )
   expect_equal(packages$r_package, c("Rcpp", NA, "deseq2", NA, NA))
   expect_equal(packages$explicit, c(TRUE, TRUE, FALSE, TRUE, FALSE))
+  expect_equal(packages$channel, c(rep("conda-forge", 4), "pypi.org"))
 })
 
 test_that("pixi_list() handles an empty environment", {
@@ -47,7 +48,7 @@ test_that("pixi_list() handles an empty environment", {
   expect_equal(nrow(packages), 0)
   expect_named(
     packages,
-    c("name", "version", "build", "channel", "kind", "explicit", "r_package")
+    c("name", "version", "r_package", "explicit", "channel", "kind", "build")
   )
 })
 

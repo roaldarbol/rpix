@@ -30,9 +30,9 @@ on. Names are translated like in \code{\link[=pixi_add]{pixi_add()}}.}
 \itemize{
 \item \code{pixi_info()}: a list, as \verb{pixi info --json} gives it.
 \item \code{pixi_list()}: a data frame with a row per package, and the columns
-\code{name}, \code{version}, \code{build}, \code{channel}, \code{kind} (\code{"conda"} or \code{"pypi"}),
-\code{explicit} (whether it's in \code{pixi.toml}) and \code{r_package} (the name of
-the R package, or \code{NA}).
+\code{name}, \code{version}, \code{r_package} (the name of the R package, or \code{NA}),
+\code{explicit} (whether it's in \code{pixi.toml}), \code{channel} (its name, such as
+\code{conda-forge}), \code{kind} (\code{"conda"} or \code{"pypi"}) and \code{build}.
 \item \code{pixi_tree()}: the tree's lines, invisibly.
 }
 }

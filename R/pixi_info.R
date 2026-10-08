@@ -22,9 +22,9 @@
 #' @returns
 #' * `pixi_info()`: a list, as `pixi info --json` gives it.
 #' * `pixi_list()`: a data frame with a row per package, and the columns
-#'   `name`, `version`, `build`, `channel`, `kind` (`"conda"` or `"pypi"`),
-#'   `explicit` (whether it's in `pixi.toml`) and `r_package` (the name of
-#'   the R package, or `NA`).
+#'   `name`, `version`, `r_package` (the name of the R package, or `NA`),
+#'   `explicit` (whether it's in `pixi.toml`), `channel` (its name, such as
+#'   `conda-forge`), `kind` (`"conda"` or `"pypi"`) and `build`.
 #' * `pixi_tree()`: the tree's lines, invisibly.
 #' @export
 #' @examples
@@ -68,6 +68,17 @@ pixi_list <- function(environment = NULL, explicit = FALSE, path = NULL) {
     packages$name,
     r_library(environment %||% "default", path)
   )
+  # The channel's name, e.g. conda-forge, rather than its URL
+  packages$channel <- basename(sub("/+$", "", packages$channel))
+  packages <- packages[c(
+    "name",
+    "version",
+    "r_package",
+    "explicit",
+    "channel",
+    "kind",
+    "build"
+  )]
   rownames(packages) <- NULL
   packages
 }
