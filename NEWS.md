@@ -1,6 +1,10 @@
 # rpix (development version)
 - All pixi commands now go through a single internal runner built on *processx* (#19). Arguments are passed without shell quoting, commands work from any subfolder of a project (`--manifest-path`), pixi failures become R errors, and pixi is found even if it isn't on the `PATH` (set `options(rpix.pixi_path = ...)` for unusual installs).
 - `add()`, `remove()` and `search()` with `dry_run = TRUE` now return the command invisibly.
+- R package names are now translated to conda names properly (#21): names are lowercased (`"Rcpp"` becomes `r-rcpp`), and a pak-like prefix says where a package comes from: `"bioc::DESeq2"` for Bioconductor packages from bioconda (#17), and `"conda::gdal"` for conda packages that aren't R packages. Names with `-` or `_` are used as is.
+- `add()` accepts version constraints inline (`"dplyr>=1.1"`) and one constraint per package in `versions`.
+- `add(channel = )` works again: pixi has no `--channel` flag for `add`, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.
+- `add()` suggests `bioc::` and `conda::` when a package can't be found.
 - Added tests.
 
 # rpix 0.3.0

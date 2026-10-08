@@ -7,18 +7,20 @@
 remove(packages, dry_run = FALSE)
 }
 \arguments{
-\item{packages}{Package name(s) to be removed.}
+\item{packages}{Package names.}
 
-\item{dry_run}{Just show command or also run.}
+\item{dry_run}{If \code{TRUE}, show the pixi command without running it.}
 }
 \value{
 The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
 the pixi call (invisibly).
 }
 \description{
-\code{remove()} will remove dependencies from the pixi.toml.
+\code{remove()} removes packages from the pixi manifest. Package names are
+translated like in \code{\link[=add]{add()}}, so \code{"dplyr"} removes \code{r-dplyr} and
+\code{"bioc::DESeq2"} removes \code{bioconductor-deseq2}.
 
-For more information, see https://pixi.sh/latest/reference/cli/pixi/remove/
+For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/remove/}.
 }
 \examples{
 \dontrun{

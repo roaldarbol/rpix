@@ -7,30 +7,44 @@
 add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 }
 \arguments{
-\item{packages}{Package name(s) to be added.}
+\item{packages}{Package names. A version constraint can follow the name, as
+in \code{"dplyr>=1.1"}.}
 
-\item{versions}{Optional. Version constraints for all packages.}
+\item{versions}{Optional. Version constraints, either one for all packages
+or one per package (use \code{NA} for no constraint). A version without an
+operator, such as \code{"1.1"}, means \verb{1.1.*}.}
 
-\item{channel}{Optional. Defaults to conda-forge, but other conda channels can be specified.}
+\item{channel}{Optional. A conda channel to install the packages from. It's
+added to the project's channels if it isn't there yet.}
 
-\item{dry_run}{Should the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.}
+\item{dry_run}{If \code{TRUE}, show the pixi commands without running them.}
 }
 \value{
-The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
-the pixi call (invisibly).
+The commands (invisibly) if \code{dry_run = TRUE}, otherwise the result
+of the pixi call (invisibly).
 }
 \description{
-\code{add()} will add dependencies to the pixi.toml.
+\code{add()} adds packages to the pixi manifest and installs them. pixi only adds
+them if they can be solved together with the rest of the project's
+dependencies.
 
-For more information, see https://pixi.sh/latest/reference/cli/pixi/add/.
+R package names are translated to conda names: \code{"dplyr"} becomes \code{r-dplyr}
+and \code{"Rcpp"} becomes \code{r-rcpp} (conda names are lowercase). Use a prefix to
+say where a package comes from:
+\itemize{
+\item \code{"bioc::DESeq2"}: a Bioconductor package (\code{bioconductor-deseq2} from the
+bioconda channel, which is added to the project if needed).
+\item \code{"conda::gdal"}: a conda package that isn't an R package, used as is.
+Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also used as is.
+\item \code{"cran::dplyr"}: same as \code{"dplyr"}.
+}
 
-It will only add if the package with its version constraint is able to work
-with rest of the dependencies in the project. More info on
-\href{https://pixi.sh/advanced/multi_platform_configuration/}{multi-platform}
-configuration.
+For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/add/}.
 }
 \examples{
 \dontrun{
 add("tibble")
+add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
+add("dplyr", versions = "1.1")
 }
 }
