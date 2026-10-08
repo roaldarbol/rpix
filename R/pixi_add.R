@@ -23,6 +23,10 @@
 #'   operator, such as `"1.1"`, means `1.1.*`.
 #' @param channel Optional. A conda channel to install the packages from. It's
 #'   added to the project's channels if it isn't there yet.
+#' @param feature Optional. The feature to add the packages to, rather than
+#'   the default one. See [pixi_add_environment()].
+#' @param platform Optional. Only add the packages for this platform, such as
+#'   `"linux-64"`.
 #' @param dry_run If `TRUE`, show the Pixi commands without running them.
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
@@ -38,6 +42,8 @@ pixi_add <- function(
   packages,
   versions = NULL,
   channel = NULL,
+  feature = NULL,
+  platform = NULL,
   dry_run = FALSE
 ) {
   parsed <- parse_packages(packages)
@@ -79,7 +85,11 @@ pixi_add <- function(
   }
 
   result <- tryCatch(
-    run_pixi(c("add", package_specs(parsed)), echo = TRUE, dry_run = dry_run),
+    run_pixi(
+      c("add", package_specs(parsed), scope_args(feature, platform)),
+      echo = TRUE,
+      dry_run = dry_run
+    ),
     rpix_error_pixi = function(e) {
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
         cli::cli_abort(
@@ -100,6 +110,14 @@ pixi_add <- function(
     return(invisible(c(commands, result)))
   }
   invisible(result)
+}
+
+# The --feature and --platform arguments of pixi add and pixi remove
+scope_args <- function(feature = NULL, platform = NULL) {
+  c(
+    if (!is.null(feature)) c("--feature", feature),
+    if (!is.null(platform)) c("--platform", platform)
+  )
 }
 
 # Channels of the project's default environment

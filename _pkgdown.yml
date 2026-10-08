@@ -63,6 +63,7 @@ articles:
     contents:
       - articles/ide
       - articles/finding-packages
+      - articles/environments
       - articles/coming-from-renv
       - articles/reproducibility
 
@@ -78,6 +79,12 @@ reference:
       - pixi_add
       - pixi_remove
       - pixi_search
+      - pixi_install
+
+  - title: "Environments, channels and platforms"
+    contents:
+      - pixi_environments
+      - pixi_add_channel
 
   - title: "Inspecting a project"
     contents:
