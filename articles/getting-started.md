@@ -26,5 +26,5 @@ are using RStudio.
 
 ## Start coding!
 
-When you need new packages, run `rpix::add("package_name")`. If you wish
-to remove packages, simply `rpix::remove("package_name")`
+When you need new packages, run `rpix::pixi_add("package_name")`. If you
+wish to remove packages, simply `rpix::pixi_remove("package_name")`

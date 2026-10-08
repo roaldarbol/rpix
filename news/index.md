@@ -2,16 +2,40 @@
 
 ## rpix (development version)
 
+### Breaking changes
+
+- Exported functions now follow one naming scheme
+  ([\#20](https://github.com/roaldarbol/rpix/issues/20)): functions that
+  run a pixi command are called `pixi_<command>()`.
+  - [`add()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
+    is now
+    [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
+    [`add()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
+    still works for now, with a deprecation warning.
+  - [`remove()`](https://rdrr.io/r/base/rm.html) and
+    [`search()`](https://rdrr.io/r/base/search.html) are now
+    [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+    and
+    [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md).
+    The old names were removed rather than deprecated, because they
+    masked [`base::remove()`](https://rdrr.io/r/base/rm.html) and
+    [`base::search()`](https://rdrr.io/r/base/search.html) whenever rpix
+    was attached.
+  - `pixi_to_path()` is no longer exported. rpix finds pixi itself.
+
+### Other changes
+
 - All pixi commands now go through a single internal runner built on
   *processx* ([\#19](https://github.com/roaldarbol/rpix/issues/19)).
   Arguments are passed without shell quoting, commands work from any
   subfolder of a project (`--manifest-path`), pixi failures become R
   errors, and pixi is found even if it isn’t on the `PATH` (set
   `options(rpix.pixi_path = ...)` for unusual installs).
-- [`add()`](https://roald-arboel.com/rpix/reference/add.md),
-  [`remove()`](https://roald-arboel.com/rpix/reference/remove.md) and
-  [`search()`](https://roald-arboel.com/rpix/reference/search.md) with
-  `dry_run = TRUE` now return the command invisibly.
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+  and
+  [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
+  with `dry_run = TRUE` now return the command invisibly.
 - R package names are now translated to conda names properly
   ([\#21](https://github.com/roaldarbol/rpix/issues/21)): names are
   lowercased (`"Rcpp"` becomes `r-rcpp`), and a pak-like prefix says
@@ -19,14 +43,14 @@
   from bioconda ([\#17](https://github.com/roaldarbol/rpix/issues/17)),
   and `"conda::gdal"` for conda packages that aren’t R packages. Names
   with `-` or `_` are used as is.
-- [`add()`](https://roald-arboel.com/rpix/reference/add.md) accepts
-  version constraints inline (`"dplyr>=1.1"`) and one constraint per
-  package in `versions`.
-- `add(channel = )` works again: pixi has no `--channel` flag for `add`,
-  so the channel is now added to the project and used in the package
-  spec. The same happens automatically for bioconda.
-- [`add()`](https://roald-arboel.com/rpix/reference/add.md) suggests
-  `bioc::` and `conda::` when a package can’t be found.
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  accepts version constraints inline (`"dplyr>=1.1"`) and one constraint
+  per package in `versions`.
+- `pixi_add(channel = )` works again: pixi has no `--channel` flag for
+  `pixi add`, so the channel is now added to the project and used in the
+  package spec. The same happens automatically for bioconda.
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  suggests `bioc::` and `conda::` when a package can’t be found.
 - Added tests.
 
 ## rpix 0.3.0

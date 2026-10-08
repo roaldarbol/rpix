@@ -46,18 +46,32 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>Exported functions now follow one naming scheme (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>): functions that run a pixi command are called <code>pixi_&lt;command&gt;()</code>.
+<ul><li>
+<code><a href="../reference/rpix-deprecated.html">add()</a></code> is now <code><a href="../reference/pixi_add.html">pixi_add()</a></code>. <code><a href="../reference/rpix-deprecated.html">add()</a></code> still works for now, with a deprecation warning.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>. The old names were removed rather than deprecated, because they masked <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">base::remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">base::search()</a></code> whenever rpix was attached.</li>
+<li>
+<code>pixi_to_path()</code> is no longer exported. rpix finds pixi itself.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
 <ul><li>All pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), pixi failures become R errors, and pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
 <li>
-<code><a href="../reference/add.html">add()</a></code>, <code><a href="../reference/remove.html">remove()</a></code> and <code><a href="../reference/search.html">search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
 <li>R package names are now translated to conda names properly (<a href="https://github.com/roaldarbol/rpix/issues/21" class="external-link">#21</a>): names are lowercased (<code>"Rcpp"</code> becomes <code>r-rcpp</code>), and a pak-like prefix says where a package comes from: <code>"bioc::DESeq2"</code> for Bioconductor packages from bioconda (<a href="https://github.com/roaldarbol/rpix/issues/17" class="external-link">#17</a>), and <code>"conda::gdal"</code> for conda packages that aren’t R packages. Names with <code>-</code> or <code>_</code> are used as is.</li>
 <li>
-<code><a href="../reference/add.html">add()</a></code> accepts version constraints inline (<code>"dplyr&gt;=1.1"</code>) and one constraint per package in <code>versions</code>.</li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code> accepts version constraints inline (<code>"dplyr&gt;=1.1"</code>) and one constraint per package in <code>versions</code>.</li>
 <li>
-<code>add(channel = )</code> works again: pixi has no <code>--channel</code> flag for <code>add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
+<code>pixi_add(channel = )</code> works again: pixi has no <code>--channel</code> flag for <code>pixi add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
 <li>
-<code><a href="../reference/add.html">add()</a></code> suggests <code>bioc::</code> and <code>conda::</code> when a package can’t be found.</li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code> suggests <code>bioc::</code> and <code>conda::</code> when a package can’t be found.</li>
 <li>Added tests.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="rpix-030">rpix 0.3.0<a class="anchor" aria-label="anchor" href="#rpix-030"></a></h2>
 <ul><li>

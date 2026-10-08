@@ -51,7 +51,6 @@ library.
 
 ## See also
 
-[`pixi_to_path()`](https://roald-arboel.com/rpix/reference/pixi_to_path.md),
 [`.libPaths()`](https://rdrr.io/r/base/libPaths.html)
 
 ## Examples
