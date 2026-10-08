@@ -41,30 +41,17 @@ search <- function(package, channel = NULL, dry_run = FALSE) {
     return(base::search())
   }
 
-  # Ensure only one package is provided
   if (length(package) > 1) {
     cli::cli_abort(
-      "search() can only take a single package name. You provided {length(package)} packages."
+      "{.fn search} can only take a single package name. You provided {length(package)} packages."
     )
   }
 
-  # Prepend r- to the package name
-  prepended_name <- paste0("r-", package)
-
-  # Start building the command
-  cmd <- paste("pixi search", prepended_name)
-
-  # Append channel if present
+  args <- c("search", paste0("r-", package))
   if (!is.null(channel)) {
-    cmd <- paste(cmd, "--channel", channel)
+    args <- c(args, "--channel", channel)
   }
 
-  # Show the command
-  cli::cli_alert_info("The resulting pixi command is:")
-  cli::cli_code(cmd)
-
-  # Execute or dry-run
-  if (isFALSE(dry_run)) {
-    system(cmd)
-  }
+  # Use the project's channels when inside a project, conda-forge otherwise
+  run_pixi(args, project = "optional", echo = TRUE, dry_run = dry_run)
 }
