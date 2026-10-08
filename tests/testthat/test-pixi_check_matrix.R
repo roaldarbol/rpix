@@ -273,6 +273,8 @@ test_that("run_job() runs the tests or check without rpix, or a task", {
 test_that("run_tests() and run_check() summarise the results", {
   skip_if_not_installed("rcmdcheck")
   package <- local_demo_package()
+  # The tests load the package; don't leave it behind
+  withr::defer(if (isNamespaceLoaded("demo")) unloadNamespace("demo"))
 
   output <- capture.output(tests <- run_tests(package))
   expect_false(tests$ok)
