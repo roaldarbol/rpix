@@ -1,0 +1,15 @@
+{
+  "R": {
+    "Version": "4.4.2",
+    "Repositories": [{"Name": "CRAN", "URL": "https://cloud.r-project.org"}]
+  },
+  "Packages": {
+    "renv": {"Package": "renv", "Version": "1.0.11", "Source": "Repository", "Repository": "CRAN"},
+    "cli": {"Package": "cli", "Version": "3.6.3", "Source": "Repository", "Repository": "CRAN", "Requirements": ["R", "utils"]},
+    "dplyr": {"Package": "dplyr", "Version": "1.1.4", "Source": "Repository", "Repository": "RSPM", "Requirements": ["R", "cli", "methods"]},
+    "Matrix": {"Package": "Matrix", "Version": "1.7-1", "Source": "Repository", "Repository": "CRAN", "Requirements": ["R", "methods"]},
+    "DESeq2": {"Package": "DESeq2", "Version": "1.46.0", "Source": "Bioconductor", "Requirements": ["R", "Matrix"]},
+    "mypkg": {"Package": "mypkg", "Version": "0.1.0", "Source": "GitHub", "RemoteType": "github", "RemoteUsername": "me", "RemoteRepo": "mypkg"},
+    "notonconda": {"Package": "notonconda", "Version": "2.0", "Source": "Repository", "Repository": "CRAN"}
+  }
+}

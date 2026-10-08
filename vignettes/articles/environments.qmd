@@ -74,9 +74,19 @@ See the project's environments, and their features, with:
 pixi_environments()
 ```
 
-## Checking a package on several versions of R
+## Developing a package
 
-For package developers, `use_pixi_check_matrix()` adds an environment for each version of R, with the package's dependencies and what the tests and `R CMD check` need:
+For a package, `pixi_import_description()` adds what the package needs from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment, in the same solve group as the default one:
+
+```r
+pixi_import_description()
+```
+
+Packages that aren't on conda-forge or bioconda are listed, and left out.
+
+### Checking it on several versions of R
+
+`use_pixi_check_matrix()` adds an environment for each version of R, with the package's dependencies and what the tests and `R CMD check` need:
 
 ```r
 use_pixi_check_matrix(c("4.3", "4.4", "4.5"))
