@@ -102,6 +102,11 @@
   [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
   looks for interpreters again before opening the interpreter picker, so
   environments added while Positron is open are listed.
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  explains when a package isn’t built for the project’s version of R
+  yet, which happens for a while after conda-forge releases a new R, and
+  suggests the newest R it’s built for
+  ([\#80](https://github.com/roaldarbol/rpix/issues/80)).
 
 ## rpix 0.5.0
 
