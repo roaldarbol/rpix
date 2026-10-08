@@ -3,6 +3,13 @@
 ## rpix (development version)
 
 - New
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  reports on the project’s Pixi setup, with hints for what’s wrong
+  ([\#28](https://github.com/roaldarbol/rpix/issues/28)): Pixi itself,
+  whether the lock file is up to date, whether R is the project’s Pixi R
+  and is activated, libraries and packages from outside the project, the
+  `.Rprofile` block, and whether the IDE is set up.
+- New
   [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md),
   [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
   and

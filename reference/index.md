@@ -11,6 +11,8 @@
 
 ## Inspecting a project
 
+- [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  : Report on the project's Pixi setup
 - [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
   [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
   [`pixi_tree()`](https://roald-arboel.com/rpix/reference/pixi_info.md)

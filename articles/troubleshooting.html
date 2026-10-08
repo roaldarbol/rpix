@@ -90,10 +90,14 @@
 
 
 
-    <section class="level2"><h2 id="r-crashes-when-loading-a-package">R crashes when loading a package<a class="anchor" aria-label="anchor" href="#r-crashes-when-loading-a-package"></a>
+    <p>Start with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_sitrep.html">pixi_sitrep</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>It checks the project’s setup, and suggests fixes for what’s wrong.</p>
+<section class="level2"><h2 id="r-crashes-when-loading-a-package">R crashes when loading a package<a class="anchor" aria-label="anchor" href="#r-crashes-when-loading-a-package"></a>
 </h2>
 <p>A crash (“segfault”, “R is aborting now”) while loading a package usually means it was built for a different R than the one loading it. Check which R you’re in, and where its packages come from:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder, and <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> shouldn’t list any library outside it. If it does:</p>
@@ -118,7 +122,7 @@
 </h2>
 <pre><code>! Could not find Pixi.</code></pre>
 <p>rpix looks for Pixi on the <code>PATH</code>, and then where the installer puts it, <code>~/.pixi/bin</code>. If you installed it somewhere else, tell rpix where:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>rpix.pixi_path <span class="op">=</span> <span class="st">"/path/to/pixi"</span><span class="op">)</span></span></code></pre></div>
 </section><section class="level2"><h2 id="rpix-cant-find-the-project">rpix can’t find the project<a class="anchor" aria-label="anchor" href="#rpix-cant-find-the-project"></a>
 </h2>

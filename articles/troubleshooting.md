@@ -1,5 +1,14 @@
 # Troubleshooting
 
+Start with:
+
+``` r
+
+rpix::pixi_sitrep()
+```
+
+It checks the project’s setup, and suggests fixes for what’s wrong.
+
 ## R crashes when loading a package
 
 A crash (“segfault”, “R is aborting now”) while loading a package
