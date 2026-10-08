@@ -5,6 +5,8 @@
 - Pixi's output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi's own colours.
 - New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
 - `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print their results in a readable form (#67). They're still data frames, or a list for `pixi_info()`.
+- `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
+- `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be run again, e.g. after renaming the `.Rproj` file (#72).
 
 # rpix 0.5.0
 
