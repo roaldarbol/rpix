@@ -1,29 +1,39 @@
-# rpix (development version)
+# rpix 0.6.0
+
+rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
 
 ## Breaking changes
 
 - `restart_rstudio_with_pixi()` is removed. Use `pixi_switch()` instead, or start RStudio with `pixi run rstudio` (#32).
 
-## New features
+## Several environments
 
-- New `pixi_switch()` moves your work to another environment's R (#32). In RStudio it starts a new RStudio with that R, in Positron it opens the interpreter picker, and in VS Code it points the R extension at that R.
-- New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
+- New `pixi_switch()` moves your work to another environment's R (#32). In RStudio it starts a new RStudio with that R. In Positron it looks for interpreters again, so new environments are listed, and opens the interpreter picker. In VS Code it points the R extension at that R.
 - New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
-- New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
-- New `pixi_import_description()` adds a package's dependencies from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment. It finds Bioconductor packages on bioconda, and lists the packages that aren't on conda-forge or bioconda (#36).
+- New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds an environment for each version of R you want to check (#34).
+
+## Moving to Pixi
+
 - New `pixi_import_renv()` moves a project from renv: it adds the packages in `renv.lock`, at least at their locked versions or exactly, and turns renv off. It adds only the packages nothing else in the lock file needs, and lists those it can't add, e.g. from GitHub (#37).
-- New `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those missing from `pixi.toml`, and adds them with `add = TRUE`, and lists packages the code never uses (#38).
+- New `pixi_import_description()` adds a package's dependencies from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment. It finds Bioconductor packages on bioconda, and lists the packages that aren't on conda-forge or bioconda (#36).
+- New `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those missing from `pixi.toml`, adds them with `add = TRUE`, and lists packages the code never uses (#38).
+
+## Installing packages
+
 - In a Pixi environment's R, `install.packages()` adds packages with `pixi_add()`, so they're recorded in `pixi.toml` and `pixi.lock` (#3). Packages that aren't on conda-forge or bioconda, and arguments Pixi can't use, such as `lib`, give an error that points to `utils::install.packages()`. `pixi_activate()` sets this up; turn it off with `options(rpix.install_packages = FALSE)`.
 - `pixi_sitrep()` lists packages in the environment that Pixi didn't install, so `pixi.toml` doesn't record them (#3).
+- `pixi_add()` explains when a package isn't built for the project's version of R yet, which happens for a while after conda-forge releases a new R, and suggests the newest R it's built for (#80).
+- `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. Just after conda-forge released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
 
-## Minor improvements and fixes
+## Tasks
+
+- New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
+
+## Other changes
 
 - `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print their results in a readable form (#67). They're still data frames, or a list for `pixi_info()`.
 - Pixi's output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi's own colours.
-- `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
 - `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be run again, e.g. after renaming the `.Rproj` file (#72).
-- In Positron, `pixi_switch()` looks for interpreters again before opening the interpreter picker, so environments added while Positron is open are listed.
-- `pixi_add()` explains when a package isn't built for the project's version of R yet, which happens for a while after conda-forge releases a new R, and suggests the newest R it's built for (#80).
 
 # rpix 0.5.0
 
