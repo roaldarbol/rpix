@@ -81,6 +81,7 @@ reference:
 
   - title: "Inspecting a project"
     contents:
+      - pixi_sitrep
       - pixi_info
 
   - title: "Setting up a project"
