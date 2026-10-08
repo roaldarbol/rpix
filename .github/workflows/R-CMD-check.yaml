@@ -16,6 +16,9 @@ permissions: read-all
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
+    # Fail a hung step (e.g. a stalled download in r-lib/actions/setup-r)
+    # instead of waiting for GitHub\'s 6-hour default
+    timeout-minutes: 30
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
@@ -72,6 +75,9 @@ jobs:
   # also checked with conda-forge's R, which is the R it is meant for
   pixi:
     runs-on: ${{ matrix.os }}
+    # Fail a hung step (e.g. a stalled download in r-lib/actions/setup-r)
+    # instead of waiting for GitHub\'s 6-hour default
+    timeout-minutes: 30
 
     name: ${{ matrix.os }} (pixi)
 
