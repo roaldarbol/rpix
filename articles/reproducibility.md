@@ -55,6 +55,29 @@ pixi update
 This updates to the newest versions `pixi.toml` allows. `pixi upgrade`
 also raises the version constraints in `pixi.toml`.
 
+## Tasks
+
+Save the commands that run the project as tasks in `pixi.toml`, so
+collaborators run them the same way:
+
+``` r
+
+rpix::pixi_add_task("analysis", "Rscript analysis.R", description = "Run the analysis")
+rpix::pixi_add_task("report", "quarto render report.qmd", depends_on = "analysis")
+```
+
+Then anyone can run them, from a terminal with `pixi run report`, or
+from R:
+
+``` r
+
+rpix::pixi_run("report")
+```
+
+`report` runs `analysis` first.
+[`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+lists a project’s tasks.
+
 ## Continuous integration
 
 The [setup-pixi](https://github.com/prefix-dev/setup-pixi) action
@@ -66,7 +89,7 @@ steps:
   - uses: prefix-dev/setup-pixi@v0.10.2
     with:
       cache: true
-  - run: pixi run Rscript analysis.R
+  - run: pixi run report
 ```
 
 It uses `pixi install --locked` by default, so the run fails if

@@ -2,6 +2,15 @@
 
 ## rpix (development version)
 
+- New
+  [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
+  [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
+  [`pixi_add_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  and
+  [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  work with the project’s Pixi tasks
+  ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
+
 ## rpix 0.5.0
 
 rpix now sets projects up for RStudio, Positron and VS Code, and makes

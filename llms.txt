@@ -110,6 +110,14 @@ workflow.*
   [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
   : Add channels or platforms to the project
 
+## Tasks
+
+- [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  [`pixi_add_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  : Pixi tasks
+
 ## Inspecting a project
 
 - [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)

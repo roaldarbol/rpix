@@ -118,15 +118,25 @@
 <p>Packages stay at the versions in <code>pixi.lock</code> until you update them:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> update</span></code></pre></div>
 <p>This updates to the newest versions <code>pixi.toml</code> allows. <code>pixi upgrade</code> also raises the version constraints in <code>pixi.toml</code>.</p>
+</section><section class="level2"><h2 id="tasks">Tasks<a class="anchor" aria-label="anchor" href="#tasks"></a>
+</h2>
+<p>Save the commands that run the project as tasks in <code>pixi.toml</code>, so collaborators run them the same way:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_tasks.html">pixi_add_task</a></span><span class="op">(</span><span class="st">"analysis"</span>, <span class="st">"Rscript analysis.R"</span>, description <span class="op">=</span> <span class="st">"Run the analysis"</span><span class="op">)</span></span>
+<span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_tasks.html">pixi_add_task</a></span><span class="op">(</span><span class="st">"report"</span>, <span class="st">"quarto render report.qmd"</span>, depends_on <span class="op">=</span> <span class="st">"analysis"</span><span class="op">)</span></span></code></pre></div>
+<p>Then anyone can run them, from a terminal with <code>pixi run report</code>, or from R:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_tasks.html">pixi_run</a></span><span class="op">(</span><span class="st">"report"</span><span class="op">)</span></span></code></pre></div>
+<p><code>report</code> runs <code>analysis</code> first. <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code> lists a project’s tasks.</p>
 </section><section class="level2"><h2 id="continuous-integration">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration"></a>
 </h2>
 <p>The <a href="https://github.com/prefix-dev/setup-pixi" class="external-link">setup-pixi</a> action installs Pixi and the environment on GitHub Actions:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> prefix-dev/setup-pixi@v0.10.2</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pixi run Rscript analysis.R</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> prefix-dev/setup-pixi@v0.10.2</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pixi run report</span></span></code></pre></div>
 <p>It uses <code>pixi install --locked</code> by default, so the run fails if <code>pixi.lock</code> is out of date.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
