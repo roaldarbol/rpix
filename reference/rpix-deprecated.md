@@ -47,7 +47,9 @@ setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 - r_version:
 
   Optional. The R version to add, such as `"4.5"`. Defaults to the
-  latest on conda-forge.
+  newest one that the packages
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  adds are built for on conda-forge.
 
 - init_if_missing:
 

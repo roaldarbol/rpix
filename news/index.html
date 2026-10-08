@@ -74,6 +74,10 @@
 <ul><li>
 <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code>, <code><a href="../reference/pixi_environments.html">pixi_environments()</a></code>, <code><a href="../reference/pixi_info.html">pixi_list()</a></code> and <code><a href="../reference/pixi_info.html">pixi_info()</a></code> print their results in a readable form (<a href="https://github.com/roaldarbol/rpix/issues/67" class="external-link">#67</a>). They’re still data frames, or a list for <code><a href="../reference/pixi_info.html">pixi_info()</a></code>.</li>
 <li>Pixi’s output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi’s own colours.</li>
+<li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds R together with the packages it needs, so Pixi picks the newest R they’re built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+<li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> replaces the <code>rstudio</code> task if it’s there, so it can be run again, e.g. after renaming the <code>.Rproj</code> file (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">

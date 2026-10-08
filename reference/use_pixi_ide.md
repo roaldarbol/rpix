@@ -4,10 +4,10 @@ Set an IDE up to use the R in the project's Pixi environment.
 [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
 calls these with its `ide` argument.
 
-- `use_pixi_rstudio()` adds an `rstudio` task to `pixi.toml`, for each
-  of the project's platforms, that starts a new RStudio with the
-  environment's R and the project's `.Rproj` file. It creates the
-  `.Rproj` file if there isn't one. Start RStudio with
+- `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in
+  `pixi.toml`, for each of the project's platforms, that starts a new
+  RStudio with the environment's R and the project's `.Rproj` file. It
+  creates the `.Rproj` file if there isn't one. Start RStudio with
   `pixi run rstudio`.
 
 - `use_pixi_positron()` turns on Positron's discovery of R in Pixi

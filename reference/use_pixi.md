@@ -39,7 +39,8 @@ use_pixi(
 - r_version:
 
   Optional. The R version to add, such as `"4.5"`. Defaults to the
-  latest on conda-forge.
+  newest one that the packages `use_pixi()` adds are built for on
+  conda-forge.
 
 - ide:
 
