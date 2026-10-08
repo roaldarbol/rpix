@@ -67,22 +67,17 @@ your usual R can be loaded into the environment’s R. This is a
 R](https://github.com/conda-forge/r-base-feedstock/issues/37).
 
 [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-points `R_LIBS_USER` at a folder inside the project instead, in
-`pixi.toml`:
+adds conda-forge’s
+[conda-ecosystem-user-package-isolation](https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock)
+to the project, which fixes this. When Pixi activates the environment,
+it points `R_LIBS_USER` at a folder that doesn’t exist, so R leaves the
+personal library out. It does the same for Python’s user packages. To
+add it to a project yourself:
 
-``` toml
-[activation.env]
-R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
+``` r
 
-[target.win.activation.env]
-R_LIBS_USER = "%PIXI_PROJECT_ROOT%\\.pixi\\r-libs\\%PIXI_ENVIRONMENT_NAME%"
+rpix::pixi_add("conda::conda-ecosystem-user-package-isolation")
 ```
-
-Windows needs the second entry, because it only expands `%VAR%`.
-[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-adds it if the project lists a Windows platform; if you add one later,
-add the entry too. R ignores a library folder that doesn’t exist, so
-this leaves only the environment’s own library.
 
 Pixi applies this when it starts R, as `pixi run R` does, and the
 project’s `.Rprofile` takes care of it when an IDE starts R directly.

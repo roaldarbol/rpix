@@ -15,12 +15,11 @@
   using Pixi’s activation cache.
 - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
   now keeps your personal R library out of the environment’s R, by
-  pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`.
-  conda-forge’s R otherwise puts it first on
+  adding conda-forge’s `conda-ecosystem-user-package-isolation` to the
+  project. conda-forge’s R otherwise puts the personal library first on
   [`.libPaths()`](https://rdrr.io/r/base/libPaths.html), so packages
   built for your usual R could be loaded
-  (conda-forge/r-base-feedstock#37). On Windows, the entry is only added
-  when the project lists a Windows platform.
+  (conda-forge/r-base-feedstock#37).
 - The IDE guide’s RStudio commands now work as expected: `open -n` on
   macOS, so a running RStudio doesn’t keep its R, and a task that sets
   `RSTUDIO_WHICH_R` on Windows
