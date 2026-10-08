@@ -28,7 +28,7 @@ R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
 [tasks]
 document = { cmd = "Rscript -e 'devtools::document()'", description = "Regenerate man/ and NAMESPACE from the roxygen comments" }
 test = { cmd = "Rscript -e 'devtools::test()'", description = "Run the tests" }
-check = { cmd = "Rscript -e 'devtools::check()'", description = "Run R CMD check" }
+check = { cmd = """Rscript -e 'devtools::check(error_on = "warning")'""", description = "Run R CMD check" }
 format = { cmd = "air format .", description = "Format the R code with air" }
 readme = { cmd = "quarto render README.qmd", description = "Render README.md from README.qmd" }
 # CI=true skips building favicons, as on GitHub: the service pkgdown uses for

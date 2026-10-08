@@ -67,3 +67,25 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+  # The same check in the pixi development environment (pixi.toml), so rpix is
+  # also checked with conda-forge's R, which is the R it is meant for
+  pixi:
+    runs-on: ${{ matrix.os }}
+
+    name: ${{ matrix.os }} (pixi)
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          cache: true
+
+      - name: Check
+        run: pixi run check
