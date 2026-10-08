@@ -1,5 +1,7 @@
 # rpix (development version)
 
+- `pixi_add()`, `pixi_remove()`, `pixi_search()` and `use_pixi()` gain a `path` argument, like the other functions, to work on a project other than the one in the working directory.
+- The documentation covers the new workflow (#31): the IDE guide has tabs for Positron, RStudio and VS Code, with daily use, other environments and troubleshooting; Get started covers rendering Quarto documents and `pixi_sitrep()`; and a contributing guide describes rpix's own development environment.
 - Features and environments (#30): `pixi_add()` and `pixi_remove()` gain `feature` and `platform` arguments, and new `pixi_environments()`, `pixi_add_environment()` and `pixi_remove_environment()` manage a project's environments. New article: "Several environments".
 - New `pixi_add_channel()` and `pixi_add_platform()`, and `pixi_install()`, `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
 - New `pixi_sitrep()` reports on the project's Pixi setup, with hints for what's wrong (#28): Pixi itself, whether the lock file is up to date, whether R is the project's Pixi R and is activated, libraries and packages from outside the project, the `.Rprofile` block, and whether the IDE is set up.

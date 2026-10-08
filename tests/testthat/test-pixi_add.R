@@ -110,7 +110,7 @@ local_mock_pixi <- function(
   calls <- new.env()
   calls$args <- list()
   local_mocked_bindings(
-    project_channels = function() channels,
+    project_channels = function(...) channels,
     run_pixi = function(args, ...) {
       calls$args <- c(calls$args, list(args))
       if (!is.null(error) && args[1] == "add") {
@@ -154,4 +154,24 @@ test_that("pixi_add() passes on other pixi errors", {
   local_mock_pixi(error = pixi_error("Some other failure"))
   err <- expect_error(pixi_add("dplyr"), class = "rpix_error_pixi")
   expect_false(inherits(err, "rpix_error_package_not_found"))
+})
+
+test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `path`", {
+  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  root <- local_pixi_project()
+  manifest <- file.path(root, "pixi.toml")
+  in_other_dir <- function(command) grepl(manifest, command, fixed = TRUE)
+  withr::local_dir(withr::local_tempdir())
+
+  expect_true(in_other_dir(dry(pixi_add("dplyr", path = root, dry_run = TRUE))))
+  expect_true(in_other_dir(dry(pixi_remove(
+    "dplyr",
+    path = root,
+    dry_run = TRUE
+  ))))
+  expect_true(in_other_dir(dry(pixi_search(
+    "dplyr",
+    path = root,
+    dry_run = TRUE
+  ))))
 })

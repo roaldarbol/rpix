@@ -10,6 +10,7 @@ pixi_add(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  path = NULL,
   dry_run = FALSE
 )
 }
@@ -29,6 +30,9 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 
 \item{platform}{Optional. Only add the packages for this platform, such as
 \code{"linux-64"}.}
+
+\item{path}{The project. Defaults to the project of the running Pixi
+environment, or the working directory.}
 
 \item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
 }

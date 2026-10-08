@@ -14,31 +14,68 @@ rpix::use_pixi(ide = "positron")
 
 or later, for one IDE at a time, with `use_pixi_rstudio()`, `use_pixi_positron()` or `use_pixi_vscode()`.
 
-## RStudio
-
-```r
-rpix::use_pixi_rstudio()
-```
-
-This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one. Start RStudio with it, in a terminal in the project folder:
-
-```sh
-pixi run rstudio
-```
-
-RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running (on macOS, `open -a RStudio` would bring the running one to the front instead, with its R), and opens the project, so RStudio starts in the project folder.
-
-On Windows, the task expects RStudio in `C:/Program Files/RStudio`. If it's somewhere else, change the path in `pixi.toml`.
+Whichever IDE you use, `rpix::pixi_sitrep()` checks that it runs the project's R, and suggests fixes if it doesn't.
 
 ## Positron
+
+### Set up
 
 ```r
 rpix::use_pixi_positron()
 ```
 
-This turns on Positron's discovery of R in Pixi environments, in the project's `.vscode/settings.json`. In Positron, pick **R (Pixi: default)** in the interpreter picker. Positron remembers it for the project, and activates the environment when it starts R, on Windows too.
+This turns on Positron's discovery of R in Pixi environments, in the project's `.vscode/settings.json`.
+
+### Every day
+
+In Positron's interpreter picker, pick **R (Pixi: default)**: the R from the project's default environment. Positron remembers it for the project, and starts it whenever you open the project. It activates the environment when it starts R, on Windows too.
+
+### Another environment
+
+Each of the project's environments is listed as its own R, e.g. **R 4.4.3 (Pixi: r44)**. Pick it in the interpreter picker.
+
+### If something's off
+
+- **Positron starts another R.** Positron prefers the R you last used in the project. If you used another R there before setting up Pixi, pick **R (Pixi: default)** once.
+- **R (Pixi: default) isn't listed.** Positron may still show the R installations it found before. Run **Interpreter: Discover All Interpreters** from the Command Palette. Restart Positron if you've only just turned on discovery.
+
+## RStudio
+
+### Set up
+
+```r
+rpix::use_pixi_rstudio()
+```
+
+This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one.
+
+### Every day
+
+Start RStudio with the task, in a terminal in the project folder:
+
+```sh
+pixi run rstudio
+```
+
+RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.
+
+On Windows, the task expects RStudio in `C:/Program Files/RStudio`. If it's somewhere else, change the path in `pixi.toml`.
+
+### Another environment
+
+```sh
+pixi run --environment test rstudio
+```
+
+This works for environments that include the default feature, which the task belongs to.
+
+### If something's off
+
+- **RStudio uses another R.** You probably opened the project another way, e.g. by double-clicking the `.Rproj` file. Close RStudio and use `pixi run rstudio`.
 
 ## VS Code
+
+### Set up
 
 ```r
 rpix::use_pixi_vscode()
@@ -48,11 +85,34 @@ This adds the languageserver package to the environment, and points the [R exten
 
 When the R extension offers to install its sess package, accept: it installs into the environment.
 
+### Every day
+
+Open the project folder in VS Code. The R extension uses the environment's R, and the project's `.Rprofile` activates the environment.
+
 On Windows, the environment's R only starts when the environment is activated, because it needs the environment's `Library\bin` folder on the `PATH`. So start VS Code from the project's environment:
 
 ```sh
 pixi run code .
 ```
+
+### Another environment
+
+Change `r.executablePath` and `r.consolePath` in `.vscode/settings.json` to the environment's R, e.g. `${workspaceFolder}/.pixi/envs/r44/bin/R`, and reload the window. On Windows, start VS Code with `pixi run --environment r44 code .`.
+
+### If something's off
+
+- **The R extension can't find R.** Check that the environment is installed (`pixi install`), and that the paths in `.vscode/settings.json` exist.
+
+## The message at startup
+
+If you start R in a Pixi project with an R that isn't from the project's environment, e.g. by double-clicking the `.Rproj` file, which opens your usual R, the project's `.Rprofile` says so, as long as rpix is installed in that R:
+
+```
+! This R isn't from the project's Pixi environment, so it doesn't use the project's packages.
+ℹ Start R with `pixi run R`, or see https://roald-arboel.com/rpix/articles/ide.html.
+```
+
+Your usual R can't use the environment's packages: they're built for the environment's R, and loading them can crash another R. So rpix doesn't try; start the environment's R instead, as above.
 
 ## Check
 

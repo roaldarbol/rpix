@@ -43,16 +43,17 @@ install.packages(
 
 ## Example
 
-Set up the project in the working directory. This creates a Pixi
-project, adds R to it, and installs rpix into its environment:
+Set up the project in the working directory, for your IDE. This creates
+a Pixi project, adds R to it, installs rpix into its environment, and
+points the IDE at that R:
 
 ``` r
-rpix::use_pixi()
+rpix::use_pixi(ide = "positron") # or "rstudio", or "vscode"
 ```
 
-From then on, work in R started by Pixi: run `pixi run R` in a terminal
-in the project folder, or see [Using rpix with an
-IDE](https://roald-arboel.com/rpix/articles/ide.html). Add and remove
+From then on, work in R started by Pixi: in your IDE (see [Using rpix
+with an IDE](https://roald-arboel.com/rpix/articles/ide.html)), or with
+`pixi run R` in a terminal in the project folder. Add and remove
 packages from there:
 
 ``` r
@@ -62,6 +63,8 @@ pixi_add(c("dplyr", "ggplot2"))
 pixi_add("bioc::DESeq2")
 pixi_remove("ggplot2")
 ```
+
+`pixi_sitrep()` checks the setup, and suggests fixes if something’s off.
 
 To start a new project from a template instead, see
 [r-template](https://github.com/roaldarbol/r-template).
@@ -77,6 +80,9 @@ To start a new project from a template instead, see
 - [Finding
   packages](https://roald-arboel.com/rpix/articles/finding-packages.html):
   CRAN, Bioconductor and other conda packages.
+- [Several
+  environments](https://roald-arboel.com/rpix/articles/environments.html):
+  another version of R, or extra packages for tests.
 - [Coming from
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.html):
   renv’s functions and their rpix counterparts.

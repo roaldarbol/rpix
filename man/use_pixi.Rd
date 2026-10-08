@@ -8,7 +8,8 @@ use_pixi(
   r_version = NULL,
   ide = NULL,
   init_if_missing = TRUE,
-  install_rpix = TRUE
+  install_rpix = TRUE,
+  path = NULL
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ to the latest on conda-forge.}
 \item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
 Its dependencies come from conda-forge, and rpix itself from R-universe
 until it's on conda-forge.}
+
+\item{path}{The folder to set up. Defaults to the working directory.}
 }
 \value{
 The path to the project's manifest, invisibly.

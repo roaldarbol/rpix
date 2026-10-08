@@ -29,6 +29,7 @@
 #' @param install_rpix If `TRUE`, install rpix into the project's environment.
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
 #'   until it's on conda-forge.
+#' @param path The folder to set up. Defaults to the working directory.
 #' @returns The path to the project's manifest, invisibly.
 #' @export
 #' @examples
@@ -40,13 +41,14 @@ use_pixi <- function(
   r_version = NULL,
   ide = NULL,
   init_if_missing = TRUE,
-  install_rpix = TRUE
+  install_rpix = TRUE,
+  path = NULL
 ) {
   if (!is.null(ide)) {
     ide <- match.arg(ide, c("rstudio", "positron", "vscode"), several.ok = TRUE)
   }
   pixi_binary()
-  dir <- getwd()
+  dir <- normalizePath(path %||% getwd(), winslash = "/", mustWork = FALSE)
 
   manifest <- find_manifest(dir)
   if (is.null(manifest)) {

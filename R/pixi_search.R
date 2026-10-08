@@ -12,6 +12,7 @@
 #' @param package A package name.
 #' @param channel Optional. A conda channel to search. Inside a project, the
 #'   project's channels are searched by default, and conda-forge otherwise.
+#' @inheritParams pixi_add
 #' @param dry_run If `TRUE`, show the Pixi command without running it.
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
 #'   the Pixi call (invisibly).
@@ -22,7 +23,12 @@
 #' pixi_search("bioc::DESeq2")
 #' pixi_search("conda::numpy", channel = "conda-forge")
 #' }
-pixi_search <- function(package, channel = NULL, dry_run = FALSE) {
+pixi_search <- function(
+  package,
+  channel = NULL,
+  path = NULL,
+  dry_run = FALSE
+) {
   if (length(package) != 1) {
     cli::cli_abort(
       "{.fn pixi_search} takes a single package name, not {length(package)}."
@@ -37,5 +43,11 @@ pixi_search <- function(package, channel = NULL, dry_run = FALSE) {
     args <- c(args, "--channel", channel)
   }
 
-  run_pixi(args, project = "optional", echo = TRUE, dry_run = dry_run)
+  run_pixi(
+    args,
+    project = "optional",
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
 }
