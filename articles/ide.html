@@ -108,14 +108,14 @@
 <p>In Positron’s interpreter picker, pick <strong>R (Pixi: default)</strong>: the R from the project’s default environment. Positron remembers it for the project, and starts it whenever you open the project. It activates the environment when it starts R, on Windows too.</p>
 </section><section class="level3"><h3 id="another-environment">Another environment<a class="anchor" aria-label="anchor" href="#another-environment"></a>
 </h3>
-<p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker, or run <code>rpix::pixi_switch("r44")</code>, which opens the picker.</p>
+<p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker, or run <code>rpix::pixi_switch("r44")</code>, which looks for interpreters again and opens the picker.</p>
 </section><section class="level3"><h3 id="if-somethings-off">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off"></a>
 </h3>
 <ul>
 <li>
 <strong>Positron starts another R.</strong> Positron prefers the R you last used in the project. If you used another R there before setting up Pixi, pick <strong>R (Pixi: default)</strong> once.</li>
 <li>
-<strong>R (Pixi: default) isn’t listed.</strong> Positron may still show the R installations it found before. Run <strong>Interpreter: Discover All Interpreters</strong> from the Command Palette. Restart Positron if you’ve only just turned on discovery.</li>
+<strong>R (Pixi: default) isn’t listed.</strong> Positron may still show the R installations it found before, even in a new project. Run <strong>Interpreter: Discover All Interpreters</strong> from the Command Palette. Restart Positron if you’ve only just turned on discovery.</li>
 </ul></section></section><section class="level2"><h2 id="rstudio">RStudio<a class="anchor" aria-label="anchor" href="#rstudio"></a>
 </h2>
 <section class="level3"><h3 id="set-up-1">Set up<a class="anchor" aria-label="anchor" href="#set-up-1"></a>
@@ -134,7 +134,7 @@
 <p>From RStudio, run:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_switch.html">pixi_switch</a></span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></code></pre></div>
-<p>This starts a new RStudio with the environment’s R, in the project. Close the old one when you’re done with it.</p>
+<p>This starts a new RStudio with the environment’s R, in the project. The first time, it can take a while to open. Close the old one when you’re done with it.</p>
 <p>From a terminal, <code>pixi run --environment test rstudio</code> works too, for environments that include the default feature, which the task belongs to.</p>
 </section><section class="level3"><h3 id="if-somethings-off-1">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-1"></a>
 </h3>

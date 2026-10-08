@@ -80,6 +80,10 @@
   replaces the `rstudio` task if it’s there, so it can be run again,
   e.g. after renaming the `.Rproj` file
   ([\#72](https://github.com/roaldarbol/rpix/issues/72)).
+- In Positron,
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  looks for interpreters again before opening the interpreter picker, so
+  environments added while Positron is open are listed.
 
 ## rpix 0.5.0
 

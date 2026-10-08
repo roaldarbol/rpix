@@ -7,7 +7,8 @@ or library, so this starts the other R the way your IDE needs:
 - RStudio: starts a new RStudio with the environment's R, in the
   project. Close the old one when you're done with it.
 
-- Positron: opens the interpreter picker, to pick the environment's R.
+- Positron: looks for interpreters again, and opens the interpreter
+  picker, to pick the environment's R.
 
 - VS Code: points the R extension at the environment's R, in the
   project's `.vscode/settings.json`. Reload the window to use it. On

@@ -43,7 +43,8 @@ environment when it starts R, on Windows too.
 
 Each of the project’s environments is listed as its own R, e.g. **R
 4.4.3 (Pixi: r44)**. Pick it in the interpreter picker, or run
-`rpix::pixi_switch("r44")`, which opens the picker.
+`rpix::pixi_switch("r44")`, which looks for interpreters again and opens
+the picker.
 
 ### If something’s off
 
@@ -51,9 +52,9 @@ Each of the project’s environments is listed as its own R, e.g. **R
   the project. If you used another R there before setting up Pixi, pick
   **R (Pixi: default)** once.
 - **R (Pixi: default) isn’t listed.** Positron may still show the R
-  installations it found before. Run **Interpreter: Discover All
-  Interpreters** from the Command Palette. Restart Positron if you’ve
-  only just turned on discovery.
+  installations it found before, even in a new project. Run
+  **Interpreter: Discover All Interpreters** from the Command Palette.
+  Restart Positron if you’ve only just turned on discovery.
 
 ## RStudio
 
@@ -91,8 +92,9 @@ From RStudio, run:
 rpix::pixi_switch("r44")
 ```
 
-This starts a new RStudio with the environment’s R, in the project.
-Close the old one when you’re done with it.
+This starts a new RStudio with the environment’s R, in the project. The
+first time, it can take a while to open. Close the old one when you’re
+done with it.
 
 From a terminal, `pixi run --environment test rstudio` works too, for
 environments that include the default feature, which the task belongs

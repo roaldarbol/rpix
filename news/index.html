@@ -80,6 +80,7 @@
 <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds R together with the packages it needs, so Pixi picks the newest R they’re built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
 <li>
 <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> replaces the <code>rstudio</code> task if it’s there, so it can be run again, e.g. after renaming the <code>.Rproj</code> file (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+<li>In Positron, <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> looks for interpreters again before opening the interpreter picker, so environments added while Positron is open are listed.</li>
 </ul></div>
 </div>
     <div class="section level2">
