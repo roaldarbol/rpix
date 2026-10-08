@@ -28,7 +28,7 @@ The package name is translated like in \code{\link[=pixi_add]{pixi_add()}}: \cod
 \code{r-dplyr}, \code{"bioc::DESeq2"} for \code{bioconductor-deseq2} on bioconda, and
 \code{"conda::gdal"} for \code{gdal}.
 
-For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/search/}.
+For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/search/}.
 }
 \examples{
 \dontrun{

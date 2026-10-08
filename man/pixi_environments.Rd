@@ -65,7 +65,7 @@ environment of it with \code{pixi_add_environment()}, and start its R with
 \item \code{pixi_remove_environment()} removes one.
 }
 
-For more information, see \url{https://pixi.sh/latest/workspace/multi_environment/}.
+For more information, see \url{https://pixi.prefix.dev/latest/workspace/multi_environment/}.
 }
 \examples{
 \dontrun{

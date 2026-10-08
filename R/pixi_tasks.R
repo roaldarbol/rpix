@@ -10,7 +10,7 @@
 #' * `pixi_add_task()` adds a task.
 #' * `pixi_remove_task()` removes tasks.
 #'
-#' For more information, see <https://pixi.sh/latest/workspace/advanced_tasks/>.
+#' For more information, see <https://pixi.prefix.dev/latest/workspace/advanced_tasks/>.
 #'
 #' @param task,name The task's name.
 #' @param args For `pixi_run()`, values for the task's arguments, or extra

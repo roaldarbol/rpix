@@ -71,6 +71,38 @@ jobs:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
 
+  # As CRAN checks rpix: --as-cran, without NOT_CRAN, and without pixi, so the
+  # tests and examples that need pixi skip and nothing else fails
+  as-cran:
+    runs-on: ubuntu-latest
+    # Fail a hung step instead of waiting for GitHub\'s 6-hour default
+    timeout-minutes: 30
+
+    name: ubuntu-latest (as CRAN)
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NOT_CRAN: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
   # The same check in the pixi development environment (pixi.toml), so rpix is
   # also checked with conda-forge's R, which is the R it is meant for
   pixi:

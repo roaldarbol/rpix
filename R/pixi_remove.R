@@ -5,7 +5,7 @@
 #' [pixi_add()]: `"dplyr"` removes `r-dplyr` and `"bioc::DESeq2"` removes
 #' `bioconductor-deseq2`.
 #'
-#' For more information, see <https://pixi.sh/latest/reference/cli/pixi/remove/>.
+#' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/remove/>.
 #'
 #' @param packages Package names.
 #' @inheritParams pixi_add

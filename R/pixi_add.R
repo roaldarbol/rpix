@@ -14,7 +14,7 @@
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
 #'
-#' For more information, see <https://pixi.sh/latest/reference/cli/pixi/add/>.
+#' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
 #' @param packages Package names. A version constraint can follow the name, as
 #'   in `"dplyr>=1.1"`.
@@ -32,7 +32,6 @@
 #' @param dry_run If `TRUE`, show the Pixi commands without running them.
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
-#' @import cli
 #' @export
 #' @examples
 #' \dontrun{

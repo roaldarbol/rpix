@@ -6,7 +6,7 @@ Thanks for helping out! Questions and ideas are welcome in [GitHub Discussions](
 
 rpix is developed in its own Pixi environment, defined in `pixi.toml`. Its default feature has R and rpix's dependencies, the packages in `DESCRIPTION`'s `Imports`. Its `dev` feature has the tools for developing rpix (devtools, roxygen2, testthat, covr, pkgdown, quarto and air), which users don't get. The default environment has both.
 
-1. [Install Pixi](https://pixi.sh/latest/installation/).
+1. [Install Pixi](https://pixi.prefix.dev/latest/installation/).
 2. Clone the repository. Pixi installs the environment the first time you run a task.
 
 ## Tasks

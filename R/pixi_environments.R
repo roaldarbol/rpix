@@ -16,7 +16,7 @@
 #' * `pixi_add_environment()` adds an environment, made of features.
 #' * `pixi_remove_environment()` removes one.
 #'
-#' For more information, see <https://pixi.sh/latest/workspace/multi_environment/>.
+#' For more information, see <https://pixi.prefix.dev/latest/workspace/multi_environment/>.
 #'
 #' @param name The environment's name.
 #' @param features The features it's made of. They have to exist already, so
@@ -107,8 +107,8 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
 #'   get the same packages.
 #'
 #' For more information, see
-#' <https://pixi.sh/latest/reference/cli/pixi/workspace/channel/add/> and
-#' <https://pixi.sh/latest/reference/cli/pixi/workspace/platform/add/>.
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/> and
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/>.
 #'
 #' @param channels Channel names, such as `"bioconda"`, or URLs.
 #' @param platforms Platform names.

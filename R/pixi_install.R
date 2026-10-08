@@ -12,10 +12,10 @@
 #'
 #' Package names are translated like in [pixi_add()].
 #'
-#' For more information, see <https://pixi.sh/latest/reference/cli/pixi/install/>,
-#' <https://pixi.sh/latest/reference/cli/pixi/update/>,
-#' <https://pixi.sh/latest/reference/cli/pixi/upgrade/> and
-#' <https://pixi.sh/latest/reference/cli/pixi/lock/>.
+#' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/install/>,
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/update/>,
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/> and
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/lock/>.
 #'
 #' @param environment Optional. The environment. Defaults to `default`.
 #' @param all If `TRUE`, install all the project's environments.

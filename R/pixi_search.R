@@ -7,7 +7,7 @@
 #' `r-dplyr`, `"bioc::DESeq2"` for `bioconductor-deseq2` on bioconda, and
 #' `"conda::gdal"` for `gdal`.
 #'
-#' For more information, see <https://pixi.sh/latest/reference/cli/pixi/search/>.
+#' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/search/>.
 #'
 #' @param package A package name.
 #' @param channel Optional. A conda channel to search. Inside a project, the

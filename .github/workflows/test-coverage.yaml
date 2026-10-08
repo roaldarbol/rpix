@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 30
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Count the tests that skip on CRAN too
+      NOT_CRAN: "true"
 
     steps:
       - uses: actions/checkout@v4
