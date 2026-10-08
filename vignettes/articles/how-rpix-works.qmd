@@ -18,6 +18,17 @@ So a Pixi project doesn't use the R you normally use. It uses the R in its envir
 
 IDEs need to be pointed at the environment's R; see [Using rpix with an IDE](ide.html).
 
+## When an IDE starts R directly
+
+Positron and VS Code start the environment's R themselves, without Pixi, so the environment isn't activated. `setup_pixi()` adds a few lines to the project's `.Rprofile` that make up for that. When R starts, they:
+
+1. Remove your personal library from `.libPaths()` (see below), before any package loads.
+2. Call `rpix::pixi_activate()`, which sets the environment variables Pixi would have set, and adds the project's own library.
+
+In R that isn't from the project's environment, `pixi_activate()` changes nothing, and tells you how to start the right R instead.
+
+On Windows, the environment's R can't start at all without activation, so start the IDE through Pixi there; see [Using rpix with an IDE](ide.html#on-windows-start-the-ide-through-pixi).
+
 ## Why rpix doesn't change `.libPaths()`
 
 You can't safely point an R you already have running at a Pixi environment's library. Packages with compiled code are built for one particular R and set of system libraries. Loaded into a different R, they can crash it, often only when you load the package.
@@ -40,7 +51,7 @@ R_LIBS_USER = "%PIXI_PROJECT_ROOT%\\.pixi\\r-libs\\%PIXI_ENVIRONMENT_NAME%"
 
 Windows needs the second entry, because it only expands `%VAR%`. `setup_pixi()` adds it if the project lists a Windows platform; if you add one later, add the entry too. R ignores a library folder that doesn't exist, so this leaves only the environment's own library.
 
-This only applies when Pixi starts R, as `pixi run R` does. Check with:
+Pixi applies this when it starts R, as `pixi run R` does, and the project's `.Rprofile` takes care of it when an IDE starts R directly. Check with:
 
 ```r
 .libPaths()
