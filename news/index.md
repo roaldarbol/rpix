@@ -1,5 +1,7 @@
 # Changelog
 
+## rpix (development version)
+
 ## rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of
