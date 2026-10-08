@@ -1,30 +1,17 @@
 # rpix
 
-**rpix is currently in alpha. We don’t expect to support the entire pixi
-CLI, but are open to implement useful features - feedback is welcome!**
+*Manage R project dependencies with Pixi*
 
-## Overview
-
-The **rpix** package provides an interface to manage dependencies with
-[pixi](https://pixi.sh).
-
-Each pixi environment has its own R and its own package library, so you
-work in R started by pixi (e.g. `pixi run R`, or an IDE pointed at the
-environment’s R) and manage its packages from there.
-[`rpix::setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-sets a project up from any R.
+rpix lets you use [Pixi](https://pixi.sh) from R. Pixi installs R
+itself, R packages and the system libraries they need (such as GDAL)
+from [conda-forge](https://conda-forge.org) into an environment inside
+your project. It records the exact versions in a lock file, so the
+project runs the same on every computer.
 
 ## Installation
 
-**rpix** depends on having **pixi** installed - so if you haven’t got it
-yet, install pixi first.
-
-- **Project template**. For a fully-fledged, ready-to-use R project,
-  create a project with the
-  [r-template](https://github.com/roaldarbol/r-template)
-- **Add to existing project**. To add **rpix** to an existing pixi
-  project: `pixi add r-rpix` (**THIS DOES NOT YET WORK, SEE
-  [ISSUE](https://github.com/roaldarbol/rpix/issues/2)**)
+First, [install Pixi](https://pixi.sh/latest/installation/). Then
+install rpix in the R you normally use:
 
 ``` r
 
@@ -34,28 +21,58 @@ install.packages(
 )
 ```
 
-## Resources
+## Example
 
-## How to use rpix
+Set up the project in the working directory. This creates a Pixi
+project, adds R to it, and installs rpix into its environment:
+
+``` r
+
+rpix::setup_pixi()
+```
+
+From then on, work in R started by Pixi: run `pixi run R` in a terminal
+in the project folder, or see [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.html). Add and remove
+packages from there:
 
 ``` r
 
 library(rpix)
+
+pixi_add(c("dplyr", "ggplot2"))
+pixi_add("bioc::DESeq2")
+pixi_remove("ggplot2")
 ```
 
-The primary use of rpix is the ability to add dependencies in the
-console like you normally would with `install.packages` or
-[`renv::install`](https://rstudio.github.io/renv/reference/install.html).
-With rpix, the command is
-[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
-Let’s try installing the **tidyverse**:
+To start a new project from a template instead, see
+[r-template](https://github.com/roaldarbol/r-template).
 
-``` R
-rpix::pixi_add("tidyverse")
-```
+## Learn more
+
+- [Get
+  started](https://roald-arboel.com/rpix/articles/getting-started.html):
+  from installing Pixi to sharing a project.
+- [How rpix
+  works](https://roald-arboel.com/rpix/articles/how-rpix-works.html):
+  why each environment has its own R.
+- [Finding
+  packages](https://roald-arboel.com/rpix/articles/finding-packages.html):
+  CRAN, Bioconductor and other conda packages.
+- [Coming from
+  renv](https://roald-arboel.com/rpix/articles/coming-from-renv.html):
+  renv’s functions and their rpix counterparts.
+
+## Getting help
+
+Ask questions and share ideas in [GitHub
+Discussions](https://github.com/roaldarbol/rpix/discussions), and report
+bugs in the [issues](https://github.com/roaldarbol/rpix/issues). For
+Pixi itself, ask on the [Discord of
+prefix.dev](https://discord.gg/kKV8ZxyzY4), the makers of Pixi.
 
 ------------------------------------------------------------------------
 
-*Fun fact: rpix is a inspired by the Danish word **harpiks** which means
-resin. I see it as the resin that binds pixi into the natural R
+*Fun fact: rpix is inspired by the Danish word **harpiks**, which means
+resin. I see it as the resin that binds Pixi into the natural R
 workflow.*

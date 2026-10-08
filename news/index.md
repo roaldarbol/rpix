@@ -1,12 +1,12 @@
 # Changelog
 
-## rpix (development version)
+## rpix 0.4.0
 
 ### Breaking changes
 
 - Exported functions now follow one naming scheme
   ([\#20](https://github.com/roaldarbol/rpix/issues/20)): functions that
-  run a pixi command are called `pixi_<command>()`.
+  run a Pixi command are called `pixi_<command>()`.
   - [`add()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
     is now
     [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
@@ -21,12 +21,12 @@
     masked [`base::remove()`](https://rdrr.io/r/base/rm.html) and
     [`base::search()`](https://rdrr.io/r/base/search.html) whenever rpix
     was attached.
-  - `pixi_to_path()` is removed. rpix finds pixi itself.
-- rpix no longer points a running R at a pixi environment’s library
+  - `pixi_to_path()` is removed. rpix finds Pixi itself.
+- rpix no longer points a running R at a Pixi environment’s library
   ([\#22](https://github.com/roaldarbol/rpix/issues/22)). R mixed with
   packages built for a different R could crash
   ([\#14](https://github.com/roaldarbol/rpix/issues/14)). Work in R
-  started by pixi instead, e.g. with `pixi run R`.
+  started by Pixi instead, e.g. with `pixi run R`.
   - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
     now only sets up the project: it creates `pixi.toml` if needed, adds
     R (`r_version` picks the version), and installs rpix into the
@@ -40,11 +40,11 @@
 
 ### Other changes
 
-- All pixi commands now go through a single internal runner built on
+- All Pixi commands now go through a single internal runner built on
   *processx* ([\#19](https://github.com/roaldarbol/rpix/issues/19)).
   Arguments are passed without shell quoting, commands work from any
-  subfolder of a project (`--manifest-path`), pixi failures become R
-  errors, and pixi is found even if it isn’t on the `PATH` (set
+  subfolder of a project (`--manifest-path`), Pixi failures become R
+  errors, and Pixi is found even if it isn’t on the `PATH` (set
   `options(rpix.pixi_path = ...)` for unusual installs).
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
@@ -61,11 +61,16 @@
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   accepts version constraints inline (`"dplyr>=1.1"`) and one constraint
   per package in `versions`.
-- `pixi_add(channel = )` works again: pixi has no `--channel` flag for
+- `pixi_add(channel = )` works again: Pixi has no `--channel` flag for
   `pixi add`, so the channel is now added to the project and used in the
   package spec. The same happens automatically for bioconda.
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   suggests `bioc::` and `conda::` when a package can’t be found.
+- The documentation is restructured
+  ([\#48](https://github.com/roaldarbol/rpix/issues/48)): a walk-through
+  in Get started, guides to finding packages, coming from renv, sharing
+  projects and using an IDE, and pages on how rpix works and
+  troubleshooting.
 - Added tests.
 
 ## rpix 0.3.0

@@ -2,10 +2,14 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  articles/coming-from-renv: coming-from-renv.html
+  articles/finding-packages: finding-packages.html
   articles/getting-started: getting-started.html
+  articles/how-rpix-works: how-rpix-works.html
   articles/ide: ide.html
   articles/reproducibility: reproducibility.html
-last_built: 2026-10-08T14:10Z
+  articles/troubleshooting: troubleshooting.html
+last_built: 2026-10-08T14:40Z
 urls:
   reference: https://roald-arboel.com/rpix/reference
   article: https://roald-arboel.com/rpix/articles

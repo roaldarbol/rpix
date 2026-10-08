@@ -12,6 +12,6 @@
 ## Setting up a project
 
 - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-  : Set up a pixi project for R
+  : Set up a Pixi project for R
 - [`restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
   : Restart RStudio with Pixi

@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>rpix – Manage R project dependencies with pixi • rpix</title>
+<title>rpix – Manage R project dependencies with Pixi • rpix</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="rpix – Manage R project dependencies with pixi">
-<meta name="description" content="An interface to the pixi package manager (&lt;https://pixi.sh&gt;) from R. Add, remove and search for conda packages, and set up and work with pixi projects from the R console.">
-<meta property="og:description" content="An interface to the pixi package manager (&lt;https://pixi.sh&gt;) from R. Add, remove and search for conda packages, and set up and work with pixi projects from the R console.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="rpix – Manage R project dependencies with Pixi">
+<meta name="description" content="An interface to the Pixi package manager (&lt;https://pixi.sh&gt;) from R. Add, remove and search for conda packages, and set up and work with Pixi projects from the R console.">
+<meta property="og:description" content="An interface to the Pixi package manager (&lt;https://pixi.sh&gt;) from R. Add, remove and search for conda packages, and set up and work with Pixi projects from the R console.">
 <meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg">
 </head>
 <body>
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +37,17 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/getting-started.html">Getting started</a></li>
+<li><a class="dropdown-item" href="articles/getting-started.html">Get started</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
     <li><a class="dropdown-item" href="articles/ide.html">Using rpix with an IDE</a></li>
-    <li><a class="dropdown-item" href="articles/reproducibility.html">Reproducibility</a></li>
+    <li><a class="dropdown-item" href="articles/finding-packages.html">Finding packages</a></li>
+    <li><a class="dropdown-item" href="articles/coming-from-renv.html">Coming from renv</a></li>
+    <li><a class="dropdown-item" href="articles/reproducibility.html">Sharing and reproducibility</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Background</h6></li>
+    <li><a class="dropdown-item" href="articles/how-rpix-works.html">How rpix works</a></li>
+    <li><a class="dropdown-item" href="articles/troubleshooting.html">Troubleshooting</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html" aria-label="News"><span class="fa fa-newspaper"></span> News</a></li>
@@ -48,7 +56,9 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="pixi documentation">pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="Pixi documentation">Pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/discussions" aria-label="GitHub Discussions"><span class="fa fa-comments"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://discord.gg/kKV8ZxyzY4" aria-label="Discord of prefix.dev, the makers of Pixi"><span class="fa fab fa-discord"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
@@ -73,24 +83,12 @@
 </div>
 <!-- badges: start -->
 
-<p><strong>rpix is currently in alpha. We don’t expect to support the entire pixi CLI, but are open to implement useful features - feedback is welcome!</strong></p>
-<div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
-<p>The <strong>rpix</strong> package provides an interface to manage dependencies with <a href="https://pixi.sh" class="external-link">pixi</a>.</p>
-<p>Each pixi environment has its own R and its own package library, so you work in R started by pixi (e.g. <code>pixi run R</code>, or an IDE pointed at the environment’s R) and manage its packages from there. <code><a href="reference/setup_pixi.html">rpix::setup_pixi()</a></code> sets a project up from any R.</p>
-</div>
+<p><em>Manage R project dependencies with Pixi</em></p>
+<p>rpix lets you use <a href="https://pixi.sh" class="external-link">Pixi</a> from R. Pixi installs R itself, R packages and the system libraries they need (such as GDAL) from <a href="https://conda-forge.org" class="external-link">conda-forge</a> into an environment inside your project. It records the exact versions in a lock file, so the project runs the same on every computer.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p><strong>rpix</strong> depends on having <strong>pixi</strong> installed - so if you haven’t got it yet, install pixi first.</p>
-<ul>
-<li>
-<strong>Project template</strong>. For a fully-fledged, ready-to-use R project, create a project with the <a href="https://github.com/roaldarbol/r-template" class="external-link">r-template</a>
-</li>
-<li>
-<strong>Add to existing project</strong>. To add <strong>rpix</strong> to an existing pixi project: <code>pixi add r-rpix</code> (<strong>THIS DOES NOT YET WORK, SEE <a href="https://github.com/roaldarbol/rpix/issues/2" class="external-link">ISSUE</a></strong>)</li>
-</ul>
+<p>First, <a href="https://pixi.sh/latest/installation/" class="external-link">install Pixi</a>. Then install rpix in the R you normally use:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
 <span>  <span class="st">"rpix"</span>,</span>
@@ -98,18 +96,40 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
+<p>Set up the project in the working directory. This creates a Pixi project, adds R to it, and installs rpix into its environment:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="reference/setup_pixi.html">setup_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>From then on, work in R started by Pixi: run <code>pixi run R</code> in a terminal in the project folder, or see <a href="https://roald-arboel.com/rpix/articles/ide.html">Using rpix with an IDE</a>. Add and remove packages from there:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"ggplot2"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"bioc::DESeq2"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pixi_remove.html">pixi_remove</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span></span></code></pre></div>
+<p>To start a new project from a template instead, see <a href="https://github.com/roaldarbol/r-template" class="external-link">r-template</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="how-to-use-rpix">How to use rpix<a class="anchor" aria-label="anchor" href="#how-to-use-rpix"></a>
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span></code></pre></div>
-<p>The primary use of rpix is the ability to add dependencies in the console like you normally would with <code>install.packages</code> or <code><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">renv::install</a></code>. With rpix, the command is <code><a href="reference/pixi_add.html">pixi_add()</a></code>. Let’s try installing the <strong>tidyverse</strong>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rpix<span class="sc">::</span><span class="fu">pixi_add</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div>
+<ul>
+<li>
+<a href="https://roald-arboel.com/rpix/articles/getting-started.html">Get started</a>: from installing Pixi to sharing a project.</li>
+<li>
+<a href="https://roald-arboel.com/rpix/articles/how-rpix-works.html">How rpix works</a>: why each environment has its own R.</li>
+<li>
+<a href="https://roald-arboel.com/rpix/articles/finding-packages.html">Finding packages</a>: CRAN, Bioconductor and other conda packages.</li>
+<li>
+<a href="https://roald-arboel.com/rpix/articles/coming-from-renv.html">Coming from renv</a>: renv’s functions and their rpix counterparts.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>Ask questions and share ideas in <a href="https://github.com/roaldarbol/rpix/discussions" class="external-link">GitHub Discussions</a>, and report bugs in the <a href="https://github.com/roaldarbol/rpix/issues" class="external-link">issues</a>. For Pixi itself, ask on the <a href="https://discord.gg/kKV8ZxyzY4" class="external-link">Discord of prefix.dev</a>, the makers of Pixi.</p>
 <hr>
-<p><em>Fun fact: rpix is a inspired by the Danish word <strong>harpiks</strong> which means resin. I see it as the resin that binds pixi into the natural R workflow.</em></p>
+<p><em>Fun fact: rpix is inspired by the Danish word <strong>harpiks</strong>, which means resin. I see it as the resin that binds Pixi into the natural R workflow.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -140,7 +160,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://roald-arboel.com" class="external-link">Mikkel Roald-Arbøl</a> <br><small class="roles"> Maintainer </small>   </li>
+<a href="https://roald-arboel.com" class="external-link">Mikkel Roald-Arbøl</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9998-0058" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -151,7 +171,9 @@
 <li><a href="https://roaldarbol.r-universe.dev/rpix" class="external-link"><img src="https://roaldarbol.r-universe.dev/badges/rpix" alt="rpix status badge"></a></li>
 <li><a href="https://app.codecov.io/gh/roaldarbol/rpix" class="external-link"><img src="https://codecov.io/gh/roaldarbol/rpix/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://pixi.sh" class="external-link"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json" alt="Pixi Badge"></a></li>
-<li><a href="https://discord.gg/kKV8ZxyzY4" class="external-link"><img src="https://img.shields.io/discord/1082332781146800168.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=7389D8&amp;labelColor=6A7EC2" alt="Project Chat"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://github.com/roaldarbol/rpix/discussions" class="external-link"><img src="https://img.shields.io/github/discussions/roaldarbol/rpix?logo=github" alt="GitHub Discussions"></a></li>
+<li><a href="https://discord.gg/kKV8ZxyzY4" class="external-link"><img src="https://img.shields.io/discord/1082332781146800168.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=7389D8&amp;labelColor=6A7EC2" alt="Pixi Discord"></a></li>
 </ul>
 </div>
 

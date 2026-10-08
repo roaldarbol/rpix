@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Reproducibility • rpix</title>
+<title>Sharing and reproducibility • rpix</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="reproducibility_files/libs/quarto-html/popper.min.js"></script><script src="reproducibility_files/libs/quarto-html/tippy.umd.min.js"></script><link href="reproducibility_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="reproducibility_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Reproducibility">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sharing and reproducibility">
 <meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg">
 </head>
 <body>
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +37,17 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Get started</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
     <li><a class="dropdown-item" href="../articles/ide.html">Using rpix with an IDE</a></li>
-    <li><a class="dropdown-item" href="../articles/reproducibility.html">Reproducibility</a></li>
+    <li><a class="dropdown-item" href="../articles/finding-packages.html">Finding packages</a></li>
+    <li><a class="dropdown-item" href="../articles/coming-from-renv.html">Coming from renv</a></li>
+    <li><a class="dropdown-item" href="../articles/reproducibility.html">Sharing and reproducibility</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Background</h6></li>
+    <li><a class="dropdown-item" href="../articles/how-rpix-works.html">How rpix works</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html" aria-label="News"><span class="fa fa-newspaper"></span> News</a></li>
@@ -48,7 +56,9 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="pixi documentation">pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="Pixi documentation">Pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/discussions" aria-label="GitHub Discussions"><span class="fa fa-comments"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://discord.gg/kKV8ZxyzY4" aria-label="Discord of prefix.dev, the makers of Pixi"><span class="fa fab fa-discord"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
@@ -66,7 +76,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Reproducibility</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Sharing and reproducibility</h1>
 
 
 
@@ -80,10 +90,44 @@
 
 
 
-
-
-
-<script id="quarto-html-after-body" type="application/javascript">
+    <p>A Pixi project records everything it needs, including R itself, in two files. Share those, and anyone can recreate the environment.</p>
+<section class="level2"><h2 id="what-to-commit">What to commit<a class="anchor" aria-label="anchor" href="#what-to-commit"></a>
+</h2>
+<ul>
+<li>
+<strong>Commit <code>pixi.toml</code></strong>: the packages you asked for, with any version constraints.</li>
+<li>
+<strong>Commit <code>pixi.lock</code></strong>: the exact version of every package, including the ones they depend on, for every platform the project supports.</li>
+<li>
+<strong>Don’t commit <code>.pixi/</code></strong>: the installed environment. <code>pixi init</code> (and so <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code>) adds it to <code>.gitignore</code>.</li>
+</ul></section><section class="level2"><h2 id="recreate-the-environment">Recreate the environment<a class="anchor" aria-label="anchor" href="#recreate-the-environment"></a>
+</h2>
+<p>On another computer, install Pixi, get the project, and run either:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> install</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run R</span></code></pre></div>
+<p><code>pixi install</code> only installs the environment. <code>pixi run R</code> installs it if needed, then starts R.</p>
+<p>If <code>pixi.toml</code> has changed since <code>pixi.lock</code> was written, Pixi updates the lock file first. To install exactly what’s in the lock file instead, use <code>pixi install --frozen</code>. Or use <code>pixi install --locked</code>, which stops if the lock file is out of date.</p>
+</section><section class="level2"><h2 id="platforms">Platforms<a class="anchor" aria-label="anchor" href="#platforms"></a>
+</h2>
+<p><code>pixi.lock</code> covers every platform listed in <code>pixi.toml</code>, under <code>platforms</code>. A new project lists only the platform it was created on. Add the platforms your collaborators use:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> workspace platform add linux-64 osx-arm64 osx-64 win-64</span></code></pre></div>
+<p>Every package then has to be available for all of them, which is worth knowing before a collaborator finds out.</p>
+</section><section class="level2"><h2 id="updating-packages">Updating packages<a class="anchor" aria-label="anchor" href="#updating-packages"></a>
+</h2>
+<p>Packages stay at the versions in <code>pixi.lock</code> until you update them:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> update</span></code></pre></div>
+<p>This updates to the newest versions <code>pixi.toml</code> allows. <code>pixi upgrade</code> also raises the version constraints in <code>pixi.toml</code>.</p>
+</section><section class="level2"><h2 id="continuous-integration">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration"></a>
+</h2>
+<p>The <a href="https://github.com/prefix-dev/setup-pixi" class="external-link">setup-pixi</a> action installs Pixi and the environment on GitHub Actions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> prefix-dev/setup-pixi@v0.10.2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pixi run Rscript analysis.R</span></span></code></pre></div>
+<p>It uses <code>pixi install --locked</code> by default, so the run fails if <code>pixi.lock</code> is out of date.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -166,7 +210,8 @@
       }
     }
   });
-  </script></main>
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

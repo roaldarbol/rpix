@@ -1,13 +1,13 @@
-# Set up a pixi project for R
+# Set up a Pixi project for R
 
-Create a pixi project in the working directory if there isn't one, add R
+Create a Pixi project in the working directory if there isn't one, add R
 to it, and install rpix into its environment.
 
-It can be run from any R. Afterwards, work in R started by pixi: run
+It can be run from any R. Afterwards, work in R started by Pixi: run
 `pixi run R` in a terminal, or point your IDE at the environment's R
-(see <https://roald-arboel.com/rpix/articles/ide.html>). Each pixi
+(see <https://roald-arboel.com/rpix/articles/ide.html>). Each Pixi
 environment has its own R and package library, so rpix doesn't point a
-running R at a pixi library: packages built for a different R can crash
+running R at a Pixi library: packages built for a different R can crash
 it.
 
 Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
@@ -28,7 +28,7 @@ setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 
 - init_if_missing:
 
-  If `TRUE`, create a pixi project if there isn't one.
+  If `TRUE`, create a Pixi project if there isn't one.
 
 - install_rpix:
 

@@ -1,6 +1,6 @@
 # Remove packages
 
-Remove packages from the pixi manifest. Package names are translated
+Remove packages from the Pixi manifest. Package names are translated
 like in
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md):
 `"dplyr"` removes `r-dplyr` and `"bioc::DESeq2"` removes
@@ -23,12 +23,12 @@ pixi_remove(packages, dry_run = FALSE)
 
 - dry_run:
 
-  If `TRUE`, show the pixi command without running it.
+  If `TRUE`, show the Pixi command without running it.
 
 ## Value
 
 The command (invisibly) if `dry_run = TRUE`, otherwise the result of the
-pixi call (invisibly).
+Pixi call (invisibly).
 
 ## Examples
 

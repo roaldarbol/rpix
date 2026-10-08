@@ -1,44 +1,126 @@
-# Getting started
+# Get started
+
+This guide takes a project from nothing to something a collaborator can
+run on their own computer. It assumes you know R, but not Pixi.
 
 ## Install Pixi
 
-The first thing that we need to do is install Pixi, which is the engine
-underlying *rpix*. To do so, follow the installation instructions on
-[pixi.sh](https://pixi.sh/latest/installation/).
+Pixi is the tool that does the work; rpix lets you use it from R.
+Install it by following the [Pixi installation
+guide](https://pixi.sh/latest/installation/). On macOS and Linux,
+that’s:
 
-## Install *rpix*
+``` sh
+curl -fsSL https://pixi.sh/install.sh | sh
+```
 
-Next, install *rpix* in the R you normally use:
+On Windows, in PowerShell:
+
+``` powershell
+powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
+```
+
+## Install rpix
+
+Install rpix in the R you normally use:
 
 ``` r
 
-install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")
+install.packages(
+  "rpix",
+  repos = c("https://roaldarbol.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
-## Set up a pixi project
+## Set up a project
 
-In R, with your project folder as the working directory, run:
+In R, make your project folder the working directory (an RStudio project
+does this for you), then run:
 
 ``` r
 
 rpix::setup_pixi()
 ```
 
-This creates a `pixi.toml` (if there isn’t one yet), adds R to the
-project, and installs *rpix* into the project’s environment.
+This adds to your project:
+
+- `pixi.toml`: the project’s dependencies, which you edit with rpix or
+  Pixi.
+- `pixi.lock`: the exact version of every package, for every platform.
+  Pixi writes it; you don’t edit it.
+- `.pixi/`: the environment itself, with R and all its packages. Git
+  ignores it.
+
+It also installs rpix into the environment, so you can use it there.
 
 ## Start R from the project’s environment
 
-A pixi environment has its own R and its own package library. Your usual
-R doesn’t use them, so from here on, work in R started by pixi:
+The environment has its own R, separate from the R you normally use (see
+[How rpix
+works](https://roald-arboel.com/rpix/articles/how-rpix-works.md) for
+why). Work in that R from now on. In a terminal in the project folder,
+run:
 
-- **In a terminal:** `pixi run R`
-- **In RStudio on macOS:**
-  [`rpix::restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
-- **In other IDEs:** see [Using rpix with an
-  IDE](https://roald-arboel.com/rpix/articles/ide.md)
+``` sh
+pixi run R
+```
 
-## Start coding!
+For RStudio, Positron and VS Code, see [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.md).
 
-When you need new packages, run `rpix::pixi_add("package_name")`. If you
-wish to remove packages, simply `rpix::pixi_remove("package_name")`.
+To check that you’re in the right R, look at where it lives. It should
+be inside the project’s `.pixi` folder:
+
+``` r
+
+R.home()
+#> [1] "/path/to/project/.pixi/envs/default/lib/R"
+```
+
+## Add packages
+
+Add packages with
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+instead of
+[`install.packages()`](https://rdrr.io/r/utils/install.packages.html):
+
+``` r
+
+library(rpix)
+
+pixi_add(c("dplyr", "ggplot2"))
+```
+
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+records the packages in `pixi.toml`, updates `pixi.lock`, and installs
+them. Then use them as usual:
+
+``` r
+
+library(dplyr)
+```
+
+Bioconductor packages take a `bioc::` prefix, and conda packages that
+aren’t R packages take `conda::`. See [Finding
+packages](https://roald-arboel.com/rpix/articles/finding-packages.md).
+
+To remove a package again:
+
+``` r
+
+pixi_remove("ggplot2")
+```
+
+## Share the project
+
+Commit `pixi.toml` and `pixi.lock`. A collaborator installs Pixi, clones
+the project, and runs:
+
+``` sh
+pixi run R
+```
+
+Pixi installs the same versions you have, from the lock file, before
+starting R. See [Sharing and
+reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md)
+for more, including other platforms and CI.

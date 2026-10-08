@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,14 +18,24 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html" aria-label="Reference"><span class="fa fa-file-code"></span> Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Get started</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
     <li><a class="dropdown-item" href="../articles/ide.html">Using rpix with an IDE</a></li>
-    <li><a class="dropdown-item" href="../articles/reproducibility.html">Reproducibility</a></li>
+    <li><a class="dropdown-item" href="../articles/finding-packages.html">Finding packages</a></li>
+    <li><a class="dropdown-item" href="../articles/coming-from-renv.html">Coming from renv</a></li>
+    <li><a class="dropdown-item" href="../articles/reproducibility.html">Sharing and reproducibility</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Background</h6></li>
+    <li><a class="dropdown-item" href="../articles/how-rpix-works.html">How rpix works</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html" aria-label="News"><span class="fa fa-newspaper"></span> News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="pixi documentation">pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="Pixi documentation">Pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/discussions" aria-label="GitHub Discussions"><span class="fa fa-comments"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://discord.gg/kKV8ZxyzY4" aria-label="Discord of prefix.dev, the makers of Pixi"><span class="fa fab fa-discord"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
@@ -45,18 +55,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="rpix-040">rpix 0.4.0<a class="anchor" aria-label="anchor" href="#rpix-040"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
-<ul><li>Exported functions now follow one naming scheme (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>): functions that run a pixi command are called <code>pixi_&lt;command&gt;()</code>.
+<h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
+<ul><li>Exported functions now follow one naming scheme (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>): functions that run a Pixi command are called <code>pixi_&lt;command&gt;()</code>.
 <ul><li>
 <code><a href="../reference/rpix-deprecated.html">add()</a></code> is now <code><a href="../reference/pixi_add.html">pixi_add()</a></code>. <code><a href="../reference/rpix-deprecated.html">add()</a></code> still works for now, with a deprecation warning.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>. The old names were removed rather than deprecated, because they masked <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">base::remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">base::search()</a></code> whenever rpix was attached.</li>
 <li>
-<code>pixi_to_path()</code> is removed. rpix finds pixi itself.</li>
+<code>pixi_to_path()</code> is removed. rpix finds Pixi itself.</li>
 </ul></li>
-<li>rpix no longer points a running R at a pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by pixi instead, e.g. with <code>pixi run R</code>.
+<li>rpix no longer points a running R at a Pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by Pixi instead, e.g. with <code>pixi run R</code>.
 <ul><li>
 <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
 <li>
@@ -66,17 +76,18 @@
 </ul></li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
-<ul><li>All pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), pixi failures become R errors, and pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
+<h3 id="other-changes-0-4-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-4-0"></a></h3>
+<ul><li>All Pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), Pixi failures become R errors, and Pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
 <li>
 <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
 <li>R package names are now translated to conda names properly (<a href="https://github.com/roaldarbol/rpix/issues/21" class="external-link">#21</a>): names are lowercased (<code>"Rcpp"</code> becomes <code>r-rcpp</code>), and a pak-like prefix says where a package comes from: <code>"bioc::DESeq2"</code> for Bioconductor packages from bioconda (<a href="https://github.com/roaldarbol/rpix/issues/17" class="external-link">#17</a>), and <code>"conda::gdal"</code> for conda packages that aren’t R packages. Names with <code>-</code> or <code>_</code> are used as is.</li>
 <li>
 <code><a href="../reference/pixi_add.html">pixi_add()</a></code> accepts version constraints inline (<code>"dplyr&gt;=1.1"</code>) and one constraint per package in <code>versions</code>.</li>
 <li>
-<code>pixi_add(channel = )</code> works again: pixi has no <code>--channel</code> flag for <code>pixi add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
+<code>pixi_add(channel = )</code> works again: Pixi has no <code>--channel</code> flag for <code>pixi add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
 <li>
 <code><a href="../reference/pixi_add.html">pixi_add()</a></code> suggests <code>bioc::</code> and <code>conda::</code> when a package can’t be found.</li>
+<li>The documentation is restructured (<a href="https://github.com/roaldarbol/rpix/issues/48" class="external-link">#48</a>): a walk-through in Get started, guides to finding packages, coming from renv, sharing projects and using an IDE, and pages on how rpix works and troubleshooting.</li>
 <li>Added tests.</li>
 </ul></div>
 </div>

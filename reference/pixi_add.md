@@ -1,6 +1,6 @@
 # Add packages
 
-Add packages to the pixi manifest and install them. pixi only adds them
+Add packages to the Pixi manifest and install them. Pixi only adds them
 if they can be solved together with the rest of the project's
 dependencies.
 
@@ -46,12 +46,12 @@ pixi_add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 
 - dry_run:
 
-  If `TRUE`, show the pixi commands without running them.
+  If `TRUE`, show the Pixi commands without running them.
 
 ## Value
 
 The commands (invisibly) if `dry_run = TRUE`, otherwise the result of
-the pixi call (invisibly).
+the Pixi call (invisibly).
 
 ## Examples
 

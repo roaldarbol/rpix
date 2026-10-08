@@ -2,20 +2,21 @@
 
 ## Authors
 
-- **[Mikkel Roald-Arbøl](https://roald-arboel.com)**. Maintainer.
+- **[Mikkel Roald-Arbøl](https://roald-arboel.com)**. Author,
+  maintainer. [](https://orcid.org/0000-0002-9998-0058)
 
 ## Citation
 
 Source:
 [`DESCRIPTION`](https://github.com/roaldarbol/rpix/blob/main/DESCRIPTION)
 
-Roald-Arbøl M (2026). *rpix: Manage R Project Dependencies with 'pixi'*.
-R package version 0.3.0, <https://roald-arboel.com/rpix/>.
+Roald-Arbøl M (2026). *rpix: Manage R Project Dependencies with 'Pixi'*.
+R package version 0.4.0, <https://roald-arboel.com/rpix/>.
 
     @Manual{,
-      title = {rpix: Manage R Project Dependencies with 'pixi'},
+      title = {rpix: Manage R Project Dependencies with 'Pixi'},
       author = {Mikkel Roald-Arbøl},
       year = {2026},
-      note = {R package version 0.3.0},
+      note = {R package version 0.4.0},
       url = {https://roald-arboel.com/rpix/},
     }

@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +37,17 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Get started</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
     <li><a class="dropdown-item" href="../articles/ide.html">Using rpix with an IDE</a></li>
-    <li><a class="dropdown-item" href="../articles/reproducibility.html">Reproducibility</a></li>
+    <li><a class="dropdown-item" href="../articles/finding-packages.html">Finding packages</a></li>
+    <li><a class="dropdown-item" href="../articles/coming-from-renv.html">Coming from renv</a></li>
+    <li><a class="dropdown-item" href="../articles/reproducibility.html">Sharing and reproducibility</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Background</h6></li>
+    <li><a class="dropdown-item" href="../articles/how-rpix-works.html">How rpix works</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting.html">Troubleshooting</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html" aria-label="News"><span class="fa fa-newspaper"></span> News</a></li>
@@ -48,7 +56,9 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="pixi documentation">pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://pixi.sh" aria-label="Pixi documentation">Pixi</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/discussions" aria-label="GitHub Discussions"><span class="fa fa-comments"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://discord.gg/kKV8ZxyzY4" aria-label="Discord of prefix.dev, the makers of Pixi"><span class="fa fab fa-discord"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/rpix/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
@@ -80,10 +90,10 @@
 
 
 
-    <p>Although it is possible to run R directly in the terminal, R is most commonly used with an “interactive development environment” (IDE). The most common IDE for R users is RStudio, but other options exist such as VS Code or, more recently, Positron.</p>
-<p>As most IDEs are not available (or up-to-date) as conda packages, we recommend using a global installation. That can be either from the provider, or a package manager such as <a href="https://brew.sh" class="external-link">homebrew</a> (macOS).</p>
+    <p>Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code. Install the IDE as usual; most IDEs aren’t available as conda packages, or not in recent versions. Then point it at the R in your project’s Pixi environment.</p>
 <section class="level2"><h2 id="rstudio">RStudio<a class="anchor" aria-label="anchor" href="#rstudio"></a>
 </h2>
+<p>RStudio picks its R when it starts, so start it from the project’s environment, in a terminal in the project folder:</p>
 <div class="panel-tabset" data-group="os">
 <ul id="tabset-1" class="panel-tabset-tabby">
 <li><a data-tabby-default="" href="#tabset-1-1">Windows</a></li>
@@ -103,13 +113,23 @@
 </div>
 </div></div>
 </div>
-<p>It is also possible to create a <code>task</code>, a shorthand, for opening RStudio. First, add the following to <code>tasks</code> in <code>pixi.toml</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="at">tasks</span><span class="kw">]</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">rstudio = "open -a rstudio"</span></span></code></pre></div>
-</section><section class="level2"><h2 id="vscode">VSCode<a class="anchor" aria-label="anchor" href="#vscode"></a>
-</h2>
+<p>On macOS, <code><a href="../reference/restart_rstudio_with_pixi.html">rpix::restart_rstudio_with_pixi()</a></code> does this from a running RStudio.</p>
+<p>To save typing, add a task to <code>pixi.toml</code>. On macOS:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[tasks]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">rstudio</span> <span class="op">=</span> <span class="st">"open -a rstudio"</span></span></code></pre></div>
+<p>Then <code>pixi run rstudio</code> starts RStudio.</p>
 </section><section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
 </h2>
+<p>Positron can find the R in Pixi environments with its <code>positron.r.interpreters.pixiDiscovery</code> setting, which is experimental. You can also list the environment’s R yourself with <code>positron.r.customBinaries</code>. See <a href="https://positron.posit.co/r-installations.html" class="external-link">Discovering R installations</a> in Positron’s documentation. Then pick that R in Positron’s interpreter picker.</p>
+</section><section class="level2"><h2 id="vs-code">VS Code<a class="anchor" aria-label="anchor" href="#vs-code"></a>
+</h2>
+<p>The <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r" class="external-link">R extension</a> uses the R in its <code>r.rpath.windows</code>, <code>r.rpath.mac</code> or <code>r.rpath.linux</code> setting. Set it to the environment’s R, at <code>.pixi/envs/default/bin/R</code> in your project on macOS and Linux.</p>
+<p>The extension also needs the languageserver package in the environment:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"languageserver"</span><span class="op">)</span></span></code></pre></div>
+</section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
+</h2>
+<p>In the IDE’s R console, <code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

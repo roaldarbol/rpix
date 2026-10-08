@@ -2,8 +2,22 @@
 
 ### Get started
 
-- [Getting
+- [Get
   started](https://roald-arboel.com/rpix/articles/getting-started.md):
+
+### Guides
+
 - [Using rpix with an
   IDE](https://roald-arboel.com/rpix/articles/ide.md):
-- [Reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md):
+- [Finding
+  packages](https://roald-arboel.com/rpix/articles/finding-packages.md):
+- [Coming from
+  renv](https://roald-arboel.com/rpix/articles/coming-from-renv.md):
+- [Sharing and
+  reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md):
+
+### Background
+
+- [How rpix
+  works](https://roald-arboel.com/rpix/articles/how-rpix-works.md):
+- [Troubleshooting](https://roald-arboel.com/rpix/articles/troubleshooting.md):

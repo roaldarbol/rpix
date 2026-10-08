@@ -29,12 +29,12 @@ pixi_search(package, channel = NULL, dry_run = FALSE)
 
 - dry_run:
 
-  If `TRUE`, show the pixi command without running it.
+  If `TRUE`, show the Pixi command without running it.
 
 ## Value
 
 The command (invisibly) if `dry_run = TRUE`, otherwise the result of the
-pixi call (invisibly).
+Pixi call (invisibly).
 
 ## Examples
 

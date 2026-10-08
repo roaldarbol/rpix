@@ -37,4 +37,4 @@ add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 
 - dry_run:
 
-  If `TRUE`, show the pixi commands without running them.
+  If `TRUE`, show the Pixi commands without running them.
