@@ -33,7 +33,13 @@ test_that("adds an rstudio task for each platform, and a .Rproj file", {
   suppressMessages(use_pixi_rstudio(p$root))
 
   expect_true(file.exists(file.path(p$root, rproj)))
-  expect_length(p$args, 3)
+  # Each platform's task is removed, then added
+  expect_length(p$args, 6)
+  expect_equal(
+    p$args[[1]],
+    c("task", "remove", "rstudio", "--platform", "osx-arm64")
+  )
+  p$args <- p$args[c(2, 4, 6)]
   expect_equal(
     p$args[[1]][1:6],
     c(
@@ -62,8 +68,8 @@ test_that("uses an existing .Rproj file, and skips unknown platforms", {
   suppressMessages(use_pixi_rstudio(p$root))
 
   expect_equal(list.files(p$root, pattern = "\\.Rproj$"), "mine.Rproj")
-  expect_length(p$args, 1)
-  expect_equal(p$args[[1]][4], "open -n -a RStudio mine.Rproj")
+  expect_length(p$args, 2)
+  expect_equal(p$args[[2]][4], "open -n -a RStudio mine.Rproj")
 })
 
 # use_pixi_positron() ----------------------------------------------------------
@@ -145,4 +151,22 @@ test_that("project_platforms() reads the project's platforms", {
     project = "none"
   )
   expect_setequal(project_platforms(dir), c("linux-64", "win-64"))
+})
+
+test_that("use_pixi_rstudio() can be run again", {
+  skip_if_no_pixi()
+  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  dir <- withr::local_tempdir()
+  run_pixi(c("init", dir), project = "none")
+
+  suppressMessages(capture.output(use_pixi_rstudio(dir)))
+  file.rename(
+    file.path(dir, paste0(basename(dir), ".Rproj")),
+    file.path(dir, "renamed.Rproj")
+  )
+  suppressMessages(capture.output(use_pixi_rstudio(dir)))
+
+  tasks <- pixi_tasks(path = dir)
+  expect_equal(tasks$name, "rstudio")
+  expect_match(tasks$command, "renamed.Rproj")
 })

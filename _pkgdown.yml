@@ -107,4 +107,5 @@ reference:
     contents:
       - use_pixi
       - use_pixi_ide
+      - pixi_import_renv
       - pixi_activate
