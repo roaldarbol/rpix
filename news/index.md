@@ -1,67 +1,19 @@
 # Changelog
 
-## rpix (development version)
+## rpix 0.5.0
 
-- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
-  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md),
-  [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
-  and
-  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
-  gain a `path` argument, like the other functions, to work on a project
-  other than the one in the working directory.
-- The documentation covers the new workflow
-  ([\#31](https://github.com/roaldarbol/rpix/issues/31)): the IDE guide
-  has tabs for Positron, RStudio and VS Code, with daily use, other
-  environments and troubleshooting; Get started covers rendering Quarto
-  documents and
-  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md);
-  and a contributing guide describes rpix’s own development environment.
-- Features and environments
-  ([\#30](https://github.com/roaldarbol/rpix/issues/30)):
-  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
-  and
-  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
-  gain `feature` and `platform` arguments, and new
-  [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
-  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
-  and
-  [`pixi_remove_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
-  manage a project’s environments. New article: “Several environments”.
-- New
-  [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
-  and
-  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md),
-  and
-  [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
-  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
-  [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
-  and
-  [`pixi_lock()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
-  ([\#30](https://github.com/roaldarbol/rpix/issues/30)).
-- New
-  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
-  reports on the project’s Pixi setup, with hints for what’s wrong
-  ([\#28](https://github.com/roaldarbol/rpix/issues/28)): Pixi itself,
-  whether the lock file is up to date, whether R is the project’s Pixi R
-  and is activated, libraries and packages from outside the project, the
-  `.Rprofile` block, and whether the IDE is set up.
-- New
-  [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md),
-  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
-  and
-  [`pixi_tree()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
-  ([\#29](https://github.com/roaldarbol/rpix/issues/29)).
-  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
-  returns the packages in an environment as a data frame, including the
-  name of each R package as R spells it (`Rcpp` for `r-rcpp`).
+rpix now sets projects up for RStudio, Positron and VS Code, and makes
+sure R only uses the project’s packages.
+
+### Setting up a project
+
 - New
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   replaces
   [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md),
   which is deprecated
-  ([\#26](https://github.com/roaldarbol/rpix/issues/26)). Its new `ide`
-  argument sets the project up for RStudio, Positron or VS Code, with
-  the new
+  ([\#26](https://github.com/roaldarbol/rpix/issues/26)). Its `ide`
+  argument sets the project up for an IDE, with the new
   [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
   [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   and
@@ -79,28 +31,81 @@
     for VS Code and VSCodium at the environment’s R.
 - New
   [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
-  activates the project’s Pixi environment in R that an IDE such as
-  Positron or VS Code started directly, without Pixi
+  activates the project’s Pixi environment in R that an IDE started
+  directly, without Pixi
   ([\#25](https://github.com/roaldarbol/rpix/issues/25)). It sets the
   environment variables Pixi would set, and removes your personal
   library from [`.libPaths()`](https://rdrr.io/r/base/libPaths.html).
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   adds a block to the project’s `.Rprofile` that calls it, and removes
-  the personal library before any package loads. Activation is fast,
-  using Pixi’s activation cache.
+  the personal library before any package loads.
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   keeps your personal R library out of the environment’s R, by adding
   conda-forge’s `conda-ecosystem-user-package-isolation` to the project.
   conda-forge’s R otherwise puts the personal library first on
   [`.libPaths()`](https://rdrr.io/r/base/libPaths.html), so packages
-  built for your usual R could be loaded
+  built for your usual R could be loaded, and crash it
   (conda-forge/r-base-feedstock#37).
-- The IDE guide’s RStudio commands now work as expected: `open -n` on
-  macOS, so a running RStudio doesn’t keep its R, and a task that sets
-  `RSTUDIO_WHICH_R` on Windows
-  ([\#24](https://github.com/roaldarbol/rpix/issues/24)). It also
-  explains that on Windows, Positron and VS Code have to be started
-  through Pixi.
+
+### Environments
+
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  and
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+  gain `feature` and `platform` arguments, and new
+  [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
+  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  and
+  [`pixi_remove_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  manage a project’s environments, e.g. one with another version of R
+  ([\#30](https://github.com/roaldarbol/rpix/issues/30)).
+- New
+  [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  and
+  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md),
+  and
+  [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
+  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
+  [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  and
+  [`pixi_lock()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  ([\#30](https://github.com/roaldarbol/rpix/issues/30)).
+
+### Inspecting a project
+
+- New
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  checks the project’s Pixi setup, and suggests fixes for what’s wrong
+  ([\#28](https://github.com/roaldarbol/rpix/issues/28)): Pixi itself,
+  whether the lock file is up to date, whether R is the project’s Pixi R
+  and is activated, libraries and packages from outside the project, the
+  `.Rprofile` block, and whether the IDE is set up.
+- New
+  [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md),
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  and
+  [`pixi_tree()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  ([\#29](https://github.com/roaldarbol/rpix/issues/29)).
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  returns the packages in an environment as a data frame, with the name
+  of each R package as R spells it (`Rcpp` for `r-rcpp`).
+
+### Other changes
+
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md),
+  [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
+  and
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  gain a `path` argument, like the other functions, to work on a project
+  other than the one in the working directory.
+- The documentation covers the new workflow
+  ([\#31](https://github.com/roaldarbol/rpix/issues/31)): the IDE guide
+  has a section for each IDE, with daily use, other environments and
+  troubleshooting; “Several environments” is a new guide; Get started
+  covers rendering Quarto documents and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md);
+  and a contributing guide describes rpix’s own development environment.
 
 ## rpix 0.4.0
 
