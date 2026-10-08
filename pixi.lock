@@ -34,6 +34,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hda65f42_10.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/c-ares-1.34.8-hebe6cf0_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cairo-1.18.6-h3c89d7e_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/conda-ecosystem-user-package-isolation-1.0-ha770c72_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/curl-8.22.0-ha042cf0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/dart-sass-1.105.1-hfc2019e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/deno-2.4.5-h6046fbb_0.conda
@@ -352,6 +353,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clangxx_osx-64-23.1.2-h11c87bf_34.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/compiler-rt-23.1.2-h694c41f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/compiler-rt23-23.1.2-h8c1e6b9_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/conda-ecosystem-user-package-isolation-1.0-h694c41f_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/curl-8.22.0-h5318221_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/dart-sass-1.105.1-h8822bef_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/deno-2.4.5-h42a321a_0.conda
@@ -588,6 +590,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx_osx-arm64-23.1.2-hcc2d159_34.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/compiler-rt-23.1.2-hce30654_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/compiler-rt23-23.1.2-hdb3d66b_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/conda-ecosystem-user-package-isolation-1.0-hce30654_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/curl-8.22.0-h6651222_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/dart-sass-1.105.1-h820172f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/deno-2.4.5-h248350f_0.conda
@@ -814,6 +817,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/bwidget-1.10.1-h11686cb_3.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/bzip2-1.0.8-h0ad9c76_10.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/cairo-1.18.6-h477c42c_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/conda-ecosystem-user-package-isolation-1.0-h57928b3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/curl-8.22.0-hdb0ef4a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/dart-sass-1.105.1-h11686cb_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/deno-2.4.5-h9135563_0.conda
@@ -1061,6 +1065,14 @@ packages:
     - cairo >=1.18.6,<2.0a0
   size: 1007110
   timestamp: 1790045358757
+- conda: https://conda.anaconda.org/conda-forge/linux-64/conda-ecosystem-user-package-isolation-1.0-ha770c72_2.conda
+  sha256: a55abc4af511d08cea40f810ab2e05bfa35a070521964faa9451cda04904b0c2
+  md5: 9571e4902d8ccc40726b7d37a476b3eb
+  license: BSD-3-Clause
+  license_family: BSD
+  run_exports: {}
+  size: 8778
+  timestamp: 1756455351410
 - conda: https://conda.anaconda.org/conda-forge/linux-64/curl-8.22.0-ha042cf0_0.conda
   sha256: 1a35faf4bf079c4438c52c9795b95d6c97c1b60e0bb51802cf48e2b7352b57e5
   md5: 399a7c0b7ca511de34c5ee5762cee149
@@ -4771,6 +4783,14 @@ packages:
   run_exports: {}
   size: 101031
   timestamp: 1790197495268
+- conda: https://conda.anaconda.org/conda-forge/osx-64/conda-ecosystem-user-package-isolation-1.0-h694c41f_2.conda
+  sha256: abd0a757f2eca90e14bb398cde5a86f3fcb7d8212195e3d9363eba0aaca9ef9d
+  md5: b20894e93f24e75d82e8db0059d8fd15
+  license: BSD-3-Clause
+  license_family: BSD
+  run_exports: {}
+  size: 8922
+  timestamp: 1756455476091
 - conda: https://conda.anaconda.org/conda-forge/osx-64/curl-8.22.0-h5318221_0.conda
   sha256: a8f114d75286d32da1239c1e00dba10e1224f8ddd3ee0f9615bc9d0073fe3e2f
   md5: 2030e07b007f39b41d41be00fc7fb9c7
@@ -6979,6 +6999,14 @@ packages:
   run_exports: {}
   size: 100819
   timestamp: 1790196157988
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/conda-ecosystem-user-package-isolation-1.0-hce30654_2.conda
+  sha256: e9b714c60a6d88a129d278850705e2a9ac9675b071ade71a03ba721e150f3c8f
+  md5: f57977a71b1e7d9e3e75748da4b0e0c6
+  license: BSD-3-Clause
+  license_family: BSD
+  run_exports: {}
+  size: 8887
+  timestamp: 1756455450238
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/curl-8.22.0-h6651222_0.conda
   sha256: 40e26cf024eaf44707a6368af4e34104bda844ef9213bb82d0ee4b77d83a8c07
   md5: e3e65b70a52a7819dd63c31f9dce7209
@@ -9004,6 +9032,14 @@ packages:
     - cairo >=1.18.6,<2.0a0
   size: 1533334
   timestamp: 1790045452587
+- conda: https://conda.anaconda.org/conda-forge/win-64/conda-ecosystem-user-package-isolation-1.0-h57928b3_2.conda
+  sha256: 5549db55b155c144d84e7fb86c8b0f37c52b7c2d84e23e35eb0115542b60fdfd
+  md5: 9f21a6f2bf7f787967b67bffde2a461c
+  license: BSD-3-Clause
+  license_family: BSD
+  run_exports: {}
+  size: 8822
+  timestamp: 1756455431007
 - conda: https://conda.anaconda.org/conda-forge/win-64/curl-8.22.0-hdb0ef4a_0.conda
   sha256: 51175dea0676945b30068972202eca282bbfe7774931d3e1369c91a60518d065
   md5: a21861ac889a38415844187508d6d56a

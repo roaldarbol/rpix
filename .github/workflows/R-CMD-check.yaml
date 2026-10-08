@@ -95,3 +95,12 @@ jobs:
 
       - name: Check
         run: pixi run check
+
+      # conda-ecosystem-user-package-isolation should keep the personal
+      # library out of the environment's R
+      - name: Check that R only uses the environment's library
+        shell: bash
+        run: |
+          # Create R's default personal library, so the check fails if R uses it
+          pixi run bash -c 'unset R_LIBS_USER; Rscript -e "lib <- Sys.getenv(\"R_LIBS_USER\"); dir.create(lib, recursive = TRUE, showWarnings = FALSE); cat(\"personal library:\", lib, \"\n\")"'
+          pixi run Rscript -e "print(Sys.getenv('R_LIBS_USER')); print(.libPaths()); stopifnot(all(grepl('/[.]pixi/envs/', .libPaths())))"

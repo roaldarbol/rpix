@@ -20,15 +20,7 @@ quarto = ">=1.9.38,<2"
 air = ">=0.12.0,<0.13"
 python = ">=3.14.8,<3.15"
 r-covr = ">=3.6.5,<4"
-
-# Keep packages from the user library (installed for another R) out of this
-# environment's R, which would otherwise put it first on .libPaths()
-[activation.env]
-R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
-
-# Windows doesn't expand $VAR here, only %VAR%
-[target.win.activation.env]
-R_LIBS_USER = '%PIXI_PROJECT_ROOT%\.pixi\r-libs\%PIXI_ENVIRONMENT_NAME%'
+conda-ecosystem-user-package-isolation = ">=1.0,<2"
 
 [tasks]
 document = { cmd = "Rscript -e 'devtools::document()'", description = "Regenerate man/ and NAMESPACE from the roxygen comments" }

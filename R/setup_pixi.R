@@ -4,8 +4,8 @@
 #' Create a Pixi project in the working directory if there isn't one, add R to
 #' it, and install rpix into its environment.
 #'
-#' It also keeps your personal R library out of the environment's R, by
-#' pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`. Otherwise
+#' It also adds conda-forge's `conda-ecosystem-user-package-isolation`, which
+#' keeps your personal R library out of the environment's R. Otherwise
 #' conda-forge's R loads packages installed for your usual R first.
 #'
 #' It can be run from any R. Afterwards, work in R started by Pixi: run
@@ -55,40 +55,12 @@ setup_pixi <- function(
   path <- dirname(manifest)
 
   r_base <- if (is.null(r_version)) "r-base" else paste0("r-base=", r_version)
-  packages <- c(r_base, if (install_rpix) rpix_dependencies())
-  run_pixi(c("add", packages), path = path, echo = TRUE)
-
   # conda-forge's R puts the user library of a regular R install first on
   # .libPaths() (https://github.com/conda-forge/r-base-feedstock/issues/37).
-  # Point it at a folder inside the project instead. Windows only expands
-  # %VAR% here, and Pixi warns about a Windows target in a project without a
-  # Windows platform, so that entry is only added when there is one.
-  run_pixi(
-    c(
-      "workspace",
-      "activation",
-      "env",
-      "set",
-      paste0("R_LIBS_USER=", r_libs_user$unix)
-    ),
-    path = path,
-    echo = TRUE
-  )
-  if (any(startsWith(project_platforms(path), "win"))) {
-    run_pixi(
-      c(
-        "workspace",
-        "activation",
-        "env",
-        "set",
-        "--target",
-        "win",
-        paste0("R_LIBS_USER=", r_libs_user$windows)
-      ),
-      path = path,
-      echo = TRUE
-    )
-  }
+  # This package's activation script points R_LIBS_USER at nothing instead.
+  isolation <- "conda-ecosystem-user-package-isolation"
+  packages <- c(r_base, isolation, if (install_rpix) rpix_dependencies())
+  run_pixi(c("add", packages), path = path, echo = TRUE)
 
   if (install_rpix) {
     # From inside the environment's R, so rpix is installed for that R. Its
@@ -109,18 +81,6 @@ setup_pixi <- function(
     "Start R from the project's environment, e.g. with {.code pixi run R}, or point your IDE at it: {.url https://roald-arboel.com/rpix/articles/ide.html}."
   )
   invisible(manifest)
-}
-
-r_libs_user <- list(
-  unix = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME",
-  windows = "%PIXI_PROJECT_ROOT%\\.pixi\\r-libs\\%PIXI_ENVIRONMENT_NAME%"
-)
-
-# Platforms of the project's default environment
-project_platforms <- function(path) {
-  info <- run_pixi("info", path = path, json = TRUE)
-  envs <- info$environments_info
-  envs$platforms[[which(envs$name == "default")]]$name
 }
 
 # rpix's own dependencies, as conda packages. Reads rpix's DESCRIPTION through

@@ -1,7 +1,7 @@
 # rpix (development version)
 
 - New `pixi_activate()` activates the project's Pixi environment in R that an IDE such as Positron or VS Code started directly, without Pixi (#25). It sets the environment variables Pixi would set, and removes your personal library from `.libPaths()`. `setup_pixi()` adds a block to the project's `.Rprofile` that calls it, and removes the personal library before any package loads. Activation is fast, using Pixi's activation cache.
-- `setup_pixi()` now keeps your personal R library out of the environment's R, by pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`. conda-forge's R otherwise puts it first on `.libPaths()`, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37). On Windows, the entry is only added when the project lists a Windows platform.
+- `setup_pixi()` now keeps your personal R library out of the environment's R, by adding conda-forge's `conda-ecosystem-user-package-isolation` to the project. conda-forge's R otherwise puts the personal library first on `.libPaths()`, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37).
 - The IDE guide's RStudio commands now work as expected: `open -n` on macOS, so a running RStudio doesn't keep its R, and a task that sets `RSTUDIO_WHICH_R` on Windows (#24). It also explains that on Windows, Positron and VS Code have to be started through Pixi.
 
 # rpix 0.4.0
