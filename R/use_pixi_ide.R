@@ -4,7 +4,7 @@
 #' Set an IDE up to use the R in the project's Pixi environment. [use_pixi()]
 #' calls these with its `ide` argument.
 #'
-#' * `use_pixi_rstudio()` adds an `rstudio` task to `pixi.toml`, for each of
+#' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`, for each of
 #'   the project's platforms, that starts a new RStudio with the
 #'   environment's R and the project's `.Rproj` file. It creates the `.Rproj`
 #'   file if there isn't one. Start RStudio with `pixi run rstudio`.
@@ -42,6 +42,12 @@ use_pixi_rstudio <- function(path = NULL) {
     if (is.null(task)) {
       next
     }
+    # Replace the task if it's there, e.g. from an earlier run. Pixi says if
+    # it isn't, without failing.
+    run_pixi(
+      c("task", "remove", "rstudio", "--platform", platform),
+      path = root
+    )
     run_pixi(
       c(
         "task",
