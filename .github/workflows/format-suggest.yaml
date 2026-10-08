@@ -16,6 +16,9 @@ jobs:
   format-suggest:
     name: format-suggest
     runs-on: ubuntu-latest
+    # Fail a hung step (e.g. a stalled download in r-lib/actions/setup-r)
+    # instead of waiting for GitHub\'s 6-hour default
+    timeout-minutes: 30
 
     permissions:
       # Required to push suggestion comments to the PR
