@@ -8,5 +8,8 @@
 ^README\.qmd$
 ^codecov\.yml$
 ^\.vscode$
+^pixi\.toml$
+^pixi\.lock$
+^\.pixi$
 # vignettes/ only holds pkgdown articles
 ^vignettes$

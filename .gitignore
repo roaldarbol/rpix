@@ -9,10 +9,6 @@
 # pixi environments
 .pixi
 .vscode
-pixi.toml
-
-# pixi environments
-.pixi
 *.egg-info
 inst/doc
 **/.quarto/
