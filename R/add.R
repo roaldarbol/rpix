@@ -14,7 +14,8 @@
 #' @param versions Optional. Version constraints for all packages.
 #' @param channel Optional. Defaults to conda-forge, but other conda channels can be specified.
 #' @param dry_run Should the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.
-#' @returns Doesn't return any objects.
+#' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
+#'   the pixi call (invisibly).
 #' @import cli
 #' @export add
 #' @examples
@@ -23,34 +24,18 @@
 #' }
 
 add <- function(packages, versions = NULL, channel = NULL, dry_run = FALSE) {
-  # Prepend r-
-  prepended_names <- paste0("r-", packages)
+  specs <- paste0("r-", packages)
 
-  # Append version constraints
+  # Append version constraints, adding `=` if no operator is given
   if (!is.null(versions)) {
-    # Clean up versions - add = if missing and version doesn't start with =, <, >, ~, etc.
-    cleaned_versions <- sub("^(?![=<>~^])", "=", versions, perl = TRUE)
-
-    prepended_names <- paste0("r-", packages, cleaned_versions)
-    prepended_names <- paste0("\"", prepended_names, "\"")
+    versions <- sub("^(?![=<>~^!])", "=", versions, perl = TRUE)
+    specs <- paste0(specs, versions)
   }
 
-  # Collapse into single line
-  cmd <- paste0(prepended_names, collapse = " ")
-
-  # Append channel if present
+  args <- c("add", specs)
   if (!is.null(channel)) {
-    cmd <- paste(cmd, "--channel", channel)
+    args <- c(args, "--channel", channel)
   }
 
-  # Prepend pixi add
-  cmd <- paste('pixi add', cmd)
-
-  # Dry-run or run
-  cli::cli_alert_info("The resulting pixi command is:")
-  cli::cli_code(cmd)
-
-  if (isFALSE(dry_run)) {
-    system(cmd)
-  }
+  run_pixi(args, echo = TRUE, dry_run = dry_run)
 }

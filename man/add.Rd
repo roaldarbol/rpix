@@ -16,7 +16,8 @@ add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 \item{dry_run}{Should the command be executed? If TRUE, the final pixi command will be shown but not executed. FALSE (default) executes the command.}
 }
 \value{
-Doesn't return any objects.
+The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
+the pixi call (invisibly).
 }
 \description{
 \code{add()} will add dependencies to the pixi.toml.

@@ -12,7 +12,8 @@ remove(packages, dry_run = FALSE)
 \item{dry_run}{Just show command or also run.}
 }
 \value{
-Doesn't return any objects.
+The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
+the pixi call (invisibly).
 }
 \description{
 \code{remove()} will remove dependencies from the pixi.toml.

@@ -7,7 +7,8 @@
 #'
 #' @param packages Package name(s) to be removed.
 #' @param dry_run Just show command or also run.
-#' @returns Doesn't return any objects.
+#' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
+#'   the pixi call (invisibly).
 #' @import cli
 #' @export remove
 #' @examples
@@ -16,20 +17,5 @@
 #' }
 
 remove <- function(packages, dry_run = FALSE) {
-  # Prepend r-
-  prepended_names <- paste0("r-", packages)
-
-  # Collapse into single line
-  cmd <- paste0(prepended_names, collapse = " ")
-
-  # Prepend pixi remove
-  cmd <- paste('pixi remove', cmd)
-
-  # Dry-run or run
-  cli::cli_alert_info("The resulting pixi command is:")
-  cli::cli_code(cmd)
-
-  if (isFALSE(dry_run)) {
-    system(cmd)
-  }
+  run_pixi(c("remove", paste0("r-", packages)), echo = TRUE, dry_run = dry_run)
 }
