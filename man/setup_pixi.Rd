@@ -2,54 +2,39 @@
 % Please edit documentation in R/setup_pixi.R
 \name{setup_pixi}
 \alias{setup_pixi}
-\title{Setup pixi environment safely}
+\title{Set up a pixi project for R}
 \usage{
-setup_pixi(add_to_rprofile = TRUE, global = FALSE, init_if_missing = TRUE)
+setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 }
 \arguments{
-\item{add_to_rprofile}{Logical. If TRUE, adds the pixi library configuration
-to .Rprofile for persistence across sessions. Default is FALSE.}
+\item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
+to the latest on conda-forge.}
 
-\item{global}{Logical. If TRUE and \code{add_to_rprofile = TRUE}, adds to global
-~/.Rprofile instead of project-local .Rprofile. Default is FALSE.}
+\item{init_if_missing}{If \code{TRUE}, create a pixi project if there isn't one.}
 
-\item{init_if_missing}{Logical. If TRUE, runs \verb{pixi init} if pixi.toml is not
-found. Default is TRUE.}
+\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
+Its dependencies come from conda-forge, and rpix itself from R-universe
+until it's on conda-forge.}
 }
 \value{
-Invisibly returns a list with the status of each setup step.
+The path to the project's manifest, invisibly.
 }
 \description{
-\code{setup_pixi()} provides a complete pixi setup for R projects. It checks for
-pixi availability, initializes a pixi project if needed, and configures R
-to use pixi-managed packages. The function prioritizes safety and uses
-.libPaths() instead of environment variables to avoid shared library conflicts.
-}
-\details{
-The function performs the following steps:
-\enumerate{
-\item Checks if pixi is available in PATH (adds it if not found)
-\item Checks for pixi.toml in project root (runs \verb{pixi init} if not found)
-\item Configures R to use the pixi library as the primary package source
-\item Optionally adds the configuration to .Rprofile for persistence
-}
+Create a pixi project in the working directory if there isn't one, add R to
+it, and install rpix into its environment.
 
-Instead of setting environment variables (which can cause shared library
-conflicts), this function modifies .libPaths() to prioritize the pixi library.
+It can be run from any R. Afterwards, work in R started by pixi: run
+\verb{pixi run R} in a terminal, or point your IDE at the environment's R (see
+\url{https://roald-arboel.com/rpix/articles/ide.html}). Each pixi environment
+has its own R and package library, so rpix doesn't point a running R at a
+pixi library: packages built for a different R can crash it.
+
+Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
+block in their \code{.Rprofile}, which did exactly that. It's removed.
 }
 \examples{
 \dontrun{
-# Basic setup - just configure for current session
 setup_pixi()
-
-# Full setup - add to .Rprofile for persistence
-setup_pixi(add_to_rprofile = TRUE)
-
-# Setup without auto-initializing pixi project
-setup_pixi(init_if_missing = FALSE)
+setup_pixi(r_version = "4.5")
 }
-
-}
-\seealso{
-\code{\link[=.libPaths]{.libPaths()}}
 }

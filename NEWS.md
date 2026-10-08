@@ -4,7 +4,11 @@
 - Exported functions now follow one naming scheme (#20): functions that run a pixi command are called `pixi_<command>()`.
   - `add()` is now `pixi_add()`. `add()` still works for now, with a deprecation warning.
   - `remove()` and `search()` are now `pixi_remove()` and `pixi_search()`. The old names were removed rather than deprecated, because they masked `base::remove()` and `base::search()` whenever rpix was attached.
-  - `pixi_to_path()` is no longer exported. rpix finds pixi itself.
+  - `pixi_to_path()` is removed. rpix finds pixi itself.
+- rpix no longer points a running R at a pixi environment's library (#22). R mixed with packages built for a different R could crash (#14). Work in R started by pixi instead, e.g. with `pixi run R`.
+  - `setup_pixi()` now only sets up the project: it creates `pixi.toml` if needed, adds R (`r_version` picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its `add_to_rprofile` and `global` arguments are gone.
+  - `setup_pixi()` removes the "Pixi R library setup" block that earlier versions added to the project's `.Rprofile`, and warns if there's one in `~/.Rprofile`.
+  - `reset_r_libraries()` is removed.
 
 ## Other changes
 - All pixi commands now go through a single internal runner built on *processx* (#19). Arguments are passed without shell quoting, commands work from any subfolder of a project (`--manifest-path`), pixi failures become R errors, and pixi is found even if it isn't on the `PATH` (set `options(rpix.pixi_path = ...)` for unusual installs).
