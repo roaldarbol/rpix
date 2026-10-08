@@ -1,5 +1,6 @@
 # rpix (development version)
 
+- New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
 - Pixi's output is no longer shown in red in RStudio and Positron. Pixi reports progress on stderr, which IDEs colour red, so rpix now shows it on stdout.
 
 # rpix 0.5.0
