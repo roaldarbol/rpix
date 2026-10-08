@@ -7,7 +7,8 @@
 #'
 #' * RStudio: starts a new RStudio with the environment's R, in the project.
 #'   Close the old one when you're done with it.
-#' * Positron: opens the interpreter picker, to pick the environment's R.
+#' * Positron: looks for interpreters again, and opens the interpreter
+#'   picker, to pick the environment's R.
 #' * VS Code: points the R extension at the environment's R, in the project's
 #'   `.vscode/settings.json`. Reload the window to use it. On Windows, start VS
 #'   Code from the environment instead.
@@ -88,7 +89,14 @@ switch_positron <- function(environment) {
   )
   execute <- positron_command()
   if (!is.null(execute)) {
+    # Positron doesn't list environments added since it last looked, e.g.
+    # one added while it's open
+    execute("workbench.action.language.runtime.discoverAllRuntimes")
     execute("workbench.action.languageRuntime.selectRuntime")
+  } else {
+    cli::cli_alert_info(
+      "If it isn't listed, run {.strong Interpreter: Discover All Interpreters} from the Command Palette."
+    )
   }
 }
 

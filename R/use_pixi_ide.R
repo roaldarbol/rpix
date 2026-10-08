@@ -78,7 +78,7 @@ use_pixi_positron <- function(path = NULL) {
     list("positron.r.interpreters.pixiDiscovery" = TRUE)
   )
   cli::cli_alert_info(
-    "In Positron, pick {.val R (Pixi: default)} in the interpreter picker. Positron remembers it for the project."
+    "In Positron, pick {.val R (Pixi: default)} in the interpreter picker. Positron remembers it for the project. If it isn't listed, run {.strong Interpreter: Discover All Interpreters} from the Command Palette."
   )
   invisible(file)
 }

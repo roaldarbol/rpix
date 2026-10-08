@@ -28,6 +28,14 @@
     Message
       i Pick the R labelled "(Pixi: r44)" in the interpreter picker.
 
+---
+
+    Code
+      pixi_switch("r44", ide = "positron")
+    Message
+      i Pick the R labelled "(Pixi: r44)" in the interpreter picker.
+      i If it isn't listed, run Interpreter: Discover All Interpreters from the Command Palette.
+
 # pixi_switch() points VS Code at the environment's R
 
     Code

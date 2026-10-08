@@ -66,15 +66,23 @@ test_that("pixi_switch() opens Positron's interpreter picker", {
   local_switch_project()
   commands <- character()
   local_mocked_bindings(
-    positron_command = function() function(command) commands <<- command
+    positron_command = function() {
+      function(command) commands <<- c(commands, command)
+    }
   )
 
   expect_snapshot(pixi_switch("r44", ide = "positron"))
-  expect_equal(commands, "workbench.action.languageRuntime.selectRuntime")
+  expect_equal(
+    commands,
+    c(
+      "workbench.action.language.runtime.discoverAllRuntimes",
+      "workbench.action.languageRuntime.selectRuntime"
+    )
+  )
 
   # Outside Positron's R, it only says what to pick
   local_mocked_bindings(positron_command = function() NULL)
-  expect_message(pixi_switch("r44", ide = "positron"), "interpreter picker")
+  expect_snapshot(pixi_switch("r44", ide = "positron"))
 })
 
 test_that("positron_command() finds Ark's function, if there is one", {
