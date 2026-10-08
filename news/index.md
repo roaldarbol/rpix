@@ -2,6 +2,17 @@
 
 ## rpix (development version)
 
+- New
+  [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
+  activates the project’s Pixi environment in R that an IDE such as
+  Positron or VS Code started directly, without Pixi
+  ([\#25](https://github.com/roaldarbol/rpix/issues/25)). It sets the
+  environment variables Pixi would set, and removes your personal
+  library from [`.libPaths()`](https://rdrr.io/r/base/libPaths.html).
+  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  adds a block to the project’s `.Rprofile` that calls it, and removes
+  the personal library before any package loads. Activation is fast,
+  using Pixi’s activation cache.
 - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
   now keeps your personal R library out of the environment’s R, by
   pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`.

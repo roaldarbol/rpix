@@ -9,8 +9,11 @@ pixi run R in a terminal, or point your IDE at the environment's R (see
 https://roald-arboel.com/rpix/articles/ide.html). Each Pixi environment
 has its own R and package library, so rpix doesn't point a running R at a
 Pixi library: packages built for a different R can crash it.
-Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R library setup&quot;
-block in their .Rprofile, which did exactly that. It's removed."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
+It also adds a block to the project's .Rprofile that calls
+pixi_activate(), so the environment is activated when an IDE starts its
+R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
+library setup&quot; block in their .Rprofile instead, which pointed a running
+R at the Pixi library. It's removed."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
 it, and install rpix into its environment.
 It also keeps your personal R library out of the environment's R, by
 pointing R_LIBS_USER at .pixi/r-libs/ in pixi.toml. Otherwise
@@ -20,8 +23,11 @@ pixi run R in a terminal, or point your IDE at the environment's R (see
 https://roald-arboel.com/rpix/articles/ide.html). Each Pixi environment
 has its own R and package library, so rpix doesn't point a running R at a
 Pixi library: packages built for a different R can crash it.
-Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R library setup&quot;
-block in their .Rprofile, which did exactly that. It's removed."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
+It also adds a block to the project's .Rprofile that calls
+pixi_activate(), so the environment is activated when an IDE starts its
+R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
+library setup&quot; block in their .Rprofile instead, which pointed a running
+R at the Pixi library. It's removed."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -88,8 +94,11 @@ conda-forge's R loads packages installed for your usual R first.</p>
 <a href="https://roald-arboel.com/rpix/articles/ide.html">https://roald-arboel.com/rpix/articles/ide.html</a>). Each Pixi environment
 has its own R and package library, so rpix doesn't point a running R at a
 Pixi library: packages built for a different R can crash it.</p>
-<p>Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
-block in their <code>.Rprofile</code>, which did exactly that. It's removed.</p>
+<p>It also adds a block to the project's <code>.Rprofile</code> that calls
+<code><a href="pixi_activate.html">pixi_activate()</a></code>, so the environment is activated when an IDE starts its
+R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
+library setup" block in their <code>.Rprofile</code> instead, which pointed a running
+R at the Pixi library. It's removed.</p>
     </div>
 
     <div class="section level2">

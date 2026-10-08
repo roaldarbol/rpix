@@ -21,6 +21,30 @@ packages need, such as where GDAL finds its data.
 IDEs need to be pointed at the environment’s R; see [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
 
+## When an IDE starts R directly
+
+Positron and VS Code start the environment’s R themselves, without Pixi,
+so the environment isn’t activated.
+[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+adds a few lines to the project’s `.Rprofile` that make up for that.
+When R starts, they:
+
+1.  Remove your personal library from
+    [`.libPaths()`](https://rdrr.io/r/base/libPaths.html) (see below),
+    before any package loads.
+2.  Call
+    [`rpix::pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md),
+    which sets the environment variables Pixi would have set, and adds
+    the project’s own library.
+
+In R that isn’t from the project’s environment,
+[`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
+changes nothing, and tells you how to start the right R instead.
+
+On Windows, the environment’s R can’t start at all without activation,
+so start the IDE through Pixi there; see [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.html#on-windows-start-the-ide-through-pixi).
+
 ## Why rpix doesn’t change `.libPaths()`
 
 You can’t safely point an R you already have running at a Pixi
@@ -60,7 +84,9 @@ adds it if the project lists a Windows platform; if you add one later,
 add the entry too. R ignores a library folder that doesn’t exist, so
 this leaves only the environment’s own library.
 
-This only applies when Pixi starts R, as `pixi run R` does. Check with:
+Pixi applies this when it starts R, as `pixi run R` does, and the
+project’s `.Rprofile` takes care of it when an IDE starts R directly.
+Check with:
 
 ``` r
 

@@ -14,8 +14,12 @@ environment has its own R and package library, so rpix doesn't point a
 running R at a Pixi library: packages built for a different R can crash
 it.
 
+It also adds a block to the project's `.Rprofile` that calls
+[`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md),
+so the environment is activated when an IDE starts its R directly.
 Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
-block in their `.Rprofile`, which did exactly that. It's removed.
+block in their `.Rprofile` instead, which pointed a running R at the
+Pixi library. It's removed.
 
 ## Usage
 
