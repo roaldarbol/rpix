@@ -242,9 +242,6 @@ cat_labelled <- function(label, value, width, style = cli::col_grey) {
     value,
     width = max(cli::console_width() - indent, 20)
   )
-  if (length(lines) == 0) {
-    lines <- ""
-  }
   cli::cat_line(c(
     paste0(style(format(label, width = width)), "  ", lines[1]),
     if (length(lines) > 1) paste0(strrep(" ", indent), lines[-1])
