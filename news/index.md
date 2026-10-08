@@ -17,6 +17,7 @@
   ([\#32](https://github.com/roaldarbol/rpix/issues/32)). In RStudio it
   starts a new RStudio with that R, in Positron it opens the interpreter
   picker, and in VS Code it points the R extension at that R.
+
 - New
   [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
@@ -25,10 +26,12 @@
   [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
   work with the project’s Pixi tasks
   ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
+
 - New [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md)
   runs a function in another environment’s R, e.g. one with another
   version of R, and returns its result
   ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
+
 - New
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   runs a package’s tests or `R CMD check` in several environments,
@@ -37,6 +40,14 @@
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   adds those environments
   ([\#34](https://github.com/roaldarbol/rpix/issues/34)).
+
+- New
+  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
+  adds a package’s dependencies from its `DESCRIPTION`: `Depends` and
+  `Imports` to the project, and `Suggests` to a `test` environment. It
+  finds Bioconductor packages on bioconda, and lists the packages that
+  aren’t on conda-forge or bioconda
+  ([\#36](https://github.com/roaldarbol/rpix/issues/36)).
 
 ### Minor improvements and fixes
 
