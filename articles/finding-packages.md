@@ -91,7 +91,12 @@ pixi exec rattler-build generate-recipe cran mypackage
 ```
 
 As a last resort,
+[`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+works in the environment’s R. (Plain
 [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
-works in the environment’s R. But the package isn’t recorded in
-`pixi.toml` or `pixi.lock`, so collaborators won’t get it, and packages
-with compiled code need compilers in the environment.
+adds packages with Pixi there, so it stops for a package that isn’t on
+conda-forge.) But the package isn’t recorded in `pixi.toml` or
+`pixi.lock`, so collaborators won’t get it, and packages with compiled
+code need compilers in the environment.
+[`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+lists packages installed this way.

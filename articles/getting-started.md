@@ -94,7 +94,11 @@ pixi_add(c("dplyr", "ggplot2"))
 
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
 records the packages in `pixi.toml`, updates `pixi.lock`, and installs
-them. Then use them as usual:
+them. In the environment’s R,
+[`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+does the same: it adds the packages with
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
+Then use them as usual:
 
 ``` r
 

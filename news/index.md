@@ -58,6 +58,22 @@
   missing from `pixi.toml`, and adds them with `add = TRUE`, and lists
   packages the code never uses
   ([\#38](https://github.com/roaldarbol/rpix/issues/38)).
+- In a Pixi environment’s R,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  adds packages with
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
+  so they’re recorded in `pixi.toml` and `pixi.lock`
+  ([\#3](https://github.com/roaldarbol/rpix/issues/3)). Packages that
+  aren’t on conda-forge or bioconda, and arguments Pixi can’t use, such
+  as `lib`, give an error that points to
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html).
+  [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
+  sets this up; turn it off with
+  `options(rpix.install_packages = FALSE)`.
+- [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  lists packages in the environment that Pixi didn’t install, so
+  `pixi.toml` doesn’t record them
+  ([\#3](https://github.com/roaldarbol/rpix/issues/3)).
 
 ### Minor improvements and fixes
 

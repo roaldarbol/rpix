@@ -13,6 +13,10 @@ environment, and suggest fixes for what doesn't. It reports:
 - Libraries and loaded packages from outside the project, such as your
   personal library.
 
+- Packages in the environment that Pixi didn't install, e.g. with
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  so `pixi.toml` doesn't record them.
+
 - Whether the project's `.Rprofile` activates the environment when an
   IDE starts R directly.
 

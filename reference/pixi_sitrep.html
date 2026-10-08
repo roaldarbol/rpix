@@ -7,6 +7,8 @@ Whether the running R is the R of the project's environment, and whether
 the environment is activated.
 Libraries and loaded packages from outside the project, such as your
 personal library.
+Packages in the environment that Pixi didn't install, e.g. with
+utils::install.packages(), so pixi.toml doesn't record them.
 Whether the project's .Rprofile activates the environment when an IDE
 starts R directly.
 Whether the IDE you're in is set up for the project: it runs the
@@ -20,6 +22,8 @@ Whether the running R is the R of the project's environment, and whether
 the environment is activated.
 Libraries and loaded packages from outside the project, such as your
 personal library.
+Packages in the environment that Pixi didn't install, e.g. with
+utils::install.packages(), so pixi.toml doesn't record them.
 Whether the project's .Rprofile activates the environment when an IDE
 starts R directly.
 Whether the IDE you're in is set up for the project: it runs the
@@ -90,6 +94,8 @@ and suggest fixes for what doesn't. It reports:</p><ul><li><p>Pixi: where it is,
 the environment is activated.</p></li>
 <li><p>Libraries and loaded packages from outside the project, such as your
 personal library.</p></li>
+<li><p>Packages in the environment that Pixi didn't install, e.g. with
+<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so <code>pixi.toml</code> doesn't record them.</p></li>
 <li><p>Whether the project's <code>.Rprofile</code> activates the environment when an IDE
 starts R directly.</p></li>
 <li><p>Whether the IDE you're in is set up for the project: it runs the
