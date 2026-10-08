@@ -13,3 +13,4 @@
 ^\.pixi$
 # vignettes/ only holds pkgdown articles
 ^vignettes$
+^tests/testthat/_problems$
