@@ -89,8 +89,8 @@ switch_positron <- function(environment) {
   )
   execute <- positron_command()
   if (!is.null(execute)) {
-    # Positron may still list the R installations it found before, even in a
-    # new project, until it looks again
+    # Positron doesn't list environments added since it last looked, e.g.
+    # one added while it's open
     execute("workbench.action.language.runtime.discoverAllRuntimes")
     execute("workbench.action.languageRuntime.selectRuntime")
   } else {
