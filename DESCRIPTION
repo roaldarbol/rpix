@@ -1,7 +1,7 @@
 Package: rpix
 Type: Package
 Title: Manage R Project Dependencies with 'Pixi'
-Version: 0.5.0.9000
+Version: 0.6.0
 Authors@R: 
     person(
       "Mikkel", 
