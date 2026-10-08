@@ -27,12 +27,12 @@ legacy_fixture <- function() {
   test_path("fixtures", "legacy-rprofile.txt")
 }
 
-test_that("setup_pixi() creates a project and adds R and rpix", {
+test_that("use_pixi() creates a project and adds R and rpix", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
   withr::local_dir(dir)
 
-  manifest <- suppressMessages(setup_pixi())
+  manifest <- suppressMessages(use_pixi())
 
   expect_equal(manifest, file.path(dir, "pixi.toml"))
   expect_length(calls$args, 3)
@@ -47,14 +47,14 @@ test_that("setup_pixi() creates a project and adds R and rpix", {
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
 })
 
-test_that("setup_pixi() uses an existing project and can skip rpix", {
+test_that("use_pixi() uses an existing project and can skip rpix", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
   writeLines("[workspace]", file.path(dir, "pixi.toml"))
   dir.create(file.path(dir, "sub"))
   withr::local_dir(file.path(dir, "sub"))
 
-  suppressMessages(setup_pixi(r_version = "4.5", install_rpix = FALSE))
+  suppressMessages(use_pixi(r_version = "4.5", install_rpix = FALSE))
 
   expect_equal(
     calls$args,
@@ -63,15 +63,15 @@ test_that("setup_pixi() uses an existing project and can skip rpix", {
   expect_equal(calls$paths[[1]], dir)
 })
 
-test_that("setup_pixi() errors without a project if it may not create one", {
+test_that("use_pixi() errors without a project if it may not create one", {
   calls <- local_mock_setup()
   withr::local_dir(withr::local_tempdir())
 
-  expect_error(setup_pixi(init_if_missing = FALSE), "no Pixi project")
+  expect_error(use_pixi(init_if_missing = FALSE), "no Pixi project")
   expect_length(calls$args, 0)
 })
 
-test_that("setup_pixi() removes the old .Rprofile block and warns about a global one", {
+test_that("use_pixi() removes the old .Rprofile block and warns about a global one", {
   calls <- local_mock_setup()
   dir <- withr::local_tempdir()
   writeLines("[workspace]", file.path(dir, "pixi.toml"))
@@ -80,7 +80,7 @@ test_that("setup_pixi() removes the old .Rprofile block and warns about a global
   withr::local_dir(dir)
 
   expect_warning(
-    suppressMessages(setup_pixi(install_rpix = FALSE)),
+    suppressMessages(use_pixi(install_rpix = FALSE)),
     "still has the Pixi library setup"
   )
   expect_false(any(grepl("Pixi R library setup", readLines(".Rprofile"))))
@@ -136,4 +136,33 @@ test_that("rpix's dependencies are translated to conda names", {
     c("r-cli", "r-jsonlite", "r-processx")
   )
   expect_true(all(c("r-cli", "r-processx") %in% rpix_dependencies()))
+})
+
+test_that("use_pixi() sets up the IDEs it's asked to", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  withr::local_dir(dir)
+  ides <- character()
+  local_mocked_bindings(
+    use_pixi_positron = function(path) ides <<- c(ides, "positron"),
+    use_pixi_vscode = function(path) ides <<- c(ides, "vscode")
+  )
+
+  suppressMessages(use_pixi(
+    ide = c("vscode", "positron"),
+    install_rpix = FALSE
+  ))
+  expect_equal(ides, c("vscode", "positron"))
+  expect_error(use_pixi(ide = "emacs"), "should be one of")
+})
+
+test_that("setup_pixi() is deprecated in favour of use_pixi()", {
+  local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  withr::local_dir(dir)
+  lifecycle::expect_deprecated(suppressMessages(setup_pixi(
+    install_rpix = FALSE
+  )))
 })

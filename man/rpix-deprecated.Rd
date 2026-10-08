@@ -3,9 +3,12 @@
 \name{rpix-deprecated}
 \alias{rpix-deprecated}
 \alias{add}
+\alias{setup_pixi}
 \title{Deprecated functions}
 \usage{
 add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
+
+setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 }
 \arguments{
 \item{packages}{Package names. A version constraint can follow the name, as
@@ -19,10 +22,20 @@ operator, such as \code{"1.1"}, means \verb{1.1.*}.}
 added to the project's channels if it isn't there yet.}
 
 \item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
+
+\item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
+to the latest on conda-forge.}
+
+\item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
+
+\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
+Its dependencies come from conda-forge, and rpix itself from R-universe
+until it's on conda-forge.}
 }
 \description{
 \itemize{
 \item \code{add()} is now \code{\link[=pixi_add]{pixi_add()}}.
+\item \code{setup_pixi()} is now \code{\link[=use_pixi]{use_pixi()}}.
 }
 
 \code{remove()} and \code{search()} were removed rather than deprecated, because they

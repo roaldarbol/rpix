@@ -20,7 +20,7 @@ weren't changed.
 \description{
 Make R that was started directly from a Pixi environment, as IDEs such as
 Positron and VS Code do, behave like R started with \verb{pixi run R}. Called
-from the project's \code{.Rprofile}, which \code{\link[=setup_pixi]{setup_pixi()}} sets up.
+from the project's \code{.Rprofile}, which \code{\link[=use_pixi]{use_pixi()}} sets up.
 \itemize{
 \item If Pixi didn't activate the environment, its environment variables are
 set, as \verb{pixi shell-hook} reports them. Some packages need them, e.g. to
