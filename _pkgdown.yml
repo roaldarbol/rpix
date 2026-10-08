@@ -87,6 +87,10 @@ reference:
       - pixi_r
       - pixi_add_channel
 
+  - title: "Tasks"
+    contents:
+      - pixi_tasks
+
   - title: "Inspecting a project"
     contents:
       - pixi_sitrep
