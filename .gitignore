@@ -16,3 +16,6 @@ inst/doc
 
 # pkgdown site, built and deployed by CI
 docs
+
+# Reproductions testthat writes for failing tests
+tests/testthat/_problems/

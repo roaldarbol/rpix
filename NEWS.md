@@ -1,10 +1,20 @@
 # rpix (development version)
 
+## Breaking changes
+
+- `restart_rstudio_with_pixi()` is removed. Use `pixi_switch()` instead, or start RStudio with `pixi run rstudio` (#32).
+
+## New features
+
+- New `pixi_switch()` moves your work to another environment's R (#32). In RStudio it starts a new RStudio with that R, in Positron it opens the interpreter picker, and in VS Code it points the R extension at that R.
 - New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
 - New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
-- Pixi's output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi's own colours.
 - New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
+
+## Minor improvements and fixes
+
 - `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print their results in a readable form (#67). They're still data frames, or a list for `pixi_info()`.
+- Pixi's output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi's own colours.
 - `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
 - `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be run again, e.g. after renaming the `.Rproj` file (#72).
 
@@ -69,5 +79,4 @@ rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R on
 - `search` allows to search dependencies, their versions and their own dependencies.
 
 # rpix 0.1.0
-
 
