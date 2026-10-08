@@ -52,13 +52,14 @@
 pixi_environments <- function(path = NULL) {
   envs <- run_pixi("info", path = path, json = TRUE)$environments_info
   platforms <- lapply(envs$platforms, function(p) p$name)
-  data.frame(
+  envs <- data.frame(
     name = envs$name,
     features = I(envs$features),
     platforms = I(platforms),
     solve_group = as.character(envs$solve_group %||% rep(NA, nrow(envs))),
     stringsAsFactors = FALSE
   )
+  new_rpix_df(envs, "rpix_environments")
 }
 
 #' @rdname pixi_environments
