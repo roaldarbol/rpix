@@ -61,8 +61,8 @@ run_pixi <- function(
 
   # Show the manifest relative to the working directory to keep the command
   # readable; it's equivalent when run from there
-  command <- format_command(c(args, manifest_arg(display_path(manifest))))
-  args <- c(args, manifest_arg(manifest))
+  command <- format_command(add_manifest_arg(args, display_path(manifest)))
+  args <- add_manifest_arg(args, manifest)
 
   if (isTRUE(dry_run)) {
     cli::cli_alert_info("Would run: {.code {command}}")
@@ -202,8 +202,17 @@ format_command <- function(args) {
   paste(c("pixi", args), collapse = " ")
 }
 
-manifest_arg <- function(manifest) {
-  if (is.null(manifest)) NULL else c("--manifest-path", manifest)
+# `pixi run` passes everything after the command on to it, so the manifest has
+# to come straight after `run` there
+add_manifest_arg <- function(args, manifest) {
+  if (is.null(manifest)) {
+    return(args)
+  }
+  manifest_arg <- c("--manifest-path", manifest)
+  if (identical(args[1], "run")) {
+    return(c("run", manifest_arg, args[-1]))
+  }
+  c(args, manifest_arg)
 }
 
 display_path <- function(path) {

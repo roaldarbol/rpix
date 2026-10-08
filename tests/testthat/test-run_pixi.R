@@ -239,3 +239,14 @@ test_that("the home directory is USERPROFILE on Windows", {
   withr::local_envvar(USERPROFILE = "C:/Users/someone")
   expect_equal(home_dir(), "C:/Users/someone")
 })
+
+test_that("--manifest-path comes straight after `run`, before the command", {
+  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  root <- local_pixi_project()
+  withr::local_dir(root)
+
+  command <- suppressMessages(
+    run_pixi(c("run", "Rscript", "-e", "1"), dry_run = TRUE)
+  )
+  expect_equal(command, "pixi run --manifest-path pixi.toml Rscript -e 1")
+})

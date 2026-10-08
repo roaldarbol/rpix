@@ -62,5 +62,4 @@ reference:
   - title: "Setting up a project"
     contents:
       - setup_pixi
-      - reset_r_libraries
       - restart_rstudio_with_pixi

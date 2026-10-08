@@ -1,0 +1,67 @@
+# Something the user wrote
+options(digits = 4)
+
+# Pixi R library setup
+local({
+  # First ensure pixi is in PATH
+  tryCatch({
+    # Check if pixi directory is already in PATH
+    os <- Sys.info()[["sysname"]]
+    
+    if (os == "Windows") {
+      pixi_path <- file.path(Sys.getenv("USERPROFILE"), ".pixi", "bin")
+      separator <- ";"
+    } else {  # macOS and Linux
+      pixi_path <- "~/.pixi/bin"
+      separator <- ":"
+    }
+    
+    # Expand the tilde for comparison on Unix systems
+    expanded_pixi_path <- if (os != "Windows") path.expand(pixi_path) else pixi_path
+    
+    # Get current PATH and check if pixi path is present
+    current_path <- Sys.getenv("PATH")
+    path_components <- strsplit(current_path, separator, fixed = TRUE)[[1]]
+    
+    pixi_in_path <- if (os == "Windows") {
+      pixi_path %in% path_components
+    } else {
+      pixi_path %in% path_components || expanded_pixi_path %in% path_components
+    }
+    
+    # Add pixi to PATH if not found
+    if (!pixi_in_path) {
+      new_path <- paste(current_path, pixi_path, sep = separator)
+      Sys.setenv(PATH = new_path)
+    }
+  }, error = function(e) invisible(NULL))
+  
+  # Only run library setup in projects with pixi.toml
+  if (file.exists("pixi.toml")) {
+    tryCatch({
+      project_root <- "/path/to/project"
+      pixi_r_libs <- file.path(project_root, ".pixi", "envs", "default", "lib", "R", "library")
+      
+      # Only use pixi library if it exists
+      if (dir.exists(pixi_r_libs)) {
+        # Get current library paths
+        current_libpaths <- .libPaths()
+        
+        # Remove pixi path if already present to avoid duplicates
+        current_libpaths <- current_libpaths[current_libpaths != pixi_r_libs]
+        
+        # Add pixi library as first entry
+        new_libpaths <- c(pixi_r_libs, current_libpaths)
+        # new_libpaths <- c(pixi_r_libs)
+        .libPaths(new_libpaths)
+        message("Using pixi R library: ", pixi_r_libs)
+      }
+    }, error = function(e) {
+      # Silently handle errors to avoid breaking R startup
+      invisible(NULL)
+    })
+  }
+})
+
+# Something the user added later
+options(width = 100)
