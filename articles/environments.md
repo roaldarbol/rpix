@@ -63,6 +63,17 @@ Start an environment’s R with:
 pixi run --environment r44 R
 ```
 
+Or run a function in it from the R you’re in, and get the result back:
+
+``` r
+
+pixi_r(function() R.version.string, environment = "r44")
+#> [1] "R version 4.4.3 (2025-02-28)"
+```
+
+The function runs in a new R, so it doesn’t see your variables: pass
+what it needs as arguments, with `args = list(...)`.
+
 In Positron, each environment shows up as its own R in the interpreter
 picker, e.g. “R 4.4.3 (Pixi: r44)”.
 

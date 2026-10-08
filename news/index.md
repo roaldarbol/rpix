@@ -10,6 +10,10 @@
   [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
   work with the project’s Pixi tasks
   ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
+- New [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md)
+  runs a function in another environment’s R, e.g. one with another
+  version of R, and returns its result
+  ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
 
 ## rpix 0.5.0
 
