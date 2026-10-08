@@ -32,6 +32,7 @@ check = { cmd = """Rscript -e 'devtools::check(error_on = "warning")'""", descri
 format = { cmd = "air format .", description = "Format the R code with air" }
 readme = { cmd = "quarto render README.qmd", description = "Render README.md from README.qmd" }
 # CI=true skips building favicons, as on GitHub: the service pkgdown uses for
-# them is unreliable
-site = { cmd = "Rscript -e 'pkgdown::build_site(preview = FALSE)'", env = { CI = "true" }, description = "Build the pkgdown site into docs/" }
+# them is unreliable. docs/ only holds generated output, so it's cleared first;
+# otherwise a build that stopped halfway leaves a docs/ pkgdown refuses to use.
+site = { cmd = "Rscript -e 'pkgdown::clean_site(force = TRUE); pkgdown::build_site(preview = FALSE)'", env = { CI = "true" }, description = "Build the pkgdown site into docs/" }
 preview = { cmd = "python -m http.server --bind 127.0.0.1 --directory docs 8000", depends-on = ["site"], description = "Build the site and serve it at http://127.0.0.1:8000 (stop with Ctrl+C)" }

@@ -33,7 +33,7 @@ jobs:
           cache: true
 
       - name: Build site
-        run: pixi run Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE)'
+        run: pixi run Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)'
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
