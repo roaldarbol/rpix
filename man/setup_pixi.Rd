@@ -23,8 +23,8 @@ The path to the project's manifest, invisibly.
 Create a Pixi project in the working directory if there isn't one, add R to
 it, and install rpix into its environment.
 
-It also keeps your personal R library out of the environment's R, by
-pointing \code{R_LIBS_USER} at \verb{.pixi/r-libs/} in \code{pixi.toml}. Otherwise
+It also adds conda-forge's \code{conda-ecosystem-user-package-isolation}, which
+keeps your personal R library out of the environment's R. Otherwise
 conda-forge's R loads packages installed for your usual R first.
 
 It can be run from any R. Afterwards, work in R started by Pixi: run

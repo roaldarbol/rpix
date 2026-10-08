@@ -1,5 +1,5 @@
 # Mock pixi: record each call, and create pixi.toml on `pixi init`
-local_mock_setup <- function(platforms = "osx-arm64", env = parent.frame()) {
+local_mock_setup <- function(env = parent.frame()) {
   calls <- new.env()
   calls$args <- list()
   calls$paths <- list()
@@ -8,7 +8,6 @@ local_mock_setup <- function(platforms = "osx-arm64", env = parent.frame()) {
     pixi_binary = function(...) "/fake/pixi",
     # Keep the real ~/.Rprofile out of it
     home_dir = function() home,
-    project_platforms = function(path) platforms,
     run_pixi = function(args, path = NULL, ...) {
       calls$args <- c(calls$args, list(args))
       calls$paths <- c(calls$paths, list(path))
@@ -36,59 +35,16 @@ test_that("setup_pixi() creates a project and adds R and rpix", {
   manifest <- suppressMessages(setup_pixi())
 
   expect_equal(manifest, file.path(dir, "pixi.toml"))
-  expect_length(calls$args, 4)
+  expect_length(calls$args, 3)
   expect_equal(calls$args[[1]], c("init", dir))
   expect_equal(calls$args[[2]][1:2], c("add", "r-base"))
   expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
-  expect_equal(calls$args[[4]][1:3], c("run", "Rscript", "-e"))
-  expect_match(calls$args[[4]][4], "install.packages('rpix'", fixed = TRUE)
-  expect_match(calls$args[[4]][4], "lib = .Library", fixed = TRUE)
+  expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[2]])
+  expect_equal(calls$args[[3]][1:3], c("run", "Rscript", "-e"))
+  expect_match(calls$args[[3]][4], "install.packages('rpix'", fixed = TRUE)
+  expect_match(calls$args[[3]][4], "lib = .Library", fixed = TRUE)
   # Commands target the project, not the environment R happens to run in
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
-})
-
-test_that("setup_pixi() keeps the personal library out", {
-  calls <- local_mock_setup()
-  dir <- withr::local_tempdir()
-  writeLines("[workspace]", file.path(dir, "pixi.toml"))
-  withr::local_dir(dir)
-
-  suppressMessages(setup_pixi(install_rpix = FALSE))
-
-  expect_length(calls$args, 2)
-  expect_equal(
-    calls$args[[2]],
-    c(
-      "workspace",
-      "activation",
-      "env",
-      "set",
-      "R_LIBS_USER=$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
-    )
-  )
-})
-
-test_that("setup_pixi() adds a Windows entry if the project supports Windows", {
-  calls <- local_mock_setup(platforms = c("osx-arm64", "win-64"))
-  dir <- withr::local_tempdir()
-  writeLines("[workspace]", file.path(dir, "pixi.toml"))
-  withr::local_dir(dir)
-
-  suppressMessages(setup_pixi(install_rpix = FALSE))
-
-  expect_length(calls$args, 3)
-  expect_equal(
-    calls$args[[3]],
-    c(
-      "workspace",
-      "activation",
-      "env",
-      "set",
-      "--target",
-      "win",
-      "R_LIBS_USER=%PIXI_PROJECT_ROOT%\\.pixi\\r-libs\\%PIXI_ENVIRONMENT_NAME%"
-    )
-  )
 })
 
 test_that("setup_pixi() uses an existing project and can skip rpix", {
@@ -100,8 +56,10 @@ test_that("setup_pixi() uses an existing project and can skip rpix", {
 
   suppressMessages(setup_pixi(r_version = "4.5", install_rpix = FALSE))
 
-  expect_length(calls$args, 2)
-  expect_equal(calls$args[[1]], c("add", "r-base=4.5"))
+  expect_equal(
+    calls$args,
+    list(c("add", "r-base=4.5", "conda-ecosystem-user-package-isolation"))
+  )
   expect_equal(calls$paths[[1]], dir)
 })
 
@@ -178,15 +136,4 @@ test_that("rpix's dependencies are translated to conda names", {
     c("r-cli", "r-jsonlite", "r-processx")
   )
   expect_true(all(c("r-cli", "r-processx") %in% rpix_dependencies()))
-})
-
-test_that("project_platforms() reads the project's platforms", {
-  skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
-  dir <- withr::local_tempdir()
-  run_pixi(
-    c("init", dir, "--platform", "linux-64", "--platform", "win-64"),
-    project = "none"
-  )
-  expect_setequal(project_platforms(dir), c("linux-64", "win-64"))
 })
