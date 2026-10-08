@@ -1,0 +1,43 @@
+# Suggests air formatting fixes on pull requests. Adapted from the animovement
+# packages' shared workflow (https://github.com/animovement/.github), derived
+# from https://github.com/posit-dev/setup-air/tree/main/examples
+#
+# Using `pull_request_target` over `pull_request` for elevated `GITHUB_TOKEN`
+# privileges, otherwise we can't set `pull-requests: write` when the pull
+# request comes from a fork. The workflow only reads and reformats the pull
+# request's code, never executes it, which is the case GitHub calls out as safe:
+# https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/
+name: format-suggest
+
+on:
+  pull_request_target:
+
+jobs:
+  format-suggest:
+    name: format-suggest
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Required to push suggestion comments to the PR
+      pull-requests: write
+
+    steps:
+      # `pull_request_target` runs against the target branch, so the pull
+      # request's own code has to be checked out explicitly. It is only ever
+      # read and reformatted here, never executed.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install
+        uses: posit-dev/setup-air@v1
+
+      - name: Format
+        run: air format .
+
+      - name: Suggest
+        uses: reviewdog/action-suggester@v1
+        with:
+          level: error
+          fail_level: error
+          tool_name: air

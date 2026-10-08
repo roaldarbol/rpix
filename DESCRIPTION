@@ -1,24 +1,24 @@
 Package: rpix
 Type: Package
-Title: R package to manage dependencies with pixi
+Title: Manage R Project Dependencies with 'pixi'
 Version: 0.3.0
 Author: Mikkel Roald-Arbøl
 Maintainer: Mikkel Roald-Arbøl <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: An interface to the 'pixi' package manager
+    (<https://pixi.sh>) from R. Add, remove and search for conda packages,
+    and set up and work with 'pixi' projects from the R console.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
-URL: https://www.roald-arboel.com/rpix/
+URL: https://roald-arboel.com/rpix/, https://github.com/roaldarbol/rpix
+BugReports: https://github.com/roaldarbol/rpix/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports: 
     cli
 Suggests: 
-    altdoc,
     knitr,
     rmarkdown,
-    quarto,
     testthat (>= 3.0.0)
-Config/Needs/website: quarto
+Config/Needs/website: pkgdown, quarto
+Config/roxygen2/version: 8.1.0

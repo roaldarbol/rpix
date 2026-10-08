@@ -1,0 +1,67 @@
+url: https://roald-arboel.com/rpix/
+home:
+  title: "rpix – Manage R project dependencies with pixi"
+
+# Same look as the animovement package sites (theme and pkgdown/extra.scss
+# copied from animovementtemplate), without the animovement-specific navbar.
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    # From the logo
+    primary: "#172c45"
+    # Both SIL Open Font License, fetched at build time and written into the
+    # site's deps/, so pages make no request to Google.
+    base_font: {google: "Source Sans Pro"}
+    code_font: {google: "Source Code Pro"}
+    # Bootstrap derives its heading scale from this, so h1 lands at 3rem.
+    font_size_base: 1.2rem
+    # Half of it becomes the container's horizontal padding; it's also the
+    # column gutter, which opens up the gap to the sidebar.
+    grid_gutter_width: 3rem
+
+authors:
+  Mikkel Roald-Arbøl:
+    href: https://roald-arboel.com
+
+navbar:
+  structure:
+    left: [reference, articles, news]
+    right: [search, pixi, github, lightswitch]
+  components:
+    reference:
+      icon: fa fa-file-code
+      text: Reference
+      href: reference/index.html
+      aria-label: Reference
+    news:
+      icon: fa fa-newspaper
+      text: News
+      href: news/index.html
+      aria-label: News
+    pixi:
+      text: pixi
+      href: https://pixi.sh
+      aria-label: pixi documentation
+
+articles:
+  - title: "Get started"
+    navbar: ~
+    contents:
+      - articles/getting-started
+      - articles/ide
+      - articles/reproducibility
+
+reference:
+  - title: "Managing dependencies"
+    contents:
+      - add
+      - remove
+      - search
+
+  - title: "Setting up a project"
+    contents:
+      - setup_pixi
+      - pixi_to_path
+      - reset_r_libraries
+      - restart_rstudio_with_pixi
