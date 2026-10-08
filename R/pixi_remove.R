@@ -21,6 +21,7 @@ pixi_remove <- function(
   packages,
   feature = NULL,
   platform = NULL,
+  path = NULL,
   dry_run = FALSE
 ) {
   parsed <- parse_packages(packages)
@@ -31,6 +32,7 @@ pixi_remove <- function(
   }
   run_pixi(
     c("remove", parsed$name, scope_args(feature, platform)),
+    path = path,
     echo = TRUE,
     dry_run = dry_run
   )

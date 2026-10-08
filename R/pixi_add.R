@@ -27,6 +27,8 @@
 #'   the default one. See [pixi_add_environment()].
 #' @param platform Optional. Only add the packages for this platform, such as
 #'   `"linux-64"`.
+#' @param path The project. Defaults to the project of the running Pixi
+#'   environment, or the working directory.
 #' @param dry_run If `TRUE`, show the Pixi commands without running them.
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
@@ -44,6 +46,7 @@ pixi_add <- function(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  path = NULL,
   dry_run = FALSE
 ) {
   parsed <- parse_packages(packages)
@@ -73,11 +76,12 @@ pixi_add <- function(
     missing <- if (isTRUE(dry_run)) {
       channels
     } else {
-      setdiff(channels, project_channels())
+      setdiff(channels, project_channels(path))
     }
     if (length(missing) > 0) {
       commands <- run_pixi(
         c("workspace", "channel", "add", missing, "--no-install"),
+        path = path,
         echo = TRUE,
         dry_run = dry_run
       )
@@ -87,6 +91,7 @@ pixi_add <- function(
   result <- tryCatch(
     run_pixi(
       c("add", package_specs(parsed), scope_args(feature, platform)),
+      path = path,
       echo = TRUE,
       dry_run = dry_run
     ),
@@ -121,8 +126,8 @@ scope_args <- function(feature = NULL, platform = NULL) {
 }
 
 # Channels of the project's default environment
-project_channels <- function() {
-  info <- run_pixi("info", json = TRUE)
+project_channels <- function(path = NULL) {
+  info <- run_pixi("info", path = path, json = TRUE)
   envs <- info$environments_info
   channels <- envs$channels[[which(envs$name == "default")]]
   # Channels can be listed as URLs, so compare on names as well

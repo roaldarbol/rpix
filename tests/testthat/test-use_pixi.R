@@ -166,3 +166,13 @@ test_that("setup_pixi() is deprecated in favour of use_pixi()", {
     install_rpix = FALSE
   )))
 })
+
+test_that("use_pixi() sets up the folder in `path`", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  withr::local_dir(withr::local_tempdir())
+
+  manifest <- suppressMessages(use_pixi(path = dir, install_rpix = FALSE))
+  expect_equal(manifest, file.path(dir, "pixi.toml"))
+  expect_equal(calls$args[[1]], c("init", dir))
+})
