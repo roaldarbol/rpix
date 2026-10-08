@@ -1,18 +1,20 @@
 
-<p style="text-align:center;">
 
-<img style="padding-bottom: 20px; padding-top: 20px;" src="man/figures/logo.png" alt="rpix logo">
-</p>
+<!-- README.md is generated from README.qmd. Please edit that file -->
+
+# rpix <a href="https://roald-arboel.com/rpix/"><img src="man/figures/logo.png" align="right" height="139" alt="rpix hex logo" /></a>
 
 <!-- badges: start -->
 
-![License](https://img.shields.io/badge/license-MIT-blue)
-<img src="https://github.com/roaldarbol/rpix/workflows/R-CMD-check/badge.svg">
-[![Project
-Chat](https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/kKV8ZxyzY4)
+[![R-CMD-check](https://github.com/roaldarbol/rpix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/rpix/actions/workflows/R-CMD-check.yaml)
+[![rpix status
+badge](https://roaldarbol.r-universe.dev/badges/rpix)](https://roaldarbol.r-universe.dev/rpix)
+[![Codecov test
+coverage](https://codecov.io/gh/roaldarbol/rpix/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/rpix)
 [![Pixi
 Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
-
+[![Project
+Chat](https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/kKV8ZxyzY4)
 <!-- badges: end -->
 
 **rpix is currently in alpha. We don’t expect to support the entire pixi
@@ -36,8 +38,10 @@ yet, install pixi first.
   [ISSUE](https://github.com/roaldarbol/rpix/issues/2)**)
 
 ``` r
-install.packages('devtools')
-devtools::install_github('roaldarbol/rpix')
+install.packages(
+  "rpix",
+  repos = c("https://roaldarbol.r-universe.dev", "https://cloud.r-project.org")
+)
 ```
 
 ## Resources

@@ -12,7 +12,7 @@
 #'   \item **macOS/Linux**: `~/.pixi/bin`
 #'   \item **Windows**: `%USERPROFILE%\\.pixi\\bin`
 #' }
-#' 
+#'
 #' This modification only affects the current R session.
 #'
 #' @import cli
@@ -24,34 +24,39 @@
 #' \dontrun{
 #' # Check if pixi is available and add to PATH if needed
 #' pixi_to_path()
-#' 
+#'
 #' # Verify pixi is now available
 #' system("pixi --version")
 #' }
 #'
 #' @seealso [Sys.setenv()], [Sys.getenv()], [Sys.info()]
 #' @export
-pixi_to_path <- function(){
+pixi_to_path <- function() {
   # Check operating system
   os <- Sys.info()[["sysname"]]
   cli::cli_alert_info("Checking for pixi on {os}")
-  
+
   # Set up paths based on OS
   if (os == "Windows") {
     pixi_path <- file.path(Sys.getenv("USERPROFILE"), ".pixi", "bin")
     separator <- ";"
-  } else {  # macOS and Linux
+  } else {
+    # macOS and Linux
     pixi_path <- "~/.pixi/bin"
     separator <- ":"
   }
-  
+
   # Expand the tilde for comparison on Unix systems
-  expanded_pixi_path <- if (os != "Windows") path.expand(pixi_path) else pixi_path
-  
+  expanded_pixi_path <- if (os != "Windows") {
+    path.expand(pixi_path)
+  } else {
+    pixi_path
+  }
+
   # Get current PATH and split into components
   current_path <- Sys.getenv("PATH")
   path_components <- strsplit(current_path, separator, fixed = TRUE)[[1]]
-  
+
   # Check if pixi path is already in PATH
   # Compare both unexpanded and expanded paths for Unix systems
   pixi_in_path <- if (os == "Windows") {
@@ -59,19 +64,19 @@ pixi_to_path <- function(){
   } else {
     pixi_path %in% path_components || expanded_pixi_path %in% path_components
   }
-  
+
   if (pixi_in_path) {
     cli::cli_alert_success("pixi directory already in PATH")
   } else {
     cli::cli_alert_warning("pixi directory not found in PATH")
     cli::cli_alert_info("Adding {.path {pixi_path}} to PATH")
-    
+
     # Add pixi path to the end of PATH
     new_path <- paste(current_path, pixi_path, sep = separator)
     Sys.setenv(PATH = new_path)
-    
+
     cli::cli_alert_success("pixi path added successfully")
   }
-  
+
   invisible(NULL)
 }

@@ -1,26 +1,61 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# R CMD check across the standard matrix, with pixi installed so the tests that
+# call it run as well. Adapted from the animovement packages' shared workflow
+# (https://github.com/animovement/.github), derived from
+# https://github.com/r-lib/actions/tree/v2/examples
+name: R-CMD-check
+
 on:
   push:
     branches: [main, master]
+  # Every pull request, whatever it targets, so stacked pull requests are
+  # checked too.
   pull_request:
-    branches: [main, master]
-
-name: R-CMD-check
 
 permissions: read-all
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # R-devel has no binaries, so it runs on merges to main, not on PRs.
+        config: >-
+          ${{ github.event_name == 'pull_request'
+          && fromJSON('[
+            {"os": "macos-latest", "r": "release"},
+            {"os": "windows-latest", "r": "release"},
+            {"os": "ubuntu-latest", "r": "release"},
+            {"os": "ubuntu-latest", "r": "oldrel-1"}
+          ]')
+          || fromJSON('[
+            {"os": "macos-latest", "r": "release"},
+            {"os": "windows-latest", "r": "release"},
+            {"os": "ubuntu-latest", "r": "devel", "http-user-agent": "release"},
+            {"os": "ubuntu-latest", "r": "release"},
+            {"os": "ubuntu-latest", "r": "oldrel-1"}
+          ]') }}
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+
     steps:
       - uses: actions/checkout@v4
 
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          run-install: false
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
       - uses: r-lib/actions/setup-r@v2
         with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -32,3 +67,25 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+  # The same check in the pixi development environment (pixi.toml), so rpix is
+  # also checked with conda-forge's R, which is the R it is meant for
+  pixi:
+    runs-on: ${{ matrix.os }}
+
+    name: ${{ matrix.os }} (pixi)
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          cache: true
+
+      - name: Check
+        run: pixi run check

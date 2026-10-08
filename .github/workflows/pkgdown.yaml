@@ -1,0 +1,44 @@
+# Builds the pkgdown site, and deploys it to the gh-pages branch. Adapted from
+# the animovement packages' shared workflow (https://github.com/animovement/.github),
+# derived from https://github.com/r-lib/actions/tree/v2/examples
+name: pkgdown
+
+on:
+  push:
+    branches: [main]
+  # Every pull request, whatever it targets. Pull requests build the site
+  # without publishing it.
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    # Only restrict concurrency for non-PR jobs
+    concurrency:
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # R, pkgdown and quarto come from the pixi environment (pixi.toml), the
+      # same as `pixi run site` locally
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          cache: true
+
+      - name: Build site
+        run: pixi run Rscript -e 'pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)'
+
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs

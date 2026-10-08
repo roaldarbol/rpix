@@ -9,15 +9,9 @@
 # pixi environments
 .pixi
 .vscode
-pixi.toml
-
-.venv_altdoc
-altdoc/freeze.rds
-_quarto/*
-!_quarto/_freeze/
-
-# pixi environments
-.pixi
 *.egg-info
 inst/doc
 **/.quarto/
+
+# pkgdown site, built and deployed by CI
+docs

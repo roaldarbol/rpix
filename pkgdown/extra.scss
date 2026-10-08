@@ -1,0 +1,88 @@
+/* ------------- section descriptions ------------------ */
+
+// Indent the descriptor list so similar functions are visually grouped.
+div[class="section level2"] > dl,
+div[class="section level2"] > dt,
+div[class="section level2"] > dd,
+div[class="section "] > dl,
+div[class="section "] > dt,
+div[class="section "] > dd
+{
+    padding-left: 15px !important;
+}
+
+// Tighten the gap between a section header and its descriptor.
+div[class="section level2"] > p.section-desc,
+div[class="section "] > p.section-desc
+{
+    margin-bottom: 0.2rem !important;
+}
+
+/* ------------- home page header ---------------------- */
+
+// Set the logo beside the title as one masthead. pkgdown floats the logo right
+// by default; float has no effect on a flex item, so the flex container alone
+// moves it left, where it already is in source order.
+.template-home .page-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-height: 0;
+  // The padding is what gives the logo room inside the rule, and it is the
+  // only thing above it: the navbar offset already sits there, so a top
+  // margin as well reads as lopsided. tidytemplate ends up at 0.5rem of
+  // padding here, which crowds the logo against the border.
+  margin: 0 0 2.5rem;
+  padding: 2rem 0;
+  // Not a fixed grey: the site has light-switch enabled.
+  border-bottom: 1px solid var(--bs-border-color);
+
+  img.logo {
+    // Width is pkgdown's own 120px: measured at the box each site renders,
+    // that is already larger than the tidymodels sites' 100px.
+    margin-left: 0;
+  }
+
+  h1 {
+    margin-top: 0;
+  }
+}
+
+/* ------------- navbar ------------------------------- */
+
+// The bar is fixed, so its height is hardcoded twice in pkgdown -- as the top
+// margin that keeps content out from under it, and as the scroll padding that
+// stops an anchor landing beneath it. Both assume pkgdown's own 56px bar.
+// tidytemplate needs 78px at this font size; ours adds 0.7rem of padding on
+// top of that.
+$navbar-height: 90px;
+
+// Bootstrap's 0.5rem sits tight around a search box at this font size.
+.navbar {
+  --bs-navbar-padding-y: 0.85rem;
+}
+
+html,
+body {
+  scroll-padding: $navbar-height;
+}
+
+.row > main,
+.row > aside {
+  margin-top: $navbar-height;
+}
+
+/* ------------- sidebar ------------------------------ */
+
+// Set the section headings as labels rather than headings, so they read as
+// structure beside the content column instead of competing with it.
+aside h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  // tidytemplate hardcodes a grey here, which would not survive the switch.
+  color: var(--bs-secondary-color);
+}
