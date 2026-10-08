@@ -4,10 +4,16 @@
 \alias{pixi_remove}
 \title{Remove packages}
 \usage{
-pixi_remove(packages, dry_run = FALSE)
+pixi_remove(packages, feature = NULL, platform = NULL, dry_run = FALSE)
 }
 \arguments{
 \item{packages}{Package names.}
+
+\item{feature}{Optional. The feature to add the packages to, rather than
+the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}.}
+
+\item{platform}{Optional. Only add the packages for this platform, such as
+\code{"linux-64"}.}
 
 \item{dry_run}{If \code{TRUE}, show the Pixi command without running it.}
 }

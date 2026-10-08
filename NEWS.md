@@ -1,5 +1,7 @@
 # rpix (development version)
 
+- Features and environments (#30): `pixi_add()` and `pixi_remove()` gain `feature` and `platform` arguments, and new `pixi_environments()`, `pixi_add_environment()` and `pixi_remove_environment()` manage a project's environments. New article: "Several environments".
+- New `pixi_add_channel()` and `pixi_add_platform()`, and `pixi_install()`, `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
 - New `pixi_sitrep()` reports on the project's Pixi setup, with hints for what's wrong (#28): Pixi itself, whether the lock file is up to date, whether R is the project's Pixi R and is activated, libraries and packages from outside the project, the `.Rprofile` block, and whether the IDE is set up.
 - New `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns the packages in an environment as a data frame, including the name of each R package as R spells it (`Rcpp` for `r-rcpp`).
 - New `use_pixi()` replaces `setup_pixi()`, which is deprecated (#26). Its new `ide` argument sets the project up for RStudio, Positron or VS Code, with the new `use_pixi_rstudio()`, `use_pixi_positron()` and `use_pixi_vscode()` (#27):

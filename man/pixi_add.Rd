@@ -4,7 +4,14 @@
 \alias{pixi_add}
 \title{Add packages}
 \usage{
-pixi_add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
+pixi_add(
+  packages,
+  versions = NULL,
+  channel = NULL,
+  feature = NULL,
+  platform = NULL,
+  dry_run = FALSE
+)
 }
 \arguments{
 \item{packages}{Package names. A version constraint can follow the name, as
@@ -16,6 +23,12 @@ operator, such as \code{"1.1"}, means \verb{1.1.*}.}
 
 \item{channel}{Optional. A conda channel to install the packages from. It's
 added to the project's channels if it isn't there yet.}
+
+\item{feature}{Optional. The feature to add the packages to, rather than
+the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}.}
+
+\item{platform}{Optional. Only add the packages for this platform, such as
+\code{"linux-64"}.}
 
 \item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
 }
