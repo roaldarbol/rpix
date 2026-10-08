@@ -132,6 +132,19 @@
 <p>See the project’s environments, and their features, with:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_environments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</section><section class="level2"><h2 id="checking-a-package-on-several-versions-of-r">Checking a package on several versions of R<a class="anchor" aria-label="anchor" href="#checking-a-package-on-several-versions-of-r"></a>
+</h2>
+<p>For package developers, <code><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix()</a></code> adds an environment for each version of R, with the package’s dependencies and what the tests and <code>R CMD check</code> need:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.3"</span>, <span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Then run the tests in all of them, and see the results side by side:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">pixi_check_matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── Tests ──────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ✔ r43  R 4.3.3: 120 passed, 0 failed, 2 skipped, 0 warnings (41 s)</span></span>
+<span><span class="co">#&gt; ✖ r44  R 4.4.3: 119 passed, 1 failed, 2 skipped, 0 warnings (38 s)</span></span>
+<span><span class="co">#&gt; ✔ r45  R 4.5.3: 120 passed, 0 failed, 2 skipped, 0 warnings (37 s)</span></span></code></pre></div>
+<p><code>what = "check"</code> runs <code>R CMD check</code> instead, and <code>parallel = TRUE</code> runs in all environments at once. What each run printed is in the <code>output</code> column.</p>
 <p>Install an environment with <code>pixi_install(environment = "r44")</code>, or all of them with <code>pixi_install(all = TRUE)</code>. <code>pixi run</code> also installs an environment the first time it’s used.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

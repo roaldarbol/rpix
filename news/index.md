@@ -17,6 +17,14 @@
 - Pixi’s output is no longer partly red. Pixi reports progress on
   stderr, which was shown in red; rpix now shows it in Pixi’s own
   colours.
+- New
+  [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  runs a package’s tests or `R CMD check` in several environments,
+  e.g. one for each version of R, one at a time or all at once, and
+  shows the results side by side.
+  [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  adds those environments
+  ([\#34](https://github.com/roaldarbol/rpix/issues/34)).
 - [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
   [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)

@@ -22,6 +22,9 @@
   : Features and environments
 - [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md) : Run
   a function in another environment's R
+- [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  : Test a package in several environments
 - [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
   [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
   : Add channels or platforms to the project
