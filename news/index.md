@@ -1,6 +1,11 @@
 # Changelog
 
-## rpix (development version)
+## rpix 0.6.0
+
+rpix now works with several environments, e.g. one for each version of
+R, moves projects from renv, and keeps
+[`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+from installing packages Pixi doesn’t know about.
 
 ### Breaking changes
 
@@ -9,41 +14,29 @@
   instead, or start RStudio with `pixi run rstudio`
   ([\#32](https://github.com/roaldarbol/rpix/issues/32)).
 
-### New features
+### Several environments
 
 - New
   [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
   moves your work to another environment’s R
   ([\#32](https://github.com/roaldarbol/rpix/issues/32)). In RStudio it
-  starts a new RStudio with that R, in Positron it opens the interpreter
-  picker, and in VS Code it points the R extension at that R.
-- New
-  [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
-  [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
-  [`pixi_add_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
-  and
-  [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
-  work with the project’s Pixi tasks
-  ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
+  starts a new RStudio with that R. In Positron it looks for
+  interpreters again, so new environments are listed, and opens the
+  interpreter picker. In VS Code it points the R extension at that R.
 - New [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md)
   runs a function in another environment’s R, e.g. one with another
   version of R, and returns its result
   ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
 - New
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
-  runs a package’s tests or `R CMD check` in several environments,
-  e.g. one for each version of R, one at a time or all at once, and
-  shows the results side by side.
+  runs a package’s tests or `R CMD check` in several environments, one
+  at a time or all at once, and shows the results side by side.
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
-  adds those environments
+  adds an environment for each version of R you want to check
   ([\#34](https://github.com/roaldarbol/rpix/issues/34)).
-- New
-  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
-  adds a package’s dependencies from its `DESCRIPTION`: `Depends` and
-  `Imports` to the project, and `Suggests` to a `test` environment. It
-  finds Bioconductor packages on bioconda, and lists the packages that
-  aren’t on conda-forge or bioconda
-  ([\#36](https://github.com/roaldarbol/rpix/issues/36)).
+
+### Moving to Pixi
+
 - New
   [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   moves a project from renv: it adds the packages in `renv.lock`, at
@@ -52,12 +45,22 @@
   it can’t add, e.g. from GitHub
   ([\#37](https://github.com/roaldarbol/rpix/issues/37)).
 - New
+  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
+  adds a package’s dependencies from its `DESCRIPTION`: `Depends` and
+  `Imports` to the project, and `Suggests` to a `test` environment. It
+  finds Bioconductor packages on bioconda, and lists the packages that
+  aren’t on conda-forge or bioconda
+  ([\#36](https://github.com/roaldarbol/rpix/issues/36)).
+- New
   [`pixi_scan()`](https://roald-arboel.com/rpix/reference/pixi_scan.md)
   finds the packages the project’s code uses, in `.R` files, the R
   chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those
-  missing from `pixi.toml`, and adds them with `add = TRUE`, and lists
+  missing from `pixi.toml`, adds them with `add = TRUE`, and lists
   packages the code never uses
   ([\#38](https://github.com/roaldarbol/rpix/issues/38)).
+
+### Installing packages
+
 - In a Pixi environment’s R,
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
   adds packages with
@@ -74,8 +77,29 @@
   lists packages in the environment that Pixi didn’t install, so
   `pixi.toml` doesn’t record them
   ([\#3](https://github.com/roaldarbol/rpix/issues/3)).
+- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  explains when a package isn’t built for the project’s version of R
+  yet, which happens for a while after conda-forge releases a new R, and
+  suggests the newest R it’s built for
+  ([\#80](https://github.com/roaldarbol/rpix/issues/80)).
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  adds R together with the packages it needs, so Pixi picks the newest R
+  they’re built for. Just after conda-forge released a new R, it picked
+  that R, and adding packages failed until they were rebuilt for it
+  ([\#72](https://github.com/roaldarbol/rpix/issues/72)).
 
-### Minor improvements and fixes
+### Tasks
+
+- New
+  [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
+  [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
+  [`pixi_add_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  and
+  [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
+  work with the project’s Pixi tasks
+  ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
+
+### Other changes
 
 - [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
@@ -89,24 +113,10 @@
 - Pixi’s output is no longer partly red. Pixi reports progress on
   stderr, which was shown in red; rpix now shows it in Pixi’s own
   colours.
-- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
-  adds R together with the packages it needs, so Pixi picks the newest R
-  they’re built for. When conda-forge had just released a new R, it
-  picked that R, and adding packages failed until they were rebuilt for
-  it ([\#72](https://github.com/roaldarbol/rpix/issues/72)).
 - [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   replaces the `rstudio` task if it’s there, so it can be run again,
   e.g. after renaming the `.Rproj` file
   ([\#72](https://github.com/roaldarbol/rpix/issues/72)).
-- In Positron,
-  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
-  looks for interpreters again before opening the interpreter picker, so
-  environments added while Positron is open are listed.
-- [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
-  explains when a package isn’t built for the project’s version of R
-  yet, which happens for a while after conda-forge releases a new R, and
-  suggests the newest R it’s built for
-  ([\#80](https://github.com/roaldarbol/rpix/issues/80)).
 
 ## rpix 0.5.0
 
