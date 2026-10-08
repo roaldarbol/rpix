@@ -1,3 +1,5 @@
+# rpix (development version)
+
 # rpix 0.5.0
 
 rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
