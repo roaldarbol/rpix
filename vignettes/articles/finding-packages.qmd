@@ -70,4 +70,4 @@ If it really isn't available, you can add it to conda-forge, so it's available f
 pixi exec rattler-build generate-recipe cran mypackage
 ```
 
-As a last resort, `install.packages()` works in the environment's R. But the package isn't recorded in `pixi.toml` or `pixi.lock`, so collaborators won't get it, and packages with compiled code need compilers in the environment.
+As a last resort, `utils::install.packages()` works in the environment's R. (Plain `install.packages()` adds packages with Pixi there, so it stops for a package that isn't on conda-forge.) But the package isn't recorded in `pixi.toml` or `pixi.lock`, so collaborators won't get it, and packages with compiled code need compilers in the environment. `pixi_sitrep()` lists packages installed this way.

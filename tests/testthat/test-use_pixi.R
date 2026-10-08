@@ -41,7 +41,12 @@ test_that("use_pixi() creates a project and adds R and rpix", {
   expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
   expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[2]])
   expect_equal(calls$args[[3]][1:3], c("run", "Rscript", "-e"))
-  expect_match(calls$args[[3]][4], "install.packages('rpix'", fixed = TRUE)
+  # utils' own, not rpix's, which adds packages with Pixi
+  expect_match(
+    calls$args[[3]][4],
+    "utils::install.packages('rpix'",
+    fixed = TRUE
+  )
   expect_match(calls$args[[3]][4], "lib = .Library", fixed = TRUE)
   # Commands target the project, not the environment R happens to run in
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))

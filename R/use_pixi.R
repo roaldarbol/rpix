@@ -83,7 +83,7 @@ use_pixi <- function(
     # From inside the environment's R, so rpix is installed for that R. Its
     # dependencies are already there, from conda-forge.
     install <- paste0(
-      "install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
+      "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
       "lib = .Library, dependencies = FALSE, type = 'source')"
     )
     run_pixi(c("run", "Rscript", "-e", install), path = path, echo = TRUE)

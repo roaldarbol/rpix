@@ -150,15 +150,18 @@ local_activation <- function(vars = NULL, env = parent.frame()) {
     .local_envir = env
   )
   vars <- vars %||% c(RPIX_TEST_VAR = "set", R_LIBS_USER = project_lib)
+  attached <- new.env()
   local_mocked_bindings(
     r_home = function() file.path(root, ".pixi", "envs", "default", "lib", "R"),
     activation_variables = function(...) vars,
+    attach_install_packages = function(root) attached$root <- root,
     .env = env
   )
   list(
     root = root,
     personal = personal,
-    project_lib = normalizePath(project_lib, winslash = "/")
+    project_lib = normalizePath(project_lib, winslash = "/"),
+    attached = attached
   )
 }
 
@@ -172,6 +175,8 @@ test_that("activates R started directly from the environment", {
   expect_false(p$personal %in% .libPaths())
   expect_equal(.libPaths()[1], p$project_lib)
   expect_equal(result$lib_paths, .libPaths())
+  # install.packages() adds packages with Pixi
+  expect_equal(p$attached$root, p$root)
 })
 
 test_that("doesn't activate again what Pixi activated", {

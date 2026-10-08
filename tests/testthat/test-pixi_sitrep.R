@@ -47,6 +47,7 @@ test_that("reports problems, with hints", {
     activated = FALSE,
     libraries_outside = "/home/me/Library/R/4.5/library",
     packages_outside = "cli",
+    packages_unrecorded = "pak",
     rprofile = FALSE,
     ide = "rstudio",
     ide_set_up = FALSE
@@ -55,6 +56,7 @@ test_that("reports problems, with hints", {
   expect_match(out, "isn't activated")
   expect_match(out, "Library/R/4.5/library")
   expect_match(out, "Loaded from outside the project: cli")
+  expect_match(out, "Installed without Pixi, so not in 'pixi.toml': pak")
   expect_match(out, "use_pixi\\(\\)")
   expect_match(out, "use_pixi_rstudio\\(\\)")
 })
@@ -221,4 +223,19 @@ test_that("tells whether a path is in a folder", {
 
 test_that("names IDEs", {
   expect_equal(ide_name("vscode"), "VS Code")
+})
+
+test_that("finds packages in the environment that Pixi didn't install", {
+  installed <- rownames(utils::installed.packages(lib.loc = .Library))
+  extra <- setdiff(installed, base_packages())
+  skip_if(length(extra) == 0, "only base packages in this R's library")
+  local_mocked_bindings(
+    pixi_list = function(environment, path) {
+      data.frame(r_package = c(setdiff(extra, extra[1]), NA))
+    }
+  )
+  expect_equal(unrecorded_packages("default", "/p"), extra[1])
+
+  local_mocked_bindings(pixi_list = function(...) stop("no Pixi"))
+  expect_equal(unrecorded_packages("default", "/p"), character())
 })

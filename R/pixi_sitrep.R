@@ -10,6 +10,8 @@
 #'   the environment is activated.
 #' * Libraries and loaded packages from outside the project, such as your
 #'   personal library.
+#' * Packages in the environment that Pixi didn't install, e.g. with
+#'   `utils::install.packages()`, so `pixi.toml` doesn't record them.
 #' * Whether the project's `.Rprofile` activates the environment when an IDE
 #'   starts R directly.
 #' * Whether the IDE you're in is set up for the project: it runs the
@@ -92,6 +94,14 @@ pixi_sitrep <- function(path = NULL) {
   if (length(report$packages_outside) > 0) {
     cli::cli_alert_warning(
       "Loaded from outside the project: {.pkg {report$packages_outside}}"
+    )
+  }
+  if (length(report$packages_unrecorded) > 0) {
+    cli::cli_alert_warning(
+      "Installed without Pixi, so not in {.file pixi.toml}: {.pkg {report$packages_unrecorded}}"
+    )
+    hint(
+      "Add them with {.code pixi_add()}, so the project records them."
     )
   }
 
@@ -177,6 +187,11 @@ sitrep_data <- function(path = NULL) {
       identical(Sys.getenv("PIXI_ENVIRONMENT_NAME"), environment$name),
     libraries_outside = unname(outside),
     packages_outside = unname(packages_outside),
+    packages_unrecorded = if (in_project) {
+      unrecorded_packages(environment$name, project)
+    } else {
+      character()
+    },
     rprofile = !is.null(project) &&
       has_rprofile_block(file.path(project, ".Rprofile")),
     ide = ide,
@@ -186,6 +201,21 @@ sitrep_data <- function(path = NULL) {
       in_project || ide_set_up(ide, project)
     }
   )
+}
+
+# Packages in the environment's library that Pixi didn't install, e.g. with
+# utils::install.packages(). rpix itself comes from R-universe for now.
+unrecorded_packages <- function(environment, root) {
+  installed <- rownames(utils::installed.packages(lib.loc = .Library))
+  from_pixi <- tryCatch(
+    stats::na.omit(pixi_list(environment, path = root)$r_package),
+    error = function(e) NULL
+  )
+  if (is.null(from_pixi)) {
+    return(character())
+  }
+  known <- tolower(c(from_pixi, base_packages(), "rpix"))
+  sort(installed[!tolower(installed) %in% known])
 }
 
 # Whether a path is a folder, or inside it
