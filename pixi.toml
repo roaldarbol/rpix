@@ -19,6 +19,7 @@ r-quarto = ">=1.5.1,<2"
 quarto = ">=1.9.38,<2"
 air = ">=0.12.0,<0.13"
 python = ">=3.14.8,<3.15"
+r-covr = ">=3.6.5,<4"
 
 # Keep packages from the user library (installed for another R) out of this
 # environment's R, which would otherwise put it first on .libPaths()
@@ -29,6 +30,7 @@ R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
 document = { cmd = "Rscript -e 'devtools::document()'", description = "Regenerate man/ and NAMESPACE from the roxygen comments" }
 test = { cmd = "Rscript -e 'devtools::test()'", description = "Run the tests" }
 check = { cmd = """Rscript -e 'devtools::check(error_on = "warning")'""", description = "Run R CMD check" }
+coverage = { cmd = "Rscript -e 'covr::report(covr::package_coverage())'", description = "Measure test coverage and open a report of the uncovered lines" }
 format = { cmd = "air format .", description = "Format the R code with air" }
 readme = { cmd = "quarto render README.qmd", description = "Render README.md from README.qmd" }
 # CI=true skips building favicons, as on GitHub: the service pkgdown uses for

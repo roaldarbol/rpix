@@ -100,3 +100,58 @@ test_that("add() is deprecated in favour of pixi_add()", {
   lifecycle::expect_deprecated(command <- dry(add("dplyr", dry_run = TRUE)))
   expect_equal(command, dry(pixi_add("dplyr", dry_run = TRUE)))
 })
+
+# Mock run_pixi() so the paths that need pixi and the network can run offline
+local_mock_pixi <- function(
+  channels = "conda-forge",
+  error = NULL,
+  env = parent.frame()
+) {
+  calls <- new.env()
+  calls$args <- list()
+  local_mocked_bindings(
+    project_channels = function() channels,
+    run_pixi = function(args, ...) {
+      calls$args <- c(calls$args, list(args))
+      if (!is.null(error) && args[1] == "add") {
+        stop(error)
+      }
+      invisible(list(status = 0))
+    },
+    .env = env
+  )
+  calls
+}
+
+pixi_error <- function(stderr) {
+  structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(message = "pixi failed", call = NULL, stderr = stderr)
+  )
+}
+
+test_that("pixi_add() only adds channels that aren't in the project yet", {
+  calls <- local_mock_pixi(channels = "conda-forge")
+  pixi_add("bioc::limma")
+  expect_equal(
+    calls$args[[1]],
+    c("workspace", "channel", "add", "bioconda", "--no-install")
+  )
+  expect_equal(calls$args[[2]], c("add", "bioconda::bioconductor-limma"))
+
+  calls <- local_mock_pixi(channels = c("conda-forge", "bioconda"))
+  result <- pixi_add("bioc::limma")
+  expect_length(calls$args, 1)
+  expect_equal(result, list(status = 0))
+})
+
+test_that("pixi_add() hints at prefixes when a package isn't found", {
+  local_mock_pixi(error = pixi_error("No candidates were found for r-gdal *."))
+  expect_error(pixi_add("gdal"), class = "rpix_error_package_not_found")
+})
+
+test_that("pixi_add() passes on other pixi errors", {
+  local_mock_pixi(error = pixi_error("Some other failure"))
+  err <- expect_error(pixi_add("dplyr"), class = "rpix_error_pixi")
+  expect_false(inherits(err, "rpix_error_package_not_found"))
+})
