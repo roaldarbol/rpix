@@ -1,0 +1,30 @@
+# Getting started
+
+## Install Pixi
+
+The first thing that we need to do is install Pixi, which is the engine
+underlying *rpix*. To do so, follow the installation instructions on
+[pixi.sh](https://pixi.sh/latest/installation/).
+
+## Install *rpix*
+
+Next, you’ll need to install *rpix*. For this guide, we’ll assume you
+are using RStudio.
+
+- Open RStudio
+- Create new project (without *renv*)
+- Install *rpix*
+  - `install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")`
+
+## Setup pixi project
+
+- Initiate pixi project with
+  [`rpix::setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+- Restart RStudio with
+  [`rpix::restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
+  for changes to take effect
+
+## Start coding!
+
+When you need new packages, run `rpix::add("package_name")`. If you wish
+to remove packages, simply `rpix::remove("package_name")`

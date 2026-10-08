@@ -1,4 +1,11 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  articles/getting-started: getting-started.html
+  articles/ide: ide.html
+  articles/reproducibility: reproducibility.html
+last_built: 2026-10-08T13:01Z
 urls:
-  reference: https:/www.roald-arboel.com/rpix/man
-  article: https:/www.roald-arboel.com/rpix/vignettes
-
+  reference: https://roald-arboel.com/rpix/reference
+  article: https://roald-arboel.com/rpix/articles
