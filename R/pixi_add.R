@@ -27,7 +27,8 @@
 #'   in `"dplyr>=1.1"`.
 #' @param versions Optional. Version constraints, either one for all packages
 #'   or one per package (use `NA` for no constraint). A version without an
-#'   operator, such as `"1.1"`, means `1.1.*`.
+#'   operator, such as `"1.1"`, means `1.1.*`. For a package from GitHub, it's
+#'   a branch, tag or commit instead, as with `@ref`.
 #' @param channel Optional. A conda channel to install the packages from. It's
 #'   added to the project's channels if it isn't there yet.
 #' @param feature Optional. The feature to add the packages to, rather than
@@ -55,11 +56,24 @@ pixi_add <- function(
   path = NULL,
   dry_run = FALSE
 ) {
-  github <- packages[is_github(packages)]
-  packages <- packages[!is_github(packages)]
-  if (length(github) > 0 && (!is.null(versions) || !is.null(channel))) {
+  if (!is.null(versions)) {
+    if (!length(versions) %in% c(1, length(packages))) {
+      cli::cli_abort(
+        "{.arg versions} must have length 1 or the same length as {.arg packages}."
+      )
+    }
+    versions <- rep_len(versions, length(packages))
+  }
+  on_github <- is_github(packages)
+  github <- with_github_refs(packages[on_github], versions[on_github])
+  packages <- packages[!on_github]
+  versions <- versions[!on_github]
+  if (all(is.na(versions))) {
+    versions <- NULL
+  }
+  if (length(github) > 0 && !is.null(channel)) {
     cli::cli_abort(
-      "{.arg versions} and {.arg channel} don't apply to packages from GitHub; give a branch, tag or commit as {.code github::user/repo@ref}."
+      "{.arg channel} doesn't apply to packages from GitHub."
     )
   }
   if (length(packages) == 0) {
@@ -74,17 +88,12 @@ pixi_add <- function(
   parsed <- parse_packages(packages)
 
   if (!is.null(versions)) {
-    if (!length(versions) %in% c(1, nrow(parsed))) {
-      cli::cli_abort(
-        "{.arg versions} must have length 1 or the same length as {.arg packages}."
-      )
-    }
     if (any(nzchar(parsed$constraint))) {
       cli::cli_abort(
         "Give version constraints either in {.arg packages} or in {.arg versions}, not both."
       )
     }
-    parsed$constraint <- normalise_versions(rep_len(versions, nrow(parsed)))
+    parsed$constraint <- normalise_versions(versions)
   }
 
   if (!is.null(channel)) {

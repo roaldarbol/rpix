@@ -46,3 +46,17 @@
     Message
       i Would add to 'pixi.toml': `r-emo = { git = "https://github.com/hadley/emo", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }`
 
+# versions gives a GitHub package's branch, tag or commit
+
+    Code
+      with_github_refs("github::cran/praise", ">=1.0")
+    Condition
+      Error:
+      ! A package from GitHub takes a branch, tag or commit, not a range like ">=1.0".
+      i Pixi builds it from that point in its history.
+    Code
+      with_github_refs("github::cran/praise@1.0.0", "1.0.0")
+    Condition
+      Error:
+      ! Give the branch, tag or commit of "github::cran/praise@1.0.0" either with `@ref` or in `versions`, not both.
+

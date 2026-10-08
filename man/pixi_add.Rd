@@ -20,7 +20,8 @@ in \code{"dplyr>=1.1"}.}
 
 \item{versions}{Optional. Version constraints, either one for all packages
 or one per package (use \code{NA} for no constraint). A version without an
-operator, such as \code{"1.1"}, means \verb{1.1.*}.}
+operator, such as \code{"1.1"}, means \verb{1.1.*}. For a package from GitHub, it's
+a branch, tag or commit instead, as with \verb{@ref}.}
 
 \item{channel}{Optional. A conda channel to install the packages from. It's
 added to the project's channels if it isn't there yet.}

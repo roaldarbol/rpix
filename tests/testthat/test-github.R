@@ -212,12 +212,7 @@ test_that("pixi_add() shows what it would add to pixi.toml", {
   expect_length(calls$args, 0)
 })
 
-test_that("pixi_add() needs pixi.toml, and no versions or channel for GitHub", {
-  calls <- local_github_project()
-  expect_error(
-    pixi_add("github::hadley/emo", versions = "1.0", path = calls$dir),
-    "don't apply"
-  )
+test_that("pixi_add() needs pixi.toml for GitHub packages", {
   dir <- withr::local_tempdir()
   writeLines(
     c("[project]", "[tool.pixi.workspace]"),
@@ -248,5 +243,43 @@ test_that("read_url() reads a URL, and fails without a warning", {
     expect_error(read_url(
       "https://raw.githubusercontent.com/cran/praise/master/NOPE"
     ))
+  )
+})
+
+test_that("versions gives a GitHub package's branch, tag or commit", {
+  expect_equal(
+    with_github_refs(
+      c("github::cran/praise", "github::hadley/emo", "github::me/x"),
+      c("==1.0.0", "main", NA)
+    ),
+    c("github::cran/praise@1.0.0", "github::hadley/emo@main", "github::me/x")
+  )
+  expect_equal(with_github_refs("github::me/x", NULL), "github::me/x")
+  expect_snapshot(error = TRUE, {
+    with_github_refs("github::cran/praise", ">=1.0")
+    with_github_refs("github::cran/praise@1.0.0", "1.0.0")
+  })
+})
+
+test_that("pixi_add() takes versions for GitHub packages, next to others", {
+  calls <- local_github_project()
+
+  pixi_add(
+    c("dplyr>=1.1", "github::cran/praise"),
+    versions = c(NA, "1.0.0"),
+    path = calls$dir
+  ) |>
+    suppressMessages()
+  expect_equal(calls$args[[1]][1:2], c("add", "r-dplyr>=1.1"))
+  lines <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_true(any(grepl('^r-praise = .*rev = "1.0.0"', lines)))
+
+  expect_error(
+    pixi_add(c("dplyr", "github::cran/praise"), versions = c("1", "2", "3")),
+    "length 1"
+  )
+  expect_error(
+    pixi_add("github::cran/praise", channel = "bioconda", path = calls$dir),
+    "doesn't apply"
   )
 })
