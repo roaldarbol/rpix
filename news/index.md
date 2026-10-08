@@ -2,6 +2,13 @@
 
 ## rpix (development version)
 
+### Breaking changes
+
+- The deprecated `add()` and `setup_pixi()` are removed. Use
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  and
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md).
+
 ## rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of
@@ -129,9 +136,7 @@ sure R only uses the project’s packages.
 
 - New
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
-  replaces
-  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md),
-  which is deprecated
+  replaces `setup_pixi()`, which is deprecated
   ([\#26](https://github.com/roaldarbol/rpix/issues/26)). Its `ide`
   argument sets the project up for an IDE, with the new
   [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
@@ -234,11 +239,9 @@ sure R only uses the project’s packages.
 - Exported functions now follow one naming scheme
   ([\#20](https://github.com/roaldarbol/rpix/issues/20)): functions that
   run a Pixi command are called `pixi_<command>()`.
-  - [`add()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
-    is now
+  - `add()` is now
     [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
-    [`add()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
-    still works for now, with a deprecation warning.
+    `add()` still works for now, with a deprecation warning.
   - [`remove()`](https://rdrr.io/r/base/rm.html) and
     [`search()`](https://rdrr.io/r/base/search.html) are now
     [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
@@ -254,15 +257,13 @@ sure R only uses the project’s packages.
   packages built for a different R could crash
   ([\#14](https://github.com/roaldarbol/rpix/issues/14)). Work in R
   started by Pixi instead, e.g. with `pixi run R`.
-  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
-    now only sets up the project: it creates `pixi.toml` if needed, adds
-    R (`r_version` picks the version), and installs rpix into the
-    environment, with its dependencies from conda-forge. Its
+  - `setup_pixi()` now only sets up the project: it creates `pixi.toml`
+    if needed, adds R (`r_version` picks the version), and installs rpix
+    into the environment, with its dependencies from conda-forge. Its
     `add_to_rprofile` and `global` arguments are gone.
-  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
-    removes the “Pixi R library setup” block that earlier versions added
-    to the project’s `.Rprofile`, and warns if there’s one in
-    `~/.Rprofile`.
+  - `setup_pixi()` removes the “Pixi R library setup” block that earlier
+    versions added to the project’s `.Rprofile`, and warns if there’s
+    one in `~/.Rprofile`.
   - `reset_r_libraries()` is removed.
 
 ### Other changes

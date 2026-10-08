@@ -57,6 +57,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>The deprecated <code>add()</code> and <code>setup_pixi()</code> are removed. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code>.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="rpix-060">rpix 0.6.0<a class="anchor" aria-label="anchor" href="#rpix-060"></a></h2>
@@ -106,7 +110,7 @@
 <p>rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project’s packages.</p>
 <div class="section level3">
 <h3 id="setting-up-a-project-0-5-0">Setting up a project<a class="anchor" aria-label="anchor" href="#setting-up-a-project-0-5-0"></a></h3>
-<ul><li>New <code><a href="../reference/use_pixi.html">use_pixi()</a></code> replaces <code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code>, which is deprecated (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>). Its <code>ide</code> argument sets the project up for an IDE, with the new <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> and <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/27" class="external-link">#27</a>):
+<ul><li>New <code><a href="../reference/use_pixi.html">use_pixi()</a></code> replaces <code>setup_pixi()</code>, which is deprecated (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>). Its <code>ide</code> argument sets the project up for an IDE, with the new <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> and <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/27" class="external-link">#27</a>):
 <ul><li>
 <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> adds an <code>rstudio</code> task for each of the project’s platforms, so <code>pixi run rstudio</code> starts a new RStudio with the environment’s R, in the project.</li>
 <li>
@@ -142,7 +146,7 @@
 <h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
 <ul><li>Exported functions now follow one naming scheme (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>): functions that run a Pixi command are called <code>pixi_&lt;command&gt;()</code>.
 <ul><li>
-<code><a href="../reference/rpix-deprecated.html">add()</a></code> is now <code><a href="../reference/pixi_add.html">pixi_add()</a></code>. <code><a href="../reference/rpix-deprecated.html">add()</a></code> still works for now, with a deprecation warning.</li>
+<code>add()</code> is now <code><a href="../reference/pixi_add.html">pixi_add()</a></code>. <code>add()</code> still works for now, with a deprecation warning.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>. The old names were removed rather than deprecated, because they masked <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">base::remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">base::search()</a></code> whenever rpix was attached.</li>
 <li>
@@ -150,9 +154,9 @@
 </ul></li>
 <li>rpix no longer points a running R at a Pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by Pixi instead, e.g. with <code>pixi run R</code>.
 <ul><li>
-<code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
+<code>setup_pixi()</code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
 <li>
-<code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
+<code>setup_pixi()</code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
 <li>
 <code>reset_r_libraries()</code> is removed.</li>
 </ul></li>
