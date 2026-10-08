@@ -166,6 +166,7 @@ test_that("detects the IDE", {
 
 test_that("tells whether an IDE is set up for the project", {
   root <- withr::local_tempdir()
+  local_mocked_bindings(is_windows = function() FALSE)
   expect_false(ide_set_up("positron", root))
   expect_false(ide_set_up("vscode", root))
 
@@ -178,7 +179,6 @@ test_that("tells whether an IDE is set up for the project", {
     file.path(root, ".vscode", "settings.json"),
     auto_unbox = TRUE
   )
-  local_mocked_bindings(is_windows = function() FALSE)
   expect_true(ide_set_up("positron", root))
   expect_true(ide_set_up("vscode", root))
 
