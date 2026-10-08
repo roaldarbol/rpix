@@ -243,7 +243,7 @@ cat_labelled <- function(label, value, width, style = cli::col_grey) {
     width = max(cli::console_width() - indent, 20)
   )
   cli::cat_line(c(
-    paste0(style(format(label, width = width)), "  ", lines[1]),
+    paste0(style(cli::ansi_align(label, width)), "  ", lines[1]),
     if (length(lines) > 1) paste0(strrep(" ", indent), lines[-1])
   ))
 }
@@ -266,4 +266,51 @@ format_table <- function(df) {
   })
   lines <- do.call(paste, c(columns, sep = "  "))
   sub("\\s+$", "", lines)
+}
+
+#' @export
+print.rpix_check_matrix <- function(x, ...) {
+  if (!has_columns(x, c("environment", "r_version", "ok", "output"))) {
+    return(NextMethod())
+  }
+  what <- attr(x, "what") %||% "task"
+  title <- c(test = "Tests", check = "R CMD check", task = "Task")[[what]]
+  cli::cat_line(cli::rule(left = title))
+  width <- max(nchar(x$environment), 0)
+  for (i in seq_len(nrow(x))) {
+    counts <- check_counts[[what]]
+    counts <- counts[counts %in% names(x)]
+    summary <- if (length(counts) > 0 && !is.na(x[[counts[1]]][i])) {
+      values <- unlist(x[i, counts])
+      labels <- ifelse(values == 1, sub("s$", "", counts), counts)
+      paste(values, labels, collapse = ", ")
+    } else if (x$ok[i]) {
+      "passed"
+    } else {
+      "failed"
+    }
+    mark <- if (x$ok[i]) {
+      cli::col_green(cli::symbol$tick)
+    } else {
+      cli::col_red(cli::symbol$cross)
+    }
+    cat_labelled(
+      paste(mark, x$environment[i]),
+      paste0(
+        if (!is.na(x$r_version[i])) paste0("R ", x$r_version[i], ": "),
+        summary,
+        if (has_columns(x, "seconds")) {
+          cli::col_grey(" (", format_seconds(x$seconds[i]), ")")
+        }
+      ),
+      width + 2,
+      identity
+    )
+  }
+  if (!all(x$ok)) {
+    cli::cat_line(cli::col_grey(
+      "See what failed with `cat(x$output[[i]])`, for row `i`."
+    ))
+  }
+  invisible(x)
 }
