@@ -55,7 +55,7 @@ test_that("the rpix.pixi_path option takes precedence", {
   fake <- withr::local_tempfile()
   file.create(fake)
   withr::local_options(rpix.pixi_path = fake)
-  expect_equal(pixi_binary(), normalizePath(fake))
+  expect_equal(pixi_binary(), normalizePath(fake, winslash = "/"))
 })
 
 test_that("a wrong rpix.pixi_path option is an error", {
@@ -71,7 +71,7 @@ test_that("falls back to $PIXI_HOME/bin when pixi isn't on the PATH", {
 
   withr::local_options(rpix.pixi_path = NULL)
   withr::local_envvar(PATH = "", PIXI_HOME = pixi_home)
-  expect_equal(pixi_binary(), normalizePath(exe))
+  expect_equal(pixi_binary(), normalizePath(exe, winslash = "/"))
 })
 
 test_that("errors helpfully when pixi can't be found", {

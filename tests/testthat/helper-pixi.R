@@ -11,5 +11,5 @@ local_pixi_project <- function(
 ) {
   dir <- withr::local_tempdir(.local_envir = env)
   writeLines(content, file.path(dir, manifest))
-  normalizePath(dir)
+  normalizePath(dir, winslash = "/")
 }

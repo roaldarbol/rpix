@@ -114,7 +114,7 @@ pixi_binary <- function(call = parent.frame()) {
         call = call
       )
     }
-    return(normalizePath(option))
+    return(normalizePath(option, winslash = "/"))
   }
 
   on_path <- Sys.which("pixi")
@@ -126,7 +126,7 @@ pixi_binary <- function(call = parent.frame()) {
   pixi_home <- Sys.getenv("PIXI_HOME", file.path(home_dir(), ".pixi"))
   default <- file.path(pixi_home, "bin", exe)
   if (file.exists(default)) {
-    return(normalizePath(default))
+    return(normalizePath(default, winslash = "/"))
   }
 
   cli::cli_abort(
@@ -166,7 +166,7 @@ find_manifest <- function(path = NULL) {
   if (is.null(path)) {
     path <- Sys.getenv("PIXI_PROJECT_ROOT", getwd())
   }
-  dir <- normalizePath(path, mustWork = FALSE)
+  dir <- normalizePath(path, winslash = "/", mustWork = FALSE)
 
   repeat {
     pixi_toml <- file.path(dir, "pixi.toml")
@@ -210,7 +210,7 @@ display_path <- function(path) {
   if (is.null(path)) {
     return(NULL)
   }
-  wd <- paste0(normalizePath(getwd()), .Platform$file.sep)
+  wd <- paste0(normalizePath(getwd(), winslash = "/"), "/")
   if (startsWith(path, wd)) substring(path, nchar(wd) + 1) else path
 }
 
