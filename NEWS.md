@@ -12,6 +12,7 @@
 - New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
 
 - New `pixi_import_description()` adds a package's dependencies from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment. It finds Bioconductor packages on bioconda, and lists the packages that aren't on conda-forge or bioconda (#36).
+- New `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those missing from `pixi.toml`, and adds them with `add = TRUE`, and lists packages the code never uses (#38).
 
 ## Minor improvements and fixes
 
