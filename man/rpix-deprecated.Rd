@@ -18,7 +18,7 @@ operator, such as \code{"1.1"}, means \verb{1.1.*}.}
 \item{channel}{Optional. A conda channel to install the packages from. It's
 added to the project's channels if it isn't there yet.}
 
-\item{dry_run}{If \code{TRUE}, show the pixi commands without running them.}
+\item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
 }
 \description{
 \itemize{

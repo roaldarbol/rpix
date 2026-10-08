@@ -12,11 +12,11 @@ pixi_search(package, channel = NULL, dry_run = FALSE)
 \item{channel}{Optional. A conda channel to search. Inside a project, the
 project's channels are searched by default, and conda-forge otherwise.}
 
-\item{dry_run}{If \code{TRUE}, show the pixi command without running it.}
+\item{dry_run}{If \code{TRUE}, show the Pixi command without running it.}
 }
 \value{
 The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
-the pixi call (invisibly).
+the Pixi call (invisibly).
 }
 \description{
 Show the available versions of a conda package and their dependencies.

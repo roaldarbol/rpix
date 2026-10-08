@@ -17,14 +17,14 @@ operator, such as \code{"1.1"}, means \verb{1.1.*}.}
 \item{channel}{Optional. A conda channel to install the packages from. It's
 added to the project's channels if it isn't there yet.}
 
-\item{dry_run}{If \code{TRUE}, show the pixi commands without running them.}
+\item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
 }
 \value{
 The commands (invisibly) if \code{dry_run = TRUE}, otherwise the result
-of the pixi call (invisibly).
+of the Pixi call (invisibly).
 }
 \description{
-Add packages to the pixi manifest and install them. pixi only adds them if
+Add packages to the Pixi manifest and install them. Pixi only adds them if
 they can be solved together with the rest of the project's dependencies.
 
 R package names are translated to conda names: \code{"dplyr"} becomes \code{r-dplyr}

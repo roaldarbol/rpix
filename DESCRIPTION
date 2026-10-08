@@ -1,12 +1,18 @@
 Package: rpix
 Type: Package
-Title: Manage R Project Dependencies with 'pixi'
-Version: 0.3.0
-Author: Mikkel Roald-Arbøl
-Maintainer: Mikkel Roald-Arbøl <yourself@somewhere.net>
-Description: An interface to the 'pixi' package manager
+Title: Manage R Project Dependencies with 'Pixi'
+Version: 0.4.0
+Authors@R: 
+    person(
+      "Mikkel", 
+      "Roald-Arbøl", 
+      role = c("aut", "cre"), 
+      email = "github.jh1q5@passmail.net",
+      comment = c(ORCID = "0000-0002-9998-0058")
+      )
+Description: An interface to the 'Pixi' package manager
     (<https://pixi.sh>) from R. Add, remove and search for conda packages,
-    and set up and work with 'pixi' projects from the R console.
+    and set up and work with 'Pixi' projects from the R console.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

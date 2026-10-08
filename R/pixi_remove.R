@@ -1,16 +1,16 @@
 #' Remove packages
 #'
 #' @description
-#' Remove packages from the pixi manifest. Package names are translated like in
+#' Remove packages from the Pixi manifest. Package names are translated like in
 #' [pixi_add()]: `"dplyr"` removes `r-dplyr` and `"bioc::DESeq2"` removes
 #' `bioconductor-deseq2`.
 #'
 #' For more information, see <https://pixi.sh/latest/reference/cli/pixi/remove/>.
 #'
 #' @param packages Package names.
-#' @param dry_run If `TRUE`, show the pixi command without running it.
+#' @param dry_run If `TRUE`, show the Pixi command without running it.
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
-#'   the pixi call (invisibly).
+#'   the Pixi call (invisibly).
 #' @export
 #' @examples
 #' \dontrun{

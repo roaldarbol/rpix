@@ -1,21 +1,21 @@
-#' Set up a pixi project for R
+#' Set up a Pixi project for R
 #'
 #' @description
-#' Create a pixi project in the working directory if there isn't one, add R to
+#' Create a Pixi project in the working directory if there isn't one, add R to
 #' it, and install rpix into its environment.
 #'
-#' It can be run from any R. Afterwards, work in R started by pixi: run
+#' It can be run from any R. Afterwards, work in R started by Pixi: run
 #' `pixi run R` in a terminal, or point your IDE at the environment's R (see
-#' <https://roald-arboel.com/rpix/articles/ide.html>). Each pixi environment
+#' <https://roald-arboel.com/rpix/articles/ide.html>). Each Pixi environment
 #' has its own R and package library, so rpix doesn't point a running R at a
-#' pixi library: packages built for a different R can crash it.
+#' Pixi library: packages built for a different R can crash it.
 #'
 #' Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
 #' block in their `.Rprofile`, which did exactly that. It's removed.
 #'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
 #'   to the latest on conda-forge.
-#' @param init_if_missing If `TRUE`, create a pixi project if there isn't one.
+#' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
 #' @param install_rpix If `TRUE`, install rpix into the project's environment.
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
 #'   until it's on conda-forge.
@@ -38,7 +38,7 @@ setup_pixi <- function(
   if (is.null(manifest)) {
     if (!init_if_missing) {
       cli::cli_abort(c(
-        "There's no pixi project in {.path {dir}}.",
+        "There's no Pixi project in {.path {dir}}.",
         "i" = "Create one with {.code setup_pixi()} or {.code pixi init}."
       ))
     }
@@ -88,7 +88,7 @@ legacy_marker <- "# Pixi R library setup"
 
 #' Remove the `.Rprofile` block written by rpix 0.3.0 and earlier
 #'
-#' It pointed the running R at the pixi library. Finds the `local({...})`
+#' It pointed the running R at the Pixi library. Finds the `local({...})`
 #' block after the marker comment by counting braces.
 #' @returns `TRUE` if a block was removed, invisibly.
 #' @noRd
@@ -114,14 +114,14 @@ remove_legacy_rprofile <- function(file) {
   }
   if (is.na(end)) {
     cli::cli_warn(
-      "Found the old pixi setup in {.path {file}}, but couldn't find where it ends. Remove it by hand."
+      "Found the old Pixi setup in {.path {file}}, but couldn't find where it ends. Remove it by hand."
     )
     return(invisible(FALSE))
   }
 
   writeLines(lines[-(start:end)], file)
   cli::cli_alert_success(
-    "Removed the old pixi library setup from {.path {file}}."
+    "Removed the old Pixi library setup from {.path {file}}."
   )
   invisible(TRUE)
 }
@@ -131,7 +131,7 @@ remove_legacy_rprofile <- function(file) {
 warn_legacy_rprofile <- function(file) {
   if (file.exists(file) && legacy_marker %in% readLines(file, warn = FALSE)) {
     cli::cli_warn(c(
-      "{.path {file}} still has the pixi library setup from rpix 0.3.0 or earlier.",
+      "{.path {file}} still has the Pixi library setup from rpix 0.3.0 or earlier.",
       "i" = "It can crash R, so remove the {.code {legacy_marker}} block."
     ))
   }

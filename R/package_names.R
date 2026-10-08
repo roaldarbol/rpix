@@ -112,7 +112,7 @@ normalise_versions <- function(versions) {
 
 #' Build conda MatchSpecs from parsed packages
 #'
-#' Channel-specific packages are written as `channel::name`, which pixi
+#' Channel-specific packages are written as `channel::name`, which Pixi
 #' requires for packages from a channel other than the default ones.
 #' @noRd
 package_specs <- function(parsed) {
