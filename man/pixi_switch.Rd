@@ -25,7 +25,8 @@ library, so this starts the other R the way your IDE needs:
 \itemize{
 \item RStudio: starts a new RStudio with the environment's R, in the project.
 Close the old one when you're done with it.
-\item Positron: opens the interpreter picker, to pick the environment's R.
+\item Positron: looks for interpreters again, and opens the interpreter
+picker, to pick the environment's R.
 \item VS Code: points the R extension at the environment's R, in the project's
 \code{.vscode/settings.json}. Reload the window to use it. On Windows, start VS
 Code from the environment instead.
