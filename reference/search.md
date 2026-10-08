@@ -19,9 +19,11 @@ search(package, channel = NULL, dry_run = FALSE)
 
 - package:
 
-  Package name to search for. Will be automatically prefixed with "r-"
-  for R packages. If missing, returns the search path like base R's
-  search().
+  Package name to search for. It's translated like in
+  [`add()`](https://roald-arboel.com/rpix/reference/add.md), so
+  `"dplyr"` searches for `r-dplyr`, `"bioc::DESeq2"` for
+  `bioconductor-deseq2` on bioconda, and `"conda::gdal"` for `gdal`. If
+  missing, returns the search path like base R's search().
 
 - channel:
 
@@ -47,7 +49,7 @@ if (FALSE) { # \dontrun{
 search("tibble")
 
 # Search in a specific channel
-search("numpy", channel = "conda-forge")
+search("conda::numpy", channel = "conda-forge")
 
 # Just show the command without running it
 search("dplyr", dry_run = TRUE)

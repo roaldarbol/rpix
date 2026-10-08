@@ -1,14 +1,24 @@
 # Add dependencies
 
-`add()` will add dependencies to the pixi.toml.
+`add()` adds packages to the pixi manifest and installs them. pixi only
+adds them if they can be solved together with the rest of the project's
+dependencies.
+
+R package names are translated to conda names: `"dplyr"` becomes
+`r-dplyr` and `"Rcpp"` becomes `r-rcpp` (conda names are lowercase). Use
+a prefix to say where a package comes from:
+
+- `"bioc::DESeq2"`: a Bioconductor package (`bioconductor-deseq2` from
+  the bioconda channel, which is added to the project if needed).
+
+- `"conda::gdal"`: a conda package that isn't an R package, used as is.
+  Names containing `-` or `_`, such as `"c-compiler"`, are also used as
+  is.
+
+- `"cran::dplyr"`: same as `"dplyr"`.
 
 For more information, see
-https://pixi.sh/latest/reference/cli/pixi/add/.
-
-It will only add if the package with its version constraint is able to
-work with rest of the dependencies in the project. More info on
-[multi-platform](https://pixi.sh/advanced/multi_platform_configuration/)
-configuration.
+<https://pixi.sh/latest/reference/cli/pixi/add/>.
 
 ## Usage
 
@@ -20,31 +30,35 @@ add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 
 - packages:
 
-  Package name(s) to be added.
+  Package names. A version constraint can follow the name, as in
+  `"dplyr>=1.1"`.
 
 - versions:
 
-  Optional. Version constraints for all packages.
+  Optional. Version constraints, either one for all packages or one per
+  package (use `NA` for no constraint). A version without an operator,
+  such as `"1.1"`, means `1.1.*`.
 
 - channel:
 
-  Optional. Defaults to conda-forge, but other conda channels can be
-  specified.
+  Optional. A conda channel to install the packages from. It's added to
+  the project's channels if it isn't there yet.
 
 - dry_run:
 
-  Should the command be executed? If TRUE, the final pixi command will
-  be shown but not executed. FALSE (default) executes the command.
+  If `TRUE`, show the pixi commands without running them.
 
 ## Value
 
-The command (invisibly) if `dry_run = TRUE`, otherwise the result of the
-pixi call (invisibly).
+The commands (invisibly) if `dry_run = TRUE`, otherwise the result of
+the pixi call (invisibly).
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 add("tibble")
+add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
+add("dplyr", versions = "1.1")
 } # }
 ```

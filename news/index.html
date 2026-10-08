@@ -49,6 +49,13 @@
 <ul><li>All pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), pixi failures become R errors, and pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
 <li>
 <code><a href="../reference/add.html">add()</a></code>, <code><a href="../reference/remove.html">remove()</a></code> and <code><a href="../reference/search.html">search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
+<li>R package names are now translated to conda names properly (<a href="https://github.com/roaldarbol/rpix/issues/21" class="external-link">#21</a>): names are lowercased (<code>"Rcpp"</code> becomes <code>r-rcpp</code>), and a pak-like prefix says where a package comes from: <code>"bioc::DESeq2"</code> for Bioconductor packages from bioconda (<a href="https://github.com/roaldarbol/rpix/issues/17" class="external-link">#17</a>), and <code>"conda::gdal"</code> for conda packages that aren’t R packages. Names with <code>-</code> or <code>_</code> are used as is.</li>
+<li>
+<code><a href="../reference/add.html">add()</a></code> accepts version constraints inline (<code>"dplyr&gt;=1.1"</code>) and one constraint per package in <code>versions</code>.</li>
+<li>
+<code>add(channel = )</code> works again: pixi has no <code>--channel</code> flag for <code>add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
+<li>
+<code><a href="../reference/add.html">add()</a></code> suggests <code>bioc::</code> and <code>conda::</code> when a package can’t be found.</li>
 <li>Added tests.</li>
 </ul></div>
     <div class="section level2">

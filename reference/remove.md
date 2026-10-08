@@ -1,9 +1,12 @@
 # Remove dependencies
 
-`remove()` will remove dependencies from the pixi.toml.
+`remove()` removes packages from the pixi manifest. Package names are
+translated like in
+[`add()`](https://roald-arboel.com/rpix/reference/add.md), so `"dplyr"`
+removes `r-dplyr` and `"bioc::DESeq2"` removes `bioconductor-deseq2`.
 
 For more information, see
-https://pixi.sh/latest/reference/cli/pixi/remove/
+<https://pixi.sh/latest/reference/cli/pixi/remove/>.
 
 ## Usage
 
@@ -15,11 +18,11 @@ remove(packages, dry_run = FALSE)
 
 - packages:
 
-  Package name(s) to be removed.
+  Package names.
 
 - dry_run:
 
-  Just show command or also run.
+  If `TRUE`, show the pixi command without running it.
 
 ## Value
 
