@@ -64,7 +64,7 @@ test_that("setup_pixi() errors without a project if it may not create one", {
   calls <- local_mock_setup()
   withr::local_dir(withr::local_tempdir())
 
-  expect_error(setup_pixi(init_if_missing = FALSE), "no pixi project")
+  expect_error(setup_pixi(init_if_missing = FALSE), "no Pixi project")
   expect_length(calls$args, 0)
 })
 
@@ -78,7 +78,7 @@ test_that("setup_pixi() removes the old .Rprofile block and warns about a global
 
   expect_warning(
     suppressMessages(setup_pixi(install_rpix = FALSE)),
-    "still has the pixi library setup"
+    "still has the Pixi library setup"
   )
   expect_false(any(grepl("Pixi R library setup", readLines(".Rprofile"))))
 })

@@ -1,7 +1,7 @@
 #' Add packages
 #'
 #' @description
-#' Add packages to the pixi manifest and install them. pixi only adds them if
+#' Add packages to the Pixi manifest and install them. Pixi only adds them if
 #' they can be solved together with the rest of the project's dependencies.
 #'
 #' R package names are translated to conda names: `"dplyr"` becomes `r-dplyr`
@@ -23,9 +23,9 @@
 #'   operator, such as `"1.1"`, means `1.1.*`.
 #' @param channel Optional. A conda channel to install the packages from. It's
 #'   added to the project's channels if it isn't there yet.
-#' @param dry_run If `TRUE`, show the pixi commands without running them.
+#' @param dry_run If `TRUE`, show the Pixi commands without running them.
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
-#'   of the pixi call (invisibly).
+#'   of the Pixi call (invisibly).
 #' @import cli
 #' @export
 #' @examples

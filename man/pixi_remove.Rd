@@ -9,14 +9,14 @@ pixi_remove(packages, dry_run = FALSE)
 \arguments{
 \item{packages}{Package names.}
 
-\item{dry_run}{If \code{TRUE}, show the pixi command without running it.}
+\item{dry_run}{If \code{TRUE}, show the Pixi command without running it.}
 }
 \value{
 The command (invisibly) if \code{dry_run = TRUE}, otherwise the result of
-the pixi call (invisibly).
+the Pixi call (invisibly).
 }
 \description{
-Remove packages from the pixi manifest. Package names are translated like in
+Remove packages from the Pixi manifest. Package names are translated like in
 \code{\link[=pixi_add]{pixi_add()}}: \code{"dplyr"} removes \code{r-dplyr} and \code{"bioc::DESeq2"} removes
 \code{bioconductor-deseq2}.
 

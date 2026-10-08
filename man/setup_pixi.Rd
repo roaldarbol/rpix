@@ -2,7 +2,7 @@
 % Please edit documentation in R/setup_pixi.R
 \name{setup_pixi}
 \alias{setup_pixi}
-\title{Set up a pixi project for R}
+\title{Set up a Pixi project for R}
 \usage{
 setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 }
@@ -10,7 +10,7 @@ setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 \item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
 to the latest on conda-forge.}
 
-\item{init_if_missing}{If \code{TRUE}, create a pixi project if there isn't one.}
+\item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
 \item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
 Its dependencies come from conda-forge, and rpix itself from R-universe
@@ -20,14 +20,14 @@ until it's on conda-forge.}
 The path to the project's manifest, invisibly.
 }
 \description{
-Create a pixi project in the working directory if there isn't one, add R to
+Create a Pixi project in the working directory if there isn't one, add R to
 it, and install rpix into its environment.
 
-It can be run from any R. Afterwards, work in R started by pixi: run
+It can be run from any R. Afterwards, work in R started by Pixi: run
 \verb{pixi run R} in a terminal, or point your IDE at the environment's R (see
-\url{https://roald-arboel.com/rpix/articles/ide.html}). Each pixi environment
+\url{https://roald-arboel.com/rpix/articles/ide.html}). Each Pixi environment
 has its own R and package library, so rpix doesn't point a running R at a
-pixi library: packages built for a different R can crash it.
+Pixi library: packages built for a different R can crash it.
 
 Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
 block in their \code{.Rprofile}, which did exactly that. It's removed.

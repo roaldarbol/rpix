@@ -12,9 +12,9 @@
 #' @param package A package name.
 #' @param channel Optional. A conda channel to search. Inside a project, the
 #'   project's channels are searched by default, and conda-forge otherwise.
-#' @param dry_run If `TRUE`, show the pixi command without running it.
+#' @param dry_run If `TRUE`, show the Pixi command without running it.
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
-#'   the pixi call (invisibly).
+#'   the Pixi call (invisibly).
 #' @export
 #' @examples
 #' \dontrun{

@@ -1,14 +1,14 @@
-#' Run a pixi command
+#' Run a Pixi command
 #'
 #' @description
-#' Internal workhorse that every exported function uses to call pixi. It
-#' locates the pixi binary, points pixi at the right project with
+#' Internal workhorse that every exported function uses to call Pixi. It
+#' locates the pixi binary, points Pixi at the right project with
 #' `--manifest-path`, captures the output and turns failures into R errors.
 #'
 #' @param args Character vector of arguments passed to pixi, e.g.
 #'   `c("add", "r-dplyr")`. Each element is passed as a single argument, so no
 #'   shell quoting is needed.
-#' @param project Whether the command needs a pixi project:
+#' @param project Whether the command needs a Pixi project:
 #'   * `"required"`: find the project and pass `--manifest-path`; error if
 #'     there is none.
 #'   * `"optional"`: pass `--manifest-path` if a project is found.
@@ -17,7 +17,7 @@
 #'   running pixi environment (`PIXI_PROJECT_ROOT`), and otherwise the working
 #'   directory. See `find_project_root()`.
 #' @param json If `TRUE`, add `--json` and return the parsed output.
-#' @param echo If `TRUE`, stream pixi's output to the console while it runs.
+#' @param echo If `TRUE`, stream Pixi's output to the console while it runs.
 #' @param dry_run If `TRUE`, show the command without running it.
 #' @param call The calling environment, used in error messages.
 #'
@@ -44,7 +44,7 @@ run_pixi <- function(
     if (is.null(manifest) && project == "required") {
       cli::cli_abort(
         c(
-          "Could not find a pixi project.",
+          "Could not find a Pixi project.",
           "i" = "Looked for {.file pixi.toml} or a {.file pyproject.toml} with a {.code [tool.pixi]} table in {.path {path %||% getwd()}} and its parents.",
           "i" = "Create one with {.code pixi init}."
         ),
@@ -131,7 +131,7 @@ pixi_binary <- function(call = parent.frame()) {
 
   cli::cli_abort(
     c(
-      "Could not find pixi.",
+      "Could not find Pixi.",
       "i" = "Install it from {.url https://pixi.sh}.",
       "i" = "If it's installed somewhere unusual, set {.code options(rpix.pixi_path = \"/path/to/pixi\")}."
     ),
@@ -140,9 +140,9 @@ pixi_binary <- function(call = parent.frame()) {
   )
 }
 
-#' Find the root of a pixi project
+#' Find the root of a Pixi project
 #'
-#' If `path` is `NULL`, uses the project of the running pixi environment
+#' If `path` is `NULL`, uses the project of the running Pixi environment
 #' (`PIXI_PROJECT_ROOT`) when set, and otherwise starts from the working
 #' directory. Walks up from there until it finds a `pixi.toml`, or a
 #' `pyproject.toml` with a `[tool.pixi]` table.
@@ -157,7 +157,7 @@ find_project_root <- function(path = NULL) {
   dirname(manifest)
 }
 
-#' Find the manifest of a pixi project
+#' Find the manifest of a Pixi project
 #'
 #' Same search as `find_project_root()`, but returns the manifest file.
 #' @returns The path to the manifest file, or `NULL` if there is none.
@@ -224,9 +224,9 @@ display_path <- function(path) {
 }
 
 abort_pixi_failure <- function(command, result, echoed, call) {
-  # pixi's output has already been shown, so don't repeat it
+  # Pixi's output has already been shown, so don't repeat it
   if (echoed) {
-    details <- c("i" = "See pixi's output above.")
+    details <- c("i" = "See Pixi's output above.")
   } else {
     details <- pixi_output_bullets(result)
   }
