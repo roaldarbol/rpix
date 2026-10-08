@@ -154,6 +154,16 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
     install_rpix = FALSE
   ))
   expect_equal(ides, c("vscode", "positron"))
+  # Added with R, so Pixi picks an R that languageserver is built for
+  expect_equal(
+    calls$args[[1]],
+    c(
+      "add",
+      "r-base",
+      "conda-ecosystem-user-package-isolation",
+      "r-languageserver"
+    )
+  )
   expect_error(use_pixi(ide = "emacs"), "should be one of")
 })
 

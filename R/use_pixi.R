@@ -21,7 +21,8 @@
 #' R at the Pixi library. It's removed.
 #'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
-#'   to the latest on conda-forge.
+#'   to the newest one that the packages `use_pixi()` adds are built for on
+#'   conda-forge.
 #' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
 #'   `"positron"` and `"vscode"`. See [use_pixi_rstudio()],
 #'   [use_pixi_positron()] and [use_pixi_vscode()].
@@ -68,7 +69,14 @@ use_pixi <- function(
   # .libPaths() (https://github.com/conda-forge/r-base-feedstock/issues/37).
   # This package's activation script points R_LIBS_USER at nothing instead.
   isolation <- "conda-ecosystem-user-package-isolation"
-  packages <- c(r_base, isolation, if (install_rpix) rpix_dependencies())
+  # Added together with R, so Pixi picks the newest R they're all built for.
+  # A new R comes out on conda-forge before its packages are rebuilt for it.
+  packages <- c(
+    r_base,
+    isolation,
+    if (install_rpix) rpix_dependencies(),
+    if ("vscode" %in% ide) "r-languageserver"
+  )
   run_pixi(c("add", packages), path = path, echo = TRUE)
 
   if (install_rpix) {

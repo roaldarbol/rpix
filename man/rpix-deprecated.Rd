@@ -24,7 +24,8 @@ added to the project's channels if it isn't there yet.}
 \item{dry_run}{If \code{TRUE}, show the Pixi commands without running them.}
 
 \item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
-to the latest on conda-forge.}
+to the newest one that the packages \code{use_pixi()} adds are built for on
+conda-forge.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 

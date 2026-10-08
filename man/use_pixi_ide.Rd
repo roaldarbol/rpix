@@ -23,7 +23,7 @@ The file they changed, invisibly.
 Set an IDE up to use the R in the project's Pixi environment. \code{\link[=use_pixi]{use_pixi()}}
 calls these with its \code{ide} argument.
 \itemize{
-\item \code{use_pixi_rstudio()} adds an \code{rstudio} task to \code{pixi.toml}, for each of
+\item \code{use_pixi_rstudio()} adds, or replaces, an \code{rstudio} task in \code{pixi.toml}, for each of
 the project's platforms, that starts a new RStudio with the
 environment's R and the project's \code{.Rproj} file. It creates the \code{.Rproj}
 file if there isn't one. Start RStudio with \verb{pixi run rstudio}.
