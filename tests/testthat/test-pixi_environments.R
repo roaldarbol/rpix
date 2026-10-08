@@ -1,20 +1,3 @@
-# Record the arguments pixi is called with
-local_recorded_pixi <- function(
-  result = invisible(list(status = 0)),
-  env = parent.frame()
-) {
-  calls <- new.env()
-  calls$args <- list()
-  local_mocked_bindings(
-    run_pixi = function(args, ...) {
-      calls$args <- c(calls$args, list(args))
-      result
-    },
-    .env = env
-  )
-  calls
-}
-
 test_that("pixi_add() and pixi_remove() add to a feature or platform", {
   calls <- local_recorded_pixi()
   local_mocked_bindings(project_channels = function(...) "conda-forge")

@@ -13,3 +13,20 @@ local_pixi_project <- function(
   writeLines(content, file.path(dir, manifest))
   normalizePath(dir, winslash = "/")
 }
+
+# Record the arguments pixi is called with
+local_recorded_pixi <- function(
+  result = invisible(list(status = 0)),
+  env = parent.frame()
+) {
+  calls <- new.env()
+  calls$args <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, ...) {
+      calls$args <- c(calls$args, list(args))
+      result
+    },
+    .env = env
+  )
+  calls
+}
