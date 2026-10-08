@@ -3,6 +3,15 @@
 ## rpix (development version)
 
 - New
+  [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md),
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  and
+  [`pixi_tree()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  ([\#29](https://github.com/roaldarbol/rpix/issues/29)).
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  returns the packages in an environment as a data frame, including the
+  name of each R package as R spells it (`Rcpp` for `r-rcpp`).
+- New
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   replaces
   [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md),

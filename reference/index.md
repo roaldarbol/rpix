@@ -9,6 +9,13 @@
 - [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
   : Search for packages
 
+## Inspecting a project
+
+- [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  [`pixi_tree()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  : Information about a Pixi project
+
 ## Setting up a project
 
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) :
