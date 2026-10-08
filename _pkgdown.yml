@@ -84,6 +84,7 @@ reference:
   - title: "Environments, channels and platforms"
     contents:
       - pixi_environments
+      - pixi_r
       - pixi_add_channel
 
   - title: "Tasks"
