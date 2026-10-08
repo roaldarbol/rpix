@@ -30,7 +30,7 @@
 #' }
 #'
 #' @seealso [Sys.setenv()], [Sys.getenv()], [Sys.info()]
-#' @export
+#' @noRd
 pixi_to_path <- function() {
   # Check operating system
   os <- Sys.info()[["sysname"]]

@@ -1,9 +1,8 @@
-#' Add dependencies
+#' Add packages
 #'
 #' @description
-#' `add()` adds packages to the pixi manifest and installs them. pixi only adds
-#' them if they can be solved together with the rest of the project's
-#' dependencies.
+#' Add packages to the pixi manifest and install them. pixi only adds them if
+#' they can be solved together with the rest of the project's dependencies.
 #'
 #' R package names are translated to conda names: `"dplyr"` becomes `r-dplyr`
 #' and `"Rcpp"` becomes `r-rcpp` (conda names are lowercase). Use a prefix to
@@ -28,14 +27,19 @@
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the pixi call (invisibly).
 #' @import cli
-#' @export add
+#' @export
 #' @examples
 #' \dontrun{
-#' add("tibble")
-#' add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
-#' add("dplyr", versions = "1.1")
+#' pixi_add("tibble")
+#' pixi_add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
+#' pixi_add("dplyr", versions = "1.1")
 #' }
-add <- function(packages, versions = NULL, channel = NULL, dry_run = FALSE) {
+pixi_add <- function(
+  packages,
+  versions = NULL,
+  channel = NULL,
+  dry_run = FALSE
+) {
   parsed <- parse_packages(packages)
 
   if (!is.null(versions)) {
@@ -81,7 +85,7 @@ add <- function(packages, versions = NULL, channel = NULL, dry_run = FALSE) {
         cli::cli_abort(
           c(
             "Some packages couldn't be found.",
-            "i" = "Check the names with {.fn search}.",
+            "i" = "Check the names with {.fn pixi_search}.",
             "i" = "Use {.code bioc::} for Bioconductor packages, and {.code conda::} for conda packages that aren't R packages."
           ),
           class = "rpix_error_package_not_found",

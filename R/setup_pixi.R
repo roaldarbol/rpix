@@ -42,7 +42,7 @@
 #' setup_pixi(init_if_missing = FALSE)
 #' }
 #'
-#' @seealso [pixi_to_path()], [.libPaths()]
+#' @seealso [.libPaths()]
 #' @export
 setup_pixi <- function(
   add_to_rprofile = TRUE,

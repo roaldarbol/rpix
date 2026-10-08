@@ -54,10 +54,10 @@ library(rpix)
 
 The primary use of rpix is the ability to add dependencies in the
 console like you normally would with `install.packages` or
-`renv::install`. With rpix, the command is `add`. Let’s try installing
-the **tidyverse**:
+`renv::install`. With rpix, the command is `pixi_add()`. Let’s try
+installing the **tidyverse**:
 
-    rpix::add("tidyverse")
+    rpix::pixi_add("tidyverse")
 
 ------------------------------------------------------------------------
 
