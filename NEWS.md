@@ -2,6 +2,7 @@
 
 - New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
 - New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
+- `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print their results in a readable form (#67). They're still data frames, or a list for `pixi_info()`.
 
 # rpix 0.5.0
 
