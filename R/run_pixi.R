@@ -77,11 +77,15 @@ run_pixi <- function(
   }
 
   use_color <- echo && cli::num_ansi_colors() > 1
+  # Pixi reports progress on stderr, which processx's echo turns red, so show
+  # both streams as they are, and keep them apart in the result
+  show <- if (echo) function(x, process) cat(x)
   result <- processx::run(
     pixi_binary(call = call),
     args,
     error_on_status = FALSE,
-    echo = echo,
+    stdout_callback = show,
+    stderr_callback = show,
     env = c("current", PIXI_COLOR = if (use_color) "always" else "never")
   )
 

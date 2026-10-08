@@ -212,6 +212,21 @@ test_that("failures with streamed output don't repeat pixi's message", {
   expect_match(conditionMessage(err), "output above")
 })
 
+test_that("streamed output goes to stdout, and stderr is kept apart", {
+  skip_if_no_pixi()
+  output <- capture.output(
+    err <- tryCatch(
+      suppressMessages(
+        run_pixi("definitely-not-a-command", project = "none", echo = TRUE)
+      ),
+      rpix_error_pixi = identity
+    )
+  )
+  expect_match(paste(output, collapse = "\n"), "definitely-not-a-command")
+  expect_match(err$stderr, "definitely-not-a-command")
+  expect_equal(err$stdout, "")
+})
+
 test_that("streams output with or without saying which command runs", {
   skip_if_no_pixi()
   expect_message(
