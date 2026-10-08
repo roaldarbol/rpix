@@ -172,16 +172,6 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
   expect_error(use_pixi(ide = "emacs"), "should be one of")
 })
 
-test_that("setup_pixi() is deprecated in favour of use_pixi()", {
-  local_mock_setup()
-  dir <- withr::local_tempdir()
-  writeLines("[workspace]", file.path(dir, "pixi.toml"))
-  withr::local_dir(dir)
-  lifecycle::expect_deprecated(suppressMessages(setup_pixi(
-    install_rpix = FALSE
-  )))
-})
-
 test_that("use_pixi() sets up the folder in `path`", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
