@@ -16,10 +16,10 @@ Package names are translated like in
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
 
 For more information, see
-<https://pixi.sh/latest/reference/cli/pixi/install/>,
-<https://pixi.sh/latest/reference/cli/pixi/update/>,
-<https://pixi.sh/latest/reference/cli/pixi/upgrade/> and
-<https://pixi.sh/latest/reference/cli/pixi/lock/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/install/>,
+<https://pixi.prefix.dev/latest/reference/cli/pixi/update/>,
+<https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/> and
+<https://pixi.prefix.dev/latest/reference/cli/pixi/lock/>.
 
 ## Usage
 

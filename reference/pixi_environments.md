@@ -19,7 +19,7 @@ and start its R with `pixi run --environment <name> R`.
 - `pixi_remove_environment()` removes one.
 
 For more information, see
-<https://pixi.sh/latest/workspace/multi_environment/>.
+<https://pixi.prefix.dev/latest/workspace/multi_environment/>.
 
 ## Usage
 

@@ -18,7 +18,7 @@ a prefix to say where a package comes from:
 - `"cran::dplyr"`: same as `"dplyr"`.
 
 For more information, see
-<https://pixi.sh/latest/reference/cli/pixi/add/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 
 ## Usage
 

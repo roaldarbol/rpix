@@ -10,8 +10,9 @@
   collaborators on them get the same packages.
 
 For more information, see
-<https://pixi.sh/latest/reference/cli/pixi/workspace/channel/add/> and
-<https://pixi.sh/latest/reference/cli/pixi/workspace/platform/add/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/>
+and
+<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/>.
 
 ## Usage
 

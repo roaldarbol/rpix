@@ -2,16 +2,16 @@
 
 *Manage R project dependencies with Pixi*
 
-rpix lets you use [Pixi](https://pixi.sh) from R. Pixi installs R
-itself, R packages and the system libraries they need (such as GDAL)
+rpix lets you use [Pixi](https://pixi.prefix.dev) from R. Pixi installs
+R itself, R packages and the system libraries they need (such as GDAL)
 from [conda-forge](https://conda-forge.org) into an environment inside
 your project. It records the exact versions in a lock file, so the
 project runs the same on every computer.
 
 ## Installation
 
-First, [install Pixi](https://pixi.sh/latest/installation/). Then
-install rpix in the R you normally use:
+First, [install Pixi](https://pixi.prefix.dev/latest/installation/).
+Then install rpix in the R you normally use:
 
 ``` r
 
@@ -76,7 +76,7 @@ Ask questions and share ideas in [GitHub
 Discussions](https://github.com/roaldarbol/rpix/discussions), and report
 bugs in the [issues](https://github.com/roaldarbol/rpix/issues). For
 Pixi itself, ask on the [Discord of
-prefix.dev](https://discord.gg/kKV8ZxyzY4), the makers of Pixi.
+prefix.dev](https://discord.com/invite/kKV8ZxyzY4), the makers of Pixi.
 
 ------------------------------------------------------------------------
 

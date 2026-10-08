@@ -13,7 +13,7 @@ can run with `pixi run test`.
 - `pixi_remove_task()` removes tasks.
 
 For more information, see
-<https://pixi.sh/latest/workspace/advanced_tasks/>.
+<https://pixi.prefix.dev/latest/workspace/advanced_tasks/>.
 
 ## Usage
 

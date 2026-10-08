@@ -7,17 +7,17 @@ run on their own computer. It assumes you know R, but not Pixi.
 
 Pixi is the tool that does the work; rpix lets you use it from R.
 Install it by following the [Pixi installation
-guide](https://pixi.sh/latest/installation/). On macOS and Linux,
-that’s:
+guide](https://pixi.prefix.dev/latest/installation/). On macOS and
+Linux, that’s:
 
 ``` sh
-curl -fsSL https://pixi.sh/install.sh | sh
+curl -fsSL https://pixi.prefix.dev/install.sh | sh
 ```
 
 On Windows, in PowerShell:
 
 ``` powershell
-powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.prefix.dev/install.ps1 | iex"
 ```
 
 ## Install rpix

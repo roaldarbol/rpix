@@ -8,7 +8,7 @@ The package name is translated like in
 `bioconductor-deseq2` on bioconda, and `"conda::gdal"` for `gdal`.
 
 For more information, see
-<https://pixi.sh/latest/reference/cli/pixi/search/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/search/>.
 
 ## Usage
 

@@ -7,7 +7,7 @@ like in
 `bioconductor-deseq2`.
 
 For more information, see
-<https://pixi.sh/latest/reference/cli/pixi/remove/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/remove/>.
 
 ## Usage
 
