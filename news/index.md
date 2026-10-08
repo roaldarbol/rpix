@@ -17,7 +17,6 @@
   ([\#32](https://github.com/roaldarbol/rpix/issues/32)). In RStudio it
   starts a new RStudio with that R, in Positron it opens the interpreter
   picker, and in VS Code it points the R extension at that R.
-
 - New
   [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
@@ -26,12 +25,10 @@
   [`pixi_remove_task()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
   work with the project’s Pixi tasks
   ([\#35](https://github.com/roaldarbol/rpix/issues/35)).
-
 - New [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md)
   runs a function in another environment’s R, e.g. one with another
   version of R, and returns its result
   ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
-
 - New
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   runs a package’s tests or `R CMD check` in several environments,
@@ -40,7 +37,6 @@
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   adds those environments
   ([\#34](https://github.com/roaldarbol/rpix/issues/34)).
-
 - New
   [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
   adds a package’s dependencies from its `DESCRIPTION`: `Depends` and
@@ -48,7 +44,6 @@
   finds Bioconductor packages on bioconda, and lists the packages that
   aren’t on conda-forge or bioconda
   ([\#36](https://github.com/roaldarbol/rpix/issues/36)).
-
 - New
   [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   moves a project from renv: it adds the packages in `renv.lock`, at
@@ -56,6 +51,13 @@
   only the packages nothing else in the lock file needs, and lists those
   it can’t add, e.g. from GitHub
   ([\#37](https://github.com/roaldarbol/rpix/issues/37)).
+- New
+  [`pixi_scan()`](https://roald-arboel.com/rpix/reference/pixi_scan.md)
+  finds the packages the project’s code uses, in `.R` files, the R
+  chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those
+  missing from `pixi.toml`, and adds them with `add = TRUE`, and lists
+  packages the code never uses
+  ([\#38](https://github.com/roaldarbol/rpix/issues/38)).
 
 ### Minor improvements and fixes
 

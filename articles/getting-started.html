@@ -144,22 +144,26 @@
 <p>To remove a package again:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_remove.html">pixi_remove</a></span><span class="op">(</span><span class="st">"ggplot2"</span><span class="op">)</span></span></code></pre></div>
+<p>To check that <code>pixi.toml</code> has every package your code uses, in <code>.R</code> files and in <code>.qmd</code> and <code>.Rmd</code> documents:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_scan.html">pixi_scan</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>It lists the packages that are missing, and adds them with <code>pixi_scan(add = TRUE)</code>. It also lists packages your code never uses.</p>
 </section><section class="level2"><h2 id="render-documents">Render documents<a class="anchor" aria-label="anchor" href="#render-documents"></a>
 </h2>
 <p>Quarto and R Markdown documents are rendered by R, so render them with the environment’s R too. Add Quarto to the environment, and render from a terminal:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"conda::quarto"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run quarto render report.qmd</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run quarto render report.qmd</span></code></pre></div>
 </section><section class="level2"><h2 id="check-your-setup">Check your setup<a class="anchor" aria-label="anchor" href="#check-your-setup"></a>
 </h2>
 <p>If something doesn’t work as expected, start with:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_sitrep.html">pixi_sitrep</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>It checks that R, its packages and your IDE use the project’s environment, and suggests fixes.</p>
 </section><section class="level2"><h2 id="share-the-project">Share the project<a class="anchor" aria-label="anchor" href="#share-the-project"></a>
 </h2>
 <p>Commit <code>pixi.toml</code> and <code>pixi.lock</code>. A collaborator installs Pixi, clones the project, and runs:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run R</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run R</span></code></pre></div>
 <p>Pixi installs the same versions you have, from the lock file, before starting R. See <a href="reproducibility.html">Sharing and reproducibility</a> for more, including other platforms and CI.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

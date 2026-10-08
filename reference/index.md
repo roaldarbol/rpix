@@ -8,6 +8,8 @@
   : Remove packages
 - [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
   : Search for packages
+- [`pixi_scan()`](https://roald-arboel.com/rpix/reference/pixi_scan.md)
+  : Find packages the project's code uses
 - [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
   [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
