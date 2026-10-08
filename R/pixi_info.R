@@ -34,7 +34,9 @@
 #' pixi_tree("dplyr")
 #' }
 pixi_info <- function(path = NULL) {
-  run_pixi("info", project = "optional", path = path, json = TRUE)
+  info <- run_pixi("info", project = "optional", path = path, json = TRUE)
+  class(info) <- "rpix_info"
+  info
 }
 
 #' @rdname pixi_info
@@ -80,7 +82,11 @@ pixi_list <- function(environment = NULL, explicit = FALSE, path = NULL) {
     "build"
   )]
   rownames(packages) <- NULL
-  packages
+  new_rpix_df(
+    packages,
+    "rpix_packages",
+    environment = environment %||% "default"
+  )
 }
 
 #' @rdname pixi_info

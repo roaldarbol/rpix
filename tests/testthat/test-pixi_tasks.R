@@ -39,25 +39,27 @@ test_that("pixi_tasks() lists tasks once, with the environments they're in", {
 
   tasks <- pixi_tasks()
   expect_equal(calls$args[[1]], c("task", "list", "--json"))
-  expect_equal(tasks$name, c("test", "render", "inline", "check"))
+  # The default feature first, then by feature and name
+  expect_equal(tasks$name, c("render", "test", "check", "inline"))
   expect_equal(
     tasks$command,
     c(
-      "Rscript -e 'devtools::test()'",
       "quarto render {{ file }}",
-      NA,
-      "R CMD check"
+      "Rscript -e 'devtools::test()'",
+      "R CMD check",
+      NA
     )
   )
-  expect_equal(tasks$description, c("Run the tests", NA, NA, NA))
-  expect_equal(tasks$feature, c("default", "default", NA, "r44"))
-  expect_equal(tasks$environments[[1]], c("default", "r44"))
-  expect_equal(tasks$environments[[4]], "r44")
-  expect_equal(tasks$depends_on[[2]], "test")
-  expect_equal(tasks$depends_on[[1]], character())
-  expect_equal(tasks$args[[2]], "file")
+  expect_equal(tasks$description, c(NA, "Run the tests", NA, NA))
+  expect_equal(tasks$feature, c("default", "default", "r44", NA))
+  expect_equal(tasks$environments[[2]], c("default", "r44"))
+  expect_equal(tasks$environments[[3]], "r44")
+  expect_equal(tasks$depends_on[[1]], "test")
+  expect_equal(tasks$depends_on[[2]], character())
+  expect_equal(tasks$args[[1]], "file")
+  expect_s3_class(tasks, "rpix_tasks")
 
-  expect_equal(pixi_tasks(environment = "default")$name, c("test", "render"))
+  expect_equal(pixi_tasks(environment = "default")$name, c("render", "test"))
 })
 
 test_that("pixi_tasks() gives an empty data frame without tasks", {

@@ -79,9 +79,13 @@ pixi_tasks <- function(environment = NULL, path = NULL) {
     rows <- Filter(function(row) environment %in% row$environments, rows)
   }
   rows <- unname(rows)
+  # Pixi lists tasks in no particular order
+  feature <- vapply(rows, function(row) row$feature, character(1))
+  name <- vapply(rows, function(row) row$name, character(1))
+  rows <- rows[order(feature != "default", feature, name, na.last = TRUE)]
   column <- function(name) lapply(rows, function(row) row[[name]])
 
-  data.frame(
+  tasks <- data.frame(
     name = as.character(column("name")),
     command = as.character(column("command")),
     description = as.character(column("description")),
@@ -91,6 +95,7 @@ pixi_tasks <- function(environment = NULL, path = NULL) {
     args = I(column("args")),
     stringsAsFactors = FALSE
   )
+  new_rpix_df(tasks, "rpix_tasks")
 }
 
 task_row <- function(task, feature) {
