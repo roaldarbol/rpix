@@ -26,6 +26,10 @@ r-covr = ">=3.6.5,<4"
 [activation.env]
 R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
 
+# Windows doesn't expand $VAR here, only %VAR%
+[target.win.activation.env]
+R_LIBS_USER = '%PIXI_PROJECT_ROOT%\.pixi\r-libs\%PIXI_ENVIRONMENT_NAME%'
+
 [tasks]
 document = { cmd = "Rscript -e 'devtools::document()'", description = "Regenerate man/ and NAMESPACE from the roxygen comments" }
 test = { cmd = "Rscript -e 'devtools::test()'", description = "Run the tests" }
