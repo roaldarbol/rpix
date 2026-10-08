@@ -7,8 +7,10 @@
 search(package, channel = NULL, dry_run = FALSE)
 }
 \arguments{
-\item{package}{Package name to search for. Will be automatically prefixed
-with "r-" for R packages. If missing, returns the search path like base R's search().}
+\item{package}{Package name to search for. It's translated like in \code{\link[=add]{add()}},
+so \code{"dplyr"} searches for \code{r-dplyr}, \code{"bioc::DESeq2"} for
+\code{bioconductor-deseq2} on bioconda, and \code{"conda::gdal"} for \code{gdal}. If
+missing, returns the search path like base R's search().}
 
 \item{channel}{Optional. Defaults to conda-forge, but other conda channels
 can be specified to search in specific repositories.}
@@ -36,7 +38,7 @@ and returns the current search path.
 search("tibble")
 
 # Search in a specific channel
-search("numpy", channel = "conda-forge")
+search("conda::numpy", channel = "conda-forge")
 
 # Just show the command without running it
 search("dplyr", dry_run = TRUE)
