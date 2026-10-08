@@ -56,7 +56,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
-</div>
+<ul><li>
+<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> now keeps your personal R library out of the environment’s R, by pointing <code>R_LIBS_USER</code> at <code>.pixi/r-libs/</code> in <code>pixi.toml</code>. conda-forge’s R otherwise puts it first on <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37). On Windows, the entry is only added when the project lists a Windows platform.</li>
+<li>The IDE guide’s RStudio commands now work as expected: <code>open -n</code> on macOS, so a running RStudio doesn’t keep its R, and a task that sets <code>RSTUDIO_WHICH_R</code> on Windows (<a href="https://github.com/roaldarbol/rpix/issues/24" class="external-link">#24</a>). It also explains that on Windows, Positron and VS Code have to be started through Pixi.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="rpix-040">rpix 0.4.0<a class="anchor" aria-label="anchor" href="#rpix-040"></a></h2>
 <div class="section level3">

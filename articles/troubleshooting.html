@@ -106,7 +106,10 @@
 <strong>The project’s <code>.Rprofile</code> changes <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>.</strong> rpix 0.3.0 and earlier added a block starting with <code># Pixi R library setup</code>. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> removes it; for one in <code>~/.Rprofile</code>, remove it by hand.</li>
 </ul></section><section class="level2"><h2 id="rstudio-uses-the-wrong-r">RStudio uses the wrong R<a class="anchor" aria-label="anchor" href="#rstudio-uses-the-wrong-r"></a>
 </h2>
-<p>RStudio picks its R when it starts, so it has to be started from the project’s environment. See <a href="ide.html">Using rpix with an IDE</a>.</p>
+<p>RStudio picks its R when it starts, so it has to be started from the project’s environment, as a new RStudio. On macOS, <code>open -a RStudio</code> brings a running RStudio to the front instead, with its R; use <code>open -n -a RStudio</code>. See <a href="ide.html">Using rpix with an IDE</a>.</p>
+</section><section class="level2"><h2 id="r-doesnt-start-in-positron-or-vs-code-on-windows">R doesn’t start in Positron or VS Code on Windows<a class="anchor" aria-label="anchor" href="#r-doesnt-start-in-positron-or-vs-code-on-windows"></a>
+</h2>
+<p>On Windows, the environment’s R only starts when the environment is activated. Start the IDE through Pixi, for example with <code>pixi run code .</code>. See <a href="ide.html#on-windows-start-the-ide-through-pixi">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="a-package-cant-be-found">A package can’t be found<a class="anchor" aria-label="anchor" href="#a-package-cant-be-found"></a>
 </h2>
 <pre><code>! Some packages couldn't be found.</code></pre>

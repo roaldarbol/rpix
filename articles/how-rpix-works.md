@@ -34,26 +34,38 @@ removes that setup from projects that still have it.
 
 ## Keep your personal library out
 
-conda-forge’s R also looks in your personal package library: the one
-your usual R installs into, such as `~/Library/R/x86_64/4.5/library` on
-macOS. It even looks there first, so packages built for your usual R can
-be loaded into the environment’s R. Check with:
+conda-forge’s R also looks in your personal package library, and even
+looks there first. That’s the one your usual R installs into, such as
+`~/Library/R/x86_64/4.5/library` on macOS, or
+`%LOCALAPPDATA%/R/win-library/4.5` on Windows. So packages built for
+your usual R can be loaded into the environment’s R. This is a
+[long-standing issue in conda-forge’s
+R](https://github.com/conda-forge/r-base-feedstock/issues/37).
+
+[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+points `R_LIBS_USER` at a folder inside the project instead, in
+`pixi.toml`:
+
+``` toml
+[activation.env]
+R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
+
+[target.win.activation.env]
+R_LIBS_USER = "%PIXI_PROJECT_ROOT%\\.pixi\\r-libs\\%PIXI_ENVIRONMENT_NAME%"
+```
+
+Windows needs the second entry, because it only expands `%VAR%`.
+[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+adds it if the project lists a Windows platform; if you add one later,
+add the entry too. R ignores a library folder that doesn’t exist, so
+this leaves only the environment’s own library.
+
+This only applies when Pixi starts R, as `pixi run R` does. Check with:
 
 ``` r
 
 .libPaths()
 ```
-
-If your personal library is listed, point `R_LIBS_USER` somewhere else
-in `pixi.toml`:
-
-``` toml
-[activation.env]
-R_LIBS_USER = "$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"
-```
-
-R ignores a library folder that doesn’t exist, so this leaves only the
-environment’s own library. We’ve checked this on macOS.
 
 ## What rpix runs
 

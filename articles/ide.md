@@ -7,39 +7,53 @@ project’s Pixi environment.
 
 ## RStudio
 
-RStudio picks its R when it starts, so start it from the project’s
-environment, in a terminal in the project folder:
+RStudio picks its R when it starts, from the `RSTUDIO_WHICH_R`
+environment variable. So start RStudio from the project’s environment,
+with the project’s `.Rproj` file, in a terminal in the project folder:
 
-- [Windows](#tabset-1-1)
-- [macOS](#tabset-1-2)
+- [macOS](#tabset-1-1)
+- [Windows](#tabset-1-2)
 - [Linux](#tabset-1-3)
 
 &nbsp;
 
 - ``` sh
-  pixi run rstudio
+  pixi run open -n -a RStudio myproject.Rproj
   ```
 
-``` sh
-pixi run open -a rstudio
+  `-n` starts a new RStudio, even if one is already running. Without it,
+  a running RStudio comes to the front and keeps its R.
+
+RStudio isn’t on the `PATH` on Windows, and Pixi doesn’t set
+`RSTUDIO_WHICH_R` there, so add a task to `pixi.toml`:
+
+``` toml
+[target.win-64.tasks]
+rstudio = { cmd = '"C:/Program Files/RStudio/rstudio.exe" myproject.Rproj', env = { RSTUDIO_WHICH_R = "$CONDA_PREFIX/lib/R/bin/x64/R.exe" } }
 ```
+
+Then start it with:
 
 ``` sh
 pixi run rstudio
 ```
 
-On macOS,
-[`rpix::restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
-does this from a running RStudio.
-
-To save typing, add a task to `pixi.toml`. On macOS:
-
-``` toml
-[tasks]
-rstudio = "open -a rstudio"
+``` sh
+pixi run rstudio myproject.Rproj
 ```
 
-Then `pixi run rstudio` starts RStudio.
+Without the `.Rproj` file, RStudio starts in your home folder rather
+than the project.
+
+To save typing on macOS and Linux too, add the command as a task:
+
+``` toml
+[target.osx.tasks]
+rstudio = "open -n -a RStudio myproject.Rproj"
+
+[target.linux.tasks]
+rstudio = "rstudio myproject.Rproj"
+```
 
 ## Positron
 
@@ -64,6 +78,17 @@ The extension also needs the languageserver package in the environment:
 ``` r
 
 rpix::pixi_add("languageserver")
+```
+
+## On Windows: start the IDE through Pixi
+
+On Windows, the environment’s R only starts when the environment is
+activated, because it needs the environment’s `Library\bin` folder on
+the `PATH`. Positron and VS Code start R themselves, so start them from
+the project’s environment, for example:
+
+``` sh
+pixi run code .
 ```
 
 ## Check

@@ -105,13 +105,17 @@
 <p>Earlier versions of rpix did this, from the <code>.Rprofile</code>. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> removes that setup from projects that still have it.</p>
 </section><section class="level2"><h2 id="keep-your-personal-library-out">Keep your personal library out<a class="anchor" aria-label="anchor" href="#keep-your-personal-library-out"></a>
 </h2>
-<p>conda-forge’s R also looks in your personal package library: the one your usual R installs into, such as <code>~/Library/R/x86_64/4.5/library</code> on macOS. It even looks there first, so packages built for your usual R can be loaded into the environment’s R. Check with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>conda-forge’s R also looks in your personal package library, and even looks there first. That’s the one your usual R installs into, such as <code>~/Library/R/x86_64/4.5/library</code> on macOS, or <code>%LOCALAPPDATA%/R/win-library/4.5</code> on Windows. So packages built for your usual R can be loaded into the environment’s R. This is a <a href="https://github.com/conda-forge/r-base-feedstock/issues/37" class="external-link">long-standing issue in conda-forge’s R</a>.</p>
+<p><code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> points <code>R_LIBS_USER</code> at a folder inside the project instead, in <code>pixi.toml</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[activation.env]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">R_LIBS_USER</span> <span class="op">=</span> <span class="st">"$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[target.win.activation.env]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">R_LIBS_USER</span> <span class="op">=</span> <span class="st">"%PIXI_PROJECT_ROOT%</span><span class="sc">\\</span><span class="st">.pixi</span><span class="sc">\\</span><span class="st">r-libs</span><span class="sc">\\</span><span class="st">%PIXI_ENVIRONMENT_NAME%"</span></span></code></pre></div>
+<p>Windows needs the second entry, because it only expands <code>%VAR%</code>. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> adds it if the project lists a Windows platform; if you add one later, add the entry too. R ignores a library folder that doesn’t exist, so this leaves only the environment’s own library.</p>
+<p>This only applies when Pixi starts R, as <code>pixi run R</code> does. Check with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>If your personal library is listed, point <code>R_LIBS_USER</code> somewhere else in <code>pixi.toml</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[activation.env]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">R_LIBS_USER</span> <span class="op">=</span> <span class="st">"$PIXI_PROJECT_ROOT/.pixi/r-libs/$PIXI_ENVIRONMENT_NAME"</span></span></code></pre></div>
-<p>R ignores a library folder that doesn’t exist, so this leaves only the environment’s own library. We’ve checked this on macOS.</p>
 </section><section class="level2"><h2 id="what-rpix-runs">What rpix runs<a class="anchor" aria-label="anchor" href="#what-rpix-runs"></a>
 </h2>
 <p>Each rpix function runs a Pixi command, and shows it:</p>

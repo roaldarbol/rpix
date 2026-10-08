@@ -2,6 +2,21 @@
 
 ## rpix (development version)
 
+- [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  now keeps your personal R library out of the environment’s R, by
+  pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`.
+  conda-forge’s R otherwise puts it first on
+  [`.libPaths()`](https://rdrr.io/r/base/libPaths.html), so packages
+  built for your usual R could be loaded
+  (conda-forge/r-base-feedstock#37). On Windows, the entry is only added
+  when the project lists a Windows platform.
+- The IDE guide’s RStudio commands now work as expected: `open -n` on
+  macOS, so a running RStudio doesn’t keep its R, and a task that sets
+  `RSTUDIO_WHICH_R` on Windows
+  ([\#24](https://github.com/roaldarbol/rpix/issues/24)). It also
+  explains that on Windows, Positron and VS Code have to be started
+  through Pixi.
+
 ## rpix 0.4.0
 
 ### Breaking changes

@@ -32,8 +32,17 @@ library outside it. If it does:
 ## RStudio uses the wrong R
 
 RStudio picks its R when it starts, so it has to be started from the
-project’s environment. See [Using rpix with an
+project’s environment, as a new RStudio. On macOS, `open -a RStudio`
+brings a running RStudio to the front instead, with its R; use
+`open -n -a RStudio`. See [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
+
+## R doesn’t start in Positron or VS Code on Windows
+
+On Windows, the environment’s R only starts when the environment is
+activated. Start the IDE through Pixi, for example with
+`pixi run code .`. See [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.html#on-windows-start-the-ide-through-pixi).
 
 ## A package can’t be found
 

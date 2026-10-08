@@ -3,6 +3,10 @@
 Create a Pixi project in the working directory if there isn't one, add R
 to it, and install rpix into its environment.
 
+It also keeps your personal R library out of the environment's R, by
+pointing `R_LIBS_USER` at `.pixi/r-libs/` in `pixi.toml`. Otherwise
+conda-forge's R loads packages installed for your usual R first.
+
 It can be run from any R. Afterwards, work in R started by Pixi: run
 `pixi run R` in a terminal, or point your IDE at the environment's R
 (see <https://roald-arboel.com/rpix/articles/ide.html>). Each Pixi
