@@ -1,0 +1,12 @@
+# Every new or changed line must be covered by tests, and overall coverage
+# must not drop. Overall coverage reaches 100% once the legacy functions are
+# replaced (#22, #26, #32).
+coverage:
+  status:
+    patch:
+      default:
+        target: 100%
+    project:
+      default:
+        target: auto
+        threshold: 0%

@@ -51,5 +51,5 @@ setup_pixi(init_if_missing = FALSE)
 
 }
 \seealso{
-\code{\link[=pixi_to_path]{pixi_to_path()}}, \code{\link[=.libPaths]{.libPaths()}}
+\code{\link[=.libPaths]{.libPaths()}}
 }

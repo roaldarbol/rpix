@@ -17,6 +17,7 @@ Roxygen: list(markdown = TRUE)
 Imports:
     cli,
     jsonlite,
+    lifecycle,
     processx
 Suggests: 
     knitr,

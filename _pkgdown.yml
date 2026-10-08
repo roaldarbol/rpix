@@ -55,13 +55,12 @@ articles:
 reference:
   - title: "Managing dependencies"
     contents:
-      - add
-      - remove
-      - search
+      - pixi_add
+      - pixi_remove
+      - pixi_search
 
   - title: "Setting up a project"
     contents:
       - setup_pixi
-      - pixi_to_path
       - reset_r_libraries
       - restart_rstudio_with_pixi

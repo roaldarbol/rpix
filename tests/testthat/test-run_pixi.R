@@ -211,3 +211,31 @@ test_that("failures with streamed output don't repeat pixi's message", {
   )
   expect_match(conditionMessage(err), "output above")
 })
+
+# Error output -----------------------------------------------------------------
+
+test_that("error details fall back to stdout when stderr is empty", {
+  bullets <- pixi_output_bullets(list(
+    stderr = "",
+    stdout = "\033[31mbroken\033[0m"
+  ))
+  expect_equal(unname(bullets), "broken")
+})
+
+test_that("error details keep the last 20 lines of long output", {
+  output <- paste0("line ", 1:30, collapse = "\n")
+  bullets <- pixi_output_bullets(list(stderr = output, stdout = ""))
+  expect_length(bullets, 21)
+  expect_equal(unname(bullets[c(1, 2, 21)]), c("...", "line 11", "line 30"))
+})
+
+test_that("error details escape braces so cli doesn't interpolate them", {
+  bullets <- pixi_output_bullets(list(stderr = "expected {x}", stdout = ""))
+  expect_equal(unname(bullets), "expected {{x}}")
+})
+
+test_that("the home directory is USERPROFILE on Windows", {
+  local_mocked_bindings(is_windows = function() TRUE)
+  withr::local_envvar(USERPROFILE = "C:/Users/someone")
+  expect_equal(home_dir(), "C:/Users/someone")
+})
