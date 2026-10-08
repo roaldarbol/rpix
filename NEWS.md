@@ -1,3 +1,5 @@
+# rpix (development version)
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
