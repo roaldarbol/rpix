@@ -18,6 +18,8 @@
 #'   directory. See `find_project_root()`.
 #' @param json If `TRUE`, add `--json` and return the parsed output.
 #' @param echo If `TRUE`, stream Pixi's output to the console while it runs.
+#' @param announce If `TRUE`, say which command runs before streaming its
+#'   output.
 #' @param dry_run If `TRUE`, show the command without running it.
 #' @param call The calling environment, used in error messages.
 #'
@@ -33,6 +35,7 @@ run_pixi <- function(
   path = NULL,
   json = FALSE,
   echo = FALSE,
+  announce = echo,
   dry_run = FALSE,
   call = parent.frame()
 ) {
@@ -69,7 +72,7 @@ run_pixi <- function(
     return(invisible(command))
   }
 
-  if (echo) {
+  if (echo && announce) {
     cli::cli_alert_info("Running {.code {command}}")
   }
 

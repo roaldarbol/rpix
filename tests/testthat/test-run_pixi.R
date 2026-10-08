@@ -227,6 +227,20 @@ test_that("streamed output goes to stdout, and stderr is kept apart", {
   expect_equal(err$stdout, "")
 })
 
+test_that("streams output with or without saying which command runs", {
+  skip_if_no_pixi()
+  expect_message(
+    capture.output(run_pixi("--version", project = "none", echo = TRUE)),
+    "Running"
+  )
+  expect_no_message(
+    output <- capture.output(
+      run_pixi("--version", project = "none", echo = TRUE, announce = FALSE)
+    )
+  )
+  expect_match(output, "pixi", all = FALSE)
+})
+
 # Error output -----------------------------------------------------------------
 
 test_that("error details fall back to stdout when stderr is empty", {
