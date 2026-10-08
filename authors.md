@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/roaldarbol/rpix/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/roaldarbol/rpix/blob/v0.5.0/DESCRIPTION)
 
 Roald-Arbøl M (2026). *rpix: Manage R Project Dependencies with 'Pixi'*.
 R package version 0.5.0, <https://roald-arboel.com/rpix/>.
