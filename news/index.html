@@ -45,6 +45,13 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<ul><li>All pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), pixi failures become R errors, and pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
+<li>
+<code><a href="../reference/add.html">add()</a></code>, <code><a href="../reference/remove.html">remove()</a></code> and <code><a href="../reference/search.html">search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
+<li>Added tests.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="rpix-030">rpix 0.3.0<a class="anchor" aria-label="anchor" href="#rpix-030"></a></h2>
 <ul><li>
 <code>restart_rstudio_with_pixi</code> has been written to facilitate easier selection of the correct R version</li>

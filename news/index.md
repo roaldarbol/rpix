@@ -1,5 +1,19 @@
 # Changelog
 
+## rpix (development version)
+
+- All pixi commands now go through a single internal runner built on
+  *processx* ([\#19](https://github.com/roaldarbol/rpix/issues/19)).
+  Arguments are passed without shell quoting, commands work from any
+  subfolder of a project (`--manifest-path`), pixi failures become R
+  errors, and pixi is found even if it isn’t on the `PATH` (set
+  `options(rpix.pixi_path = ...)` for unusual installs).
+- [`add()`](https://roald-arboel.com/rpix/reference/add.md),
+  [`remove()`](https://roald-arboel.com/rpix/reference/remove.md) and
+  [`search()`](https://roald-arboel.com/rpix/reference/search.md) with
+  `dry_run = TRUE` now return the command invisibly.
+- Added tests.
+
 ## rpix 0.3.0
 
 - `restart_rstudio_with_pixi` has been written to facilitate easier

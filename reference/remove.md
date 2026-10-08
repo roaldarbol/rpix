@@ -23,7 +23,8 @@ remove(packages, dry_run = FALSE)
 
 ## Value
 
-Doesn't return any objects.
+The command (invisibly) if `dry_run = TRUE`, otherwise the result of the
+pixi call (invisibly).
 
 ## Examples
 
