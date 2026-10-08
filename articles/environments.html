@@ -123,6 +123,7 @@
 </h2>
 <p>Start an environment’s R with:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run <span class="at">--environment</span> r44 R</span></code></pre></div>
+<p>To move your IDE to it, run <code>pixi_switch("r44")</code>. In RStudio this starts a new RStudio with that R; in Positron it opens the interpreter picker; in VS Code it points the R extension at that R. See <a href="ide.html">Using rpix with an IDE</a>.</p>
 <p>Or run a function in it from the R you’re in, and get the result back:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_r.html">pixi_r</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="va">R.version.string</span>, environment <span class="op">=</span> <span class="st">"r44"</span><span class="op">)</span></span>

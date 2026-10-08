@@ -2,6 +2,21 @@
 
 ## rpix (development version)
 
+### Breaking changes
+
+- `restart_rstudio_with_pixi()` is removed. Use
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  instead, or start RStudio with `pixi run rstudio`
+  ([\#32](https://github.com/roaldarbol/rpix/issues/32)).
+
+### New features
+
+- New
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  moves your work to another environment’s R
+  ([\#32](https://github.com/roaldarbol/rpix/issues/32)). In RStudio it
+  starts a new RStudio with that R, in Positron it opens the interpreter
+  picker, and in VS Code it points the R extension at that R.
 - New
   [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_run()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
@@ -14,9 +29,6 @@
   runs a function in another environment’s R, e.g. one with another
   version of R, and returns its result
   ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
-- Pixi’s output is no longer partly red. Pixi reports progress on
-  stderr, which was shown in red; rpix now shows it in Pixi’s own
-  colours.
 - New
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   runs a package’s tests or `R CMD check` in several environments,
@@ -25,6 +37,9 @@
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   adds those environments
   ([\#34](https://github.com/roaldarbol/rpix/issues/34)).
+
+### Minor improvements and fixes
+
 - [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
   [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
   [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
@@ -34,6 +49,9 @@
   ([\#67](https://github.com/roaldarbol/rpix/issues/67)). They’re still
   data frames, or a list for
   [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md).
+- Pixi’s output is no longer partly red. Pixi reports progress on
+  stderr, which was shown in red; rpix now shows it in Pixi’s own
+  colours.
 
 ## rpix 0.5.0
 

@@ -108,7 +108,7 @@
 <p>In Positron’s interpreter picker, pick <strong>R (Pixi: default)</strong>: the R from the project’s default environment. Positron remembers it for the project, and starts it whenever you open the project. It activates the environment when it starts R, on Windows too.</p>
 </section><section class="level3"><h3 id="another-environment">Another environment<a class="anchor" aria-label="anchor" href="#another-environment"></a>
 </h3>
-<p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker.</p>
+<p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker, or run <code>rpix::pixi_switch("r44")</code>, which opens the picker.</p>
 </section><section class="level3"><h3 id="if-somethings-off">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off"></a>
 </h3>
 <ul>
@@ -131,8 +131,11 @@
 <p>On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>. If it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
 </section><section class="level3"><h3 id="another-environment-1">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-1"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run <span class="at">--environment</span> test rstudio</span></code></pre></div>
-<p>This works for environments that include the default feature, which the task belongs to.</p>
+<p>From RStudio, run:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_switch.html">pixi_switch</a></span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></code></pre></div>
+<p>This starts a new RStudio with the environment’s R, in the project. Close the old one when you’re done with it.</p>
+<p>From a terminal, <code>pixi run --environment test rstudio</code> works too, for environments that include the default feature, which the task belongs to.</p>
 </section><section class="level3"><h3 id="if-somethings-off-1">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-1"></a>
 </h3>
 <ul>
@@ -153,7 +156,7 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run code .</span></code></pre></div>
 </section><section class="level3"><h3 id="another-environment-2">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-2"></a>
 </h3>
-<p>Change <code>r.executablePath</code> and <code>r.consolePath</code> in <code>.vscode/settings.json</code> to the environment’s R, e.g. <code>${workspaceFolder}/.pixi/envs/r44/bin/R</code>, and reload the window. On Windows, start VS Code with <code>pixi run --environment r44 code .</code>.</p>
+<p>Run <code>rpix::pixi_switch("r44")</code>. It changes <code>r.executablePath</code> and <code>r.consolePath</code> in <code>.vscode/settings.json</code> to the environment’s R, <code>${workspaceFolder}/.pixi/envs/r44/bin/R</code>. Then run <strong>Developer: Reload Window</strong> from the Command Palette. On Windows, start VS Code with <code>pixi run --environment r44 code .</code> instead.</p>
 </section><section class="level3"><h3 id="if-somethings-off-2">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-2"></a>
 </h3>
 <ul>

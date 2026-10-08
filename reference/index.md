@@ -20,6 +20,8 @@
   [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
   [`pixi_remove_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
   : Features and environments
+- [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  : Switch to another environment's R
 - [`pixi_r()`](https://roald-arboel.com/rpix/reference/pixi_r.md) : Run
   a function in another environment's R
 - [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
@@ -56,5 +58,3 @@
   : Set up an IDE for a Pixi project
 - [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
   : Activate the project's Pixi environment in the running R
-- [`restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
-  : Restart RStudio with Pixi
