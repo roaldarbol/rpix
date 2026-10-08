@@ -175,3 +175,25 @@ test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `pa
     dry_run = TRUE
   ))))
 })
+
+test_that("pixi_add() explains packages that aren't built for the project's R", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
+    collapse = "\n"
+  )
+  local_mock_pixi(error = pixi_error(stderr))
+  expect_snapshot(pixi_add(c("languageserver", "praise")), error = TRUE)
+  expect_error(pixi_add("praise"), class = "rpix_error_r_version")
+})
+
+test_that("not_built_for_r() reads Pixi's error", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
+    collapse = "\n"
+  )
+  expect_equal(
+    not_built_for_r(stderr),
+    list(package = "r-praise", r_version = "4.5")
+  )
+  expect_null(not_built_for_r("No candidates were found for r-gdal *."))
+})

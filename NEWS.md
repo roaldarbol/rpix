@@ -23,6 +23,7 @@
 - `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. When conda-forge had just released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
 - `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be run again, e.g. after renaming the `.Rproj` file (#72).
 - In Positron, `pixi_switch()` looks for interpreters again before opening the interpreter picker, so environments added while Positron is open are listed.
+- `pixi_add()` explains when a package isn't built for the project's version of R yet, which happens for a while after conda-forge releases a new R, and suggests the newest R it's built for (#80).
 
 # rpix 0.5.0
 
