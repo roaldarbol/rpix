@@ -86,7 +86,7 @@ run_pixi <- function(
     error_on_status = FALSE,
     stdout_callback = show,
     stderr_callback = show,
-    env = c("current", PIXI_COLOR = if (use_color) "always" else "never")
+    env = pixi_env(if (use_color) "always" else "never")
   )
 
   if (result$status != 0) {
@@ -211,6 +211,22 @@ format_command <- function(args) {
 
 # `pixi run` passes everything after the command on to it, so the manifest has
 # to come straight after `run` there
+# Environment variables for Pixi: this R's, without the ones R sets for
+# itself, which would point another environment's R at this R's files
+pixi_env <- function(color) {
+  env <- Sys.getenv()
+  r_session <- c(
+    "R_HOME",
+    "R_SHARE_DIR",
+    "R_INCLUDE_DIR",
+    "R_DOC_DIR",
+    "R_ARCH",
+    "R_LIBS_SITE"
+  )
+  env <- env[!names(env) %in% r_session]
+  c(stats::setNames(as.character(env), names(env)), PIXI_COLOR = color)
+}
+
 add_manifest_arg <- function(args, manifest) {
   if (is.null(manifest)) {
     return(args)

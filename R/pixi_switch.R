@@ -84,7 +84,7 @@ start_detached <- function(args, root) {
 
 switch_positron <- function(environment) {
   cli::cli_alert_info(
-    "Pick {.val (Pixi: {environment})} in the interpreter picker."
+    "Pick the R labelled {.val (Pixi: {environment})} in the interpreter picker."
   )
   execute <- positron_command()
   if (!is.null(execute)) {

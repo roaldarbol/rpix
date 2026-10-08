@@ -74,4 +74,24 @@ See the project's environments, and their features, with:
 pixi_environments()
 ```
 
+## Checking a package on several versions of R
+
+For package developers, `use_pixi_check_matrix()` adds an environment for each version of R, with the package's dependencies and what the tests and `R CMD check` need:
+
+```r
+use_pixi_check_matrix(c("4.3", "4.4", "4.5"))
+```
+
+Then run the tests in all of them, and see the results side by side:
+
+```r
+pixi_check_matrix()
+#> ── Tests ──────────────────────────────────────────────────────────
+#> ✔ r43  R 4.3.3: 120 passed, 0 failed, 2 skipped, 0 warnings (41 s)
+#> ✖ r44  R 4.4.3: 119 passed, 1 failed, 2 skipped, 0 warnings (38 s)
+#> ✔ r45  R 4.5.3: 120 passed, 0 failed, 2 skipped, 0 warnings (37 s)
+```
+
+`what = "check"` runs `R CMD check` instead, and `parallel = TRUE` runs in all environments at once. What each run printed is in the `output` column.
+
 Install an environment with `pixi_install(environment = "r44")`, or all of them with `pixi_install(all = TRUE)`. `pixi run` also installs an environment the first time it's used.

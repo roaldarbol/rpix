@@ -86,6 +86,7 @@ reference:
       - pixi_environments
       - pixi_switch
       - pixi_r
+      - pixi_check_matrix
       - pixi_add_channel
 
   - title: "Tasks"

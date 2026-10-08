@@ -9,6 +9,7 @@
 - New `pixi_switch()` moves your work to another environment's R (#32). In RStudio it starts a new RStudio with that R, in Positron it opens the interpreter picker, and in VS Code it points the R extension at that R.
 - New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
 - New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
+- New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
 
 ## Minor improvements and fixes
 
