@@ -14,6 +14,9 @@
   runs a function in another environment’s R, e.g. one with another
   version of R, and returns its result
   ([\#33](https://github.com/roaldarbol/rpix/issues/33)).
+- Pixi’s output is no longer partly red. Pixi reports progress on
+  stderr, which was shown in red; rpix now shows it in Pixi’s own
+  colours.
 
 ## rpix 0.5.0
 
