@@ -1,5 +1,7 @@
 # rpix (development version)
 
+- Pixi's output is no longer shown in red in RStudio and Positron. Pixi reports progress on stderr, which IDEs colour red, so rpix now shows it on stdout.
+
 # rpix 0.5.0
 
 rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
