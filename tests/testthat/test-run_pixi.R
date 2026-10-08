@@ -279,3 +279,11 @@ test_that("--manifest-path comes straight after `run`, before the command", {
   )
   expect_equal(command, "pixi run --manifest-path pixi.toml Rscript -e 1")
 })
+
+test_that("Pixi doesn't get the variables R sets for itself", {
+  withr::local_envvar(R_LIBS_SITE = "/this/r/site-library", RPIX_TEST = "yes")
+  env <- pixi_env("never")
+  expect_false(any(c("R_HOME", "R_LIBS_SITE") %in% names(env)))
+  expect_equal(env[["RPIX_TEST"]], "yes")
+  expect_equal(env[["PIXI_COLOR"]], "never")
+})
