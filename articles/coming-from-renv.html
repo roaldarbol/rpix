@@ -156,27 +156,19 @@
 </tbody>
 </table></section><section class="level2"><h2 id="moving-a-project-from-renv">Moving a project from renv<a class="anchor" aria-label="anchor" href="#moving-a-project-from-renv"></a>
 </h2>
-<ol type="1">
-<li>
-<p>Keep a copy of the lock file, then turn renv off for the project. <code>clean = TRUE</code> also deletes renv’s files, including <code>renv.lock</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="st">"renv.lock"</span>, <span class="st">"renv-old.lock"</span><span class="op">)</span></span>
-<span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/activate.html" class="external-link">deactivate</a></span><span class="op">(</span>clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</li>
-<li>
-<p>Set the project up with Pixi:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</li>
-<li>
-<p>Start R from the project’s environment, with <code>pixi run R</code>, and add the packages that were in the lock file:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lock</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/read_json.html" class="external-link">read_json</a></span><span class="op">(</span><span class="st">"renv-old.lock"</span><span class="op">)</span></span>
-<span><span class="va">packages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">lock</span><span class="op">$</span><span class="va">Packages</span><span class="op">)</span>, <span class="st">"renv"</span><span class="op">)</span></span>
-<span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="va">packages</span><span class="op">)</span></span></code></pre></div>
-<p>This adds the latest versions. Packages renv only installed as dependencies of others get added too; you can remove them from <code>pixi.toml</code> afterwards. Packages from GitHub, or not on conda-forge, need <a href="finding-packages.html#when-a-package-isnt-on-conda-forge">another route</a>.</p>
-</li>
-</ol></section><script id="quarto-html-after-body" type="application/javascript">
+<p>In a terminal, in the project’s folder, create a Pixi project, then let rpix move the packages over and set the project up:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> init</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">--no-init-file</span> <span class="at">-e</span> <span class="st">'rpix::pixi_import_renv(); rpix::use_pixi()'</span></span></code></pre></div>
+<p><code>--no-init-file</code> keeps renv from starting, so this runs in your usual R, where rpix is installed.</p>
+<p><code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code>:</p>
+<ul>
+<li>adds the packages in <code>renv.lock</code> to <code>pixi.toml</code>, at least at their locked versions, with the lock file’s version of R. Use <code>versions = "exact"</code> for the locked versions themselves, where conda-forge has them.</li>
+<li>adds only the packages that nothing else in the lock file needs: the ones your project uses. Pixi installs what they need.</li>
+<li>lists packages it can’t add: those from GitHub, and those not on conda-forge or bioconda. They need <a href="finding-packages.html#when-a-package-isnt-on-conda-forge">another route</a>.</li>
+<li>turns renv off, by removing <code>source("renv/activate.R")</code> from <code>.Rprofile</code>. Delete <code>renv.lock</code> and the <code>renv</code> folder when you no longer need them.</li>
+</ul>
+<p>Then start R with <code>pixi run R</code>, or set up your IDE (see <a href="ide.html">Using rpix with an IDE</a>).</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

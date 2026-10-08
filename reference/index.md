@@ -61,5 +61,7 @@
   [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   : Set up an IDE for a Pixi project
+- [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
+  : Move a project from renv
 - [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
   : Activate the project's Pixi environment in the running R

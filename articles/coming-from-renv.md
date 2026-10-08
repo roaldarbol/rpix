@@ -33,34 +33,31 @@ familiar.
 
 ## Moving a project from renv
 
-1.  Keep a copy of the lock file, then turn renv off for the project.
-    `clean = TRUE` also deletes renv’s files, including `renv.lock`:
+In a terminal, in the project’s folder, create a Pixi project, then let
+rpix move the packages over and set the project up:
 
-    ``` r
+``` sh
+pixi init
+Rscript --no-init-file -e 'rpix::pixi_import_renv(); rpix::use_pixi()'
+```
 
-    file.copy("renv.lock", "renv-old.lock")
-    renv::deactivate(clean = TRUE)
-    ```
+`--no-init-file` keeps renv from starting, so this runs in your usual R,
+where rpix is installed.
 
-2.  Set the project up with Pixi:
+[`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md):
 
-    ``` r
+- adds the packages in `renv.lock` to `pixi.toml`, at least at their
+  locked versions, with the lock file’s version of R. Use
+  `versions = "exact"` for the locked versions themselves, where
+  conda-forge has them.
+- adds only the packages that nothing else in the lock file needs: the
+  ones your project uses. Pixi installs what they need.
+- lists packages it can’t add: those from GitHub, and those not on
+  conda-forge or bioconda. They need [another
+  route](https://roald-arboel.com/rpix/articles/finding-packages.html#when-a-package-isnt-on-conda-forge).
+- turns renv off, by removing `source("renv/activate.R")` from
+  `.Rprofile`. Delete `renv.lock` and the `renv` folder when you no
+  longer need them.
 
-    rpix::use_pixi()
-    ```
-
-3.  Start R from the project’s environment, with `pixi run R`, and add
-    the packages that were in the lock file:
-
-    ``` r
-
-    lock <- jsonlite::read_json("renv-old.lock")
-    packages <- setdiff(names(lock$Packages), "renv")
-    rpix::pixi_add(packages)
-    ```
-
-    This adds the latest versions. Packages renv only installed as
-    dependencies of others get added too; you can remove them from
-    `pixi.toml` afterwards. Packages from GitHub, or not on conda-forge,
-    need [another
-    route](https://roald-arboel.com/rpix/articles/finding-packages.html#when-a-package-isnt-on-conda-forge).
+Then start R with `pixi run R`, or set up your IDE (see [Using rpix with
+an IDE](https://roald-arboel.com/rpix/articles/ide.md)).

@@ -49,6 +49,14 @@
   aren’t on conda-forge or bioconda
   ([\#36](https://github.com/roaldarbol/rpix/issues/36)).
 
+- New
+  [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
+  moves a project from renv: it adds the packages in `renv.lock`, at
+  least at their locked versions or exactly, and turns renv off. It adds
+  only the packages nothing else in the lock file needs, and lists those
+  it can’t add, e.g. from GitHub
+  ([\#37](https://github.com/roaldarbol/rpix/issues/37)).
+
 ### Minor improvements and fixes
 
 - [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
