@@ -86,24 +86,31 @@
 </section><section class="level2"><h2 id="install-rpix">Install <em>rpix</em>
 <a class="anchor" aria-label="anchor" href="#install-rpix"></a>
 </h2>
-<p>Next, you’ll need to install <em>rpix</em>. For this guide, we’ll assume you are using RStudio.</p>
-<ul>
-<li>Open RStudio</li>
-<li>Create new project (without <em>renv</em>)</li>
-<li>Install <em>rpix</em>
-<ul>
-<li><code>install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")</code></li>
-</ul>
-</li>
-</ul></section><section class="level2"><h2 id="setup-pixi-project">Setup pixi project<a class="anchor" aria-label="anchor" href="#setup-pixi-project"></a>
+<p>Next, install <em>rpix</em> in the R you normally use:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rpix"</span>, repos <span class="op">=</span> <span class="st">"https://roaldarbol.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+</section><section class="level2"><h2 id="set-up-a-pixi-project">Set up a pixi project<a class="anchor" aria-label="anchor" href="#set-up-a-pixi-project"></a>
 </h2>
+<p>In R, with your project folder as the working directory, run:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/setup_pixi.html">setup_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This creates a <code>pixi.toml</code> (if there isn’t one yet), adds R to the project, and installs <em>rpix</em> into the project’s environment.</p>
+</section><section class="level2"><h2 id="start-r-from-the-projects-environment">Start R from the project’s environment<a class="anchor" aria-label="anchor" href="#start-r-from-the-projects-environment"></a>
+</h2>
+<p>A pixi environment has its own R and its own package library. Your usual R doesn’t use them, so from here on, work in R started by pixi:</p>
 <ul>
-<li>Initiate pixi project with <code><a href="../reference/setup_pixi.html">rpix::setup_pixi()</a></code>
+<li>
+<strong>In a terminal:</strong> <code>pixi run R</code>
 </li>
-<li>Restart RStudio with <code><a href="../reference/restart_rstudio_with_pixi.html">rpix::restart_rstudio_with_pixi()</a></code> for changes to take effect</li>
+<li>
+<strong>In RStudio on macOS:</strong> <code><a href="../reference/restart_rstudio_with_pixi.html">rpix::restart_rstudio_with_pixi()</a></code>
+</li>
+<li>
+<strong>In other IDEs:</strong> see <a href="ide.html">Using rpix with an IDE</a>
+</li>
 </ul></section><section class="level2"><h2 id="start-coding">Start coding!<a class="anchor" aria-label="anchor" href="#start-coding"></a>
 </h2>
-<p>When you need new packages, run <code>rpix::pixi_add("package_name")</code>. If you wish to remove packages, simply <code>rpix::pixi_remove("package_name")</code></p>
+<p>When you need new packages, run <code>rpix::pixi_add("package_name")</code>. If you wish to remove packages, simply <code>rpix::pixi_remove("package_name")</code>.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

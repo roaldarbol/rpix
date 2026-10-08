@@ -12,8 +12,6 @@
 ## Setting up a project
 
 - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-  : Setup pixi environment safely
-- [`reset_r_libraries()`](https://roald-arboel.com/rpix/reference/reset_r_libraries.md)
-  : Reset R library configuration
+  : Set up a pixi project for R
 - [`restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
   : Restart RStudio with Pixi

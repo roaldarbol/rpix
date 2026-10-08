@@ -21,7 +21,22 @@
     masked [`base::remove()`](https://rdrr.io/r/base/rm.html) and
     [`base::search()`](https://rdrr.io/r/base/search.html) whenever rpix
     was attached.
-  - `pixi_to_path()` is no longer exported. rpix finds pixi itself.
+  - `pixi_to_path()` is removed. rpix finds pixi itself.
+- rpix no longer points a running R at a pixi environment’s library
+  ([\#22](https://github.com/roaldarbol/rpix/issues/22)). R mixed with
+  packages built for a different R could crash
+  ([\#14](https://github.com/roaldarbol/rpix/issues/14)). Work in R
+  started by pixi instead, e.g. with `pixi run R`.
+  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+    now only sets up the project: it creates `pixi.toml` if needed, adds
+    R (`r_version` picks the version), and installs rpix into the
+    environment, with its dependencies from conda-forge. Its
+    `add_to_rprofile` and `global` arguments are gone.
+  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+    removes the “Pixi R library setup” block that earlier versions added
+    to the project’s `.Rprofile`, and warns if there’s one in
+    `~/.Rprofile`.
+  - `reset_r_libraries()` is removed.
 
 ### Other changes
 

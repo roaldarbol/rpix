@@ -54,7 +54,15 @@
 <li>
 <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>. The old names were removed rather than deprecated, because they masked <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">base::remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">base::search()</a></code> whenever rpix was attached.</li>
 <li>
-<code>pixi_to_path()</code> is no longer exported. rpix finds pixi itself.</li>
+<code>pixi_to_path()</code> is removed. rpix finds pixi itself.</li>
+</ul></li>
+<li>rpix no longer points a running R at a pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by pixi instead, e.g. with <code>pixi run R</code>.
+<ul><li>
+<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
+<li>
+<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
+<li>
+<code>reset_r_libraries()</code> is removed.</li>
 </ul></li>
 </ul></div>
 <div class="section level3">

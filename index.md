@@ -8,6 +8,12 @@ CLI, but are open to implement useful features - feedback is welcome!**
 The **rpix** package provides an interface to manage dependencies with
 [pixi](https://pixi.sh).
 
+Each pixi environment has its own R and its own package library, so you
+work in R started by pixi (e.g. `pixi run R`, or an IDE pointed at the
+environment’s R) and manage its packages from there.
+[`rpix::setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+sets a project up from any R.
+
 ## Installation
 
 **rpix** depends on having **pixi** installed - so if you haven’t got it

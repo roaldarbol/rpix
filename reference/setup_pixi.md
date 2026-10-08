@@ -1,69 +1,50 @@
-# Setup pixi environment safely
+# Set up a pixi project for R
 
-`setup_pixi()` provides a complete pixi setup for R projects. It checks
-for pixi availability, initializes a pixi project if needed, and
-configures R to use pixi-managed packages. The function prioritizes
-safety and uses .libPaths() instead of environment variables to avoid
-shared library conflicts.
+Create a pixi project in the working directory if there isn't one, add R
+to it, and install rpix into its environment.
+
+It can be run from any R. Afterwards, work in R started by pixi: run
+`pixi run R` in a terminal, or point your IDE at the environment's R
+(see <https://roald-arboel.com/rpix/articles/ide.html>). Each pixi
+environment has its own R and package library, so rpix doesn't point a
+running R at a pixi library: packages built for a different R can crash
+it.
+
+Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
+block in their `.Rprofile`, which did exactly that. It's removed.
 
 ## Usage
 
 ``` r
-setup_pixi(add_to_rprofile = TRUE, global = FALSE, init_if_missing = TRUE)
+setup_pixi(r_version = NULL, init_if_missing = TRUE, install_rpix = TRUE)
 ```
 
 ## Arguments
 
-- add_to_rprofile:
+- r_version:
 
-  Logical. If TRUE, adds the pixi library configuration to .Rprofile for
-  persistence across sessions. Default is FALSE.
-
-- global:
-
-  Logical. If TRUE and `add_to_rprofile = TRUE`, adds to global
-  ~/.Rprofile instead of project-local .Rprofile. Default is FALSE.
+  Optional. The R version to add, such as `"4.5"`. Defaults to the
+  latest on conda-forge.
 
 - init_if_missing:
 
-  Logical. If TRUE, runs `pixi init` if pixi.toml is not found. Default
-  is TRUE.
+  If `TRUE`, create a pixi project if there isn't one.
+
+- install_rpix:
+
+  If `TRUE`, install rpix into the project's environment. Its
+  dependencies come from conda-forge, and rpix itself from R-universe
+  until it's on conda-forge.
 
 ## Value
 
-Invisibly returns a list with the status of each setup step.
-
-## Details
-
-The function performs the following steps:
-
-1.  Checks if pixi is available in PATH (adds it if not found)
-
-2.  Checks for pixi.toml in project root (runs `pixi init` if not found)
-
-3.  Configures R to use the pixi library as the primary package source
-
-4.  Optionally adds the configuration to .Rprofile for persistence
-
-Instead of setting environment variables (which can cause shared library
-conflicts), this function modifies .libPaths() to prioritize the pixi
-library.
-
-## See also
-
-[`.libPaths()`](https://rdrr.io/r/base/libPaths.html)
+The path to the project's manifest, invisibly.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Basic setup - just configure for current session
 setup_pixi()
-
-# Full setup - add to .Rprofile for persistence
-setup_pixi(add_to_rprofile = TRUE)
-
-# Setup without auto-initializing pixi project
-setup_pixi(init_if_missing = FALSE)
+setup_pixi(r_version = "4.5")
 } # }
 ```

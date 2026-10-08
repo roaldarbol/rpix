@@ -8,23 +8,37 @@ underlying *rpix*. To do so, follow the installation instructions on
 
 ## Install *rpix*
 
-Next, you’ll need to install *rpix*. For this guide, we’ll assume you
-are using RStudio.
+Next, install *rpix* in the R you normally use:
 
-- Open RStudio
-- Create new project (without *renv*)
-- Install *rpix*
-  - `install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")`
+``` r
 
-## Setup pixi project
+install.packages("rpix", repos = "https://roaldarbol.r-universe.dev")
+```
 
-- Initiate pixi project with
-  [`rpix::setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-- Restart RStudio with
+## Set up a pixi project
+
+In R, with your project folder as the working directory, run:
+
+``` r
+
+rpix::setup_pixi()
+```
+
+This creates a `pixi.toml` (if there isn’t one yet), adds R to the
+project, and installs *rpix* into the project’s environment.
+
+## Start R from the project’s environment
+
+A pixi environment has its own R and its own package library. Your usual
+R doesn’t use them, so from here on, work in R started by pixi:
+
+- **In a terminal:** `pixi run R`
+- **In RStudio on macOS:**
   [`rpix::restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)
-  for changes to take effect
+- **In other IDEs:** see [Using rpix with an
+  IDE](https://roald-arboel.com/rpix/articles/ide.md)
 
 ## Start coding!
 
 When you need new packages, run `rpix::pixi_add("package_name")`. If you
-wish to remove packages, simply `rpix::pixi_remove("package_name")`
+wish to remove packages, simply `rpix::pixi_remove("package_name")`.
