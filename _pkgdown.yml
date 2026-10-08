@@ -84,6 +84,7 @@ reference:
   - title: "Environments, channels and platforms"
     contents:
       - pixi_environments
+      - pixi_switch
       - pixi_r
       - pixi_add_channel
 
@@ -101,4 +102,3 @@ reference:
       - use_pixi
       - use_pixi_ide
       - pixi_activate
-      - restart_rstudio_with_pixi
