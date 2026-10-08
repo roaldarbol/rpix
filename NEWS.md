@@ -10,7 +10,6 @@
 - New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
 - New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
 - New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, e.g. one for each version of R, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds those environments (#34).
-
 - New `pixi_import_description()` adds a package's dependencies from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment. It finds Bioconductor packages on bioconda, and lists the packages that aren't on conda-forge or bioconda (#36).
 - New `pixi_import_renv()` moves a project from renv: it adds the packages in `renv.lock`, at least at their locked versions or exactly, and turns renv off. It adds only the packages nothing else in the lock file needs, and lists those it can't add, e.g. from GitHub (#37).
 - New `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those missing from `pixi.toml`, and adds them with `add = TRUE`, and lists packages the code never uses (#38).
