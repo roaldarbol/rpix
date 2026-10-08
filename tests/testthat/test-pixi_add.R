@@ -95,12 +95,6 @@ test_that("project_channels() reads the project's channels", {
   expect_setequal(project_channels(), c("conda-forge", "bioconda"))
 })
 
-test_that("add() is deprecated in favour of pixi_add()", {
-  local_project_dir()
-  lifecycle::expect_deprecated(command <- dry(add("dplyr", dry_run = TRUE)))
-  expect_equal(command, dry(pixi_add("dplyr", dry_run = TRUE)))
-})
-
 # Mock run_pixi() so the paths that need pixi and the network can run offline
 local_mock_pixi <- function(
   channels = "conda-forge",

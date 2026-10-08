@@ -9,7 +9,6 @@ platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 r-base = "4.5.*"
 r-cli = ">=3.6.6,<4"
 r-jsonlite = ">=2.0.0,<3"
-r-lifecycle = ">=1.0.5,<2"
 r-processx = ">=3.9.0,<4"
 conda-ecosystem-user-package-isolation = ">=1.0,<2"
 
