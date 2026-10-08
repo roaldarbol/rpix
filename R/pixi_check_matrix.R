@@ -132,14 +132,7 @@ package_dependencies <- function(description) {
 
 # Start a run in an environment, in the background
 start_run <- function(environment, what, task, root, package = root) {
-  job <- if (what == "task") {
-    list(args = c("run", "--environment", environment, task))
-  } else {
-    func <- if (what == "test") run_tests else run_check
-    # Run without rpix, which the environment may not have
-    environment(func) <- globalenv()
-    pixi_r_job(func, list(package), environment)
-  }
+  job <- run_job(environment, what, task, package)
   job$environment <- environment
   job$log <- tempfile("rpix-run-", fileext = ".log")
   job$started <- Sys.time()
@@ -151,6 +144,17 @@ start_run <- function(environment, what, task, root, package = root) {
     env = pixi_env("never")
   )
   job
+}
+
+# What a run runs: a task, or a function in the environment's R
+run_job <- function(environment, what, task, package) {
+  if (what == "task") {
+    return(list(args = c("run", "--environment", environment, task)))
+  }
+  func <- if (what == "test") run_tests else run_check
+  # Run without rpix, which the environment may not have
+  environment(func) <- globalenv()
+  pixi_r_job(func, list(package), environment)
 }
 
 # Wait for a run to finish, and summarise it

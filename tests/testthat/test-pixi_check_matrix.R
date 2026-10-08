@@ -212,12 +212,9 @@ test_that("use_pixi_check_matrix() needs a package", {
   expect_error(use_pixi_check_matrix("4.4"), "no package here")
 })
 
-test_that("tests and R CMD check run in the environment's R", {
-  skip_if_no_pixi()
-  skip_if(is.null(pixi_r_location(r_home())), "not in a Pixi environment")
-  root <- find_project_root()
-
-  package <- withr::local_tempdir()
+# A package with a passing, a failing and a skipped test
+local_demo_package <- function(env = parent.frame()) {
+  package <- withr::local_tempdir(.local_envir = env)
   dir.create(file.path(package, "R"))
   dir.create(file.path(package, "tests", "testthat"), recursive = TRUE)
   writeLines(
@@ -248,22 +245,62 @@ test_that("tests and R CMD check run in the environment's R", {
     ),
     file.path(package, "tests", "testthat", "test-twice.R")
   )
+  package
+}
 
-  tests <- suppressMessages(
-    finish_run(start_run("default", "test", NULL, root, package))
+test_that("run_job() runs the tests or check without rpix, or a task", {
+  job <- run_job("r44", "test", NULL, "/package")
+  withr::defer(unlink(job$dir, recursive = TRUE))
+  expect_equal(job$args[1:4], c("run", "--environment", "r44", "Rscript"))
+  input <- readRDS(file.path(job$dir, "input.rds"))
+  expect_identical(environment(input$func), globalenv())
+  expect_identical(body(input$func), body(run_tests))
+  expect_equal(input$args, list("/package"))
+
+  job <- run_job("r44", "check", NULL, "/package")
+  withr::defer(unlink(job$dir, recursive = TRUE))
+  expect_identical(
+    body(readRDS(file.path(job$dir, "input.rds"))$func),
+    body(run_check)
   )
+
+  expect_equal(
+    run_job("r44", "task", "lint", "/package"),
+    list(args = c("run", "--environment", "r44", "lint"))
+  )
+})
+
+test_that("run_tests() and run_check() summarise the results", {
+  skip_if_not_installed("rcmdcheck")
+  package <- local_demo_package()
+
+  output <- capture.output(tests <- run_tests(package))
   expect_false(tests$ok)
   expect_equal(tests$r_version, as.character(getRversion()))
   expect_equal(c(tests$passed, tests$failed, tests$skipped), c(1L, 1L, 1L))
-  expect_match(tests$output, "fails")
 
   unlink(file.path(package, "tests"), recursive = TRUE)
-  # In this R, which has rcmdcheck too
   output <- capture.output(check <- run_check(package))
   # twice() isn't documented, and the licence needs a file
   expect_false(check$ok)
   expect_equal(c(check$errors, check$warnings, check$notes), c(0L, 1L, 1L))
   expect_match(paste(output, collapse = "\n"), "Undocumented code objects")
+})
+
+test_that("the tests run in the environment's R", {
+  skip_if_no_pixi()
+  skip_if(is.null(pixi_r_location(r_home())), "not in a Pixi environment")
+
+  tests <- suppressMessages(finish_run(start_run(
+    "default",
+    "test",
+    NULL,
+    find_project_root(),
+    local_demo_package()
+  )))
+  expect_false(tests$ok)
+  expect_equal(tests$r_version, as.character(getRversion()))
+  expect_match(tests$output, "fails")
 })
 
 test_that("a task runs in the environment, and passes if it succeeds", {
