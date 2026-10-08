@@ -1,5 +1,6 @@
 # rpix (development version)
 
+- New `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns the packages in an environment as a data frame, including the name of each R package as R spells it (`Rcpp` for `r-rcpp`).
 - New `use_pixi()` replaces `setup_pixi()`, which is deprecated (#26). Its new `ide` argument sets the project up for RStudio, Positron or VS Code, with the new `use_pixi_rstudio()`, `use_pixi_positron()` and `use_pixi_vscode()` (#27):
   - `use_pixi_rstudio()` adds an `rstudio` task for each of the project's platforms, so `pixi run rstudio` starts a new RStudio with the environment's R, in the project.
   - `use_pixi_positron()` turns on Positron's discovery of R in Pixi environments. Positron then activates the environment itself when it starts that R.

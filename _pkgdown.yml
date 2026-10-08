@@ -79,6 +79,10 @@ reference:
       - pixi_remove
       - pixi_search
 
+  - title: "Inspecting a project"
+    contents:
+      - pixi_info
+
   - title: "Setting up a project"
     contents:
       - use_pixi
