@@ -23,6 +23,8 @@ and suggest fixes for what doesn't. It reports:
 the environment is activated.
 \item Libraries and loaded packages from outside the project, such as your
 personal library.
+\item Packages in the environment that Pixi didn't install, e.g. with
+\code{utils::install.packages()}, so \code{pixi.toml} doesn't record them.
 \item Whether the project's \code{.Rprofile} activates the environment when an IDE
 starts R directly.
 \item Whether the IDE you're in is set up for the project: it runs the

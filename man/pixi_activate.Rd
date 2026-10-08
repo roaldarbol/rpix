@@ -28,6 +28,12 @@ find their data.
 \item Your personal library is removed from \code{.libPaths()}, and the project's
 own library added if it exists. Other libraries, such as temporary ones
 that devtools adds, are kept.
+\item \code{install.packages()} adds packages with \code{\link[=pixi_add]{pixi_add()}} instead, so they're
+recorded in \code{pixi.toml} and \code{pixi.lock}. Packages that aren't on
+conda-forge or bioconda, and arguments Pixi can't use, such as \code{lib} or
+\code{repos}, give an error that points to \code{utils::install.packages()}, which
+installs without Pixi. Turn this off with
+\code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
 }

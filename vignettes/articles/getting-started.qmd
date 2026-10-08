@@ -76,7 +76,7 @@ library(rpix)
 pixi_add(c("dplyr", "ggplot2"))
 ```
 
-`pixi_add()` records the packages in `pixi.toml`, updates `pixi.lock`, and installs them. Then use them as usual:
+`pixi_add()` records the packages in `pixi.toml`, updates `pixi.lock`, and installs them. In the environment's R, `install.packages()` does the same: it adds the packages with `pixi_add()`. Then use them as usual:
 
 ```r
 library(dplyr)
