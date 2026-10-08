@@ -109,7 +109,7 @@
 </h2>
 <p>In R, make your project folder the working directory (an RStudio project does this for you), then run:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/setup_pixi.html">setup_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This adds to your project:</p>
 <ul>
 <li>
@@ -124,7 +124,7 @@
 </h2>
 <p>The environment has its own R, separate from the R you normally use (see <a href="how-rpix-works.html">How rpix works</a> for why). Work in that R from now on. In a terminal in the project folder, run:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run R</span></code></pre></div>
-<p>For RStudio, Positron and VS Code, see <a href="ide.html">Using rpix with an IDE</a>.</p>
+<p>For RStudio, Positron and VS Code, set the project up with <code>use_pixi(ide = ...)</code>; see <a href="ide.html">Using rpix with an IDE</a>.</p>
 <p>To check that you’re in the right R, look at where it lives. It should be inside the project’s <code>.pixi</code> folder:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>

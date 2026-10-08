@@ -1,0 +1,73 @@
+# Set up a Pixi project for R
+
+Create a Pixi project in the working directory if there isn't one, add R
+to it, and install rpix into its environment.
+
+It also adds conda-forge's `conda-ecosystem-user-package-isolation`,
+which keeps your personal R library out of the environment's R.
+Otherwise conda-forge's R loads packages installed for your usual R
+first.
+
+It can be run from any R. Afterwards, work in R started by Pixi: run
+`pixi run R` in a terminal, or use an IDE set up with `ide` (see
+<https://roald-arboel.com/rpix/articles/ide.html>). Each Pixi
+environment has its own R and package library, so rpix doesn't point a
+running R at a Pixi library: packages built for a different R can crash
+it.
+
+It also adds a block to the project's `.Rprofile` that calls
+[`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md),
+so the environment is activated when an IDE starts its R directly.
+Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
+block in their `.Rprofile` instead, which pointed a running R at the
+Pixi library. It's removed.
+
+## Usage
+
+``` r
+use_pixi(
+  r_version = NULL,
+  ide = NULL,
+  init_if_missing = TRUE,
+  install_rpix = TRUE
+)
+```
+
+## Arguments
+
+- r_version:
+
+  Optional. The R version to add, such as `"4.5"`. Defaults to the
+  latest on conda-forge.
+
+- ide:
+
+  Optional. IDEs to set the project up for: any of `"rstudio"`,
+  `"positron"` and `"vscode"`. See
+  [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  and
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
+
+- init_if_missing:
+
+  If `TRUE`, create a Pixi project if there isn't one.
+
+- install_rpix:
+
+  If `TRUE`, install rpix into the project's environment. Its
+  dependencies come from conda-forge, and rpix itself from R-universe
+  until it's on conda-forge.
+
+## Value
+
+The path to the project's manifest, invisibly.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+use_pixi()
+use_pixi(r_version = "4.5", ide = "positron")
+} # }
+```

@@ -39,7 +39,7 @@ does this for you), then run:
 
 ``` r
 
-rpix::setup_pixi()
+rpix::use_pixi()
 ```
 
 This adds to your project:
@@ -65,7 +65,8 @@ run:
 pixi run R
 ```
 
-For RStudio, Positron and VS Code, see [Using rpix with an
+For RStudio, Positron and VS Code, set the project up with
+`use_pixi(ide = ...)`; see [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
 
 To check that you’re in the right R, look at where it lives. It should

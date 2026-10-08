@@ -11,7 +11,7 @@ files. Share those, and anyone can recreate the environment.
   the ones they depend on, for every platform the project supports.
 - **Don’t commit `.pixi/`**: the installed environment. `pixi init` (and
   so
-  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md))
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md))
   adds it to `.gitignore`.
 
 ## Recreate the environment

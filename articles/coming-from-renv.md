@@ -22,7 +22,7 @@ familiar.
 
 | renv | rpix or Pixi |
 |----|----|
-| [`renv::init()`](https://rstudio.github.io/renv/reference/init.html) | [`rpix::setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md) |
+| [`renv::init()`](https://rstudio.github.io/renv/reference/init.html) | [`rpix::use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) |
 | `renv::install("dplyr")` | `rpix::pixi_add("dplyr")` |
 | `renv::remove("dplyr")` | `rpix::pixi_remove("dplyr")` |
 | [`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html) | Not needed |
@@ -46,7 +46,7 @@ familiar.
 
     ``` r
 
-    rpix::setup_pixi()
+    rpix::use_pixi()
     ```
 
 3.  Start R from the project’s environment, with `pixi run R`, and add

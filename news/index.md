@@ -3,20 +3,43 @@
 ## rpix (development version)
 
 - New
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  replaces
+  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md),
+  which is deprecated
+  ([\#26](https://github.com/roaldarbol/rpix/issues/26)). Its new `ide`
+  argument sets the project up for RStudio, Positron or VS Code, with
+  the new
+  [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  and
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  ([\#27](https://github.com/roaldarbol/rpix/issues/27)):
+  - [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+    adds an `rstudio` task for each of the project’s platforms, so
+    `pixi run rstudio` starts a new RStudio with the environment’s R, in
+    the project.
+  - [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+    turns on Positron’s discovery of R in Pixi environments. Positron
+    then activates the environment itself when it starts that R.
+  - [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+    adds languageserver to the environment, and points the R extension
+    for VS Code and VSCodium at the environment’s R.
+- New
   [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
   activates the project’s Pixi environment in R that an IDE such as
   Positron or VS Code started directly, without Pixi
   ([\#25](https://github.com/roaldarbol/rpix/issues/25)). It sets the
   environment variables Pixi would set, and removes your personal
   library from [`.libPaths()`](https://rdrr.io/r/base/libPaths.html).
-  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   adds a block to the project’s `.Rprofile` that calls it, and removes
   the personal library before any package loads. Activation is fast,
   using Pixi’s activation cache.
-- [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-  now keeps your personal R library out of the environment’s R, by
-  adding conda-forge’s `conda-ecosystem-user-package-isolation` to the
-  project. conda-forge’s R otherwise puts the personal library first on
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  keeps your personal R library out of the environment’s R, by adding
+  conda-forge’s `conda-ecosystem-user-package-isolation` to the project.
+  conda-forge’s R otherwise puts the personal library first on
   [`.libPaths()`](https://rdrr.io/r/base/libPaths.html), so packages
   built for your usual R could be loaded
   (conda-forge/r-base-feedstock#37).
@@ -54,12 +77,12 @@
   packages built for a different R could crash
   ([\#14](https://github.com/roaldarbol/rpix/issues/14)). Work in R
   started by Pixi instead, e.g. with `pixi run R`.
-  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
     now only sets up the project: it creates `pixi.toml` if needed, adds
     R (`r_version` picks the version), and installs rpix into the
     environment, with its dependencies from conda-forge. Its
     `add_to_rprofile` and `global` arguments are gone.
-  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  - [`setup_pixi()`](https://roald-arboel.com/rpix/reference/rpix-deprecated.md)
     removes the “Pixi R library setup” block that earlier versions added
     to the project’s `.Rprofile`, and warns if there’s one in
     `~/.Rprofile`.

@@ -11,8 +11,12 @@
 
 ## Setting up a project
 
-- [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-  : Set up a Pixi project for R
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) :
+  Set up a Pixi project for R
+- [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  : Set up an IDE for a Pixi project
 - [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
   : Activate the project's Pixi environment in the running R
 - [`restart_rstudio_with_pixi()`](https://roald-arboel.com/rpix/reference/restart_rstudio_with_pixi.md)

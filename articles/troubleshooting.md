@@ -26,23 +26,23 @@ library outside it. If it does:
 - **The project’s `.Rprofile` changes
   [`.libPaths()`](https://rdrr.io/r/base/libPaths.html).** rpix 0.3.0
   and earlier added a block starting with `# Pixi R library setup`.
-  [`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   removes it; for one in `~/.Rprofile`, remove it by hand.
 
 ## RStudio uses the wrong R
 
 RStudio picks its R when it starts, so it has to be started from the
-project’s environment, as a new RStudio. On macOS, `open -a RStudio`
-brings a running RStudio to the front instead, with its R; use
-`open -n -a RStudio`. See [Using rpix with an
-IDE](https://roald-arboel.com/rpix/articles/ide.md).
+project’s environment, as a new RStudio: set the project up with
+[`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+and start RStudio with `pixi run rstudio`. See [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.html#rstudio).
 
-## R doesn’t start in Positron or VS Code on Windows
+## R doesn’t start in VS Code on Windows
 
 On Windows, the environment’s R only starts when the environment is
-activated. Start the IDE through Pixi, for example with
+activated. Start VS Code from the project’s environment, with
 `pixi run code .`. See [Using rpix with an
-IDE](https://roald-arboel.com/rpix/articles/ide.html#on-windows-start-the-ide-through-pixi).
+IDE](https://roald-arboel.com/rpix/articles/ide.html#vs-code).
 
 ## A package can’t be found
 
@@ -71,7 +71,7 @@ options(rpix.pixi_path = "/path/to/pixi")
 rpix looks for `pixi.toml` in the working directory and the folders
 above it. Change the working directory to your project, or set it up
 with
-[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md).
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md).
 
 ## Still stuck?
 

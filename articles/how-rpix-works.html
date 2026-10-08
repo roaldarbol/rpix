@@ -100,22 +100,22 @@
 <p>IDEs need to be pointed at the environment’s R; see <a href="ide.html">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="when-an-ide-starts-r-directly">When an IDE starts R directly<a class="anchor" aria-label="anchor" href="#when-an-ide-starts-r-directly"></a>
 </h2>
-<p>Positron and VS Code start the environment’s R themselves, without Pixi, so the environment isn’t activated. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> adds a few lines to the project’s <code>.Rprofile</code> that make up for that. When R starts, they:</p>
+<p>Positron and VS Code start the environment’s R themselves, without Pixi, so the environment isn’t activated. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds a few lines to the project’s <code>.Rprofile</code> that make up for that. When R starts, they:</p>
 <ol type="1">
 <li>Remove your personal library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> (see below), before any package loads.</li>
 <li>Call <code><a href="../reference/pixi_activate.html">rpix::pixi_activate()</a></code>, which sets the environment variables Pixi would have set, and adds the project’s own library.</li>
 </ol>
 <p>In R that isn’t from the project’s environment, <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> changes nothing, and tells you how to start the right R instead.</p>
-<p>On Windows, the environment’s R can’t start at all without activation, so start the IDE through Pixi there; see <a href="ide.html#on-windows-start-the-ide-through-pixi">Using rpix with an IDE</a>.</p>
+<p>Positron activates the environment itself when it starts an R it found in a Pixi environment. On Windows, the environment’s R can’t start at all without activation, so start VS Code through Pixi there; see <a href="ide.html#vs-code">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="why-rpix-doesnt-change--libpaths">Why rpix doesn’t change <code>.libPaths()</code>
 <a class="anchor" aria-label="anchor" href="#why-rpix-doesnt-change--libpaths"></a>
 </h2>
 <p>You can’t safely point an R you already have running at a Pixi environment’s library. Packages with compiled code are built for one particular R and set of system libraries. Loaded into a different R, they can crash it, often only when you load the package.</p>
-<p>Earlier versions of rpix did this, from the <code>.Rprofile</code>. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> removes that setup from projects that still have it.</p>
+<p>Earlier versions of rpix did this, from the <code>.Rprofile</code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> removes that setup from projects that still have it.</p>
 </section><section class="level2"><h2 id="keep-your-personal-library-out">Keep your personal library out<a class="anchor" aria-label="anchor" href="#keep-your-personal-library-out"></a>
 </h2>
 <p>conda-forge’s R also looks in your personal package library, and even looks there first. That’s the one your usual R installs into, such as <code>~/Library/R/x86_64/4.5/library</code> on macOS, or <code>%LOCALAPPDATA%/R/win-library/4.5</code> on Windows. So packages built for your usual R can be loaded into the environment’s R. This is a <a href="https://github.com/conda-forge/r-base-feedstock/issues/37" class="external-link">long-standing issue in conda-forge’s R</a>.</p>
-<p><code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> adds conda-forge’s <a href="https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock" class="external-link">conda-ecosystem-user-package-isolation</a> to the project, which fixes this. When Pixi activates the environment, it points <code>R_LIBS_USER</code> at a folder that doesn’t exist, so R leaves the personal library out. It does the same for Python’s user packages. To add it to a project yourself:</p>
+<p><code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds conda-forge’s <a href="https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock" class="external-link">conda-ecosystem-user-package-isolation</a> to the project, which fixes this. When Pixi activates the environment, it points <code>R_LIBS_USER</code> at a folder that doesn’t exist, so R leaves the personal library out. It does the same for Python’s user packages. To add it to a project yourself:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"conda::conda-ecosystem-user-package-isolation"</span><span class="op">)</span></span></code></pre></div>
 <p>Pixi applies this when it starts R, as <code>pixi run R</code> does, and the project’s <code>.Rprofile</code> takes care of it when an IDE starts R directly. Check with:</p>

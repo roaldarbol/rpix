@@ -56,9 +56,17 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
-<ul><li>New <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> activates the project’s Pixi environment in R that an IDE such as Positron or VS Code started directly, without Pixi (<a href="https://github.com/roaldarbol/rpix/issues/25" class="external-link">#25</a>). It sets the environment variables Pixi would set, and removes your personal library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>. <code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> adds a block to the project’s <code>.Rprofile</code> that calls it, and removes the personal library before any package loads. Activation is fast, using Pixi’s activation cache.</li>
+<ul><li>New <code><a href="../reference/use_pixi.html">use_pixi()</a></code> replaces <code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code>, which is deprecated (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>). Its new <code>ide</code> argument sets the project up for RStudio, Positron or VS Code, with the new <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> and <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/27" class="external-link">#27</a>):
+<ul><li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> adds an <code>rstudio</code> task for each of the project’s platforms, so <code>pixi run rstudio</code> starts a new RStudio with the environment’s R, in the project.</li>
 <li>
-<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> now keeps your personal R library out of the environment’s R, by adding conda-forge’s <code>conda-ecosystem-user-package-isolation</code> to the project. conda-forge’s R otherwise puts the personal library first on <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37).</li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> turns on Positron’s discovery of R in Pixi environments. Positron then activates the environment itself when it starts that R.</li>
+<li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> adds languageserver to the environment, and points the R extension for VS Code and VSCodium at the environment’s R.</li>
+</ul></li>
+<li>New <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> activates the project’s Pixi environment in R that an IDE such as Positron or VS Code started directly, without Pixi (<a href="https://github.com/roaldarbol/rpix/issues/25" class="external-link">#25</a>). It sets the environment variables Pixi would set, and removes your personal library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds a block to the project’s <code>.Rprofile</code> that calls it, and removes the personal library before any package loads. Activation is fast, using Pixi’s activation cache.</li>
+<li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> keeps your personal R library out of the environment’s R, by adding conda-forge’s <code>conda-ecosystem-user-package-isolation</code> to the project. conda-forge’s R otherwise puts the personal library first on <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>, so packages built for your usual R could be loaded (conda-forge/r-base-feedstock#37).</li>
 <li>The IDE guide’s RStudio commands now work as expected: <code>open -n</code> on macOS, so a running RStudio doesn’t keep its R, and a task that sets <code>RSTUDIO_WHICH_R</code> on Windows (<a href="https://github.com/roaldarbol/rpix/issues/24" class="external-link">#24</a>). It also explains that on Windows, Positron and VS Code have to be started through Pixi.</li>
 </ul></div>
     <div class="section level2">
@@ -75,9 +83,9 @@
 </ul></li>
 <li>rpix no longer points a running R at a Pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by Pixi instead, e.g. with <code>pixi run R</code>.
 <ul><li>
-<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
+<code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
 <li>
-<code><a href="../reference/setup_pixi.html">setup_pixi()</a></code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
+<code><a href="../reference/rpix-deprecated.html">setup_pixi()</a></code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
 <li>
 <code>reset_r_libraries()</code> is removed.</li>
 </ul></li>

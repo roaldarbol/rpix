@@ -25,9 +25,9 @@ IDE](https://roald-arboel.com/rpix/articles/ide.md).
 
 Positron and VS Code start the environment’s R themselves, without Pixi,
 so the environment isn’t activated.
-[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-adds a few lines to the project’s `.Rprofile` that make up for that.
-When R starts, they:
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) adds
+a few lines to the project’s `.Rprofile` that make up for that. When R
+starts, they:
 
 1.  Remove your personal library from
     [`.libPaths()`](https://rdrr.io/r/base/libPaths.html) (see below),
@@ -41,9 +41,11 @@ In R that isn’t from the project’s environment,
 [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
 changes nothing, and tells you how to start the right R instead.
 
-On Windows, the environment’s R can’t start at all without activation,
-so start the IDE through Pixi there; see [Using rpix with an
-IDE](https://roald-arboel.com/rpix/articles/ide.html#on-windows-start-the-ide-through-pixi).
+Positron activates the environment itself when it starts an R it found
+in a Pixi environment. On Windows, the environment’s R can’t start at
+all without activation, so start VS Code through Pixi there; see [Using
+rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.html#vs-code).
 
 ## Why rpix doesn’t change `.libPaths()`
 
@@ -53,7 +55,7 @@ particular R and set of system libraries. Loaded into a different R,
 they can crash it, often only when you load the package.
 
 Earlier versions of rpix did this, from the `.Rprofile`.
-[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
 removes that setup from projects that still have it.
 
 ## Keep your personal library out
@@ -66,8 +68,8 @@ your usual R can be loaded into the environment’s R. This is a
 [long-standing issue in conda-forge’s
 R](https://github.com/conda-forge/r-base-feedstock/issues/37).
 
-[`setup_pixi()`](https://roald-arboel.com/rpix/reference/setup_pixi.md)
-adds conda-forge’s
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) adds
+conda-forge’s
 [conda-ecosystem-user-package-isolation](https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock)
 to the project, which fixes this. When Pixi activates the environment,
 it points `R_LIBS_USER` at a folder that doesn’t exist, so R leaves the
