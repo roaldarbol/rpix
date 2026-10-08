@@ -3,6 +3,7 @@
 <url><loc>https://roald-arboel.com/rpix/LICENSE-text.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/LICENSE.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/articles/coming-from-renv.html</loc></url>
+<url><loc>https://roald-arboel.com/rpix/articles/environments.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/articles/finding-packages.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/articles/getting-started.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/articles/how-rpix-works.html</loc></url>
@@ -16,7 +17,10 @@
 <url><loc>https://roald-arboel.com/rpix/reference/index.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_activate.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_add.html</loc></url>
+<url><loc>https://roald-arboel.com/rpix/reference/pixi_add_channel.html</loc></url>
+<url><loc>https://roald-arboel.com/rpix/reference/pixi_environments.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_info.html</loc></url>
+<url><loc>https://roald-arboel.com/rpix/reference/pixi_install.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_remove.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_search.html</loc></url>
 <url><loc>https://roald-arboel.com/rpix/reference/pixi_sitrep.html</loc></url>

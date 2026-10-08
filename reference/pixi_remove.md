@@ -12,7 +12,7 @@ For more information, see
 ## Usage
 
 ``` r
-pixi_remove(packages, dry_run = FALSE)
+pixi_remove(packages, feature = NULL, platform = NULL, dry_run = FALSE)
 ```
 
 ## Arguments
@@ -20,6 +20,17 @@ pixi_remove(packages, dry_run = FALSE)
 - packages:
 
   Package names.
+
+- feature:
+
+  Optional. The feature to add the packages to, rather than the default
+  one. See
+  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md).
+
+- platform:
+
+  Optional. Only add the packages for this platform, such as
+  `"linux-64"`.
 
 - dry_run:
 

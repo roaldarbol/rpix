@@ -87,6 +87,21 @@ workflow.*
   : Remove packages
 - [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
   : Search for packages
+- [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  [`pixi_lock()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  : Install and update the project's packages
+
+## Environments, channels and platforms
+
+- [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  [`pixi_remove_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  : Features and environments
+- [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  : Add channels or platforms to the project
 
 ## Inspecting a project
 
@@ -123,6 +138,8 @@ workflow.*
   IDE](https://roald-arboel.com/rpix/articles/ide.md):
 - [Finding
   packages](https://roald-arboel.com/rpix/articles/finding-packages.md):
+- [Several
+  environments](https://roald-arboel.com/rpix/articles/environments.md):
 - [Coming from
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.md):
 - [Sharing and

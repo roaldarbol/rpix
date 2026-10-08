@@ -11,6 +11,8 @@
   IDE](https://roald-arboel.com/rpix/articles/ide.md):
 - [Finding
   packages](https://roald-arboel.com/rpix/articles/finding-packages.md):
+- [Several
+  environments](https://roald-arboel.com/rpix/articles/environments.md):
 - [Coming from
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.md):
 - [Sharing and

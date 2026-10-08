@@ -47,6 +47,7 @@ For more information, see https://pixi.sh/latest/reference/cli/pixi/add/."><meta
     <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
     <li><a class="dropdown-item" href="../articles/ide.html">Using rpix with an IDE</a></li>
     <li><a class="dropdown-item" href="../articles/finding-packages.html">Finding packages</a></li>
+    <li><a class="dropdown-item" href="../articles/environments.html">Several environments</a></li>
     <li><a class="dropdown-item" href="../articles/coming-from-renv.html">Coming from renv</a></li>
     <li><a class="dropdown-item" href="../articles/reproducibility.html">Sharing and reproducibility</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -94,7 +95,14 @@ Names containing <code>-</code> or <code>_</code>, such as <code>"c-compiler"</c
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_add</span><span class="op">(</span><span class="va">packages</span>, versions <span class="op">=</span> <span class="cn">NULL</span>, channel <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_add</span><span class="op">(</span></span>
+<span>  <span class="va">packages</span>,</span>
+<span>  versions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  channel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  feature <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  platform <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -115,6 +123,16 @@ operator, such as <code>"1.1"</code>, means <code>1.1.*</code>.</p></dd>
 <dt id="arg-channel">channel<a class="anchor" aria-label="anchor" href="#arg-channel"></a></dt>
 <dd><p>Optional. A conda channel to install the packages from. It's
 added to the project's channels if it isn't there yet.</p></dd>
+
+
+<dt id="arg-feature">feature<a class="anchor" aria-label="anchor" href="#arg-feature"></a></dt>
+<dd><p>Optional. The feature to add the packages to, rather than
+the default one. See <code><a href="pixi_environments.html">pixi_add_environment()</a></code>.</p></dd>
+
+
+<dt id="arg-platform">platform<a class="anchor" aria-label="anchor" href="#arg-platform"></a></dt>
+<dd><p>Optional. Only add the packages for this platform, such as
+<code>"linux-64"</code>.</p></dd>
 
 
 <dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>

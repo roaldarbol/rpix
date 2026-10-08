@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Troubleshooting • rpix</title>
+<title>Several environments • rpix</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="troubleshooting_files/libs/quarto-html/popper.min.js"></script><script src="troubleshooting_files/libs/quarto-html/tippy.umd.min.js"></script><link href="troubleshooting_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="troubleshooting_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Troubleshooting">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="environments_files/libs/quarto-html/popper.min.js"></script><script src="environments_files/libs/quarto-html/tippy.umd.min.js"></script><link href="environments_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="environments_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Several environments">
 <meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg">
 </head>
 <body>
@@ -77,12 +77,12 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Troubleshooting</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Several environments</h1>
 
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/rpix/blob/main/vignettes/articles/troubleshooting.qmd" class="external-link"><code>vignettes/articles/troubleshooting.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/rpix/blob/main/vignettes/articles/environments.qmd" class="external-link"><code>vignettes/articles/environments.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -91,47 +91,43 @@
 
 
 
-    <p>Start with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_sitrep.html">pixi_sitrep</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>It checks the project’s setup, and suggests fixes for what’s wrong.</p>
-<section class="level2"><h2 id="r-crashes-when-loading-a-package">R crashes when loading a package<a class="anchor" aria-label="anchor" href="#r-crashes-when-loading-a-package"></a>
-</h2>
-<p>A crash (“segfault”, “R is aborting now”) while loading a package usually means it was built for a different R than the one loading it. Check which R you’re in, and where its packages come from:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder, and <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> shouldn’t list any library outside it. If it does:</p>
+    <p>A Pixi project can have several environments, each with its own R and packages. For example:</p>
 <ul>
-<li>
-<strong>You’re in your usual R, not the environment’s.</strong> Start R with <code>pixi run R</code>, or see <a href="ide.html">Using rpix with an IDE</a>.</li>
-<li>
-<strong>Your personal library is listed.</strong> Keep it out of the environment; see <a href="how-rpix-works.html#keep-your-personal-library-out">How rpix works</a>.</li>
-<li>
-<strong>The project’s <code>.Rprofile</code> changes <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>.</strong> rpix 0.3.0 and earlier added a block starting with <code># Pixi R library setup</code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> removes it; for one in <code>~/.Rprofile</code>, remove it by hand.</li>
-</ul></section><section class="level2"><h2 id="rstudio-uses-the-wrong-r">RStudio uses the wrong R<a class="anchor" aria-label="anchor" href="#rstudio-uses-the-wrong-r"></a>
+<li>An environment with an older R, to check your code still runs there.</li>
+<li>An environment with extra packages for tests or documentation, which the project itself doesn’t need.</li>
+</ul>
+<section class="level2"><h2 id="features-and-environments">Features and environments<a class="anchor" aria-label="anchor" href="#features-and-environments"></a>
 </h2>
-<p>RStudio picks its R when it starts, so it has to be started from the project’s environment, as a new RStudio: set the project up with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, and start RStudio with <code>pixi run rstudio</code>. See <a href="ide.html#rstudio">Using rpix with an IDE</a>.</p>
-</section><section class="level2"><h2 id="r-doesnt-start-in-vs-code-on-windows">R doesn’t start in VS Code on Windows<a class="anchor" aria-label="anchor" href="#r-doesnt-start-in-vs-code-on-windows"></a>
+<p>Environments are made of <em>features</em>: named sets of packages. The default feature holds what <code><a href="../reference/pixi_add.html">pixi_add()</a></code> adds, and every environment includes it, unless you leave it out.</p>
+<p>To make an environment, add packages to a feature, which creates it, then make an environment of that feature:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"testthat"</span>, feature <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"test"</span>, features <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></code></pre></div>
+<p>The feature has to exist before an environment can use it, so add its packages first.</p>
+</section><section class="level2"><h2 id="another-version-of-r">Another version of R<a class="anchor" aria-label="anchor" href="#another-version-of-r"></a>
 </h2>
-<p>On Windows, the environment’s R only starts when the environment is activated. Start VS Code from the project’s environment, with <code>pixi run code .</code>. See <a href="ide.html#vs-code">Using rpix with an IDE</a>.</p>
-</section><section class="level2"><h2 id="a-package-cant-be-found">A package can’t be found<a class="anchor" aria-label="anchor" href="#a-package-cant-be-found"></a>
+<p>An environment with R 4.4, next to the default one with the latest R:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r-base=4.4"</span>, <span class="st">"dplyr"</span><span class="op">)</span>, feature <span class="op">=</span> <span class="st">"r44"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"r44"</span>, features <span class="op">=</span> <span class="st">"r44"</span>, default_feature <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><code>default_feature = FALSE</code> leaves out the default feature. Here that’s needed: the default feature has its own version of R, and an environment can’t have two.</p>
+</section><section class="level2"><h2 id="keeping-environments-in-step">Keeping environments in step<a class="anchor" aria-label="anchor" href="#keeping-environments-in-step"></a>
 </h2>
-<pre><code>! Some packages couldn't be found.</code></pre>
-<p>The package may need a <code>bioc::</code> or <code>conda::</code> prefix, or it isn’t on conda-forge. See <a href="finding-packages.html">Finding packages</a>.</p>
-</section><section class="level2"><h2 id="rpix-cant-find-pixi">rpix can’t find Pixi<a class="anchor" aria-label="anchor" href="#rpix-cant-find-pixi"></a>
+<p>Environments in the same <em>solve group</em> get the same versions of the packages they share. That suits a test environment, which should test the versions the project uses:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"test"</span>, features <span class="op">=</span> <span class="st">"test"</span>, solve_group <span class="op">=</span> <span class="st">"default"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Environments with different versions of R can’t share a solve group.</p>
+</section><section class="level2"><h2 id="using-an-environment">Using an environment<a class="anchor" aria-label="anchor" href="#using-an-environment"></a>
 </h2>
-<pre><code>! Could not find Pixi.</code></pre>
-<p>rpix looks for Pixi on the <code>PATH</code>, and then where the installer puts it, <code>~/.pixi/bin</code>. If you installed it somewhere else, tell rpix where:</p>
+<p>Start an environment’s R with:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run <span class="at">--environment</span> r44 R</span></code></pre></div>
+<p>In Positron, each environment shows up as its own R in the interpreter picker, e.g. “R 4.4.3 (Pixi: r44)”.</p>
+<p>See the project’s environments, and their features, with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>rpix.pixi_path <span class="op">=</span> <span class="st">"/path/to/pixi"</span><span class="op">)</span></span></code></pre></div>
-</section><section class="level2"><h2 id="rpix-cant-find-the-project">rpix can’t find the project<a class="anchor" aria-label="anchor" href="#rpix-cant-find-the-project"></a>
-</h2>
-<pre><code>! Could not find a Pixi project.</code></pre>
-<p>rpix looks for <code>pixi.toml</code> in the working directory and the folders above it. Change the working directory to your project, or set it up with <code><a href="../reference/use_pixi.html">use_pixi()</a></code>.</p>
-</section><section class="level2"><h2 id="still-stuck">Still stuck?<a class="anchor" aria-label="anchor" href="#still-stuck"></a>
-</h2>
-<p>Ask in <a href="https://github.com/roaldarbol/rpix/discussions" class="external-link">GitHub Discussions</a>, or <a href="https://github.com/roaldarbol/rpix/issues" class="external-link">open an issue</a>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_environments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Install an environment with <code>pixi_install(environment = "r44")</code>, or all of them with <code>pixi_install(all = TRUE)</code>. <code>pixi run</code> also installs an environment the first time it’s used.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

@@ -23,7 +23,14 @@ For more information, see
 ## Usage
 
 ``` r
-pixi_add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
+pixi_add(
+  packages,
+  versions = NULL,
+  channel = NULL,
+  feature = NULL,
+  platform = NULL,
+  dry_run = FALSE
+)
 ```
 
 ## Arguments
@@ -43,6 +50,17 @@ pixi_add(packages, versions = NULL, channel = NULL, dry_run = FALSE)
 
   Optional. A conda channel to install the packages from. It's added to
   the project's channels if it isn't there yet.
+
+- feature:
+
+  Optional. The feature to add the packages to, rather than the default
+  one. See
+  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md).
+
+- platform:
+
+  Optional. Only add the packages for this platform, such as
+  `"linux-64"`.
 
 - dry_run:
 

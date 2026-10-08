@@ -2,6 +2,28 @@
 
 ## rpix (development version)
 
+- Features and environments
+  ([\#30](https://github.com/roaldarbol/rpix/issues/30)):
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  and
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+  gain `feature` and `platform` arguments, and new
+  [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
+  [`pixi_add_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  and
+  [`pixi_remove_environment()`](https://roald-arboel.com/rpix/reference/pixi_environments.md)
+  manage a project’s environments. New article: “Several environments”.
+- New
+  [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  and
+  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md),
+  and
+  [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
+  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
+  [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  and
+  [`pixi_lock()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  ([\#30](https://github.com/roaldarbol/rpix/issues/30)).
 - New
   [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
   reports on the project’s Pixi setup, with hints for what’s wrong
