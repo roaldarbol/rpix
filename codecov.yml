@@ -10,3 +10,9 @@ coverage:
       default:
         target: auto
         threshold: 0%
+
+# Comment only when something needs doing: overall coverage drops, or the pull
+# request adds lines the tests don't cover. Same rule as the animovement
+# packages.
+comment:
+  require_changes: "coverage_drop OR uncovered_patch"

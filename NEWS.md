@@ -1,4 +1,4 @@
-# rpix (development version)
+# rpix 0.4.0
 
 ## Breaking changes
 - Exported functions now follow one naming scheme (#20): functions that run a Pixi command are called `pixi_<command>()`.
