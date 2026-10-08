@@ -1,9 +1,11 @@
 # pixi_r_location() ------------------------------------------------------------
 
 test_that("finds the project and environment of a Pixi R", {
+  # On Windows, normalizePath() adds a drive to a path without one
+  root <- normalizePath("/home/me/project", winslash = "/", mustWork = FALSE)
   expect_equal(
     pixi_r_location("/home/me/project/.pixi/envs/default/lib/R"),
-    list(root = "/home/me/project", name = "default")
+    list(root = root, name = "default")
   )
   expect_equal(
     pixi_r_location("D:/a/project/.pixi/envs/test/lib/R/"),
