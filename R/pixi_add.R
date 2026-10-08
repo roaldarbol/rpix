@@ -96,6 +96,19 @@ pixi_add <- function(
       dry_run = dry_run
     ),
     rpix_error_pixi = function(e) {
+      unbuilt <- not_built_for_r(e$stderr)
+      if (!is.null(unbuilt)) {
+        suggestion <- deparse(c(paste0("r-base=", unbuilt$r_version), packages))
+        cli::cli_abort(
+          c(
+            "{.pkg {unbuilt$package}} isn't built for the project's version of R yet.",
+            "i" = "conda-forge builds packages for a new version of R some time after it's out.",
+            "i" = "Use R {unbuilt$r_version}, the newest it's built for: {.code pixi_add({suggestion})}."
+          ),
+          class = "rpix_error_r_version",
+          parent = e
+        )
+      }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
         cli::cli_abort(
           c(
@@ -118,6 +131,33 @@ pixi_add <- function(
 }
 
 # The --feature and --platform arguments of pixi add and pixi remove
+# When Pixi can't add a package because it isn't built for the project's R,
+# the package and the newest R it's built for. NULL for other errors.
+not_built_for_r <- function(stderr) {
+  # Without colours, the tree's box-drawing characters and line breaks. Bytes
+  # rather than characters, so it works in any locale.
+  text <- gsub("\033\\[[0-9;]*m", "", stderr, useBytes = TRUE)
+  text <- gsub("[^ -~]+", " ", text, useBytes = TRUE)
+  text <- gsub("[[:space:]]+", " ", text, useBytes = TRUE)
+  versions <- regmatches(
+    text,
+    gregexpr(
+      "(?<=would require r-base >=)[0-9]+\\.[0-9]+(?=,)",
+      text,
+      perl = TRUE
+    )
+  )[[1]]
+  if (length(versions) == 0) {
+    return(NULL)
+  }
+  package <- regmatches(
+    text,
+    regexpr("[A-Za-z0-9._-]+(?= \\* cannot be installed)", text, perl = TRUE)
+  )
+  newest <- as.character(max(package_version(versions)))
+  list(package = package, r_version = newest)
+}
+
 scope_args <- function(feature = NULL, platform = NULL) {
   c(
     if (!is.null(feature)) c("--feature", feature),
