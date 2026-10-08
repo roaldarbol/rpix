@@ -1,5 +1,7 @@
 # rpix (development version)
 
+- New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
+
 # rpix 0.5.0
 
 rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
