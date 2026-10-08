@@ -12,27 +12,27 @@ badge](https://roaldarbol.r-universe.dev/badges/rpix)](https://roaldarbol.r-univ
 [![Codecov test
 coverage](https://codecov.io/gh/roaldarbol/rpix/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/rpix)
 [![Pixi
-Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
+Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.prefix.dev)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![GitHub
 Discussions](https://img.shields.io/github/discussions/roaldarbol/rpix?logo=github)](https://github.com/roaldarbol/rpix/discussions)
 [![Pixi
-Discord](https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/kKV8ZxyzY4)
+Discord](https://img.shields.io/discord/1082332781146800168.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.com/invite/kKV8ZxyzY4)
 <!-- badges: end -->
 
 *Manage R project dependencies with Pixi*
 
-rpix lets you use [Pixi](https://pixi.sh) from R. Pixi installs R
-itself, R packages and the system libraries they need (such as GDAL)
+rpix lets you use [Pixi](https://pixi.prefix.dev) from R. Pixi installs
+R itself, R packages and the system libraries they need (such as GDAL)
 from [conda-forge](https://conda-forge.org) into an environment inside
 your project. It records the exact versions in a lock file, so the
 project runs the same on every computer.
 
 ## Installation
 
-First, [install Pixi](https://pixi.sh/latest/installation/). Then
-install rpix in the R you normally use:
+First, [install Pixi](https://pixi.prefix.dev/latest/installation/).
+Then install rpix in the R you normally use:
 
 ``` r
 install.packages(
@@ -93,7 +93,7 @@ Ask questions and share ideas in [GitHub
 Discussions](https://github.com/roaldarbol/rpix/discussions), and report
 bugs in the [issues](https://github.com/roaldarbol/rpix/issues). For
 Pixi itself, ask on the [Discord of
-prefix.dev](https://discord.gg/kKV8ZxyzY4), the makers of Pixi.
+prefix.dev](https://discord.com/invite/kKV8ZxyzY4), the makers of Pixi.
 
 ------------------------------------------------------------------------
 

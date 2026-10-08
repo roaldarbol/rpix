@@ -35,7 +35,7 @@ Remove packages from the Pixi manifest. Package names are translated like in
 \code{\link[=pixi_add]{pixi_add()}}: \code{"dplyr"} removes \code{r-dplyr} and \code{"bioc::DESeq2"} removes
 \code{bioconductor-deseq2}.
 
-For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/remove/}.
+For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/remove/}.
 }
 \examples{
 \dontrun{

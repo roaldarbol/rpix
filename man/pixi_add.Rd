@@ -55,7 +55,7 @@ Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also use
 \item \code{"cran::dplyr"}: same as \code{"dplyr"}.
 }
 
-For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/add/}.
+For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/add/}.
 }
 \examples{
 \dontrun{

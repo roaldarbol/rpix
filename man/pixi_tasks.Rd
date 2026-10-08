@@ -89,7 +89,7 @@ Tasks are commands saved in \code{pixi.toml}, such as \code{test = "Rscript -e '
 \item \code{pixi_remove_task()} removes tasks.
 }
 
-For more information, see \url{https://pixi.sh/latest/workspace/advanced_tasks/}.
+For more information, see \url{https://pixi.prefix.dev/latest/workspace/advanced_tasks/}.
 }
 \examples{
 \dontrun{

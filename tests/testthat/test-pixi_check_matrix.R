@@ -271,7 +271,13 @@ test_that("run_job() runs the tests or check without rpix, or a task", {
 })
 
 test_that("run_tests() and run_check() summarise the results", {
+  # It runs R CMD check, which is too slow for CRAN
+  skip_on_cran()
   skip_if_not_installed("rcmdcheck")
+  # Without the settings of an R CMD check this runs in, e.g. --as-cran's,
+  # which would give the demo package more notes and warnings
+  outer <- grep("^_R_CHECK_", names(Sys.getenv()), value = TRUE)
+  withr::local_envvar(stats::setNames(rep(NA, length(outer)), outer))
   package <- local_demo_package()
   # The tests load the package; don't leave it behind
   withr::defer(if (isNamespaceLoaded("demo")) unloadNamespace("demo"))

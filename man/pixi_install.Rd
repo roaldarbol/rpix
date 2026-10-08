@@ -47,10 +47,10 @@ installing anything.
 
 Package names are translated like in \code{\link[=pixi_add]{pixi_add()}}.
 
-For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/install/},
-\url{https://pixi.sh/latest/reference/cli/pixi/update/},
-\url{https://pixi.sh/latest/reference/cli/pixi/upgrade/} and
-\url{https://pixi.sh/latest/reference/cli/pixi/lock/}.
+For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/install/},
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/update/},
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/} and
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/lock/}.
 }
 \examples{
 \dontrun{

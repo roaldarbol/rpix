@@ -33,8 +33,8 @@ get the same packages.
 }
 
 For more information, see
-\url{https://pixi.sh/latest/reference/cli/pixi/workspace/channel/add/} and
-\url{https://pixi.sh/latest/reference/cli/pixi/workspace/platform/add/}.
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/} and
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/}.
 }
 \examples{
 \dontrun{

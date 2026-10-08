@@ -7,9 +7,9 @@
 #' * `pixi_list()` lists the packages installed in an environment.
 #' * `pixi_tree()` shows which packages depend on which.
 #'
-#' For more information, see <https://pixi.sh/latest/reference/cli/pixi/info/>,
-#' <https://pixi.sh/latest/reference/cli/pixi/list/> and
-#' <https://pixi.sh/latest/reference/cli/pixi/tree/>.
+#' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/info/>,
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/list/> and
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/tree/>.
 #'
 #' @param environment Optional. The environment. Defaults to `default`.
 #' @param explicit If `TRUE`, only list the packages in `pixi.toml`, not the

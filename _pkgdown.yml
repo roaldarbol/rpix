@@ -41,7 +41,7 @@ navbar:
       aria-label: News
     pixi:
       text: Pixi
-      href: https://pixi.sh
+      href: https://pixi.prefix.dev
       aria-label: Pixi documentation
     discussions:
       icon: fa-comments
@@ -49,7 +49,7 @@ navbar:
       aria-label: GitHub Discussions
     discord:
       icon: fab fa-discord
-      href: https://discord.gg/kKV8ZxyzY4
+      href: https://discord.com/invite/kKV8ZxyzY4
       aria-label: Discord of prefix.dev, the makers of Pixi
 
 articles:

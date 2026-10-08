@@ -45,9 +45,9 @@ platforms, channels, tasks and location.
 \item \code{pixi_tree()} shows which packages depend on which.
 }
 
-For more information, see \url{https://pixi.sh/latest/reference/cli/pixi/info/},
-\url{https://pixi.sh/latest/reference/cli/pixi/list/} and
-\url{https://pixi.sh/latest/reference/cli/pixi/tree/}.
+For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/info/},
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/list/} and
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/tree/}.
 }
 \examples{
 \dontrun{
