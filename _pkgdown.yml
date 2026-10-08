@@ -82,4 +82,5 @@ reference:
   - title: "Setting up a project"
     contents:
       - setup_pixi
+      - pixi_activate
       - restart_rstudio_with_pixi

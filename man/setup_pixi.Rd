@@ -33,8 +33,11 @@ It can be run from any R. Afterwards, work in R started by Pixi: run
 has its own R and package library, so rpix doesn't point a running R at a
 Pixi library: packages built for a different R can crash it.
 
-Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
-block in their \code{.Rprofile}, which did exactly that. It's removed.
+It also adds a block to the project's \code{.Rprofile} that calls
+\code{\link[=pixi_activate]{pixi_activate()}}, so the environment is activated when an IDE starts its
+R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
+library setup" block in their \code{.Rprofile} instead, which pointed a running
+R at the Pixi library. It's removed.
 }
 \examples{
 \dontrun{

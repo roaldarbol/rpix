@@ -14,8 +14,11 @@
 #' has its own R and package library, so rpix doesn't point a running R at a
 #' Pixi library: packages built for a different R can crash it.
 #'
-#' Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
-#' block in their `.Rprofile`, which did exactly that. It's removed.
+#' It also adds a block to the project's `.Rprofile` that calls
+#' [pixi_activate()], so the environment is activated when an IDE starts its
+#' R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
+#' library setup" block in their `.Rprofile` instead, which pointed a running
+#' R at the Pixi library. It's removed.
 #'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
 #'   to the latest on conda-forge.
@@ -99,6 +102,7 @@ setup_pixi <- function(
 
   remove_legacy_rprofile(file.path(path, ".Rprofile"))
   warn_legacy_rprofile(file.path(home_dir(), ".Rprofile"))
+  add_rprofile_block(file.path(path, ".Rprofile"))
 
   cli::cli_alert_success("Set up {.path {path}} for R.")
   cli::cli_alert_info(
@@ -130,6 +134,49 @@ rpix_dependencies <- function(imports = rpix_imports()) {
 rpix_imports <- function() {
   path <- getNamespaceInfo("rpix", "path")
   unname(read.dcf(file.path(path, "DESCRIPTION"), fields = "Imports")[1, 1])
+}
+
+# The block setup_pixi() adds to the project's .Rprofile
+rprofile_block <- c(
+  "# >>> rpix >>>",
+  "# Activates the project's Pixi environment when an IDE starts R directly.",
+  "# See https://roald-arboel.com/rpix/articles/how-rpix-works.html",
+  "local({",
+  "  # In the environment's R, drop the personal library before any package",
+  "  # loads: it has packages built for another R, which can crash this one",
+  "  home <- normalizePath(R.home(), winslash = \"/\")",
+  "  if (grepl(\"/[.]pixi/envs/[^/]+/lib/R$\", home)) {",
+  "    personal <- strsplit(Sys.getenv(\"R_LIBS_USER\"), .Platform$path.sep)[[1]]",
+  "    personal <- normalizePath(personal, winslash = \"/\", mustWork = FALSE)",
+  "    personal <- personal[!grepl(\"/[.]pixi/\", personal)]",
+  "    .libPaths(setdiff(.libPaths(), personal))",
+  "  }",
+  "  if (requireNamespace(\"rpix\", quietly = TRUE) &&",
+  "      \"pixi_activate\" %in% getNamespaceExports(\"rpix\")) {",
+  "    rpix::pixi_activate()",
+  "  }",
+  "})",
+  "# <<< rpix <<<"
+)
+
+#' Add rpix's block to `.Rprofile`, or update it if it's there
+#' @noRd
+add_rprofile_block <- function(file) {
+  lines <- if (file.exists(file)) readLines(file, warn = FALSE) else character()
+  start <- match(rprofile_block[1], lines)
+  end <- match(rprofile_block[length(rprofile_block)], lines)
+
+  if (!is.na(start) && !is.na(end) && end > start) {
+    lines <- c(
+      lines[seq_len(start - 1)],
+      rprofile_block,
+      lines[-seq_len(end)]
+    )
+  } else {
+    lines <- c(lines, if (length(lines) > 0) "", rprofile_block)
+  }
+  writeLines(lines, file)
+  invisible(file)
 }
 
 legacy_marker <- "# Pixi R library setup"
