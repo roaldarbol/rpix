@@ -17,6 +17,15 @@
 - Pixi’s output is no longer partly red. Pixi reports progress on
   stderr, which was shown in red; rpix now shows it in Pixi’s own
   colours.
+- [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md),
+  [`pixi_environments()`](https://roald-arboel.com/rpix/reference/pixi_environments.md),
+  [`pixi_list()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  and
+  [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md)
+  print their results in a readable form
+  ([\#67](https://github.com/roaldarbol/rpix/issues/67)). They’re still
+  data frames, or a list for
+  [`pixi_info()`](https://roald-arboel.com/rpix/reference/pixi_info.md).
 
 ## rpix 0.5.0
 
