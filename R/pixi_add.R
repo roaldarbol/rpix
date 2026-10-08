@@ -13,6 +13,13 @@
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
+#' * `"github::user/repo"`: an R package on GitHub, which Pixi builds from
+#'   source with its R build backend, `pixi-build-r`. Add `@ref` for a branch,
+#'   tag or commit, as in `"github::cran/praise@1.0.0"`; `pixi.lock` records
+#'   the exact commit either way. rpix writes it into `pixi.toml`, turns on
+#'   Pixi's `pixi-build` preview, and pins the build to the project's R. Its
+#'   dependencies come from conda-forge. See
+#'   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
@@ -48,6 +55,22 @@ pixi_add <- function(
   path = NULL,
   dry_run = FALSE
 ) {
+  github <- packages[is_github(packages)]
+  packages <- packages[!is_github(packages)]
+  if (length(github) > 0 && (!is.null(versions) || !is.null(channel))) {
+    cli::cli_abort(
+      "{.arg versions} and {.arg channel} don't apply to packages from GitHub; give a branch, tag or commit as {.code github::user/repo@ref}."
+    )
+  }
+  if (length(packages) == 0) {
+    return(invisible(add_github_packages(
+      github,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )))
+  }
   parsed <- parse_packages(packages)
 
   if (!is.null(versions)) {
@@ -123,6 +146,15 @@ pixi_add <- function(
     }
   )
 
+  if (length(github) > 0) {
+    add_github_packages(
+      github,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )
+  }
   if (isTRUE(dry_run)) {
     return(invisible(c(commands, result)))
   }

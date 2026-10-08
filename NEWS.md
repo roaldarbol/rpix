@@ -4,6 +4,10 @@
 
 - The deprecated `add()` and `setup_pixi()` are removed. Use `pixi_add()` and `use_pixi()`.
 
+## New features
+
+- `pixi_add()` adds R packages from GitHub, e.g. `pixi_add("github::user/repo")`, which Pixi builds from source with its R build backend, `pixi-build-r` (#88). `@ref` picks a branch, tag or commit; the dependencies come from conda-forge, and the build is pinned to the project's R. CRAN packages that aren't on conda-forge can be added from CRAN's GitHub mirror, e.g. `pixi_add("github::cran/pkg@1.2.3")`. `pixi_remove()` removes them the same way.
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.

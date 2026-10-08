@@ -64,10 +64,24 @@ pixi_add("mypackage", channel = "my-channel")
 
 If `pixi_add()` can't find a package, first check the name with `pixi_search()`, and whether it needs `bioc::` or `conda::`.
 
-If it really isn't available, you can add it to conda-forge, so it's available for everyone. conda-forge accepts new packages through [staged-recipes](https://github.com/conda-forge/staged-recipes). [rattler-build](https://rattler.build) writes a recipe for a CRAN package for you:
+If it really isn't available, Pixi can build it from source. Pixi's R build backend, [`pixi-build-r`](https://pixi.prefix.dev/latest/build/backends/pixi-build-r/), builds a package from its GitHub repository, and its dependencies come from conda-forge:
+
+```r
+pixi_add("github::user/mypackage")
+```
+
+Add `@ref` for a branch, tag or commit, e.g. `"github::user/mypackage@v1.2.0"`. `pixi.lock` records the exact commit either way, so collaborators get the same code. CRAN packages are on GitHub too, in [CRAN's mirror](https://github.com/cran), with a tag for every version:
+
+```r
+pixi_add("github::cran/mypackage@1.2.3")
+```
+
+rpix writes the package into `pixi.toml`, turns on Pixi's `pixi-build` preview, and builds it for the project's version of R. Building takes a minute or so. It doesn't work yet for packages that need Bioconductor packages.
+
+Better still, add the package to conda-forge, so it's available for everyone. conda-forge accepts new packages through [staged-recipes](https://github.com/conda-forge/staged-recipes). [rattler-build](https://rattler.build) writes a recipe for a CRAN package for you:
 
 ```sh
 pixi exec rattler-build generate-recipe cran mypackage
 ```
 
-As a last resort, `utils::install.packages()` works in the environment's R. (Plain `install.packages()` adds packages with Pixi there, so it stops for a package that isn't on conda-forge.) But the package isn't recorded in `pixi.toml` or `pixi.lock`, so collaborators won't get it, and packages with compiled code need compilers in the environment. `pixi_sitrep()` lists packages installed this way.
+As a last resort, outside Pixi, `utils::install.packages()` works in the environment's R. (Plain `install.packages()` adds packages with Pixi there, so it stops for a package that isn't on conda-forge.) But the package isn't recorded in `pixi.toml` or `pixi.lock`, so collaborators won't get it, and packages with compiled code need compilers in the environment. `pixi_sitrep()` lists packages installed this way.
