@@ -26,6 +26,7 @@ Imports:
     jsonlite,
     processx
 Suggests: 
+    askpass,
     knitr,
     rcmdcheck,
     rmarkdown,

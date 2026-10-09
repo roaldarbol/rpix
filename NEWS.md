@@ -4,6 +4,10 @@
 
 - The deprecated `add()` and `setup_pixi()` are removed. Use `pixi_add()` and `use_pixi()`.
 
+## New features
+
+- New `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (#93). `pixi_auth_login()` asks for the token or password without showing it, with the askpass package, and rpix hides it in every command and message it shows.
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
