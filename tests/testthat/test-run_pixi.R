@@ -314,3 +314,40 @@ test_that("secrets are hidden in commands, output and errors", {
   expect_no_match(err$stderr, "s3cr3t")
   expect_match(conditionMessage(err), "<hidden>")
 })
+
+test_that("access_denied() finds the host that refused access", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-access-error.txt")),
+    collapse = "\n"
+  )
+  expect_equal(
+    access_denied(stderr),
+    list(status = "401", host = "127.0.0.1:8765")
+  )
+  expect_equal(
+    access_denied(
+      "HTTP status client error (403 Forbidden) for url (https://repo.prefix.dev/x/osx-64/repodata.json)"
+    ),
+    list(status = "403", host = "repo.prefix.dev")
+  )
+  expect_null(access_denied(
+    "HTTP status client error (404 Not Found) for url (https://x.dev/y)"
+  ))
+  expect_null(access_denied("No candidates were found for r-x *."))
+})
+
+test_that("errors from a channel that refused access suggest logging in", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-access-error.txt")),
+    collapse = "\n"
+  )
+  result <- list(status = 1, stdout = "", stderr = stderr)
+  expect_snapshot(
+    abort_pixi_failure("pixi add r-x", result, echoed = TRUE, call = NULL),
+    error = TRUE
+  )
+  expect_error(
+    abort_pixi_failure("pixi add r-x", result, echoed = TRUE, call = NULL),
+    class = "rpix_error_access"
+  )
+})

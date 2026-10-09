@@ -66,6 +66,7 @@ articles:
       - articles/environments
       - articles/coming-from-renv
       - articles/reproducibility
+      - articles/private-channels
 
   - title: "Background"
     navbar: Background

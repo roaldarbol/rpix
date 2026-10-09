@@ -17,7 +17,8 @@ pixi_auth_logout(host)
 pixi_auth_status()
 }
 \arguments{
-\item{host}{The host, such as \code{"prefix.dev"} or \code{"repo.example.com"}.}
+\item{host}{The host, such as \code{"prefix.dev"} or \code{"repo.example.com"}, or
+\code{"s3://my-bucket"} for a channel on S3.}
 
 \item{method}{How to log in:
 \itemize{

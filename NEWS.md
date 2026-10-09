@@ -6,7 +6,7 @@
 
 ## New features
 
-- New `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (#93). `pixi_auth_login()` asks for the token or password without showing it, and rpix hides it in every command and message it shows.
+- New `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (#93). `pixi_auth_login()` asks for the token or password without showing it, and rpix hides it in every command and message it shows. When a channel refuses access, Pixi's errors and `pixi_sitrep()` say so and suggest logging in, and `pixi_sitrep()` lists the hosts Pixi has logins for. A new guide covers private channels, CI and company networks.
 
 # rpix 0.6.0
 
