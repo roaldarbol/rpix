@@ -8,8 +8,7 @@
 #'
 #' * `pixi_auth_login()` logs in to a host. It asks for the token or
 #'   password with hidden input, so it isn't shown, or saved in your R
-#'   history. It needs the askpass package: add it with
-#'   `pixi_add("askpass")`.
+#'   history.
 #' * `pixi_auth_logout()` removes the credentials for a host.
 #' * `pixi_auth_status()` lists the hosts Pixi has credentials for, without
 #'   the secrets.
@@ -155,15 +154,6 @@ parse_auth_status <- function(text) {
 # Ask for a secret without showing it. askpass shows a dialog on macOS and
 # Windows, and hides typing in a terminal.
 ask_secret <- function(prompt) {
-  if (!has_askpass()) {
-    cli::cli_abort(
-      c(
-        "Asking for a secret without showing it needs the {.pkg askpass} package.",
-        "i" = "Add it with {.code pixi_add(\"askpass\")}."
-      ),
-      call = NULL
-    )
-  }
   secret <- askpass::askpass(prompt)
   if (is.null(secret) || !nzchar(secret)) {
     cli::cli_abort("Cancelled: nothing was entered.", call = NULL)
@@ -173,10 +163,6 @@ ask_secret <- function(prompt) {
 
 ask_text <- function(prompt) {
   readline(prompt)
-}
-
-has_askpass <- function() {
-  requireNamespace("askpass", quietly = TRUE)
 }
 
 is_interactive <- function() {

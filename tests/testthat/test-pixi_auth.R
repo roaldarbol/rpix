@@ -77,12 +77,7 @@ test_that("pixi_auth_login() needs an interactive session", {
   expect_snapshot(pixi_auth_login("prefix.dev"), error = TRUE)
 })
 
-test_that("ask_secret() needs askpass, and something entered", {
-  local_mocked_bindings(has_askpass = function() FALSE)
-  expect_snapshot(ask_secret("Token:"), error = TRUE)
-
-  skip_if_not_installed("askpass")
-  local_mocked_bindings(has_askpass = function() TRUE)
+test_that("ask_secret() asks with askpass, and needs something entered", {
   local_mocked_bindings(
     askpass = function(prompt) "s3cr3t",
     .package = "askpass"
@@ -92,9 +87,8 @@ test_that("ask_secret() needs askpass, and something entered", {
   expect_error(ask_secret("Token:"), "Cancelled")
 })
 
-test_that("ask_text() and has_askpass() ask R", {
+test_that("ask_text() and is_interactive() ask R", {
   expect_equal(ask_text("Username: "), "")
-  expect_equal(has_askpass(), requireNamespace("askpass", quietly = TRUE))
   expect_equal(is_interactive(), interactive())
 })
 

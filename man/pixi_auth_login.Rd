@@ -47,8 +47,7 @@ e.g. on prefix.dev, anaconda.org, Artifactory or S3. These functions run
 \itemize{
 \item \code{pixi_auth_login()} logs in to a host. It asks for the token or
 password with hidden input, so it isn't shown, or saved in your R
-history. It needs the askpass package: add it with
-\code{pixi_add("askpass")}.
+history.
 \item \code{pixi_auth_logout()} removes the credentials for a host.
 \item \code{pixi_auth_status()} lists the hosts Pixi has credentials for, without
 the secrets.

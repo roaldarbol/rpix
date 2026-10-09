@@ -22,11 +22,11 @@ URL: https://roald-arboel.com/rpix/, https://github.com/roaldarbol/rpix
 BugReports: https://github.com/roaldarbol/rpix/issues
 Roxygen: list(markdown = TRUE)
 Imports:
+    askpass,
     cli,
     jsonlite,
     processx
 Suggests: 
-    askpass,
     knitr,
     rcmdcheck,
     rmarkdown,
