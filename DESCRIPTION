@@ -25,7 +25,8 @@ Imports:
     askpass,
     cli,
     jsonlite,
-    processx
+    processx,
+    rlang
 Suggests: 
     knitr,
     rcmdcheck,
