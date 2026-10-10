@@ -110,6 +110,7 @@ reference:
 
   - title: "Setting up a project"
     contents:
+      - install_pixi
       - use_pixi
       - use_pixi_ide
       - pixi_import_renv

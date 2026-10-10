@@ -1,3 +1,10 @@
+# offers to install Pixi in an interactive session
+
+    Code
+      pixi <- pixi_binary()
+    Message
+      i rpix needs Pixi, which isn't installed.
+
 # secrets are hidden in commands, output and errors
 
     Code

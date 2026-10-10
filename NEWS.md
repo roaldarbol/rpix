@@ -2,6 +2,8 @@
 
 ## Added
 
+* `install_pixi()` installs Pixi with Pixi's official installer (#87). When a
+  function can't find Pixi, rpix offers to install it.
 * `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to
   private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3
   (experimental; #93, #97). `pixi_auth_login()` asks for the token or password
