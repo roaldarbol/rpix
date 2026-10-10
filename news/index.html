@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,9 +57,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.7.0" id="rpix-070-2026-10-10">rpix 0.7.0 (2026-10-10)<a class="anchor" aria-label="anchor" href="#rpix-070-2026-10-10"></a></h2>
 <div class="section level3">
-<h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<h3 id="added-0-7-0">Added<a class="anchor" aria-label="anchor" href="#added-0-7-0"></a></h3>
 <ul><li><p><code><a href="../reference/install_pixi.html">install_pixi()</a></code> installs Pixi with Pixi’s official installer (<a href="https://github.com/roaldarbol/rpix/issues/87" class="external-link">#87</a>). When a function can’t find Pixi, rpix offers to install it.</p></li>
 <li><p><code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code>, <code><a href="../reference/pixi_auth_login.html">pixi_auth_logout()</a></code> and <code><a href="../reference/pixi_auth_login.html">pixi_auth_status()</a></code> log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (experimental; <a href="https://github.com/roaldarbol/rpix/issues/93" class="external-link">#93</a>, <a href="https://github.com/roaldarbol/rpix/issues/97" class="external-link">#97</a>). <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code> asks for the token or password without showing it, and rpix shows <code>&lt;hidden&gt;</code> wherever it would appear.</p></li>
 <li><p>When a channel refuses access, rpix’s errors and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> say which host refused and suggest <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code>, and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists the hosts Pixi has logins for (<a href="https://github.com/roaldarbol/rpix/issues/95" class="external-link">#95</a>).</p></li>
@@ -74,18 +74,18 @@
 <li><p>New guide: “Private channels and company networks” (<a href="https://github.com/roaldarbol/rpix/issues/95" class="external-link">#95</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
+<h3 id="changed-0-7-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-7-0"></a></h3>
 <ul><li>
 <code><a href="../reference/pixi_add.html">pixi_add()</a></code> finds Bioconductor packages on bioconda without the <code>bioc::</code> prefix, e.g. <code>pixi_add("DESeq2")</code> or <code>pixi_add("DESeq2", channel = "bioconda")</code> (<a href="https://github.com/roaldarbol/rpix/issues/92" class="external-link">#92</a>).</li>
 <li>In a Pixi environment’s R, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> offers to build packages that aren’t on conda-forge from source, like <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, instead of pointing to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/91" class="external-link">#91</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="removed-development-version">Removed<a class="anchor" aria-label="anchor" href="#removed-development-version"></a></h3>
+<h3 id="removed-0-7-0">Removed<a class="anchor" aria-label="anchor" href="#removed-0-7-0"></a></h3>
 <ul><li>
 <code>add()</code> and <code>setup_pixi()</code>, deprecated since 0.4.0 and 0.5.0. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/85" class="external-link">#85</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
+<h3 id="fixed-0-7-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-7-0"></a></h3>
 <ul><li>Errors in projects set up with <code><a href="../reference/use_pixi.html">use_pixi()</a></code> show their message again, rather than “there is no package called ‘rlang’” (<a href="https://github.com/roaldarbol/rpix/issues/98" class="external-link">#98</a>).</li>
 </ul></div>
 </div>
