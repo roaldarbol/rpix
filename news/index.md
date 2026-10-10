@@ -22,7 +22,13 @@
   [\#97](https://github.com/roaldarbol/rpix/issues/97)).
   [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
   asks for the token or password without showing it, and rpix hides it
-  in every command and message it shows.
+  in every command and message it shows. When a channel refuses access,
+  Pixi’s errors and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  say so and suggest logging in, and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  lists the hosts Pixi has logins for. A new guide covers private
+  channels, CI and company networks.
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   adds R packages from GitHub (experimental,
   [\#96](https://github.com/roaldarbol/rpix/issues/96)),

@@ -7,6 +7,10 @@ environment, and suggest fixes for what doesn't. It reports:
 
 - The project, and whether `pixi.lock` is up to date with `pixi.toml`.
 
+- Private channels that refuse access, and the hosts Pixi has logins for
+  (see
+  [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)).
+
 - Whether the running R is the R of the project's environment, and
   whether the environment is activated.
 

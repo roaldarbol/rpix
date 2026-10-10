@@ -1,0 +1,117 @@
+# Private channels and company networks
+
+Most packages come from public channels: conda-forge and bioconda. Some
+organisations also keep packages in private channels, e.g. on
+[prefix.dev](https://prefix.dev), anaconda.org, Artifactory, Nexus or
+S3. And some networks need a mirror, a proxy or their own certificates.
+Pixi handles all of these; this guide shows how to set them up.
+
+**Experimental:** logging in from R with
+[`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+and its companions may still change. See
+[\#97](https://github.com/roaldarbol/rpix/issues/97).
+
+## Logging in
+
+Pixi needs credentials for a private channel. Log in once per host, and
+every Pixi project on your computer can use them:
+
+``` r
+
+library(rpix)
+
+pixi_auth_login("prefix.dev")
+```
+
+rpix asks for the token without showing it, so it doesn’t end up on
+screen, in your R history or in a script. Pixi stores it in your
+system’s keychain, or in `~/.rattler/credentials.json`.
+
+Other hosts log in in other ways:
+
+``` r
+
+# A username and password, e.g. Artifactory or Nexus
+pixi_auth_login("repo.example.com", method = "password", username = "me")
+
+# A token for anaconda.org or quetz
+pixi_auth_login("anaconda.org", method = "conda-token")
+
+# An access key for a channel on S3
+pixi_auth_login("s3://my-bucket", method = "s3")
+```
+
+See which hosts Pixi has credentials for, without the secrets, and log
+out again:
+
+``` r
+
+pixi_auth_status()
+pixi_auth_logout("prefix.dev")
+```
+
+## Using a private channel
+
+Add the channel to the project, then add packages from it as usual:
+
+``` r
+
+pixi_add_channel("https://repo.prefix.dev/my-channel")
+pixi_add("mypackage")
+```
+
+If a channel refuses access, rpix says so, and suggests logging in:
+
+    ! `pixi add r-mypackage` failed with exit status 1.
+    ℹ "repo.prefix.dev" refused access (401), so Pixi probably needs credentials for it.
+    ℹ Log in with `pixi_auth_login("repo.prefix.dev")`, …
+
+[`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+reports it too, and lists the hosts Pixi has logins for.
+
+## Continuous integration
+
+On GitHub Actions, the
+[setup-pixi](https://github.com/prefix-dev/setup-pixi) action logs in,
+with credentials from the repository’s secrets:
+
+``` yaml
+- uses: prefix-dev/setup-pixi@v0.10.2
+  with:
+    auth-host: repo.prefix.dev
+    auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
+```
+
+It also takes `auth-username` and `auth-password`, or
+`auth-conda-token`.
+[`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+only works in an interactive R session, since it asks for the secret.
+
+## Company networks
+
+These are Pixi settings, in your user configuration (`pixi config set`,
+or `pixi config edit` to edit the file), or for one project with
+`--local`. See [Pixi’s
+configuration](https://pixi.prefix.dev/latest/reference/pixi_configuration/)
+for all of them.
+
+- **Certificates.** If your network inspects HTTPS traffic with its own
+  certificate, tell Pixi to use your system’s certificates:
+
+  ``` sh
+  pixi config set tls-root-certs system
+  ```
+
+  Or point `SSL_CERT_FILE` at the certificate file.
+
+- **Proxies.** Pixi uses the `https_proxy` and `http_proxy` environment
+  variables, or the `proxy-config` setting.
+
+- **Mirrors.** If conda-forge or bioconda are only reachable through a
+  mirror inside your network, the `mirrors` setting sends Pixi there
+  instead:
+
+  ``` toml
+  [mirrors]
+  "https://conda.anaconda.org/conda-forge" = ["https://mirror.example.com/conda-forge"]
+  ```

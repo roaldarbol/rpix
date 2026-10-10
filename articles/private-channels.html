@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Finding packages • rpix</title>
+<title>Private channels and company networks • rpix</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="finding-packages_files/libs/quarto-html/popper.min.js"></script><script src="finding-packages_files/libs/quarto-html/tippy.umd.min.js"></script><link href="finding-packages_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="finding-packages_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Finding packages">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="private-channels_files/libs/quarto-html/popper.min.js"></script><script src="private-channels_files/libs/quarto-html/tippy.umd.min.js"></script><link href="private-channels_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="private-channels_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Private channels and company networks">
 <meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg">
 </head>
 <body>
@@ -78,12 +78,12 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Finding packages</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Private channels and company networks</h1>
 
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/rpix/blob/main/vignettes/articles/finding-packages.qmd" class="external-link"><code>vignettes/articles/finding-packages.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/roaldarbol/rpix/blob/main/vignettes/articles/private-channels.qmd" class="external-link"><code>vignettes/articles/private-channels.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -92,89 +92,65 @@
 
 
 
-    <p>Pixi installs conda packages. Most CRAN and Bioconductor packages are available as conda packages on <a href="https://conda-forge.org" class="external-link">conda-forge</a> and <a href="https://bioconda.github.io" class="external-link">bioconda</a>, under slightly different names. rpix translates the names for you.</p>
-<section class="level2"><h2 id="package-names">Package names<a class="anchor" aria-label="anchor" href="#package-names"></a>
+    <p>Most packages come from public channels: conda-forge and bioconda. Some organisations also keep packages in private channels, e.g. on <a href="https://prefix.dev" class="external-link">prefix.dev</a>, anaconda.org, Artifactory, Nexus or S3. And some networks need a mirror, a proxy or their own certificates. Pixi handles all of these; this guide shows how to set them up.</p>
+<p><strong>Experimental:</strong> logging in from R with <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code> and its companions may still change. See <a href="https://github.com/roaldarbol/rpix/issues/97" class="external-link">#97</a>.</p>
+<section class="level2"><h2 id="logging-in">Logging in<a class="anchor" aria-label="anchor" href="#logging-in"></a>
 </h2>
-<table class="table caption-top">
-<thead><tr class="header">
-<th>You write</th>
-<th>Conda package</th>
-<th>Channel</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>"dplyr"</code></td>
-<td><code>r-dplyr</code></td>
-<td>conda-forge</td>
-</tr>
-<tr class="even">
-<td><code>"Rcpp"</code></td>
-<td><code>r-rcpp</code></td>
-<td>conda-forge</td>
-</tr>
-<tr class="odd">
-<td><code>"bioc::DESeq2"</code></td>
-<td><code>bioconductor-deseq2</code></td>
-<td>bioconda</td>
-</tr>
-<tr class="even">
-<td><code>"conda::gdal"</code></td>
-<td><code>gdal</code></td>
-<td>conda-forge</td>
-</tr>
-<tr class="odd">
-<td>
-<code>"r-dplyr"</code>, <code>"c-compiler"</code>
-</td>
-<td>unchanged</td>
-<td>conda-forge</td>
-</tr>
-</tbody>
-</table>
+<p>Pixi needs credentials for a private channel. Log in once per host, and every Pixi project on your computer can use them:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_login</a></span><span class="op">(</span><span class="st">"prefix.dev"</span><span class="op">)</span></span></code></pre></div>
+<p>rpix asks for the token without showing it, so it doesn’t end up on screen, in your R history or in a script. Pixi stores it in your system’s keychain, or in <code>~/.rattler/credentials.json</code>.</p>
+<p>Other hosts log in in other ways:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># A username and password, e.g. Artifactory or Nexus</span></span>
+<span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_login</a></span><span class="op">(</span><span class="st">"repo.example.com"</span>, method <span class="op">=</span> <span class="st">"password"</span>, username <span class="op">=</span> <span class="st">"me"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A token for anaconda.org or quetz</span></span>
+<span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_login</a></span><span class="op">(</span><span class="st">"anaconda.org"</span>, method <span class="op">=</span> <span class="st">"conda-token"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># An access key for a channel on S3</span></span>
+<span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_login</a></span><span class="op">(</span><span class="st">"s3://my-bucket"</span>, method <span class="op">=</span> <span class="st">"s3"</span><span class="op">)</span></span></code></pre></div>
+<p>See which hosts Pixi has credentials for, without the secrets, and log out again:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_status</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/pixi_auth_login.html">pixi_auth_logout</a></span><span class="op">(</span><span class="st">"prefix.dev"</span><span class="op">)</span></span></code></pre></div>
+</section><section class="level2"><h2 id="using-a-private-channel">Using a private channel<a class="anchor" aria-label="anchor" href="#using-a-private-channel"></a>
+</h2>
+<p>Add the channel to the project, then add packages from it as usual:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add_channel.html">pixi_add_channel</a></span><span class="op">(</span><span class="st">"https://repo.prefix.dev/my-channel"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"mypackage"</span><span class="op">)</span></span></code></pre></div>
+<p>If a channel refuses access, rpix says so, and suggests logging in:</p>
+<pre><code>! `pixi add r-mypackage` failed with exit status 1.
+ℹ "repo.prefix.dev" refused access (401), so Pixi probably needs credentials for it.
+ℹ Log in with `pixi_auth_login("repo.prefix.dev")`, …</code></pre>
+<p><code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports it too, and lists the hosts Pixi has logins for.</p>
+</section><section class="level2"><h2 id="continuous-integration">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration"></a>
+</h2>
+<p>On GitHub Actions, the <a href="https://github.com/prefix-dev/setup-pixi" class="external-link">setup-pixi</a> action logs in, with credentials from the repository’s secrets:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> prefix-dev/setup-pixi@v0.10.2</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">auth-host</span><span class="kw">:</span><span class="at"> repo.prefix.dev</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">auth-token</span><span class="kw">:</span><span class="at"> ${{ secrets.PREFIX_DEV_TOKEN }}</span></span></code></pre></div>
+<p>It also takes <code>auth-username</code> and <code>auth-password</code>, or <code>auth-conda-token</code>. <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code> only works in an interactive R session, since it asks for the secret.</p>
+</section><section class="level2"><h2 id="company-networks">Company networks<a class="anchor" aria-label="anchor" href="#company-networks"></a>
+</h2>
+<p>These are Pixi settings, in your user configuration (<code>pixi config set</code>, or <code>pixi config edit</code> to edit the file), or for one project with <code>--local</code>. See <a href="https://pixi.prefix.dev/latest/reference/pixi_configuration/" class="external-link">Pixi’s configuration</a> for all of them.</p>
 <ul>
 <li>
-<strong>CRAN packages</strong> get an <code>r-</code> prefix and are lowercased, since conda package names are lowercase.</li>
+<p><strong>Certificates.</strong> If your network inspects HTTPS traffic with its own certificate, tell Pixi to use your system’s certificates:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> config set tls-root-certs system</span></code></pre></div>
+<p>Or point <code>SSL_CERT_FILE</code> at the certificate file.</p>
+</li>
+<li><p><strong>Proxies.</strong> Pixi uses the <code>https_proxy</code> and <code>http_proxy</code> environment variables, or the <code>proxy-config</code> setting.</p></li>
 <li>
-<strong>Bioconductor packages</strong> take a <code>bioc::</code> prefix. They come from the bioconda channel, which rpix adds to the project the first time you need it.</li>
-<li>
-<strong>Conda packages that aren’t R packages</strong>, such as GDAL or Quarto, take a <code>conda::</code> prefix. Names containing <code>-</code> or <code>_</code> can’t be R package names, so they’re used as they are.</li>
-</ul>
-<p>The same names work in <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>.</p>
-</section><section class="level2"><h2 id="search">Search<a class="anchor" aria-label="anchor" href="#search"></a>
-</h2>
-<p><code><a href="../reference/pixi_search.html">pixi_search()</a></code> shows the available versions of a package and what they depend on:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_search.html">pixi_search</a></span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/pixi_search.html">pixi_search</a></span><span class="op">(</span><span class="st">"bioc::DESeq2"</span><span class="op">)</span></span></code></pre></div>
-<p>You can also browse <a href="https://prefix.dev/channels/conda-forge" class="external-link">conda-forge on prefix.dev</a>.</p>
-</section><section class="level2"><h2 id="versions">Versions<a class="anchor" aria-label="anchor" href="#versions"></a>
-</h2>
-<p>Add a version constraint after the name:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"dplyr&gt;=1.1"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"ggplot2==3.5.1"</span><span class="op">)</span></span></code></pre></div>
-<p>Or give them separately, with <code>NA</code> for no constraint:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr"</span>, <span class="st">"tidyr"</span><span class="op">)</span>, versions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"&gt;=1.1"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>A version without an operator, like <code>"1.1"</code>, means any <code>1.1.x</code>.</p>
-</section><section class="level2"><h2 id="other-channels">Other channels<a class="anchor" aria-label="anchor" href="#other-channels"></a>
-</h2>
-<p>To install from a different conda channel, name it. rpix adds it to the project’s channels:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"mypackage"</span>, channel <span class="op">=</span> <span class="st">"my-channel"</span><span class="op">)</span></span></code></pre></div>
-</section><section class="level2"><h2 id="when-a-package-isnt-on-conda-forge">When a package isn’t on conda-forge<a class="anchor" aria-label="anchor" href="#when-a-package-isnt-on-conda-forge"></a>
-</h2>
-<p>If <code><a href="../reference/pixi_add.html">pixi_add()</a></code> can’t find a package, first check the name with <code><a href="../reference/pixi_search.html">pixi_search()</a></code>, and whether it needs <code>bioc::</code> or <code>conda::</code>.</p>
-<p>If it really isn’t available, Pixi can build it from source. (Experimental: this may still change, see <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">#96</a>.) Pixi’s R build backend, <a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link"><code>pixi-build-r</code></a>, builds a package from its GitHub repository, and its dependencies come from conda-forge:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"github::user/mypackage"</span><span class="op">)</span></span></code></pre></div>
-<p>Add <code>@ref</code> for a branch, tag or commit, e.g. <code>"github::user/mypackage@v1.2.0"</code>, or give it in <code>versions</code>, as <code>pixi_add("github::user/mypackage", versions = "v1.2.0")</code>. <code>pixi.lock</code> records the exact commit either way, so collaborators get the same code. CRAN packages are on GitHub too, in <a href="https://github.com/cran" class="external-link">CRAN’s mirror</a>, with a tag for every version:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"github::cran/mypackage@1.2.3"</span><span class="op">)</span></span></code></pre></div>
-<p>rpix writes the package into <code>pixi.toml</code>, turns on Pixi’s <code>pixi-build</code> preview, and builds it for the project’s version of R. Building takes a minute or so. It doesn’t work yet for packages that need Bioconductor packages.</p>
-<p>Better still, add the package to conda-forge, so it’s available for everyone. conda-forge accepts new packages through <a href="https://github.com/conda-forge/staged-recipes" class="external-link">staged-recipes</a>. <a href="https://rattler.build" class="external-link">rattler-build</a> writes a recipe for a CRAN package for you:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> exec rattler-build generate-recipe cran mypackage</span></code></pre></div>
-</section><script id="quarto-html-after-body" type="application/javascript">
+<p><strong>Mirrors.</strong> If conda-forge or bioconda are only reachable through a mirror inside your network, the <code>mirrors</code> setting sends Pixi there instead:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[mirrors]</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">"https://conda.anaconda.org/conda-forge"</span> <span class="op">=</span> <span class="op">[</span><span class="st">"https://mirror.example.com/conda-forge"</span><span class="op">]</span></span></code></pre></div>
+</li>
+</ul></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

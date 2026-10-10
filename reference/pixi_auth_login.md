@@ -44,7 +44,8 @@ pixi_auth_status()
 
 - host:
 
-  The host, such as `"prefix.dev"` or `"repo.example.com"`.
+  The host, such as `"prefix.dev"` or `"repo.example.com"`, or
+  `"s3://my-bucket"` for a channel on S3.
 
 - method:
 

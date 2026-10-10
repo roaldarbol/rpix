@@ -17,6 +17,8 @@
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.md):
 - [Sharing and
   reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md):
+- [Private channels and company
+  networks](https://roald-arboel.com/rpix/articles/private-channels.md):
 
 ### Background
 
