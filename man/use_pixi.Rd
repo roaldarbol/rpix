@@ -51,6 +51,9 @@ It also adds a block to the project's \code{.Rprofile} that calls
 R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
 library setup" block in their \code{.Rprofile} instead, which pointed a running
 R at the Pixi library. It's removed.
+
+In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
+\code{.Rbuildignore}, so they stay out of the package's builds.
 }
 \examples{
 \dontrun{

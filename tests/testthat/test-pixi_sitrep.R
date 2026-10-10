@@ -50,9 +50,12 @@ test_that("reports problems, with hints", {
     packages_unrecorded = "pak",
     rprofile = FALSE,
     ide = "rstudio",
-    ide_set_up = FALSE
+    ide_set_up = FALSE,
+    build_unignored = c(".pixi", "pixi.lock")
   ))
   expect_match(out, "pixi install")
+  expect_match(out, "builds include '.pixi' and 'pixi.lock'")
+  expect_match(out, 'use_build_ignore\\(c\\(".pixi", "pixi.lock"\\)\\)')
   expect_match(out, "isn't activated")
   expect_match(out, "Library/R/4.5/library")
   expect_match(out, "Loaded from outside the project: cli")
@@ -114,6 +117,15 @@ test_that("collects the setup of a project's Pixi R", {
   expect_true(report$activated)
   expect_true(report$rprofile)
   expect_true(is.na(report$ide))
+  expect_length(report$build_unignored, 0)
+
+  # In a package, Pixi's files and .vscode belong in .Rbuildignore
+  writeLines("Package: demo", file.path(root, "DESCRIPTION"))
+  dir.create(file.path(root, ".vscode"))
+  expect_equal(
+    sitrep_data(root)$build_unignored,
+    c(".pixi", "pixi.toml", "pixi.lock", ".vscode")
+  )
 
   # In an IDE, running the project's R counts as set up
   withr::local_envvar(POSITRON = "1")

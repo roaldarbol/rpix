@@ -38,7 +38,8 @@ when the environment is activated, so it leaves R to be found on the
 \code{PATH} instead: start VS Code with \verb{pixi run code .}.
 }
 
-Existing settings in \code{.vscode/settings.json} are kept.
+Existing settings in \code{.vscode/settings.json} are kept. In a package,
+\code{.vscode} is added to \code{.Rbuildignore}.
 }
 \examples{
 \dontrun{

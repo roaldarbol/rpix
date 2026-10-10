@@ -170,3 +170,10 @@ test_that("use_pixi_rstudio() can be run again", {
   expect_equal(tasks$name, "rstudio")
   expect_match(tasks$command, "renamed.Rproj")
 })
+
+test_that("the IDE setup leaves .vscode out of a package's builds", {
+  dir <- withr::local_tempdir()
+  writeLines("Package: demo", file.path(dir, "DESCRIPTION"))
+  suppressMessages(update_vscode_settings(dir, list(a = 1)))
+  expect_equal(readLines(file.path(dir, ".Rbuildignore")), "^\\.vscode$")
+})

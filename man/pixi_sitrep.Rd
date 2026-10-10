@@ -19,6 +19,8 @@ and suggest fixes for what doesn't. It reports:
 \itemize{
 \item Pixi: where it is, and its version.
 \item The project, and whether \code{pixi.lock} is up to date with \code{pixi.toml}.
+\item In a package, whether \code{.Rbuildignore} leaves Pixi's files out of its
+builds.
 \item Private channels that refuse access, and the hosts Pixi has logins for
 (see \code{\link[=pixi_auth_login]{pixi_auth_login()}}).
 \item Whether the running R is the R of the project's environment, and whether
