@@ -64,6 +64,8 @@
 
 ## Setting up a project
 
+- [`install_pixi()`](https://roald-arboel.com/rpix/reference/install_pixi.md)
+  : Install Pixi
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) :
   Set up a Pixi project for R
 - [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)

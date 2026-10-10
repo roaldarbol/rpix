@@ -3,23 +3,6 @@
 This guide takes a project from nothing to something a collaborator can
 run on their own computer. It assumes you know R, but not Pixi.
 
-## Install Pixi
-
-Pixi is the tool that does the work; rpix lets you use it from R.
-Install it by following the [Pixi installation
-guide](https://pixi.prefix.dev/latest/installation/). On macOS and
-Linux, that’s:
-
-``` sh
-curl -fsSL https://pixi.prefix.dev/install.sh | sh
-```
-
-On Windows, in PowerShell:
-
-``` powershell
-powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.prefix.dev/install.ps1 | iex"
-```
-
 ## Install rpix
 
 Install rpix in the R you normally use:
@@ -30,6 +13,32 @@ install.packages(
   "rpix",
   repos = c("https://roaldarbol.r-universe.dev", "https://cloud.r-project.org")
 )
+```
+
+## Install Pixi
+
+Pixi is the tool that does the work; rpix lets you use it from R.
+Install it from R:
+
+``` r
+
+rpix::install_pixi()
+```
+
+This runs Pixi’s official installer, and adds `pixi` to your terminal’s
+`PATH` too. (Skip it, and rpix offers to install Pixi the first time it
+needs it.) Or install it in a terminal, as the [Pixi installation
+guide](https://pixi.prefix.dev/latest/installation/) describes. On macOS
+and Linux, that’s:
+
+``` sh
+curl -fsSL https://pixi.prefix.dev/install.sh | sh
+```
+
+On Windows, in PowerShell:
+
+``` powershell
+powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.prefix.dev/install.ps1 | iex"
 ```
 
 ## Set up a project

@@ -4,6 +4,11 @@
 
 ### Added
 
+- [`install_pixi()`](https://roald-arboel.com/rpix/reference/install_pixi.md)
+  installs Pixi with Pixi’s official installer
+  ([\#87](https://github.com/roaldarbol/rpix/issues/87)). When a
+  function can’t find Pixi, rpix offers to install it.
+
 - [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md),
   [`pixi_auth_logout()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
   and
