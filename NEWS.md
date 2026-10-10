@@ -1,115 +1,205 @@
 # rpix (development version)
 
-## Breaking changes
+## Added
 
-- The deprecated `add()` and `setup_pixi()` are removed. Use `pixi_add()` and `use_pixi()`.
+* `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to
+  private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3
+  (experimental; #93, #97). `pixi_auth_login()` asks for the token or password
+  without showing it, and rpix shows `<hidden>` wherever it would appear.
+* When a channel refuses access, rpix's errors and `pixi_sitrep()` say which host
+  refused and suggest `pixi_auth_login()`, and `pixi_sitrep()` lists the hosts
+  Pixi has logins for (#95).
+* `pixi_add()` adds R packages from GitHub, built from source by Pixi's R build
+  backend, `pixi-build-r` (experimental; #88, #96):
 
-## New features
+  ```r
+  pixi_add("github::user/repo")
+  pixi_add("github::cran/praise", versions = "1.0.0")
+  ```
 
-- New, experimental `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (#93, #97). `pixi_auth_login()` asks for the token or password without showing it, and rpix hides it in every command and message it shows. When a channel refuses access, Pixi's errors and `pixi_sitrep()` say so and suggest logging in, and `pixi_sitrep()` lists the hosts Pixi has logins for. A new guide covers private channels, CI and company networks.
-- `pixi_add()` adds R packages from GitHub (experimental, #96), e.g. `pixi_add("github::user/repo")`, which Pixi builds from source with its R build backend, `pixi-build-r` (#88). `@ref`, or `versions`, picks a branch, tag or commit; the dependencies come from conda-forge, and the build is pinned to the project's R. CRAN packages that aren't on conda-forge can be added from CRAN's GitHub mirror, e.g. `pixi_add("github::cran/pkg@1.2.3")`. `pixi_remove()` removes them the same way.
-- When `pixi_add()` can't find a CRAN package on conda-forge, it offers to build it from CRAN's source with Pixi (experimental, #96), from CRAN's GitHub mirror (#89). An exact version (`"pkg==1.2-3"`) builds that version. Without a prompt, e.g. in a script, it says how: `pixi_add("github::cran/pkg")`. In a Pixi environment's R, `install.packages()` does the same, instead of pointing to `utils::install.packages()`, so packages stay in the project.
+  `@ref` or `versions` picks a branch, tag or commit. `pixi_remove()` removes
+  them the same way.
+* When `pixi_add()` can't find a CRAN package on conda-forge, it offers to build
+  it from CRAN's GitHub mirror, or, in a script, says how (experimental; #89,
+  #96).
+* New guide: "Private channels and company networks" (#95).
 
-## Minor improvements and fixes
+## Changed
 
-- `pixi_add()` finds Bioconductor packages without the `bioc::` prefix: when a package isn't on conda-forge, it looks for it on bioconda, e.g. `pixi_add("DESeq2")`, or `pixi_add("DESeq2", channel = "bioconda")` (#92).
-- rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (#85), projects set up with `use_pixi()` didn't get rlang, so every rpix error became "there is no package called 'rlang'".
+* `pixi_add()` finds Bioconductor packages on bioconda without the `bioc::`
+  prefix, e.g. `pixi_add("DESeq2")` or `pixi_add("DESeq2", channel = "bioconda")`
+  (#92).
+* In a Pixi environment's R, `install.packages()` offers to build packages that
+  aren't on conda-forge from source, like `pixi_add()`, instead of pointing to
+  `utils::install.packages()` (#91).
 
-# rpix 0.6.0
+## Removed
 
-rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
+* `add()` and `setup_pixi()`, deprecated since 0.4.0 and 0.5.0. Use `pixi_add()`
+  and `use_pixi()` (#85).
 
-## Breaking changes
+## Fixed
 
-- `restart_rstudio_with_pixi()` is removed. Use `pixi_switch()` instead, or start RStudio with `pixi run rstudio` (#32).
+* Errors in projects set up with `use_pixi()` show their message again, rather
+  than "there is no package called 'rlang'" (#98).
 
-## Several environments
+# rpix 0.6.0 (2026-10-09)
 
-- New `pixi_switch()` moves your work to another environment's R (#32). In RStudio it starts a new RStudio with that R. In Positron it looks for interpreters again, so new environments are listed, and opens the interpreter picker. In VS Code it points the R extension at that R.
-- New `pixi_r()` runs a function in another environment's R, e.g. one with another version of R, and returns its result (#33).
-- New `pixi_check_matrix()` runs a package's tests or `R CMD check` in several environments, one at a time or all at once, and shows the results side by side. `use_pixi_check_matrix()` adds an environment for each version of R you want to check (#34).
+## Added
 
-## Moving to Pixi
+* `pixi_switch()` moves your work to another environment's R (#32). In RStudio
+  it starts a new RStudio with that R; in Positron it looks for interpreters
+  again and opens the interpreter picker; in VS Code it points the R extension
+  at that R.
+* `pixi_r()` runs a function in another environment's R, e.g. one with another
+  version of R, and returns its result (#33).
+* `pixi_check_matrix()` runs a package's tests or `R CMD check` in several
+  environments, one at a time or all at once, and shows the results side by
+  side. `use_pixi_check_matrix()` adds an environment for each version of R
+  (#34).
+* `pixi_import_renv()` moves a project from renv: it adds the packages in
+  `renv.lock` that nothing else in it needs, at least at their locked versions
+  or exactly, lists those it can't add, and turns renv off (#37).
+* `pixi_import_description()` adds a package's `Depends` and `Imports` to the
+  project, and its `Suggests` to a `test` environment, finding Bioconductor
+  packages on bioconda (#36).
+* `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R
+  chunks of `.qmd` and `.Rmd` documents and Pixi tasks, lists those missing from
+  `pixi.toml` (and adds them with `add = TRUE`), and lists packages the code
+  never uses (#38).
+* `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work
+  with the project's Pixi tasks (#35).
+* In a Pixi environment's R, `install.packages()` adds packages with
+  `pixi_add()`, so they're recorded in `pixi.toml` and `pixi.lock` (#3). Turn it
+  off with `options(rpix.install_packages = FALSE)`.
+* `pixi_sitrep()` lists packages in the environment that Pixi didn't install
+  (#3).
 
-- New `pixi_import_renv()` moves a project from renv: it adds the packages in `renv.lock`, at least at their locked versions or exactly, and turns renv off. It adds only the packages nothing else in the lock file needs, and lists those it can't add, e.g. from GitHub (#37).
-- New `pixi_import_description()` adds a package's dependencies from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment. It finds Bioconductor packages on bioconda, and lists the packages that aren't on conda-forge or bioconda (#36).
-- New `pixi_scan()` finds the packages the project's code uses, in `.R` files, the R chunks of `.qmd` and `.Rmd` documents, and Pixi tasks. It lists those missing from `pixi.toml`, adds them with `add = TRUE`, and lists packages the code never uses (#38).
+## Changed
 
-## Installing packages
+* `pixi_add()` explains when a package isn't built for the project's version of
+  R yet, and suggests the newest R it's built for (#80).
+* `use_pixi()` adds R together with the packages it needs, so Pixi picks the
+  newest R they're built for (#72).
+* `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print
+  their results in a readable form (#67). They're still data frames, or a list
+  for `pixi_info()`.
+* `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be
+  run again (#72).
 
-- In a Pixi environment's R, `install.packages()` adds packages with `pixi_add()`, so they're recorded in `pixi.toml` and `pixi.lock` (#3). Packages that aren't on conda-forge or bioconda, and arguments Pixi can't use, such as `lib`, give an error that points to `utils::install.packages()`. `pixi_activate()` sets this up; turn it off with `options(rpix.install_packages = FALSE)`.
-- `pixi_sitrep()` lists packages in the environment that Pixi didn't install, so `pixi.toml` doesn't record them (#3).
-- `pixi_add()` explains when a package isn't built for the project's version of R yet, which happens for a while after conda-forge releases a new R, and suggests the newest R it's built for (#80).
-- `use_pixi()` adds R together with the packages it needs, so Pixi picks the newest R they're built for. Just after conda-forge released a new R, it picked that R, and adding packages failed until they were rebuilt for it (#72).
+## Removed
 
-## Tasks
+* `restart_rstudio_with_pixi()`. Use `pixi_switch()`, or start RStudio with
+  `pixi run rstudio` (#32).
 
-- New `pixi_tasks()`, `pixi_run()`, `pixi_add_task()` and `pixi_remove_task()` work with the project's Pixi tasks (#35).
+## Fixed
 
-## Other changes
+* Pixi's output is shown in Pixi's own colours, rather than partly red (#68).
 
-- `pixi_tasks()`, `pixi_environments()`, `pixi_list()` and `pixi_info()` print their results in a readable form (#67). They're still data frames, or a list for `pixi_info()`.
-- Pixi's output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi's own colours.
-- `use_pixi_rstudio()` replaces the `rstudio` task if it's there, so it can be run again, e.g. after renaming the `.Rproj` file (#72).
+# rpix 0.5.0 (2026-10-08)
 
-# rpix 0.5.0
+## Added
 
-rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project's packages.
+* `use_pixi()` sets a project up, with R, rpix and its dependencies (#26). Its
+  `ide` argument sets the project up for an IDE (#27):
+  * `use_pixi_rstudio()` adds an `rstudio` task, so `pixi run rstudio` starts a
+    new RStudio with the environment's R, in the project.
+  * `use_pixi_positron()` turns on Positron's discovery of R in Pixi
+    environments.
+  * `use_pixi_vscode()` adds languageserver, and points the R extension for VS
+    Code and VSCodium at the environment's R.
+* `pixi_activate()` activates the project's Pixi environment in R that an IDE
+  started directly (#25). `use_pixi()` adds a block to the project's
+  `.Rprofile` that calls it.
+* `pixi_environments()`, `pixi_add_environment()` and
+  `pixi_remove_environment()` manage a project's environments, and `pixi_add()`
+  and `pixi_remove()` gain `feature` and `platform` arguments (#30).
+* `pixi_add_channel()`, `pixi_add_platform()`, `pixi_install()`,
+  `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
+* `pixi_sitrep()` checks the project's Pixi setup, and suggests fixes (#28).
+* `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns
+  an environment's packages as a data frame, with each R package's name as R
+  spells it.
+* `pixi_add()`, `pixi_remove()`, `pixi_search()` and `use_pixi()` gain a `path`
+  argument.
+* New guides: using rpix with an IDE, and several environments (#31).
 
-## Setting up a project
+## Changed
 
-- New `use_pixi()` replaces `setup_pixi()`, which is deprecated (#26). Its `ide` argument sets the project up for an IDE, with the new `use_pixi_rstudio()`, `use_pixi_positron()` and `use_pixi_vscode()` (#27):
-  - `use_pixi_rstudio()` adds an `rstudio` task for each of the project's platforms, so `pixi run rstudio` starts a new RStudio with the environment's R, in the project.
-  - `use_pixi_positron()` turns on Positron's discovery of R in Pixi environments. Positron then activates the environment itself when it starts that R.
-  - `use_pixi_vscode()` adds languageserver to the environment, and points the R extension for VS Code and VSCodium at the environment's R.
-- New `pixi_activate()` activates the project's Pixi environment in R that an IDE started directly, without Pixi (#25). It sets the environment variables Pixi would set, and removes your personal library from `.libPaths()`. `use_pixi()` adds a block to the project's `.Rprofile` that calls it, and removes the personal library before any package loads.
-- `use_pixi()` keeps your personal R library out of the environment's R, by adding conda-forge's `conda-ecosystem-user-package-isolation` to the project. conda-forge's R otherwise puts the personal library first on `.libPaths()`, so packages built for your usual R could be loaded, and crash it (conda-forge/r-base-feedstock#37).
+* `use_pixi()` keeps your personal R library out of the environment's R, by
+  adding conda-forge's `conda-ecosystem-user-package-isolation`
+  (conda-forge/r-base-feedstock#37).
 
-## Environments
+## Deprecated
 
-- `pixi_add()` and `pixi_remove()` gain `feature` and `platform` arguments, and new `pixi_environments()`, `pixi_add_environment()` and `pixi_remove_environment()` manage a project's environments, e.g. one with another version of R (#30).
-- New `pixi_add_channel()` and `pixi_add_platform()`, and `pixi_install()`, `pixi_update()`, `pixi_upgrade()` and `pixi_lock()` (#30).
+* `setup_pixi()`. Use `use_pixi()` (#26).
 
-## Inspecting a project
+# rpix 0.4.0 (2026-10-08)
 
-- New `pixi_sitrep()` checks the project's Pixi setup, and suggests fixes for what's wrong (#28): Pixi itself, whether the lock file is up to date, whether R is the project's Pixi R and is activated, libraries and packages from outside the project, the `.Rprofile` block, and whether the IDE is set up.
-- New `pixi_info()`, `pixi_list()` and `pixi_tree()` (#29). `pixi_list()` returns the packages in an environment as a data frame, with the name of each R package as R spells it (`Rcpp` for `r-rcpp`).
+## Added
 
-## Other changes
+* R package names are translated to conda names (#21): `"Rcpp"` becomes
+  `r-rcpp`, `"bioc::DESeq2"` a Bioconductor package from bioconda (#17), and
+  `"conda::gdal"` a conda package that isn't an R package.
+* `pixi_add()` takes version constraints inline (`"dplyr>=1.1"`), and one per
+  package in `versions`.
+* New guides: getting started, finding packages, coming from renv, sharing
+  projects, how rpix works and troubleshooting (#48).
 
-- `pixi_add()`, `pixi_remove()`, `pixi_search()` and `use_pixi()` gain a `path` argument, like the other functions, to work on a project other than the one in the working directory.
-- The documentation covers the new workflow (#31): the IDE guide has a section for each IDE, with daily use, other environments and troubleshooting; "Several environments" is a new guide; Get started covers rendering Quarto documents and `pixi_sitrep()`; and a contributing guide describes rpix's own development environment.
+## Changed
 
-# rpix 0.4.0
+* Functions that run a Pixi command are called `pixi_<command>()` (#20).
+  `remove()` and `search()` are now `pixi_remove()` and `pixi_search()`.
+* rpix no longer points a running R at a Pixi environment's library, which
+  could crash R (#14, #22). Work in R started by Pixi instead, e.g. with
+  `pixi run R`.
+* `setup_pixi()` only sets up the project: it creates `pixi.toml`, adds R
+  (`r_version` picks the version) and installs rpix. It removes the "Pixi R
+  library setup" block from the project's `.Rprofile`, and warns about one in
+  `~/.Rprofile`.
+* Pixi commands work from any subfolder of a project, Pixi's failures become R
+  errors, and Pixi is found even if it isn't on the `PATH` (#19). Set
+  `options(rpix.pixi_path = )` for unusual installs.
+* With `dry_run = TRUE`, `pixi_add()`, `pixi_remove()` and `pixi_search()`
+  return the command invisibly.
+* `pixi_add()` suggests `bioc::` and `conda::` when a package can't be found.
 
-## Breaking changes
-- Exported functions now follow one naming scheme (#20): functions that run a Pixi command are called `pixi_<command>()`.
-  - `add()` is now `pixi_add()`. `add()` still works for now, with a deprecation warning.
-  - `remove()` and `search()` are now `pixi_remove()` and `pixi_search()`. The old names were removed rather than deprecated, because they masked `base::remove()` and `base::search()` whenever rpix was attached.
-  - `pixi_to_path()` is removed. rpix finds Pixi itself.
-- rpix no longer points a running R at a Pixi environment's library (#22). R mixed with packages built for a different R could crash (#14). Work in R started by Pixi instead, e.g. with `pixi run R`.
-  - `setup_pixi()` now only sets up the project: it creates `pixi.toml` if needed, adds R (`r_version` picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its `add_to_rprofile` and `global` arguments are gone.
-  - `setup_pixi()` removes the "Pixi R library setup" block that earlier versions added to the project's `.Rprofile`, and warns if there's one in `~/.Rprofile`.
-  - `reset_r_libraries()` is removed.
+## Deprecated
 
-## Other changes
-- All Pixi commands now go through a single internal runner built on *processx* (#19). Arguments are passed without shell quoting, commands work from any subfolder of a project (`--manifest-path`), Pixi failures become R errors, and Pixi is found even if it isn't on the `PATH` (set `options(rpix.pixi_path = ...)` for unusual installs).
-- `pixi_add()`, `pixi_remove()` and `pixi_search()` with `dry_run = TRUE` now return the command invisibly.
-- R package names are now translated to conda names properly (#21): names are lowercased (`"Rcpp"` becomes `r-rcpp`), and a pak-like prefix says where a package comes from: `"bioc::DESeq2"` for Bioconductor packages from bioconda (#17), and `"conda::gdal"` for conda packages that aren't R packages. Names with `-` or `_` are used as is.
-- `pixi_add()` accepts version constraints inline (`"dplyr>=1.1"`) and one constraint per package in `versions`.
-- `pixi_add(channel = )` works again: Pixi has no `--channel` flag for `pixi add`, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.
-- `pixi_add()` suggests `bioc::` and `conda::` when a package can't be found.
-- The documentation is restructured (#48): a walk-through in Get started, guides to finding packages, coming from renv, sharing projects and using an IDE, and pages on how rpix works and troubleshooting.
-- Added tests.
+* `add()`. Use `pixi_add()` (#20).
 
-# rpix 0.3.0
-- `restart_rstudio_with_pixi` has been written to facilitate easier selection of the correct R version
-- `setup_pixi` now installs *rpix* from CRAN into the pixi library. It's a hacky solution until it's on conda.
+## Removed
 
-# rpix 0.2.0
-- `add` can now add multiple packages simultaneously
-- `dry_run` parameter added to multiple functions to allow inspections of pixi commands
-- `setup_pixi` command to setup a pixi project from within R. Still very alpha, expect to break.
-- `search` allows to search dependencies, their versions and their own dependencies.
+* `remove()` and `search()`, which masked the base functions. Use
+  `pixi_remove()` and `pixi_search()` (#20).
+* `pixi_to_path()`. rpix finds Pixi itself (#20).
+* `reset_r_libraries()`, and `setup_pixi()`'s `add_to_rprofile` and `global`
+  arguments (#22).
+
+## Fixed
+
+* `pixi_add(channel = )` adds the channel to the project and installs from it.
+
+# rpix 0.3.0 (2025-06-16)
+
+## Added
+
+* `restart_rstudio_with_pixi()` restarts RStudio with the project's R.
+
+## Changed
+
+* `setup_pixi()` installs rpix from CRAN into the Pixi environment.
+
+# rpix 0.2.0 (2025-05-17)
+
+## Added
+
+* `setup_pixi()` sets up a Pixi project from R.
+* `search()` searches for packages, their versions and their dependencies.
+* `dry_run` shows the Pixi command without running it.
+
+## Changed
+
+* `add()` adds several packages at once.
 
 # rpix 0.1.0
