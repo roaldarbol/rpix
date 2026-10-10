@@ -20,6 +20,9 @@
 #' library setup" block in their `.Rprofile` instead, which pointed a running
 #' R at the Pixi library. It's removed.
 #'
+#' In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
+#' `.Rbuildignore`, so they stay out of the package's builds.
+#'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
 #'   to the newest one that the packages `use_pixi()` adds are built for on
 #'   conda-forge.
@@ -63,6 +66,7 @@ use_pixi <- function(
     manifest <- find_manifest(dir)
   }
   path <- dirname(manifest)
+  build_ignore(path, pixi_files(path))
 
   r_base <- if (is.null(r_version)) "r-base" else paste0("r-base=", r_version)
   # conda-forge's R puts the user library of a regular R install first on

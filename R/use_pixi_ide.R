@@ -18,7 +18,8 @@
 #'   when the environment is activated, so it leaves R to be found on the
 #'   `PATH` instead: start VS Code with `pixi run code .`.
 #'
-#' Existing settings in `.vscode/settings.json` are kept.
+#' Existing settings in `.vscode/settings.json` are kept. In a package,
+#' `.vscode` is added to `.Rbuildignore`.
 #'
 #' @param path The project. Defaults to the working directory.
 #' @returns The file they changed, invisibly.
@@ -215,6 +216,7 @@ update_vscode_settings <- function(root, values, call = parent.frame()) {
   cli::cli_alert_success(
     "Updated {.path {file.path('.vscode', 'settings.json')}}."
   )
+  build_ignore(root, ".vscode")
   invisible(file)
 }
 

@@ -6,6 +6,8 @@
 #'
 #' * Pixi: where it is, and its version.
 #' * The project, and whether `pixi.lock` is up to date with `pixi.toml`.
+#' * In a package, whether `.Rbuildignore` leaves Pixi's files out of its
+#'   builds.
 #' * Private channels that refuse access, and the hosts Pixi has logins for
 #'   (see [pixi_auth_login()]).
 #' * Whether the running R is the R of the project's environment, and whether
@@ -65,6 +67,14 @@ pixi_sitrep <- function(path = NULL) {
     }
     if (length(report$logins) > 0) {
       cli::cli_alert_info("Pixi has logins for {.val {report$logins}}.")
+    }
+    unignored <- report$build_unignored
+    if (length(unignored) > 0) {
+      cli::cli_alert_warning(
+        "The package's builds include {.file {unignored}}."
+      )
+      fix <- paste0("usethis::use_build_ignore(", deparse(unignored), ")")
+      hint("Leave {cli::qty(unignored)}{?it/them} out with {.code {fix}}.")
     }
   }
 
@@ -188,6 +198,13 @@ sitrep_data <- function(path = NULL) {
   }
 
   ide <- detect_ide()
+  unignored <- if (!is.null(project)) {
+    files <- pixi_files(project)
+    if (dir.exists(file.path(project, ".vscode"))) {
+      files <- c(files, ".vscode")
+    }
+    missing_build_ignores(project, files)
+  }
 
   list(
     pixi = pixi,
@@ -210,6 +227,7 @@ sitrep_data <- function(path = NULL) {
     } else {
       character()
     },
+    build_unignored = unignored %||% character(),
     rprofile = !is.null(project) &&
       has_rprofile_block(file.path(project, ".Rprofile")),
     ide = ide,

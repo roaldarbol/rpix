@@ -1,5 +1,11 @@
 # rpix (development version)
 
+## Fixed
+
+* In a package, `use_pixi()` adds `.pixi`, `pixi.toml` and `pixi.lock` to
+  `.Rbuildignore`, and the IDE setup adds `.vscode`, so they stay out of the
+  package's builds. `pixi_sitrep()` reports them when they're missing (#114).
+
 ## Changed
 
 * rpix's questions, when it offers to install Pixi or to build a package from

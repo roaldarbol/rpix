@@ -187,3 +187,18 @@ test_that("rpix's dependencies include rlang, which cli needs for errors", {
   # package called 'rlang'"
   expect_true("r-rlang" %in% rpix_dependencies())
 })
+
+test_that("use_pixi() leaves Pixi's files out of a package's builds", {
+  local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  writeLines("Package: demo", file.path(dir, "DESCRIPTION"))
+  writeLines("^demo\\.Rproj$", file.path(dir, ".Rbuildignore"))
+
+  expect_snapshot(use_pixi(path = dir), transform = function(x) {
+    gsub(dir, "<dir>", x, fixed = TRUE)
+  })
+  expect_equal(
+    readLines(file.path(dir, ".Rbuildignore")),
+    c("^demo\\.Rproj$", "^\\.pixi$", "^pixi\\.toml$", "^pixi\\.lock$")
+  )
+})
