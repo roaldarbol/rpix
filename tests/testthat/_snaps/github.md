@@ -25,6 +25,7 @@
       pixi_add(c("dplyr", "github::hadley/emo"), path = calls$dir)
     Message
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
 # pixi_add() puts pixi.toml back if Pixi can't build the package
 
@@ -32,6 +33,7 @@
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
     Condition
       Error in `pixi_add()`:
       ! Pixi couldn't build github::hadley/emo, so 'pixi.toml' is as it was.

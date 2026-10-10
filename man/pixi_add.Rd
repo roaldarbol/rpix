@@ -54,13 +54,15 @@ bioconda channel, which is added to the project if needed).
 \item \code{"conda::gdal"}: a conda package that isn't an R package, used as is.
 Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also used as is.
 \item \code{"cran::dplyr"}: same as \code{"dplyr"}.
-\item \code{"github::user/repo"}: an R package on GitHub, which Pixi builds from
-source with its R build backend, \code{pixi-build-r}. Add \verb{@ref} for a branch,
+\item \code{"github::user/repo"} (experimental): an R package on GitHub, which Pixi
+builds from source with its R build backend, \code{pixi-build-r}. Add \verb{@ref} for a branch,
 tag or commit, as in \code{"github::cran/praise@1.0.0"}; \code{pixi.lock} records
 the exact commit either way. rpix writes it into \code{pixi.toml}, turns on
 Pixi's \code{pixi-build} preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. See
-\url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}.
+\url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}. This may
+change, e.g. to use \verb{pixi add} once it can set a build backend; see
+\url{https://github.com/roaldarbol/rpix/issues/96}.
 }
 
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/add/}.

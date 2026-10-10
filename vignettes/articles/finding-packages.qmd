@@ -64,7 +64,7 @@ pixi_add("mypackage", channel = "my-channel")
 
 If `pixi_add()` can't find a package, first check the name with `pixi_search()`, and whether it needs `bioc::` or `conda::`.
 
-If it really isn't available, Pixi can build it from source. Pixi's R build backend, [`pixi-build-r`](https://pixi.prefix.dev/latest/build/backends/pixi-build-r/), builds a package from its GitHub repository, and its dependencies come from conda-forge:
+If it really isn't available, Pixi can build it from source. (Experimental: this may still change, see [#96](https://github.com/roaldarbol/rpix/issues/96).) Pixi's R build backend, [`pixi-build-r`](https://pixi.prefix.dev/latest/build/backends/pixi-build-r/), builds a package from its GitHub repository, and its dependencies come from conda-forge:
 
 ```r
 pixi_add("github::user/mypackage")

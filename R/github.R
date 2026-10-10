@@ -137,8 +137,11 @@ add_github_packages <- function(
   lines <- enable_preview(lines, "pixi-build")
   writeLines(lines, manifest)
 
-  cli::cli_alert_info(
-    "Pixi builds {cli::qty(length(packages))}{?it/them} from source with {.code pixi-build-r}, which can take a minute."
+  cli::cli_inform(
+    c(
+      "i" = "Pixi builds {cli::qty(length(packages))}{?it/them} from source with {.code pixi-build-r}, which can take a minute.",
+      "i" = "Packages from GitHub are experimental: see {.url https://github.com/roaldarbol/rpix/issues/96}."
+    )
   )
   tryCatch(
     run_pixi(
