@@ -176,11 +176,7 @@ pixi_add <- function(
 # When Pixi can't add a package because it isn't built for the project's R,
 # the package and the newest R it's built for. NULL for other errors.
 not_built_for_r <- function(stderr) {
-  # Without colours, the tree's box-drawing characters and line breaks. Bytes
-  # rather than characters, so it works in any locale.
-  text <- gsub("\033\\[[0-9;]*m", "", stderr, useBytes = TRUE)
-  text <- gsub("[^ -~]+", " ", text, useBytes = TRUE)
-  text <- gsub("[[:space:]]+", " ", text, useBytes = TRUE)
+  text <- plain_pixi_output(stderr)
   versions <- regmatches(
     text,
     gregexpr(

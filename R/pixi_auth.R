@@ -25,7 +25,8 @@
 #' action instead. For more information, see
 #' <https://pixi.prefix.dev/latest/deployment/authentication/>.
 #'
-#' @param host The host, such as `"prefix.dev"` or `"repo.example.com"`.
+#' @param host The host, such as `"prefix.dev"` or `"repo.example.com"`, or
+#'   `"s3://my-bucket"` for a channel on S3.
 #' @param method How to log in:
 #'   * `"token"`: a token, e.g. for prefix.dev.
 #'   * `"password"`: a username and password (basic HTTP authentication), e.g.
@@ -125,8 +126,11 @@ pixi_auth_status <- function() {
 # "  - Key: value" lines.
 parse_auth_status <- function(text) {
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
-  hosts <- grep("^[^[:space:]-].*[^:]$", lines)
-  hosts <- hosts[!grepl("^(Stored|No stored)", lines[hosts])]
+  # A host's line is followed by its "  - Key: value" lines
+  field <- grepl("^\\s+- [^:]+: ", lines)
+  hosts <- which(
+    grepl("^[^[:space:]-]", lines) & c(field[-1], FALSE)
+  )
   entries <- lapply(seq_along(hosts), function(i) {
     end <- c(hosts[-1] - 1, length(lines))[i]
     fields <- lines[seq(hosts[i], end)][-1]

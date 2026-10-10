@@ -239,3 +239,84 @@ test_that("finds packages in the environment that Pixi didn't install", {
   local_mocked_bindings(pixi_list = function(...) stop("no Pixi"))
   expect_equal(unrecorded_packages("default", "/p"), character())
 })
+
+test_that("reports a channel that refused access, and the logins", {
+  out <- sitrep_output(good_report(
+    lock_up_to_date = NA,
+    access_denied = list(status = "401", host = "repo.prefix.dev"),
+    logins = c("prefix.dev", "anaconda.org")
+  ))
+  expect_match(out, "\"repo.prefix.dev\" refused access \\(401\\)")
+  expect_match(out, "pixi_auth_login\\(\"repo.prefix.dev\"\\)")
+  expect_match(out, "Pixi has logins for \"prefix.dev\" and \"anaconda.org\"")
+})
+
+test_that("the lock check notices a channel that refused access", {
+  local_mocked_bindings(run_pixi = function(...) {
+    stop(structure(
+      list(
+        message = "failed",
+        call = NULL,
+        stderr = "HTTP status client error (403 Forbidden) for url (https://repo.prefix.dev/x/noarch/repodata.json)"
+      ),
+      class = c("rpix_error_pixi", "error", "condition")
+    ))
+  })
+  lock <- lock_up_to_date("/project")
+  expect_true(is.na(lock))
+  expect_equal(
+    attr(lock, "denied"),
+    list(status = "403", host = "repo.prefix.dev")
+  )
+})
+
+test_that("logins() lists the hosts, or nothing if Pixi fails", {
+  local_mocked_bindings(pixi_auth_status = function() {
+    data.frame(host = "prefix.dev")
+  })
+  expect_equal(logins(), "prefix.dev")
+  local_mocked_bindings(pixi_auth_status = function() stop("no Pixi"))
+  expect_equal(logins(), character())
+})
+
+test_that("channel_access() finds a channel that refuses access", {
+  searched <- character()
+  local_mocked_bindings(
+    project_channels = function(project) {
+      c(
+        "conda-forge",
+        "https://repo.prefix.dev/open",
+        "https://repo.prefix.dev/private"
+      )
+    },
+    run_pixi = function(args, ...) {
+      searched <<- c(searched, args[3])
+      stderr <- if (grepl("private", args[3])) {
+        "HTTP status client error (401 Unauthorized) for url (https://repo.prefix.dev/private/noarch/repodata.json)"
+      } else {
+        "No packages found"
+      }
+      stop(structure(
+        list(message = "failed", call = NULL, stderr = stderr),
+        class = c("rpix_error_pixi", "error", "condition")
+      ))
+    }
+  )
+  expect_equal(
+    channel_access("/project"),
+    list(status = "401", host = "repo.prefix.dev")
+  )
+  # Only the channels given as URLs
+  expect_equal(
+    searched,
+    c("https://repo.prefix.dev/open", "https://repo.prefix.dev/private")
+  )
+
+  local_mocked_bindings(project_channels = function(project) "conda-forge")
+  expect_null(channel_access("/project"))
+  local_mocked_bindings(
+    project_channels = function(project) "https://repo.prefix.dev/open",
+    run_pixi = function(...) invisible(list(status = 0))
+  )
+  expect_null(channel_access("/project"))
+})

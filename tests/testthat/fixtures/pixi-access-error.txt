@@ -1,0 +1,4 @@
+Error:   × failed to solve requirements of environment 'default' for platform 'osx-
+  │ 64'
+  ╰─▶   × HTTP status client error (401 Unauthorized) for url
+        │ (http://127.0.0.1:8765/private/osx-64/repodata_shards.msgpack.zst)

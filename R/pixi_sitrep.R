@@ -6,6 +6,8 @@
 #'
 #' * Pixi: where it is, and its version.
 #' * The project, and whether `pixi.lock` is up to date with `pixi.toml`.
+#' * Private channels that refuse access, and the hosts Pixi has logins for
+#'   (see [pixi_auth_login()]).
 #' * Whether the running R is the R of the project's environment, and whether
 #'   the environment is activated.
 #' * Libraries and loaded packages from outside the project, such as your
@@ -51,6 +53,18 @@ pixi_sitrep <- function(path = NULL) {
       hint("Run {.code pixi install}.")
     } else if (isTRUE(report$lock_up_to_date)) {
       cli::cli_alert_success("{.file pixi.lock} is up to date.")
+    }
+    denied <- report$access_denied
+    if (!is.null(denied)) {
+      cli::cli_alert_danger(
+        "{.val {denied$host}} refused access ({denied$status}), so Pixi can't install packages from it."
+      )
+      hint(
+        "Log in with {.code pixi_auth_login(\"{denied$host}\")}."
+      )
+    }
+    if (length(report$logins) > 0) {
+      cli::cli_alert_info("Pixi has logins for {.val {report$logins}}.")
     }
   }
 
@@ -145,6 +159,9 @@ sitrep_data <- function(path = NULL) {
   }
 
   project <- find_project_root(path)
+  lock <- if (!is.null(project) && !is.null(pixi)) {
+    lock_up_to_date(project)
+  }
   environment <- pixi_r_location(r_home())
   in_project <- !is.null(environment) &&
     !is.null(project) &&
@@ -176,9 +193,10 @@ sitrep_data <- function(path = NULL) {
     pixi = pixi,
     pixi_version = pixi_version,
     project = project,
-    lock_up_to_date = if (!is.null(project) && !is.null(pixi)) {
-      lock_up_to_date(project)
-    },
+    lock_up_to_date = lock,
+    access_denied = attr(lock, "denied") %||%
+      if (!is.null(project) && !is.null(pixi)) channel_access(project),
+    logins = if (!is.null(pixi)) logins(),
     r_home = r_home(),
     r_version = as.character(getRversion()),
     environment = environment,
@@ -229,6 +247,8 @@ in_folder <- function(path, folder) {
 }
 
 # TRUE or FALSE, or NA if Pixi couldn't tell, e.g. offline
+# When a channel refused access, NA, with the status and host as the
+# "denied" attribute
 lock_up_to_date <- function(project) {
   tryCatch(
     {
@@ -236,9 +256,42 @@ lock_up_to_date <- function(project) {
       TRUE
     },
     rpix_error_pixi = function(e) {
-      if (grepl("not up-to-date", e$stderr, fixed = TRUE)) FALSE else NA
+      if (grepl("not up-to-date", e$stderr, fixed = TRUE)) {
+        return(FALSE)
+      }
+      structure(NA, denied = access_denied(e$stderr))
     }
   )
+}
+
+# Whether Pixi can reach the project's channels given as URLs, which is how
+# private channels are given. A search for a package that doesn't exist finds
+# nothing on a channel Pixi can reach, and is refused on one it can't. Returns
+# the first refusal, or NULL.
+channel_access <- function(project) {
+  channels <- tryCatch(project_channels(project), error = function(e) NULL)
+  channels <- channels[grepl("^[a-z0-9+.-]+://", channels)]
+  for (channel in channels) {
+    denied <- tryCatch(
+      {
+        run_pixi(
+          c("search", "--channel", channel, "rpix-access-check"),
+          project = "none"
+        )
+        NULL
+      },
+      rpix_error_pixi = function(e) access_denied(e$stderr)
+    )
+    if (!is.null(denied)) {
+      return(denied)
+    }
+  }
+  NULL
+}
+
+# The hosts Pixi has credentials for
+logins <- function() {
+  tryCatch(pixi_auth_status()$host, error = function(e) character())
 }
 
 has_rprofile_block <- function(file) {

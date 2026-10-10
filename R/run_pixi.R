@@ -115,6 +115,27 @@ run_pixi <- function(
   ))
 }
 
+# Pixi's output as plain text: without colours, the error tree's
+# box-drawing characters and line breaks. Bytes rather than characters, so it
+# works in any locale.
+plain_pixi_output <- function(text) {
+  text <- gsub("\033\\[[0-9;]*m", "", text, useBytes = TRUE)
+  text <- gsub("[^ -~]+", " ", text, useBytes = TRUE)
+  gsub("[[:space:]]+", " ", text, useBytes = TRUE)
+}
+
+# When a channel refused access (401 or 403), the status and host. NULL for
+# other errors.
+access_denied <- function(text) {
+  text <- plain_pixi_output(text)
+  pattern <- "\\((401|403) [A-Za-z ]+\\) for url \\(?[a-z0-9+.-]+://([^/ )]+)"
+  match <- regmatches(text, regexec(pattern, text))[[1]]
+  if (length(match) == 0) {
+    return(NULL)
+  }
+  list(status = match[2], host = match[3])
+}
+
 # Replace secrets in text with <hidden>
 hide_secrets <- function(text, secrets) {
   for (secret in secrets[nzchar(secrets)]) {
@@ -271,13 +292,21 @@ abort_pixi_failure <- function(command, result, echoed, call) {
   } else {
     details <- pixi_output_bullets(result)
   }
+  denied <- access_denied(paste(result$stderr, result$stdout))
+  if (!is.null(denied)) {
+    details <- c(
+      details,
+      "i" = "{.val {denied$host}} refused access ({denied$status}), so Pixi probably needs credentials for it.",
+      "i" = "Log in with {.code pixi_auth_login(\"{denied$host}\")}, and see {.fn pixi_auth_login} for other ways to log in."
+    )
+  }
 
   cli::cli_abort(
     c(
       "{.code {command}} failed with exit status {result$status}.",
       details
     ),
-    class = "rpix_error_pixi",
+    class = c(if (!is.null(denied)) "rpix_error_access", "rpix_error_pixi"),
     status = result$status,
     stdout = result$stdout,
     stderr = result$stderr,
