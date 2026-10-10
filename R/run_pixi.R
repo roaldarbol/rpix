@@ -178,7 +178,7 @@ pixi_binary <- function(call = parent.frame()) {
   cli::cli_abort(
     c(
       "Could not find Pixi.",
-      "i" = "Install it from {.url https://pixi.prefix.dev}.",
+      "i" = "Install it with {.code install_pixi()}, or as {.url https://pixi.prefix.dev/latest/installation/} describes.",
       "i" = "If it's installed somewhere unusual, set {.code options(rpix.pixi_path = \"/path/to/pixi\")}."
     ),
     class = "rpix_error_pixi_not_found",

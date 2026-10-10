@@ -31,14 +31,15 @@ project runs the same on every computer.
 
 ## Installation
 
-First, [install Pixi](https://pixi.prefix.dev/latest/installation/).
-Then install rpix in the R you normally use:
+Install rpix in the R you normally use, then let it install
+[Pixi](https://pixi.prefix.dev/latest/installation/):
 
 ``` r
 install.packages(
   "rpix",
   repos = c("https://roaldarbol.r-universe.dev", "https://cloud.r-project.org")
 )
+rpix::install_pixi()
 ```
 
 ## Example

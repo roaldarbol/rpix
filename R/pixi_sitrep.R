@@ -33,7 +33,7 @@ pixi_sitrep <- function(path = NULL) {
   cli::cli_h2("Pixi")
   if (is.null(report[["pixi"]])) {
     cli::cli_alert_danger("Pixi isn't installed, or rpix can't find it.")
-    hint("Install it from {.url https://pixi.prefix.dev}.")
+    hint("Install it with {.code install_pixi()}.")
   } else {
     cli::cli_alert_success(
       "{report$pixi_version} at {.path {report[['pixi']]}}"
