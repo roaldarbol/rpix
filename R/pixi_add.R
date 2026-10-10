@@ -58,6 +58,7 @@ pixi_add <- function(
   path = NULL,
   dry_run = FALSE
 ) {
+  caller <- environment()
   if (!is.null(versions)) {
     if (!length(versions) %in% c(1, length(packages))) {
       cli::cli_abort(
@@ -143,6 +144,14 @@ pixi_add <- function(
         )
       }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
+        missing <- if (is.null(channel)) missing_from_conda_forge(parsed)
+        if (length(missing) > 0) {
+          retry <- offer_cran_source(parsed, missing, call = caller)
+          return(structure(
+            list(packages = c(retry, github)),
+            class = "rpix_retry"
+          ))
+        }
         cli::cli_abort(
           c(
             "Some packages couldn't be found.",
@@ -157,6 +166,14 @@ pixi_add <- function(
     }
   )
 
+  if (inherits(result, "rpix_retry")) {
+    return(pixi_add(
+      result$packages,
+      feature = feature,
+      platform = platform,
+      path = path
+    ))
+  }
   if (length(github) > 0) {
     add_github_packages(
       github,
@@ -210,4 +227,75 @@ project_channels <- function(path = NULL) {
   channels <- envs$channels[[which(envs$name == "default")]]
   # Channels can be listed as URLs, so compare on names as well
   unique(c(channels, basename(sub("/+$", "", channels))))
+}
+
+# The CRAN packages that aren't on conda-forge, by row
+missing_from_conda_forge <- function(parsed) {
+  cran <- which(parsed$source == "cran")
+  cran[!vapply(parsed$name[cran], on_channel, logical(1), "conda-forge")]
+}
+
+# Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
+# mirror, which has a tag for every version. Returns the packages to add
+# instead, or fails.
+offer_cran_source <- function(parsed, missing, call = parent.frame()) {
+  specs <- package_references(parsed)
+  names <- package_r_names(parsed)[missing]
+  constraints <- parsed$constraint[missing]
+  exact <- grepl("^==", constraints)
+  # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3
+  refs <- ifelse(
+    exact,
+    paste0("@", gsub("_", "-", sub("^==", "", constraints), fixed = TRUE)),
+    ""
+  )
+  github <- paste0("github::cran/", names, refs)
+
+  dropped <- nzchar(constraints) & !exact
+  if (is_interactive()) {
+    cli::cli_alert_warning("{.pkg {names}} {?isn't/aren't} on conda-forge.")
+    if (any(dropped)) {
+      cli::cli_alert_info(
+        "A version range doesn't apply to a build from source, so {.pkg {names[dropped]}} would be the latest version. Use {.code ==} for a particular one."
+      )
+    }
+    question <- paste0(
+      "Build ",
+      if (length(names) == 1) "it" else "them",
+      " from CRAN's source (github.com/cran) with Pixi instead?"
+    )
+    if (isTRUE(ask_yes_no(question))) {
+      return(c(specs[-missing], github))
+    }
+  }
+  # In an interactive session, it's already been said they aren't there
+  header <- if (is_interactive()) {
+    "Didn't add {.pkg {names}}."
+  } else {
+    "{.pkg {names}} {?isn't/aren't} on conda-forge."
+  }
+  cli::cli_abort(
+    c(
+      header,
+      "i" = "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code pixi_add({deparse(github)})}."
+    ),
+    class = "rpix_error_package_not_found",
+    call = call
+  )
+}
+
+# The packages as references pixi_add() takes, e.g. "cran::dplyr>=1.1"
+package_references <- function(parsed) {
+  names <- package_r_names(parsed)
+  names[parsed$source == "conda"] <- parsed$name[parsed$source == "conda"]
+  paste0(parsed$source, "::", names, parsed$constraint)
+}
+
+package_r_names <- function(parsed) {
+  base <- sub("^[A-Za-z]+::", "", parsed$input)
+  sub("[[:space:]=<>!~].*$", "", base)
+}
+
+ask_yes_no <- function(question) {
+  utils::askYesNo(question)
 }

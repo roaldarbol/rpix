@@ -191,3 +191,93 @@ test_that("not_built_for_r() reads Pixi's error", {
   )
   expect_null(not_built_for_r("No candidates were found for r-gdal *."))
 })
+
+# CRAN packages that aren't on conda-forge -------------------------------------
+
+local_not_on_conda_forge <- function(
+  missing,
+  answer = NULL,
+  env = parent.frame()
+) {
+  calls <- new.env()
+  calls$add <- list()
+  calls$asked <- character()
+  local_mocked_bindings(
+    run_pixi = function(args, ...) {
+      if (
+        args[1] == "add" &&
+          any(c(missing, paste0("r-", missing)) %in% sub("[=<>].*$", "", args))
+      ) {
+        stop(pixi_error("No candidates were found for r-something *."))
+      }
+      invisible(list(status = 0))
+    },
+    on_channel = function(name, channel) !sub("^r-", "", name) %in% missing,
+    project_channels = function(...) "conda-forge",
+    is_interactive = function() !is.null(answer),
+    ask_yes_no = function(question) {
+      calls$asked <- c(calls$asked, question)
+      answer
+    },
+    add_github_packages = function(packages, ...) calls$github <- packages,
+    .env = env
+  )
+  calls
+}
+
+test_that("pixi_add() offers to build CRAN packages that aren't on conda-forge", {
+  calls <- local_not_on_conda_forge("fortunes", answer = TRUE)
+
+  expect_snapshot(pixi_add(c("praise", "fortunes==1.5-4", "cowsay>=1")))
+  expect_equal(calls$github, c("github::cran/fortunes@1.5-4"))
+  expect_equal(
+    calls$asked,
+    "Build it from CRAN's source (github.com/cran) with Pixi instead?"
+  )
+})
+
+test_that("pixi_add() says how to build them when it can't ask, or the answer is no", {
+  local_not_on_conda_forge(c("fortunes", "cowsay"))
+  expect_snapshot(
+    pixi_add(c("praise", "fortunes==1.5-4", "cowsay>=1")),
+    error = TRUE
+  )
+
+  calls <- local_not_on_conda_forge(c("fortunes", "cowsay"), answer = FALSE)
+  expect_snapshot(
+    pixi_add(c("fortunes", "cowsay>=1")),
+    error = TRUE
+  )
+  expect_null(calls$github)
+})
+
+test_that("pixi_add() doesn't offer it for packages that aren't from CRAN", {
+  local_not_on_conda_forge("gdal-nope")
+  expect_error(
+    pixi_add("conda::gdal-nope"),
+    "couldn't be found",
+    class = "rpix_error_package_not_found"
+  )
+})
+
+test_that("package_references() writes packages as pixi_add() takes them", {
+  parsed <- parse_packages(c(
+    "dplyr>=1.1",
+    "bioc::DESeq2",
+    "conda::gdal",
+    "r-cli"
+  ))
+  expect_equal(
+    package_references(parsed),
+    c("cran::dplyr>=1.1", "bioc::DESeq2", "conda::gdal", "conda::r-cli")
+  )
+})
+
+test_that("is_interactive() and ask_yes_no() ask R", {
+  expect_equal(is_interactive(), interactive())
+  local_mocked_bindings(
+    askYesNo = function(question) question,
+    .package = "utils"
+  )
+  expect_equal(ask_yes_no("Really?"), "Really?")
+})
