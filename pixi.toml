@@ -11,6 +11,7 @@ r-askpass = ">=1.2.1,<2"
 r-cli = ">=3.6.6,<4"
 r-jsonlite = ">=2.0.0,<3"
 r-processx = ">=3.9.0,<4"
+r-rlang = ">=1.3.0,<2"
 conda-ecosystem-user-package-isolation = ">=1.0,<2"
 
 # Tools for developing rpix: documentation, tests, checks, coverage,

@@ -8,6 +8,10 @@
 
 - New, experimental `pixi_auth_login()`, `pixi_auth_logout()` and `pixi_auth_status()` log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (#93, #97). `pixi_auth_login()` asks for the token or password without showing it, and rpix hides it in every command and message it shows.
 
+## Bug fixes
+
+- rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (#85), projects set up with `use_pixi()` didn't get rlang, so every rpix error became "there is no package called 'rlang'".
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
@@ -106,4 +110,3 @@ rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R on
 - `search` allows to search dependencies, their versions and their own dependencies.
 
 # rpix 0.1.0
-
