@@ -59,154 +59,186 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
-<ul><li>The deprecated <code>add()</code> and <code>setup_pixi()</code> are removed. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code>.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>New, experimental <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code>, <code><a href="../reference/pixi_auth_login.html">pixi_auth_logout()</a></code> and <code><a href="../reference/pixi_auth_login.html">pixi_auth_status()</a></code> log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (<a href="https://github.com/roaldarbol/rpix/issues/93" class="external-link">#93</a>, <a href="https://github.com/roaldarbol/rpix/issues/97" class="external-link">#97</a>). <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code> asks for the token or password without showing it, and rpix hides it in every command and message it shows. When a channel refuses access, Pixi’s errors and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> say so and suggest logging in, and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists the hosts Pixi has logins for. A new guide covers private channels, CI and company networks.</li>
+<h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<ul><li><p><code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code>, <code><a href="../reference/pixi_auth_login.html">pixi_auth_logout()</a></code> and <code><a href="../reference/pixi_auth_login.html">pixi_auth_status()</a></code> log in to private conda channels, e.g. on prefix.dev, anaconda.org, Artifactory or S3 (experimental; <a href="https://github.com/roaldarbol/rpix/issues/93" class="external-link">#93</a>, <a href="https://github.com/roaldarbol/rpix/issues/97" class="external-link">#97</a>). <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code> asks for the token or password without showing it, and rpix shows <code>&lt;hidden&gt;</code> wherever it would appear.</p></li>
+<li><p>When a channel refuses access, rpix’s errors and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> say which host refused and suggest <code><a href="../reference/pixi_auth_login.html">pixi_auth_login()</a></code>, and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists the hosts Pixi has logins for (<a href="https://github.com/roaldarbol/rpix/issues/95" class="external-link">#95</a>).</p></li>
 <li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code> adds R packages from GitHub (experimental, <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">#96</a>), e.g. <code>pixi_add("github::user/repo")</code>, which Pixi builds from source with its R build backend, <code>pixi-build-r</code> (<a href="https://github.com/roaldarbol/rpix/issues/88" class="external-link">#88</a>). <code>@ref</code>, or <code>versions</code>, picks a branch, tag or commit; the dependencies come from conda-forge, and the build is pinned to the project’s R. CRAN packages that aren’t on conda-forge can be added from CRAN’s GitHub mirror, e.g. <code>pixi_add("github::cran/pkg@1.2.3")</code>. <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> removes them the same way.</li>
-<li>When <code><a href="../reference/pixi_add.html">pixi_add()</a></code> can’t find a CRAN package on conda-forge, it offers to build it from CRAN’s source with Pixi (experimental, <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">#96</a>), from CRAN’s GitHub mirror (<a href="https://github.com/roaldarbol/rpix/issues/89" class="external-link">#89</a>). An exact version (<code>"pkg==1.2-3"</code>) builds that version. Without a prompt, e.g. in a script, it says how: <code>pixi_add("github::cran/pkg")</code>. In a Pixi environment’s R, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> does the same, instead of pointing to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so packages stay in the project.</li>
+<p><code><a href="../reference/pixi_add.html">pixi_add()</a></code> adds R packages from GitHub, built from source by Pixi’s R build backend, <code>pixi-build-r</code> (experimental; <a href="https://github.com/roaldarbol/rpix/issues/88" class="external-link">#88</a>, <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">#96</a>):</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"github::user/repo"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"github::cran/praise"</span>, versions <span class="op">=</span> <span class="st">"1.0.0"</span><span class="op">)</span></span></code></pre></div>
+<p><code>@ref</code> or <code>versions</code> picks a branch, tag or commit. <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> removes them the same way.</p>
+</li>
+<li><p>When <code><a href="../reference/pixi_add.html">pixi_add()</a></code> can’t find a CRAN package on conda-forge, it offers to build it from CRAN’s GitHub mirror, or, in a script, says how (experimental; <a href="https://github.com/roaldarbol/rpix/issues/89" class="external-link">#89</a>, <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">#96</a>).</p></li>
+<li><p>New guide: “Private channels and company networks” (<a href="https://github.com/roaldarbol/rpix/issues/95" class="external-link">#95</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li>rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (<a href="https://github.com/roaldarbol/rpix/issues/85" class="external-link">#85</a>), projects set up with <code><a href="../reference/use_pixi.html">use_pixi()</a></code> didn’t get rlang, so every rpix error became “there is no package called ‘rlang’”.</li>
+<h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code> finds Bioconductor packages on bioconda without the <code>bioc::</code> prefix, e.g. <code>pixi_add("DESeq2")</code> or <code>pixi_add("DESeq2", channel = "bioconda")</code> (<a href="https://github.com/roaldarbol/rpix/issues/92" class="external-link">#92</a>).</li>
+<li>In a Pixi environment’s R, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> offers to build packages that aren’t on conda-forge from source, like <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, instead of pointing to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/91" class="external-link">#91</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="removed-development-version">Removed<a class="anchor" aria-label="anchor" href="#removed-development-version"></a></h3>
+<ul><li>
+<code>add()</code> and <code>setup_pixi()</code>, deprecated since 0.4.0 and 0.5.0. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/85" class="external-link">#85</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
+<ul><li>Errors in projects set up with <code><a href="../reference/use_pixi.html">use_pixi()</a></code> show their message again, rather than “there is no package called ‘rlang’” (<a href="https://github.com/roaldarbol/rpix/issues/98" class="external-link">#98</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.0" id="rpix-060">rpix 0.6.0<a class="anchor" aria-label="anchor" href="#rpix-060"></a></h2>
-<p>rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> from installing packages Pixi doesn’t know about.</p>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="rpix-060-2026-10-09">rpix 0.6.0 (2026-10-09)<a class="anchor" aria-label="anchor" href="#rpix-060-2026-10-09"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-0-6-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-0"></a></h3>
+<h3 id="added-0-6-0">Added<a class="anchor" aria-label="anchor" href="#added-0-6-0"></a></h3>
 <ul><li>
-<code>restart_rstudio_with_pixi()</code> is removed. Use <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> instead, or start RStudio with <code>pixi run rstudio</code> (<a href="https://github.com/roaldarbol/rpix/issues/32" class="external-link">#32</a>).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="several-environments-0-6-0">Several environments<a class="anchor" aria-label="anchor" href="#several-environments-0-6-0"></a></h3>
-<ul><li>New <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> moves your work to another environment’s R (<a href="https://github.com/roaldarbol/rpix/issues/32" class="external-link">#32</a>). In RStudio it starts a new RStudio with that R. In Positron it looks for interpreters again, so new environments are listed, and opens the interpreter picker. In VS Code it points the R extension at that R.</li>
-<li>New <code><a href="../reference/pixi_r.html">pixi_r()</a></code> runs a function in another environment’s R, e.g. one with another version of R, and returns its result (<a href="https://github.com/roaldarbol/rpix/issues/33" class="external-link">#33</a>).</li>
-<li>New <code><a href="../reference/pixi_check_matrix.html">pixi_check_matrix()</a></code> runs a package’s tests or <code>R CMD check</code> in several environments, one at a time or all at once, and shows the results side by side. <code><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix()</a></code> adds an environment for each version of R you want to check (<a href="https://github.com/roaldarbol/rpix/issues/34" class="external-link">#34</a>).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="moving-to-pixi-0-6-0">Moving to Pixi<a class="anchor" aria-label="anchor" href="#moving-to-pixi-0-6-0"></a></h3>
-<ul><li>New <code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code> moves a project from renv: it adds the packages in <code>renv.lock</code>, at least at their locked versions or exactly, and turns renv off. It adds only the packages nothing else in the lock file needs, and lists those it can’t add, e.g. from GitHub (<a href="https://github.com/roaldarbol/rpix/issues/37" class="external-link">#37</a>).</li>
-<li>New <code><a href="../reference/pixi_import_description.html">pixi_import_description()</a></code> adds a package’s dependencies from its <code>DESCRIPTION</code>: <code>Depends</code> and <code>Imports</code> to the project, and <code>Suggests</code> to a <code>test</code> environment. It finds Bioconductor packages on bioconda, and lists the packages that aren’t on conda-forge or bioconda (<a href="https://github.com/roaldarbol/rpix/issues/36" class="external-link">#36</a>).</li>
-<li>New <code><a href="../reference/pixi_scan.html">pixi_scan()</a></code> finds the packages the project’s code uses, in <code>.R</code> files, the R chunks of <code>.qmd</code> and <code>.Rmd</code> documents, and Pixi tasks. It lists those missing from <code>pixi.toml</code>, adds them with <code>add = TRUE</code>, and lists packages the code never uses (<a href="https://github.com/roaldarbol/rpix/issues/38" class="external-link">#38</a>).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="installing-packages-0-6-0">Installing packages<a class="anchor" aria-label="anchor" href="#installing-packages-0-6-0"></a></h3>
-<ul><li>In a Pixi environment’s R, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> adds packages with <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, so they’re recorded in <code>pixi.toml</code> and <code>pixi.lock</code> (<a href="https://github.com/roaldarbol/rpix/issues/3" class="external-link">#3</a>). Packages that aren’t on conda-forge or bioconda, and arguments Pixi can’t use, such as <code>lib</code>, give an error that points to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>. <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> sets this up; turn it off with <code>options(rpix.install_packages = FALSE)</code>.</li>
+<code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> moves your work to another environment’s R (<a href="https://github.com/roaldarbol/rpix/issues/32" class="external-link">#32</a>). In RStudio it starts a new RStudio with that R; in Positron it looks for interpreters again and opens the interpreter picker; in VS Code it points the R extension at that R.</li>
 <li>
-<code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists packages in the environment that Pixi didn’t install, so <code>pixi.toml</code> doesn’t record them (<a href="https://github.com/roaldarbol/rpix/issues/3" class="external-link">#3</a>).</li>
+<code><a href="../reference/pixi_r.html">pixi_r()</a></code> runs a function in another environment’s R, e.g. one with another version of R, and returns its result (<a href="https://github.com/roaldarbol/rpix/issues/33" class="external-link">#33</a>).</li>
 <li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code> explains when a package isn’t built for the project’s version of R yet, which happens for a while after conda-forge releases a new R, and suggests the newest R it’s built for (<a href="https://github.com/roaldarbol/rpix/issues/80" class="external-link">#80</a>).</li>
+<code><a href="../reference/pixi_check_matrix.html">pixi_check_matrix()</a></code> runs a package’s tests or <code>R CMD check</code> in several environments, one at a time or all at once, and shows the results side by side. <code><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix()</a></code> adds an environment for each version of R (<a href="https://github.com/roaldarbol/rpix/issues/34" class="external-link">#34</a>).</li>
 <li>
-<code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds R together with the packages it needs, so Pixi picks the newest R they’re built for. Just after conda-forge released a new R, it picked that R, and adding packages failed until they were rebuilt for it (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+<code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code> moves a project from renv: it adds the packages in <code>renv.lock</code> that nothing else in it needs, at least at their locked versions or exactly, lists those it can’t add, and turns renv off (<a href="https://github.com/roaldarbol/rpix/issues/37" class="external-link">#37</a>).</li>
+<li>
+<code><a href="../reference/pixi_import_description.html">pixi_import_description()</a></code> adds a package’s <code>Depends</code> and <code>Imports</code> to the project, and its <code>Suggests</code> to a <code>test</code> environment, finding Bioconductor packages on bioconda (<a href="https://github.com/roaldarbol/rpix/issues/36" class="external-link">#36</a>).</li>
+<li>
+<code><a href="../reference/pixi_scan.html">pixi_scan()</a></code> finds the packages the project’s code uses, in <code>.R</code> files, the R chunks of <code>.qmd</code> and <code>.Rmd</code> documents and Pixi tasks, lists those missing from <code>pixi.toml</code> (and adds them with <code>add = TRUE</code>), and lists packages the code never uses (<a href="https://github.com/roaldarbol/rpix/issues/38" class="external-link">#38</a>).</li>
+<li>
+<code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code>, <code><a href="../reference/pixi_tasks.html">pixi_run()</a></code>, <code><a href="../reference/pixi_tasks.html">pixi_add_task()</a></code> and <code><a href="../reference/pixi_tasks.html">pixi_remove_task()</a></code> work with the project’s Pixi tasks (<a href="https://github.com/roaldarbol/rpix/issues/35" class="external-link">#35</a>).</li>
+<li>In a Pixi environment’s R, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> adds packages with <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, so they’re recorded in <code>pixi.toml</code> and <code>pixi.lock</code> (<a href="https://github.com/roaldarbol/rpix/issues/3" class="external-link">#3</a>). Turn it off with <code>options(rpix.install_packages = FALSE)</code>.</li>
+<li>
+<code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists packages in the environment that Pixi didn’t install (<a href="https://github.com/roaldarbol/rpix/issues/3" class="external-link">#3</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="tasks-0-6-0">Tasks<a class="anchor" aria-label="anchor" href="#tasks-0-6-0"></a></h3>
-<ul><li>New <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code>, <code><a href="../reference/pixi_tasks.html">pixi_run()</a></code>, <code><a href="../reference/pixi_tasks.html">pixi_add_task()</a></code> and <code><a href="../reference/pixi_tasks.html">pixi_remove_task()</a></code> work with the project’s Pixi tasks (<a href="https://github.com/roaldarbol/rpix/issues/35" class="external-link">#35</a>).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="other-changes-0-6-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-6-0"></a></h3>
+<h3 id="changed-0-6-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-6-0"></a></h3>
 <ul><li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code> explains when a package isn’t built for the project’s version of R yet, and suggests the newest R it’s built for (<a href="https://github.com/roaldarbol/rpix/issues/80" class="external-link">#80</a>).</li>
+<li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds R together with the packages it needs, so Pixi picks the newest R they’re built for (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+<li>
 <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code>, <code><a href="../reference/pixi_environments.html">pixi_environments()</a></code>, <code><a href="../reference/pixi_info.html">pixi_list()</a></code> and <code><a href="../reference/pixi_info.html">pixi_info()</a></code> print their results in a readable form (<a href="https://github.com/roaldarbol/rpix/issues/67" class="external-link">#67</a>). They’re still data frames, or a list for <code><a href="../reference/pixi_info.html">pixi_info()</a></code>.</li>
-<li>Pixi’s output is no longer partly red. Pixi reports progress on stderr, which was shown in red; rpix now shows it in Pixi’s own colours.</li>
 <li>
-<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> replaces the <code>rstudio</code> task if it’s there, so it can be run again, e.g. after renaming the <code>.Rproj</code> file (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> replaces the <code>rstudio</code> task if it’s there, so it can be run again (<a href="https://github.com/roaldarbol/rpix/issues/72" class="external-link">#72</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="removed-0-6-0">Removed<a class="anchor" aria-label="anchor" href="#removed-0-6-0"></a></h3>
+<ul><li>
+<code>restart_rstudio_with_pixi()</code>. Use <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code>, or start RStudio with <code>pixi run rstudio</code> (<a href="https://github.com/roaldarbol/rpix/issues/32" class="external-link">#32</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-6-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-6-0"></a></h3>
+<ul><li>Pixi’s output is shown in Pixi’s own colours, rather than partly red (<a href="https://github.com/roaldarbol/rpix/issues/68" class="external-link">#68</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.0" id="rpix-050">rpix 0.5.0<a class="anchor" aria-label="anchor" href="#rpix-050"></a></h2>
-<p>rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R only uses the project’s packages.</p>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="rpix-050-2026-10-08">rpix 0.5.0 (2026-10-08)<a class="anchor" aria-label="anchor" href="#rpix-050-2026-10-08"></a></h2>
 <div class="section level3">
-<h3 id="setting-up-a-project-0-5-0">Setting up a project<a class="anchor" aria-label="anchor" href="#setting-up-a-project-0-5-0"></a></h3>
-<ul><li>New <code><a href="../reference/use_pixi.html">use_pixi()</a></code> replaces <code>setup_pixi()</code>, which is deprecated (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>). Its <code>ide</code> argument sets the project up for an IDE, with the new <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> and <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/27" class="external-link">#27</a>):
+<h3 id="added-0-5-0">Added<a class="anchor" aria-label="anchor" href="#added-0-5-0"></a></h3>
 <ul><li>
-<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> adds an <code>rstudio</code> task for each of the project’s platforms, so <code>pixi run rstudio</code> starts a new RStudio with the environment’s R, in the project.</li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> sets a project up, with R, rpix and its dependencies (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>). Its <code>ide</code> argument sets the project up for an IDE (<a href="https://github.com/roaldarbol/rpix/issues/27" class="external-link">#27</a>):
+<ul><li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code> adds an <code>rstudio</code> task, so <code>pixi run rstudio</code> starts a new RStudio with the environment’s R, in the project.</li>
 <li>
-<code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> turns on Positron’s discovery of R in Pixi environments. Positron then activates the environment itself when it starts that R.</li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> turns on Positron’s discovery of R in Pixi environments.</li>
 <li>
-<code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> adds languageserver to the environment, and points the R extension for VS Code and VSCodium at the environment’s R.</li>
+<code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> adds languageserver, and points the R extension for VS Code and VSCodium at the environment’s R.</li>
 </ul></li>
-<li>New <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> activates the project’s Pixi environment in R that an IDE started directly, without Pixi (<a href="https://github.com/roaldarbol/rpix/issues/25" class="external-link">#25</a>). It sets the environment variables Pixi would set, and removes your personal library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds a block to the project’s <code>.Rprofile</code> that calls it, and removes the personal library before any package loads.</li>
 <li>
-<code><a href="../reference/use_pixi.html">use_pixi()</a></code> keeps your personal R library out of the environment’s R, by adding conda-forge’s <code>conda-ecosystem-user-package-isolation</code> to the project. conda-forge’s R otherwise puts the personal library first on <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>, so packages built for your usual R could be loaded, and crash it (conda-forge/r-base-feedstock#37).</li>
+<code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> activates the project’s Pixi environment in R that an IDE started directly (<a href="https://github.com/roaldarbol/rpix/issues/25" class="external-link">#25</a>). <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds a block to the project’s <code>.Rprofile</code> that calls it.</li>
+<li>
+<code><a href="../reference/pixi_environments.html">pixi_environments()</a></code>, <code><a href="../reference/pixi_environments.html">pixi_add_environment()</a></code> and <code><a href="../reference/pixi_environments.html">pixi_remove_environment()</a></code> manage a project’s environments, and <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> gain <code>feature</code> and <code>platform</code> arguments (<a href="https://github.com/roaldarbol/rpix/issues/30" class="external-link">#30</a>).</li>
+<li>
+<code><a href="../reference/pixi_add_channel.html">pixi_add_channel()</a></code>, <code><a href="../reference/pixi_add_channel.html">pixi_add_platform()</a></code>, <code><a href="../reference/pixi_install.html">pixi_install()</a></code>, <code><a href="../reference/pixi_install.html">pixi_update()</a></code>, <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> and <code><a href="../reference/pixi_install.html">pixi_lock()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/30" class="external-link">#30</a>).</li>
+<li>
+<code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> checks the project’s Pixi setup, and suggests fixes (<a href="https://github.com/roaldarbol/rpix/issues/28" class="external-link">#28</a>).</li>
+<li>
+<code><a href="../reference/pixi_info.html">pixi_info()</a></code>, <code><a href="../reference/pixi_info.html">pixi_list()</a></code> and <code><a href="../reference/pixi_info.html">pixi_tree()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/29" class="external-link">#29</a>). <code><a href="../reference/pixi_info.html">pixi_list()</a></code> returns an environment’s packages as a data frame, with each R package’s name as R spells it.</li>
+<li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code>, <code><a href="../reference/pixi_search.html">pixi_search()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code> gain a <code>path</code> argument.</li>
+<li>New guides: using rpix with an IDE, and several environments (<a href="https://github.com/roaldarbol/rpix/issues/31" class="external-link">#31</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="environments-0-5-0">Environments<a class="anchor" aria-label="anchor" href="#environments-0-5-0"></a></h3>
+<h3 id="changed-0-5-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-5-0"></a></h3>
 <ul><li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> gain <code>feature</code> and <code>platform</code> arguments, and new <code><a href="../reference/pixi_environments.html">pixi_environments()</a></code>, <code><a href="../reference/pixi_environments.html">pixi_add_environment()</a></code> and <code><a href="../reference/pixi_environments.html">pixi_remove_environment()</a></code> manage a project’s environments, e.g. one with another version of R (<a href="https://github.com/roaldarbol/rpix/issues/30" class="external-link">#30</a>).</li>
-<li>New <code><a href="../reference/pixi_add_channel.html">pixi_add_channel()</a></code> and <code><a href="../reference/pixi_add_channel.html">pixi_add_platform()</a></code>, and <code><a href="../reference/pixi_install.html">pixi_install()</a></code>, <code><a href="../reference/pixi_install.html">pixi_update()</a></code>, <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> and <code><a href="../reference/pixi_install.html">pixi_lock()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/30" class="external-link">#30</a>).</li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> keeps your personal R library out of the environment’s R, by adding conda-forge’s <code>conda-ecosystem-user-package-isolation</code> (conda-forge/r-base-feedstock#37).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="inspecting-a-project-0-5-0">Inspecting a project<a class="anchor" aria-label="anchor" href="#inspecting-a-project-0-5-0"></a></h3>
-<ul><li>New <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> checks the project’s Pixi setup, and suggests fixes for what’s wrong (<a href="https://github.com/roaldarbol/rpix/issues/28" class="external-link">#28</a>): Pixi itself, whether the lock file is up to date, whether R is the project’s Pixi R and is activated, libraries and packages from outside the project, the <code>.Rprofile</code> block, and whether the IDE is set up.</li>
-<li>New <code><a href="../reference/pixi_info.html">pixi_info()</a></code>, <code><a href="../reference/pixi_info.html">pixi_list()</a></code> and <code><a href="../reference/pixi_info.html">pixi_tree()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/29" class="external-link">#29</a>). <code><a href="../reference/pixi_info.html">pixi_list()</a></code> returns the packages in an environment as a data frame, with the name of each R package as R spells it (<code>Rcpp</code> for <code>r-rcpp</code>).</li>
-</ul></div>
-<div class="section level3">
-<h3 id="other-changes-0-5-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-5-0"></a></h3>
+<h3 id="deprecated-0-5-0">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated-0-5-0"></a></h3>
 <ul><li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code>, <code><a href="../reference/pixi_search.html">pixi_search()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code> gain a <code>path</code> argument, like the other functions, to work on a project other than the one in the working directory.</li>
-<li>The documentation covers the new workflow (<a href="https://github.com/roaldarbol/rpix/issues/31" class="external-link">#31</a>): the IDE guide has a section for each IDE, with daily use, other environments and troubleshooting; “Several environments” is a new guide; Get started covers rendering Quarto documents and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code>; and a contributing guide describes rpix’s own development environment.</li>
+<code>setup_pixi()</code>. Use <code><a href="../reference/use_pixi.html">use_pixi()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/26" class="external-link">#26</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0" id="rpix-040">rpix 0.4.0<a class="anchor" aria-label="anchor" href="#rpix-040"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="rpix-040-2026-10-08">rpix 0.4.0 (2026-10-08)<a class="anchor" aria-label="anchor" href="#rpix-040-2026-10-08"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
-<ul><li>Exported functions now follow one naming scheme (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>): functions that run a Pixi command are called <code>pixi_&lt;command&gt;()</code>.
-<ul><li>
-<code>add()</code> is now <code><a href="../reference/pixi_add.html">pixi_add()</a></code>. <code>add()</code> still works for now, with a deprecation warning.</li>
+<h3 id="added-0-4-0">Added<a class="anchor" aria-label="anchor" href="#added-0-4-0"></a></h3>
+<ul><li>R package names are translated to conda names (<a href="https://github.com/roaldarbol/rpix/issues/21" class="external-link">#21</a>): <code>"Rcpp"</code> becomes <code>r-rcpp</code>, <code>"bioc::DESeq2"</code> a Bioconductor package from bioconda (<a href="https://github.com/roaldarbol/rpix/issues/17" class="external-link">#17</a>), and <code>"conda::gdal"</code> a conda package that isn’t an R package.</li>
 <li>
-<code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>. The old names were removed rather than deprecated, because they masked <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">base::remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">base::search()</a></code> whenever rpix was attached.</li>
-<li>
-<code>pixi_to_path()</code> is removed. rpix finds Pixi itself.</li>
-</ul></li>
-<li>rpix no longer points a running R at a Pixi environment’s library (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). R mixed with packages built for a different R could crash (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>). Work in R started by Pixi instead, e.g. with <code>pixi run R</code>.
-<ul><li>
-<code>setup_pixi()</code> now only sets up the project: it creates <code>pixi.toml</code> if needed, adds R (<code>r_version</code> picks the version), and installs rpix into the environment, with its dependencies from conda-forge. Its <code>add_to_rprofile</code> and <code>global</code> arguments are gone.</li>
-<li>
-<code>setup_pixi()</code> removes the “Pixi R library setup” block that earlier versions added to the project’s <code>.Rprofile</code>, and warns if there’s one in <code>~/.Rprofile</code>.</li>
-<li>
-<code>reset_r_libraries()</code> is removed.</li>
-</ul></li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code> takes version constraints inline (<code>"dplyr&gt;=1.1"</code>), and one per package in <code>versions</code>.</li>
+<li>New guides: getting started, finding packages, coming from renv, sharing projects, how rpix works and troubleshooting (<a href="https://github.com/roaldarbol/rpix/issues/48" class="external-link">#48</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-0-4-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-4-0"></a></h3>
-<ul><li>All Pixi commands now go through a single internal runner built on <em>processx</em> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Arguments are passed without shell quoting, commands work from any subfolder of a project (<code>--manifest-path</code>), Pixi failures become R errors, and Pixi is found even if it isn’t on the <code>PATH</code> (set <code>options(rpix.pixi_path = ...)</code> for unusual installs).</li>
+<h3 id="changed-0-4-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-4-0"></a></h3>
+<ul><li>Functions that run a Pixi command are called <code>pixi_&lt;command&gt;()</code> (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>). <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> are now <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code>.</li>
+<li>rpix no longer points a running R at a Pixi environment’s library, which could crash R (<a href="https://github.com/roaldarbol/rpix/issues/14" class="external-link">#14</a>, <a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>). Work in R started by Pixi instead, e.g. with <code>pixi run R</code>.</li>
 <li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code> with <code>dry_run = TRUE</code> now return the command invisibly.</li>
-<li>R package names are now translated to conda names properly (<a href="https://github.com/roaldarbol/rpix/issues/21" class="external-link">#21</a>): names are lowercased (<code>"Rcpp"</code> becomes <code>r-rcpp</code>), and a pak-like prefix says where a package comes from: <code>"bioc::DESeq2"</code> for Bioconductor packages from bioconda (<a href="https://github.com/roaldarbol/rpix/issues/17" class="external-link">#17</a>), and <code>"conda::gdal"</code> for conda packages that aren’t R packages. Names with <code>-</code> or <code>_</code> are used as is.</li>
-<li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code> accepts version constraints inline (<code>"dplyr&gt;=1.1"</code>) and one constraint per package in <code>versions</code>.</li>
-<li>
-<code>pixi_add(channel = )</code> works again: Pixi has no <code>--channel</code> flag for <code>pixi add</code>, so the channel is now added to the project and used in the package spec. The same happens automatically for bioconda.</li>
+<code>setup_pixi()</code> only sets up the project: it creates <code>pixi.toml</code>, adds R (<code>r_version</code> picks the version) and installs rpix. It removes the “Pixi R library setup” block from the project’s <code>.Rprofile</code>, and warns about one in <code>~/.Rprofile</code>.</li>
+<li>Pixi commands work from any subfolder of a project, Pixi’s failures become R errors, and Pixi is found even if it isn’t on the <code>PATH</code> (<a href="https://github.com/roaldarbol/rpix/issues/19" class="external-link">#19</a>). Set <code>options(rpix.pixi_path = )</code> for unusual installs.</li>
+<li>With <code>dry_run = TRUE</code>, <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code> return the command invisibly.</li>
 <li>
 <code><a href="../reference/pixi_add.html">pixi_add()</a></code> suggests <code>bioc::</code> and <code>conda::</code> when a package can’t be found.</li>
-<li>The documentation is restructured (<a href="https://github.com/roaldarbol/rpix/issues/48" class="external-link">#48</a>): a walk-through in Get started, guides to finding packages, coming from renv, sharing projects and using an IDE, and pages on how rpix works and troubleshooting.</li>
-<li>Added tests.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="deprecated-0-4-0">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated-0-4-0"></a></h3>
+<ul><li>
+<code>add()</code>. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="removed-0-4-0">Removed<a class="anchor" aria-label="anchor" href="#removed-0-4-0"></a></h3>
+<ul><li>
+<code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code> and <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>, which masked the base functions. Use <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="../reference/pixi_search.html">pixi_search()</a></code> (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>).</li>
+<li>
+<code>pixi_to_path()</code>. rpix finds Pixi itself (<a href="https://github.com/roaldarbol/rpix/issues/20" class="external-link">#20</a>).</li>
+<li>
+<code>reset_r_libraries()</code>, and <code>setup_pixi()</code>’s <code>add_to_rprofile</code> and <code>global</code> arguments (<a href="https://github.com/roaldarbol/rpix/issues/22" class="external-link">#22</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixed-0-4-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-4-0"></a></h3>
+<ul><li>
+<code>pixi_add(channel = )</code> adds the channel to the project and installs from it.</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.0" id="rpix-030">rpix 0.3.0<a class="anchor" aria-label="anchor" href="#rpix-030"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="rpix-030-2025-06-16">rpix 0.3.0 (2025-06-16)<a class="anchor" aria-label="anchor" href="#rpix-030-2025-06-16"></a></h2>
+<div class="section level3">
+<h3 id="added-0-3-0">Added<a class="anchor" aria-label="anchor" href="#added-0-3-0"></a></h3>
 <ul><li>
-<code>restart_rstudio_with_pixi</code> has been written to facilitate easier selection of the correct R version</li>
-<li>
-<code>setup_pixi</code> now installs <em>rpix</em> from CRAN into the pixi library. It’s a hacky solution until it’s on conda.</li>
+<code>restart_rstudio_with_pixi()</code> restarts RStudio with the project’s R.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="changed-0-3-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-3-0"></a></h3>
+<ul><li>
+<code>setup_pixi()</code> installs rpix from CRAN into the Pixi environment.</li>
+</ul></div>
+</div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="rpix-020">rpix 0.2.0<a class="anchor" aria-label="anchor" href="#rpix-020"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="rpix-020-2025-05-17">rpix 0.2.0 (2025-05-17)<a class="anchor" aria-label="anchor" href="#rpix-020-2025-05-17"></a></h2>
+<div class="section level3">
+<h3 id="added-0-2-0">Added<a class="anchor" aria-label="anchor" href="#added-0-2-0"></a></h3>
 <ul><li>
-<code>add</code> can now add multiple packages simultaneously</li>
+<code>setup_pixi()</code> sets up a Pixi project from R.</li>
 <li>
-<code>dry_run</code> parameter added to multiple functions to allow inspections of pixi commands</li>
+<code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> searches for packages, their versions and their dependencies.</li>
 <li>
-<code>setup_pixi</code> command to setup a pixi project from within R. Still very alpha, expect to break.</li>
-<li>
-<code>search</code> allows to search dependencies, their versions and their own dependencies.</li>
+<code>dry_run</code> shows the Pixi command without running it.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="changed-0-2-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-2-0"></a></h3>
+<ul><li>
+<code>add()</code> adds several packages at once.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="rpix-010">rpix 0.1.0<a class="anchor" aria-label="anchor" href="#rpix-010"></a></h2>
 </div>

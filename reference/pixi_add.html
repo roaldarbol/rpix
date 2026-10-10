@@ -5,7 +5,9 @@ R package names are translated to conda names: &quot;dplyr&quot; becomes r-dplyr
 and &quot;Rcpp&quot; becomes r-rcpp (conda names are lowercase). Use a prefix to
 say where a package comes from:
 &quot;bioc::DESeq2&quot;: a Bioconductor package (bioconductor-deseq2 from the
-bioconda channel, which is added to the project if needed).
+bioconda channel, which is added to the project if needed). Without the
+prefix, a package that isn't on conda-forge is looked for on bioconda
+too, so &quot;DESeq2&quot; works as well.
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
@@ -26,7 +28,9 @@ R package names are translated to conda names: &quot;dplyr&quot; becomes r-dplyr
 and &quot;Rcpp&quot; becomes r-rcpp (conda names are lowercase). Use a prefix to
 say where a package comes from:
 &quot;bioc::DESeq2&quot;: a Bioconductor package (bioconductor-deseq2 from the
-bioconda channel, which is added to the project if needed).
+bioconda channel, which is added to the project if needed). Without the
+prefix, a package that isn't on conda-forge is looked for on bioconda
+too, so &quot;DESeq2&quot; works as well.
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
@@ -105,7 +109,9 @@ they can be solved together with the rest of the project's dependencies.</p>
 <p>R package names are translated to conda names: <code>"dplyr"</code> becomes <code>r-dplyr</code>
 and <code>"Rcpp"</code> becomes <code>r-rcpp</code> (conda names are lowercase). Use a prefix to
 say where a package comes from:</p><ul><li><p><code>"bioc::DESeq2"</code>: a Bioconductor package (<code>bioconductor-deseq2</code> from the
-bioconda channel, which is added to the project if needed).</p></li>
+bioconda channel, which is added to the project if needed). Without the
+prefix, a package that isn't on conda-forge is looked for on bioconda
+too, so <code>"DESeq2"</code> works as well.</p></li>
 <li><p><code>"conda::gdal"</code>: a conda package that isn't an R package, used as is.
 Names containing <code>-</code> or <code>_</code>, such as <code>"c-compiler"</code>, are also used as is.</p></li>
 <li><p><code>"cran::dplyr"</code>: same as <code>"dplyr"</code>.</p></li>

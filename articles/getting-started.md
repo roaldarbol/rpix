@@ -105,8 +105,9 @@ Then use them as usual:
 library(dplyr)
 ```
 
-Bioconductor packages take a `bioc::` prefix, and conda packages that
-aren’t R packages take `conda::`. See [Finding
+Bioconductor packages are found on bioconda, or say so with a `bioc::`
+prefix; conda packages that aren’t R packages take `conda::`. See
+[Finding
 packages](https://roald-arboel.com/rpix/articles/finding-packages.md).
 
 To remove a package again:

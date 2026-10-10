@@ -17,9 +17,12 @@ names. rpix translates the names for you.
 
 - **CRAN packages** get an `r-` prefix and are lowercased, since conda
   package names are lowercase.
-- **Bioconductor packages** take a `bioc::` prefix. They come from the
-  bioconda channel, which rpix adds to the project the first time you
-  need it.
+- **Bioconductor packages** come from the bioconda channel, which rpix
+  adds to the project the first time you need it. When a package isn’t
+  on conda-forge,
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  looks for it on bioconda, so `pixi_add("DESeq2")` works. Use a
+  `bioc::` prefix to say so up front, e.g. when a name exists on both.
 - **Conda packages that aren’t R packages**, such as GDAL or Quarto,
   take a `conda::` prefix. Names containing `-` or `_` can’t be R
   package names, so they’re used as they are.
