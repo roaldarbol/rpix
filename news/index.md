@@ -41,6 +41,19 @@
   e.g. `pixi_add("github::cran/pkg@1.2.3")`.
   [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
   removes them the same way.
+- When
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  can’t find a CRAN package on conda-forge, it offers to build it from
+  CRAN’s source with Pixi (experimental,
+  [\#96](https://github.com/roaldarbol/rpix/issues/96)), from CRAN’s
+  GitHub mirror ([\#89](https://github.com/roaldarbol/rpix/issues/89)).
+  An exact version (`"pkg==1.2-3"`) builds that version. Without a
+  prompt, e.g. in a script, it says how: `pixi_add("github::cran/pkg")`.
+  In a Pixi environment’s R,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  does the same, instead of pointing to
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  so packages stay in the project.
 
 ### Bug fixes
 

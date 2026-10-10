@@ -98,7 +98,10 @@ e.g. `"github::user/mypackage@v1.2.0"`, or give it in `versions`, as
 `pixi_add("github::user/mypackage", versions = "v1.2.0")`. `pixi.lock`
 records the exact commit either way, so collaborators get the same code.
 CRAN packages are on GitHub too, in [CRAN’s
-mirror](https://github.com/cran), with a tag for every version:
+mirror](https://github.com/cran), with a tag for every version. When
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+can’t find a CRAN package on conda-forge, it offers to build it from
+there; or add it yourself:
 
 ``` r
 
