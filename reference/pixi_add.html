@@ -9,6 +9,15 @@ bioconda channel, which is added to the project if needed).
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
+&quot;github::user/repo&quot; (experimental): an R package on GitHub, which Pixi
+builds from source with its R build backend, pixi-build-r. Add @ref for a branch,
+tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
+the exact commit either way. rpix writes it into pixi.toml, turns on
+Pixi's pixi-build preview, and pins the build to the project's R. Its
+dependencies come from conda-forge. See
+https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
+change, e.g. to use pixi add once it can set a build backend; see
+https://github.com/roaldarbol/rpix/issues/96.
 
 
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/add/."><meta property="og:description" content="Add packages to the Pixi manifest and install them. Pixi only adds them if
@@ -21,6 +30,15 @@ bioconda channel, which is added to the project if needed).
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
+&quot;github::user/repo&quot; (experimental): an R package on GitHub, which Pixi
+builds from source with its R build backend, pixi-build-r. Add @ref for a branch,
+tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
+the exact commit either way. rpix writes it into pixi.toml, turns on
+Pixi's pixi-build preview, and pins the build to the project's R. Its
+dependencies come from conda-forge. See
+https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
+change, e.g. to use pixi add once it can set a build backend; see
+https://github.com/roaldarbol/rpix/issues/96.
 
 
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/add/."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
@@ -90,6 +108,15 @@ bioconda channel, which is added to the project if needed).</p></li>
 <li><p><code>"conda::gdal"</code>: a conda package that isn't an R package, used as is.
 Names containing <code>-</code> or <code>_</code>, such as <code>"c-compiler"</code>, are also used as is.</p></li>
 <li><p><code>"cran::dplyr"</code>: same as <code>"dplyr"</code>.</p></li>
+<li><p><code>"github::user/repo"</code> (experimental): an R package on GitHub, which Pixi
+builds from source with its R build backend, <code>pixi-build-r</code>. Add <code>@ref</code> for a branch,
+tag or commit, as in <code>"github::cran/praise@1.0.0"</code>; <code>pixi.lock</code> records
+the exact commit either way. rpix writes it into <code>pixi.toml</code>, turns on
+Pixi's <code>pixi-build</code> preview, and pins the build to the project's R. Its
+dependencies come from conda-forge. See
+<a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link">https://pixi.prefix.dev/latest/build/backends/pixi-build-r/</a>. This may
+change, e.g. to use <code>pixi add</code> once it can set a build backend; see
+<a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">https://github.com/roaldarbol/rpix/issues/96</a>.</p></li>
 </ul><p>For more information, see <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/add/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/add/</a>.</p>
     </div>
 
@@ -118,7 +145,8 @@ in <code>"dplyr&gt;=1.1"</code>.</p></dd>
 <dt id="arg-versions">versions<a class="anchor" aria-label="anchor" href="#arg-versions"></a></dt>
 <dd><p>Optional. Version constraints, either one for all packages
 or one per package (use <code>NA</code> for no constraint). A version without an
-operator, such as <code>"1.1"</code>, means <code>1.1.*</code>.</p></dd>
+operator, such as <code>"1.1"</code>, means <code>1.1.*</code>. For a package from GitHub, it's
+a branch, tag or commit instead, as with <code>@ref</code>.</p></dd>
 
 
 <dt id="arg-channel">channel<a class="anchor" aria-label="anchor" href="#arg-channel"></a></dt>

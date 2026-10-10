@@ -17,6 +17,17 @@ a prefix to say where a package comes from:
 
 - `"cran::dplyr"`: same as `"dplyr"`.
 
+- `"github::user/repo"` (experimental): an R package on GitHub, which
+  Pixi builds from source with its R build backend, `pixi-build-r`. Add
+  `@ref` for a branch, tag or commit, as in
+  `"github::cran/praise@1.0.0"`; `pixi.lock` records the exact commit
+  either way. rpix writes it into `pixi.toml`, turns on Pixi's
+  `pixi-build` preview, and pins the build to the project's R. Its
+  dependencies come from conda-forge. See
+  <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This
+  may change, e.g. to use `pixi add` once it can set a build backend;
+  see <https://github.com/roaldarbol/rpix/issues/96>.
+
 For more information, see
 <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 
@@ -45,7 +56,8 @@ pixi_add(
 
   Optional. Version constraints, either one for all packages or one per
   package (use `NA` for no constraint). A version without an operator,
-  such as `"1.1"`, means `1.1.*`.
+  such as `"1.1"`, means `1.1.*`. For a package from GitHub, it's a
+  branch, tag or commit instead, as with `@ref`.
 
 - channel:
 
