@@ -40,13 +40,17 @@ install_pixi <- function(version = NULL, update_path = TRUE, force = FALSE) {
 
   home <- Sys.getenv("PIXI_HOME", file.path(home_dir(), ".pixi"))
   if (is_interactive()) {
-    question <- paste0(
-      "Install Pixi into ",
-      file.path(home, "bin"),
-      if (update_path) ", and add it to your shell's PATH",
-      "?"
-    )
-    if (!isTRUE(ask_yes_no(question))) {
+    bin <- file.path(home, "bin")
+    cli::cli_alert_info("Pixi's official installer will:")
+    cli::cli_bullets(c(
+      " " = "{cli::symbol$bullet} put Pixi in {.path {bin}}",
+      if (update_path) {
+        c(
+          " " = "{cli::symbol$bullet} add it to your shell's {.envvar PATH}, so {.code pixi} works in a terminal"
+        )
+      }
+    ))
+    if (!isTRUE(ask_yes_no("Would you like to install Pixi?"))) {
       cli::cli_abort(
         "Cancelled: Pixi wasn't installed.",
         class = "rpix_cancelled",

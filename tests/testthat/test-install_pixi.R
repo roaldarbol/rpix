@@ -55,10 +55,7 @@ test_that("install_pixi() asks, then runs Pixi's installer", {
   calls <- local_install_pixi()
   expect_snapshot(path <- install_pixi())
   expect_equal(path, "/home/me/.pixi/bin/pixi")
-  expect_equal(
-    calls$asked,
-    "Install Pixi into /home/me/.pixi/bin, and add it to your shell's PATH?"
-  )
+  expect_equal(calls$asked, "Would you like to install Pixi?")
   expect_equal(calls$url, "https://pixi.sh/install.sh")
   expect_equal(calls$env, "current")
 })
