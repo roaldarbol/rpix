@@ -21,6 +21,9 @@
 #' @param announce If `TRUE`, say which command runs before streaming its
 #'   output.
 #' @param dry_run If `TRUE`, show the command without running it.
+#' @param secrets Values, such as tokens, that are never shown: they're
+#'   replaced with `<hidden>` in the command rpix shows, in Pixi's output and
+#'   in errors.
 #' @param call The calling environment, used in error messages.
 #'
 #' @returns
@@ -38,6 +41,7 @@ run_pixi <- function(
   echo = FALSE,
   announce = echo,
   dry_run = FALSE,
+  secrets = NULL,
   call = parent.frame()
 ) {
   project <- match.arg(project)
@@ -65,7 +69,9 @@ run_pixi <- function(
 
   # Show the manifest relative to the working directory to keep the command
   # readable; it's equivalent when run from there
-  command <- format_command(add_manifest_arg(args, display_path(manifest)))
+  shown <- args
+  shown[shown %in% secrets] <- "<hidden>"
+  command <- format_command(add_manifest_arg(shown, display_path(manifest)))
   args <- add_manifest_arg(args, manifest)
 
   if (isTRUE(dry_run)) {
@@ -80,7 +86,7 @@ run_pixi <- function(
   use_color <- echo && cli::num_ansi_colors() > 1
   # Pixi reports progress on stderr, which processx's echo turns red, so show
   # both streams as they are, and keep them apart in the result
-  show <- if (echo) function(x, process) cat(x)
+  show <- if (echo) function(x, process) cat(hide_secrets(x, secrets))
   result <- processx::run(
     pixi_binary(call = call),
     args,
@@ -89,6 +95,9 @@ run_pixi <- function(
     stderr_callback = show,
     env = pixi_env(if (use_color) "always" else "never")
   )
+
+  result$stdout <- hide_secrets(result$stdout, secrets)
+  result$stderr <- hide_secrets(result$stderr, secrets)
 
   if (result$status != 0) {
     abort_pixi_failure(command, result, echoed = echo, call = call)
@@ -104,6 +113,14 @@ run_pixi <- function(
     stdout = result$stdout,
     stderr = result$stderr
   ))
+}
+
+# Replace secrets in text with <hidden>
+hide_secrets <- function(text, secrets) {
+  for (secret in secrets[nzchar(secrets)]) {
+    text <- gsub(secret, "<hidden>", text, fixed = TRUE)
+  }
+  text
 }
 
 #' Locate the pixi executable
@@ -201,7 +218,7 @@ has_pixi_table <- function(pyproject) {
 #' Format pixi arguments as a copy-pasteable shell command
 #' @noRd
 format_command <- function(args) {
-  needs_quotes <- !grepl("^[A-Za-z0-9_./=:@+-]+$", args)
+  needs_quotes <- !grepl("^[A-Za-z0-9_./=:@+-]+$", args) & args != "<hidden>"
   args[needs_quotes] <- paste0(
     "\"",
     gsub("\"", "\\\\\"", args[needs_quotes]),

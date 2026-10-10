@@ -287,3 +287,30 @@ test_that("Pixi doesn't get the variables R sets for itself", {
   expect_equal(env[["RPIX_TEST"]], "yes")
   expect_equal(env[["PIXI_COLOR"]], "never")
 })
+
+test_that("secrets are hidden in commands, output and errors", {
+  expect_equal(hide_secrets("a s3cr3t b", c("s3cr3t", "")), "a <hidden> b")
+  expect_equal(hide_secrets("text", NULL), "text")
+
+  expect_snapshot(
+    run_pixi(
+      c("auth", "login", "x", "--token", "s3cr3t"),
+      project = "none",
+      dry_run = TRUE,
+      secrets = "s3cr3t"
+    )
+  )
+
+  skip_if_no_pixi()
+  err <- expect_error(
+    run_pixi(
+      c("definitely-not-a-command", "s3cr3t"),
+      project = "none",
+      secrets = "s3cr3t"
+    ),
+    class = "rpix_error_pixi"
+  )
+  expect_no_match(conditionMessage(err), "s3cr3t")
+  expect_no_match(err$stderr, "s3cr3t")
+  expect_match(conditionMessage(err), "<hidden>")
+})

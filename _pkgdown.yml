@@ -94,6 +94,10 @@ reference:
       - pixi_import_description
       - pixi_check_matrix
 
+  - title: "Private channels"
+    contents:
+      - pixi_auth_login
+
   - title: "Tasks"
     contents:
       - pixi_tasks
