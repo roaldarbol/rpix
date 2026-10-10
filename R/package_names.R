@@ -44,7 +44,7 @@ parse_package <- function(input, call) {
       cli::cli_abort(
         c(
           "Unknown source {.val {source}} in {.val {input}}.",
-          "i" = "Use {.code cran::}, {.code bioc::} or {.code conda::}, or the {.arg channel} argument for other conda channels."
+          "i" = "Use {.code cran::}, {.code bioc::}, {.code conda::} or {.code github::}, or the {.arg channel} argument for other conda channels."
         ),
         call = call
       )
