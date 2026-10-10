@@ -177,7 +177,7 @@ pixi_binary <- function(offer_install = TRUE, call = parent.frame()) {
   }
 
   if (offer_install && is_interactive()) {
-    cli::cli_alert_info("rpix needs Pixi, which isn't installed.")
+    cli::cli_alert_warning("rpix needs Pixi, which isn't installed.")
     installed <- tryCatch(install_pixi(), rpix_cancelled = function(e) NULL)
     if (!is.null(installed)) {
       return(normalizePath(installed, winslash = "/"))

@@ -1,5 +1,10 @@
 # rpix (development version)
 
+## Changed
+
+* rpix's questions, when it offers to install Pixi or to build a package from
+  source, say what will happen, then offer a numbered menu (#104).
+
 # rpix 0.7.0 (2026-10-10)
 
 ## Added

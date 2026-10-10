@@ -16,6 +16,7 @@
       pixi_add(c("praise", "fortunes==1.5-4", "cowsay>=1"))
     Message
       ! fortunes isn't on conda-forge.
+      i Pixi can build it from CRAN's source, at <https://github.com/cran/fortunes>, with its dependencies from conda-forge.
 
 # pixi_add() says how to build them when it can't ask, or the answer is no
 
@@ -32,11 +33,19 @@
       pixi_add(c("fortunes", "cowsay>=1"))
     Message
       ! fortunes and cowsay aren't on conda-forge.
+      i Pixi can build them from CRAN's source, at <https://github.com/cran/fortunes> and <https://github.com/cran/cowsay>, with their dependencies from conda-forge.
       i A version range doesn't apply to a build from source, so cowsay would be the latest version. Use `==` for a particular one.
     Condition
       Error in `pixi_add()`:
       ! Didn't add fortunes and cowsay.
       i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
+
+# ask_yes_no() asks, then offers Yes and No
+
+    Code
+      answer <- ask_yes_no("Would you like to?")
+    Message
+      ? Would you like to?
 
 # pixi_add() finds Bioconductor packages on bioconda
 

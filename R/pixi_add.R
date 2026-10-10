@@ -277,16 +277,19 @@ offer_cran_source <- function(parsed, missing, call = parent.frame()) {
 
   dropped <- nzchar(constraints) & !exact
   if (is_interactive()) {
+    n <- length(names)
+    urls <- paste0("https://github.com/cran/", names)
     cli::cli_alert_warning("{.pkg {names}} {?isn't/aren't} on conda-forge.")
+    cli::cli_alert_info(
+      "Pixi can build {cli::qty(n)}{?it/them} from CRAN's source, at {.url {urls}}, with {cli::qty(n)}{?its/their} dependencies from conda-forge."
+    )
     if (any(dropped)) {
       cli::cli_alert_info(
         "A version range doesn't apply to a build from source, so {.pkg {names[dropped]}} would be the latest version. Use {.code ==} for a particular one."
       )
     }
-    question <- paste0(
-      "Build ",
-      if (length(names) == 1) "it" else "them",
-      " from CRAN's source (github.com/cran) with Pixi instead?"
+    question <- cli::format_inline(
+      "Would you like to build {cli::qty(n)}{?it/them} from source?"
     )
     if (isTRUE(ask_yes_no(question))) {
       return(c(specs[-missing], github))
@@ -318,8 +321,4 @@ package_references <- function(parsed) {
 package_r_names <- function(parsed) {
   base <- sub("^[A-Za-z]+::", "", parsed$input)
   sub("[[:space:]=<>!~].*$", "", base)
-}
-
-ask_yes_no <- function(question) {
-  utils::askYesNo(question)
 }

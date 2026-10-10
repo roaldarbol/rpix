@@ -243,10 +243,7 @@ test_that("pixi_add() offers to build CRAN packages that aren't on conda-forge",
 
   expect_snapshot(pixi_add(c("praise", "fortunes==1.5-4", "cowsay>=1")))
   expect_equal(calls$github, c("github::cran/fortunes@1.5-4"))
-  expect_equal(
-    calls$asked,
-    "Build it from CRAN's source (github.com/cran) with Pixi instead?"
-  )
+  expect_equal(calls$asked, "Would you like to build it from source?")
 })
 
 test_that("pixi_add() says how to build them when it can't ask, or the answer is no", {
@@ -286,13 +283,26 @@ test_that("package_references() writes packages as pixi_add() takes them", {
   )
 })
 
-test_that("is_interactive() and ask_yes_no() ask R", {
+test_that("is_interactive() asks R", {
   expect_equal(is_interactive(), interactive())
+})
+
+test_that("ask_yes_no() asks, then offers Yes and No", {
+  choice <- 1
   local_mocked_bindings(
-    askYesNo = function(question) question,
+    menu = function(choices) {
+      expect_equal(choices, c("Yes", "No"))
+      choice
+    },
     .package = "utils"
   )
-  expect_equal(ask_yes_no("Really?"), "Really?")
+  expect_snapshot(answer <- ask_yes_no("Would you like to?"))
+  expect_true(answer)
+
+  # No, or Esc
+  for (choice in c(2, 0)) {
+    expect_false(suppressMessages(ask_yes_no("Would you like to?")))
+  }
 })
 
 test_that("pixi_add() finds Bioconductor packages on bioconda", {
