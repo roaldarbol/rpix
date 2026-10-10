@@ -9,6 +9,15 @@
   and
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md).
 
+### Bug fixes
+
+- rpix depends on rlang, which cli needs for its errors. Since lifecycle
+  was dropped ([\#85](https://github.com/roaldarbol/rpix/issues/85)),
+  projects set up with
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  didn’t get rlang, so every rpix error became “there is no package
+  called ‘rlang’”.
+
 ## rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of

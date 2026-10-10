@@ -61,6 +61,10 @@
 <h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>The deprecated <code>add()</code> and <code>setup_pixi()</code> are removed. Use <code><a href="../reference/pixi_add.html">pixi_add()</a></code> and <code><a href="../reference/use_pixi.html">use_pixi()</a></code>.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (<a href="https://github.com/roaldarbol/rpix/issues/85" class="external-link">#85</a>), projects set up with <code><a href="../reference/use_pixi.html">use_pixi()</a></code> didn’t get rlang, so every rpix error became “there is no package called ‘rlang’”.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="rpix-060">rpix 0.6.0<a class="anchor" aria-label="anchor" href="#rpix-060"></a></h2>
