@@ -57,11 +57,18 @@ test_that("install.packages() adds packages with Pixi", {
   expect_equal(calls$added, "cran::dplyr")
 })
 
+test_that("install.packages() leaves packages not on conda-forge to pixi_add()", {
+  calls <- local_install(c(dplyr = "cran::dplyr", notonconda = NA))
+
+  # pixi_add() offers to build them from CRAN's source
+  suppressMessages(install_with_pixi(c("dplyr", "notonconda"), root = "/p"))
+  expect_equal(calls$added, c("cran::dplyr", "cran::notonconda"))
+})
+
 test_that("install.packages() explains what Pixi can't do", {
-  local_install(c(dplyr = "cran::dplyr", notonconda = NA))
+  local_install(c(dplyr = "cran::dplyr"))
 
   expect_snapshot(error = TRUE, {
-    install_with_pixi("notonconda", root = "/p")
     install_with_pixi(
       "dplyr",
       lib = "/lib",

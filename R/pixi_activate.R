@@ -12,11 +12,10 @@
 #'   own library added if it exists. Other libraries, such as temporary ones
 #'   that devtools adds, are kept.
 #' * `install.packages()` adds packages with [pixi_add()] instead, so they're
-#'   recorded in `pixi.toml` and `pixi.lock`. Packages that aren't on
-#'   conda-forge or bioconda, and arguments Pixi can't use, such as `lib` or
-#'   `repos`, give an error that points to `utils::install.packages()`, which
-#'   installs without Pixi. Turn this off with
-#'   `options(rpix.install_packages = FALSE)`.
+#'   recorded in `pixi.toml` and `pixi.lock`. For a CRAN package that isn't on
+#'   conda-forge, `pixi_add()` offers to build it from source. Arguments Pixi
+#'   can't use, such as `lib` or `repos`, and package files give an error.
+#'   Turn this off with `options(rpix.install_packages = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
 #'   in an interactive session you get a hint instead.
 #'

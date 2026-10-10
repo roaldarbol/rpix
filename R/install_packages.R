@@ -42,28 +42,27 @@ install_with_pixi <- function(pkgs, ..., root) {
     cli::cli_abort(
       c(
         "In a Pixi environment, {.fn install.packages} adds packages with Pixi, which can't use {unusable}.",
-        "i" = "To install outside Pixi, so it isn't recorded in {.file pixi.toml}, use {.code utils::install.packages()}."
+        "i" = "Give package names, e.g. {.code install.packages(\"dplyr\")}.",
+        "i" = "For a package that isn't on conda-forge, Pixi can build it from source: {.code pixi_add(\"github::user/repo\")}."
       ),
       call = NULL
     )
   }
 
   found <- find_r_packages(pkgs)
-  missing <- names(found)[is.na(found)]
-  if (length(missing) > 0) {
-    cli::cli_abort(
-      c(
-        "{.pkg {missing}} {?isn't/aren't} on conda-forge or bioconda, so Pixi can't add {?it/them}.",
-        "i" = "To install outside Pixi, so it isn't recorded in {.file pixi.toml}, use {.code utils::install.packages()}.",
-        "i" = "Turn this off with {.code options(rpix.install_packages = FALSE)}."
-      ),
-      call = NULL
-    )
-  }
   cli::cli_alert_info(
     "Adding {.pkg {names(found)}} with Pixi, so {?it's/they're} recorded in {.file pixi.toml}."
   )
-  pixi_add(unname(found), path = root)
+  # Packages that aren't on conda-forge or bioconda go to pixi_add() as CRAN
+  # packages, so it offers to build them from CRAN's source
+  missing <- is.na(found)
+  pixi_add(
+    c(
+      unname(found[!missing]),
+      if (any(missing)) paste0("cran::", names(found)[missing])
+    ),
+    path = root
+  )
   invisible()
 }
 
