@@ -38,3 +38,10 @@
       ! Didn't add fortunes and cowsay.
       i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
 
+# pixi_add() finds Bioconductor packages on bioconda
+
+    Code
+      pixi_add(c("praise", "DESeq2>=1.40"))
+    Message
+      i DESeq2 isn't on conda-forge, but it's a Bioconductor package, so rpix adds it from bioconda.
+

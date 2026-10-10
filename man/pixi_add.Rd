@@ -50,7 +50,9 @@ and \code{"Rcpp"} becomes \code{r-rcpp} (conda names are lowercase). Use a prefi
 say where a package comes from:
 \itemize{
 \item \code{"bioc::DESeq2"}: a Bioconductor package (\code{bioconductor-deseq2} from the
-bioconda channel, which is added to the project if needed).
+bioconda channel, which is added to the project if needed). Without the
+prefix, a package that isn't on conda-forge is looked for on bioconda
+too, so \code{"DESeq2"} works as well.
 \item \code{"conda::gdal"}: a conda package that isn't an R package, used as is.
 Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also used as is.
 \item \code{"cran::dplyr"}: same as \code{"dplyr"}.
