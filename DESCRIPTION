@@ -24,7 +24,8 @@ Roxygen: list(markdown = TRUE)
 Imports:
     cli,
     jsonlite,
-    processx
+    processx,
+    rlang
 Suggests: 
     knitr,
     rcmdcheck,
