@@ -9,6 +9,10 @@
 - `pixi_add()` adds R packages from GitHub (experimental, #96), e.g. `pixi_add("github::user/repo")`, which Pixi builds from source with its R build backend, `pixi-build-r` (#88). `@ref`, or `versions`, picks a branch, tag or commit; the dependencies come from conda-forge, and the build is pinned to the project's R. CRAN packages that aren't on conda-forge can be added from CRAN's GitHub mirror, e.g. `pixi_add("github::cran/pkg@1.2.3")`. `pixi_remove()` removes them the same way.
 - When `pixi_add()` can't find a CRAN package on conda-forge, it offers to build it from CRAN's source with Pixi (experimental, #96), from CRAN's GitHub mirror (#89). An exact version (`"pkg==1.2-3"`) builds that version. Without a prompt, e.g. in a script, it says how: `pixi_add("github::cran/pkg")`.
 
+## Bug fixes
+
+- rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (#85), projects set up with `use_pixi()` didn't get rlang, so every rpix error became "there is no package called 'rlang'".
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
@@ -107,4 +111,3 @@ rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R on
 - `search` allows to search dependencies, their versions and their own dependencies.
 
 # rpix 0.1.0
-

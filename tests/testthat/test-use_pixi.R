@@ -181,3 +181,9 @@ test_that("use_pixi() sets up the folder in `path`", {
   expect_equal(manifest, file.path(dir, "pixi.toml"))
   expect_equal(calls$args[[1]], c("init", dir))
 })
+
+test_that("rpix's dependencies include rlang, which cli needs for errors", {
+  # Without it, every rpix error in a new project became "there is no
+  # package called 'rlang'"
+  expect_true("r-rlang" %in% rpix_dependencies())
+})
