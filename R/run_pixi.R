@@ -28,6 +28,7 @@
 #' * With `json = TRUE`: the parsed JSON output.
 #' * Otherwise: a list with `command`, `status`, `stdout` and `stderr`,
 #'   invisibly.
+#' @importFrom rlang abort
 #' @noRd
 run_pixi <- function(
   args,
