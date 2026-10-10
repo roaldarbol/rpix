@@ -11,6 +11,18 @@
 
 ### New features
 
+- New, experimental
+  [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md),
+  [`pixi_auth_logout()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  and
+  [`pixi_auth_status()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  log in to private conda channels, e.g. on prefix.dev, anaconda.org,
+  Artifactory or S3
+  ([\#93](https://github.com/roaldarbol/rpix/issues/93),
+  [\#97](https://github.com/roaldarbol/rpix/issues/97)).
+  [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  asks for the token or password without showing it, and rpix hides it
+  in every command and message it shows.
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   adds R packages from GitHub (experimental,
   [\#96](https://github.com/roaldarbol/rpix/issues/96)),

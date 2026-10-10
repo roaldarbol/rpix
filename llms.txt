@@ -124,6 +124,13 @@ workflow.*
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   : Test a package in several environments
 
+## Private channels
+
+- [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  [`pixi_auth_logout()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  [`pixi_auth_status()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)
+  : Log in to private channels
+
 ## Tasks
 
 - [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
