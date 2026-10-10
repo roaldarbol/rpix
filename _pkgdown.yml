@@ -2,14 +2,25 @@ url: https://roald-arboel.com/rpix/
 home:
   title: "rpix – Manage R project dependencies with Pixi"
 
-# Same look as the animovement package sites (theme and pkgdown/extra.scss
+# Same layout as the animovement package sites (theme and pkgdown/extra.scss
 # copied from animovementtemplate), without the animovement-specific navbar.
 template:
   bootstrap: 5
   light-switch: true
+  # Pixi's palette (pixi.prefix.dev), as Pixiline's site uses: navy text on
+  # warm off-white, with a golden-yellow accent; navy and yellow in dark mode.
+  # The dark mode colours are in pkgdown/extra.scss.
+  theme: github-light
+  theme-dark: github-dark
   bslib:
-    # From the logo
-    primary: "#172c45"
+    primary: "#001838"
+    body-bg: "#F8F6F2"
+    body-color: "#001838"
+    # Pixi's link blue is #5773FF, which is too light for text on #F8F6F2
+    # (3.7:1); this one is 5:1.
+    link-color: "#3D5AF1"
+    navbar-light-bg: "#F8F6F2"
+    navbar-dark-bg: "#001838"
     # Both SIL Open Font License, fetched at build time and written into the
     # site's deps/, so pages make no request to Google.
     base_font: {google: "Source Sans Pro"}
