@@ -83,7 +83,7 @@ test_that("install_pixi() passes the version and PATH choice to the installer", 
 
 test_that("install_pixi() stops if the answer is no, or something fails", {
   local_install_pixi(answer = FALSE)
-  expect_error(install_pixi(), "Cancelled")
+  expect_error(install_pixi(), class = "rpix_cancelled")
 
   local_install_pixi(download = FALSE)
   expect_snapshot(install_pixi(), error = TRUE)

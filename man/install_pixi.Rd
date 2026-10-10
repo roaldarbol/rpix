@@ -21,7 +21,8 @@ The path to Pixi, invisibly.
 \description{
 Install Pixi from R, with Pixi's official installer, so you don't need a
 terminal. It installs Pixi into \verb{~/.pixi/bin} (or \verb{$PIXI_HOME/bin}), where
-rpix finds it straight away.
+rpix finds it straight away. When an rpix function can't find Pixi, it
+offers to run \code{install_pixi()}.
 
 By default, the installer also adds Pixi to your shell's \code{PATH}, so \code{pixi}
 works in a terminal too, after you open a new one. If Pixi is installed

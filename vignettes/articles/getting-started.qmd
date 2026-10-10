@@ -27,7 +27,7 @@ Pixi is the tool that does the work; rpix lets you use it from R. Install it fro
 rpix::install_pixi()
 ```
 
-This runs Pixi's official installer, and adds `pixi` to your terminal's `PATH` too. Or install it in a terminal, as the [Pixi installation guide](https://pixi.prefix.dev/latest/installation/) describes. On macOS and Linux, that's:
+This runs Pixi's official installer, and adds `pixi` to your terminal's `PATH` too. (Skip it, and rpix offers to install Pixi the first time it needs it.) Or install it in a terminal, as the [Pixi installation guide](https://pixi.prefix.dev/latest/installation/) describes. On macOS and Linux, that's:
 
 ```sh
 curl -fsSL https://pixi.prefix.dev/install.sh | sh

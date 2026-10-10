@@ -3,7 +3,8 @@
 #' @description
 #' Install Pixi from R, with Pixi's official installer, so you don't need a
 #' terminal. It installs Pixi into `~/.pixi/bin` (or `$PIXI_HOME/bin`), where
-#' rpix finds it straight away.
+#' rpix finds it straight away. When an rpix function can't find Pixi, it
+#' offers to run `install_pixi()`.
 #'
 #' By default, the installer also adds Pixi to your shell's `PATH`, so `pixi`
 #' works in a terminal too, after you open a new one. If Pixi is installed
@@ -26,7 +27,9 @@
 #' install_pixi()
 #' }
 install_pixi <- function(version = NULL, update_path = TRUE, force = FALSE) {
-  existing <- tryCatch(pixi_binary(), error = function(e) NULL)
+  existing <- tryCatch(pixi_binary(offer_install = FALSE), error = function(e) {
+    NULL
+  })
   if (!is.null(existing) && !force) {
     cli::cli_alert_success("Pixi is installed already, at {.path {existing}}.")
     cli::cli_alert_info(
@@ -44,7 +47,11 @@ install_pixi <- function(version = NULL, update_path = TRUE, force = FALSE) {
       "?"
     )
     if (!isTRUE(ask_yes_no(question))) {
-      cli::cli_abort("Cancelled: Pixi wasn't installed.", call = NULL)
+      cli::cli_abort(
+        "Cancelled: Pixi wasn't installed.",
+        class = "rpix_cancelled",
+        call = NULL
+      )
     }
   }
 

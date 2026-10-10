@@ -1,5 +1,7 @@
 skip_if_no_pixi <- function() {
-  found <- tryCatch(pixi_binary(), error = function(e) NULL)
+  found <- tryCatch(pixi_binary(offer_install = FALSE), error = function(e) {
+    NULL
+  })
   skip_if(is.null(found), "pixi is not installed")
 }
 

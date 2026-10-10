@@ -80,6 +80,35 @@ test_that("errors helpfully when pixi can't be found", {
   expect_error(pixi_binary(), class = "rpix_error_pixi_not_found")
 })
 
+test_that("offers to install Pixi in an interactive session", {
+  withr::local_options(rpix.pixi_path = NULL)
+  withr::local_envvar(PATH = "", PIXI_HOME = withr::local_tempdir())
+  fake <- withr::local_tempfile()
+  file.create(fake)
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    install_pixi = function() fake
+  )
+  expect_snapshot(pixi <- pixi_binary())
+  expect_equal(pixi, normalizePath(fake, winslash = "/"))
+
+  # Not when it was declined, nor when the caller doesn't want it
+  local_mocked_bindings(
+    install_pixi = function() {
+      cli::cli_abort("Cancelled", class = "rpix_cancelled")
+    }
+  )
+  expect_error(
+    suppressMessages(pixi_binary()),
+    class = "rpix_error_pixi_not_found"
+  )
+  local_mocked_bindings(install_pixi = function() stop("asked"))
+  expect_error(
+    pixi_binary(offer_install = FALSE),
+    class = "rpix_error_pixi_not_found"
+  )
+})
+
 # format_command() ------------------------------------------------------------
 
 test_that("quotes only arguments that need it", {

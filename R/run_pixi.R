@@ -148,9 +148,10 @@ hide_secrets <- function(text, secrets) {
 #'
 #' Looks, in order, at the `rpix.pixi_path` option, the `PATH`, and pixi's
 #' default installation directory (`$PIXI_HOME/bin`, which defaults to
-#' `~/.pixi/bin`).
+#' `~/.pixi/bin`). If Pixi isn't there, and `offer_install` is `TRUE`, offers
+#' to install it in an interactive session.
 #' @noRd
-pixi_binary <- function(call = parent.frame()) {
+pixi_binary <- function(offer_install = TRUE, call = parent.frame()) {
   option <- getOption("rpix.pixi_path")
   if (!is.null(option)) {
     if (!file.exists(option)) {
@@ -173,6 +174,14 @@ pixi_binary <- function(call = parent.frame()) {
   default <- file.path(pixi_home, "bin", exe)
   if (file.exists(default)) {
     return(normalizePath(default, winslash = "/"))
+  }
+
+  if (offer_install && is_interactive()) {
+    cli::cli_alert_info("rpix needs Pixi, which isn't installed.")
+    installed <- tryCatch(install_pixi(), rpix_cancelled = function(e) NULL)
+    if (!is.null(installed)) {
+      return(normalizePath(installed, winslash = "/"))
+    }
   }
 
   cli::cli_abort(

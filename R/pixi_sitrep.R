@@ -153,7 +153,7 @@ hint <- function(text, .envir = parent.frame()) {
 
 # What pixi_sitrep() reports on, without the printing
 sitrep_data <- function(path = NULL) {
-  pixi <- tryCatch(pixi_binary(), error = function(e) NULL)
+  pixi <- tryCatch(pixi_binary(offer_install = FALSE), error = function(e) NULL)
   pixi_version <- if (!is.null(pixi)) {
     trimws(run_pixi("--version", project = "none")$stdout)
   }
