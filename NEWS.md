@@ -4,6 +4,10 @@
 
 - The deprecated `add()` and `setup_pixi()` are removed. Use `pixi_add()` and `use_pixi()`.
 
+## Bug fixes
+
+- rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (#85), projects set up with `use_pixi()` didn't get rlang, so every rpix error became "there is no package called 'rlang'".
+
 # rpix 0.6.0
 
 rpix now works with several environments, e.g. one for each version of R, moves projects from renv, and keeps `install.packages()` from installing packages Pixi doesn't know about.
@@ -102,4 +106,3 @@ rpix now sets projects up for RStudio, Positron and VS Code, and makes sure R on
 - `search` allows to search dependencies, their versions and their own dependencies.
 
 # rpix 0.1.0
-
