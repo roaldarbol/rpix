@@ -10,8 +10,9 @@
 - `pixi_add()` adds R packages from GitHub (experimental, #96), e.g. `pixi_add("github::user/repo")`, which Pixi builds from source with its R build backend, `pixi-build-r` (#88). `@ref`, or `versions`, picks a branch, tag or commit; the dependencies come from conda-forge, and the build is pinned to the project's R. CRAN packages that aren't on conda-forge can be added from CRAN's GitHub mirror, e.g. `pixi_add("github::cran/pkg@1.2.3")`. `pixi_remove()` removes them the same way.
 - When `pixi_add()` can't find a CRAN package on conda-forge, it offers to build it from CRAN's source with Pixi (experimental, #96), from CRAN's GitHub mirror (#89). An exact version (`"pkg==1.2-3"`) builds that version. Without a prompt, e.g. in a script, it says how: `pixi_add("github::cran/pkg")`. In a Pixi environment's R, `install.packages()` does the same, instead of pointing to `utils::install.packages()`, so packages stay in the project.
 
-## Bug fixes
+## Minor improvements and fixes
 
+- `pixi_add()` finds Bioconductor packages without the `bioc::` prefix: when a package isn't on conda-forge, it looks for it on bioconda, e.g. `pixi_add("DESeq2")`, or `pixi_add("DESeq2", channel = "bioconda")` (#92).
 - rpix depends on rlang, which cli needs for its errors. Since lifecycle was dropped (#85), projects set up with `use_pixi()` didn't get rlang, so every rpix error became "there is no package called 'rlang'".
 
 # rpix 0.6.0

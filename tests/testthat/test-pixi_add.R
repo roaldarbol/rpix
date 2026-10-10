@@ -197,6 +197,7 @@ test_that("not_built_for_r() reads Pixi's error", {
 local_not_on_conda_forge <- function(
   missing,
   answer = NULL,
+  bioc = character(),
   env = parent.frame()
 ) {
   calls <- new.env()
@@ -204,15 +205,27 @@ local_not_on_conda_forge <- function(
   calls$asked <- character()
   local_mocked_bindings(
     run_pixi = function(args, ...) {
+      if (args[1] == "add") {
+        calls$add <- c(calls$add, list(args))
+      }
       if (
         args[1] == "add" &&
-          any(c(missing, paste0("r-", missing)) %in% sub("[=<>].*$", "", args))
+          any(
+            c(missing, paste0("r-", missing)) %in%
+              sub("^.*::", "", sub("[=<>].*$", "", args))
+          )
       ) {
         stop(pixi_error("No candidates were found for r-something *."))
       }
       invisible(list(status = 0))
     },
-    on_channel = function(name, channel) !sub("^r-", "", name) %in% missing,
+    on_channel = function(name, channel) {
+      if (startsWith(name, "bioconductor-")) {
+        sub("^bioconductor-", "", name) %in% tolower(bioc)
+      } else {
+        !sub("^r-", "", name) %in% missing
+      }
+    },
     project_channels = function(...) "conda-forge",
     is_interactive = function() !is.null(answer),
     ask_yes_no = function(question) {
@@ -280,4 +293,35 @@ test_that("is_interactive() and ask_yes_no() ask R", {
     .package = "utils"
   )
   expect_equal(ask_yes_no("Really?"), "Really?")
+})
+
+test_that("pixi_add() finds Bioconductor packages on bioconda", {
+  calls <- local_not_on_conda_forge(c("deseq2", "DESeq2"), bioc = "DESeq2")
+
+  expect_snapshot(pixi_add(c("praise", "DESeq2>=1.40")))
+  # It tries conda-forge first, then adds DESeq2 from bioconda
+  expect_equal(
+    utils::tail(calls$add, 1)[[1]][1:3],
+    c("add", "r-praise", "bioconda::bioconductor-deseq2>=1.40")
+  )
+})
+
+test_that("pixi_add() looks on bioconda with channel = \"bioconda\" too", {
+  calls <- local_not_on_conda_forge(c("deseq2", "DESeq2"), bioc = "DESeq2")
+  suppressMessages(pixi_add("DESeq2", channel = "bioconda"))
+  expect_equal(
+    utils::tail(calls$add, 1)[[1]][1:2],
+    c("add", "bioconda::bioconductor-deseq2")
+  )
+})
+
+test_that("on_bioconda() looks for bioconductor-<name> on bioconda", {
+  local_mocked_bindings(
+    on_channel = function(name, channel) {
+      expect_equal(channel, "bioconda")
+      name == "bioconductor-deseq2"
+    }
+  )
+  parsed <- parse_packages(c("DESeq2", "fortunes"))
+  expect_equal(on_bioconda(parsed, 1:2), c(TRUE, FALSE))
 })

@@ -9,7 +9,9 @@
 #' say where a package comes from:
 #'
 #' * `"bioc::DESeq2"`: a Bioconductor package (`bioconductor-deseq2` from the
-#'   bioconda channel, which is added to the project if needed).
+#'   bioconda channel, which is added to the project if needed). Without the
+#'   prefix, a package that isn't on conda-forge is looked for on bioconda
+#'   too, so `"DESeq2"` works as well.
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
@@ -144,8 +146,24 @@ pixi_add <- function(
         )
       }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
-        missing <- if (is.null(channel)) missing_from_conda_forge(parsed)
+        missing <- if (is.null(channel) || identical(channel, "bioconda")) {
+          missing_from_conda_forge(parsed)
+        }
         if (length(missing) > 0) {
+          # Bioconductor packages are on bioconda, as bioconductor-<name>
+          bioc <- missing[on_bioconda(parsed, missing)]
+          if (length(bioc) > 0) {
+            names <- package_r_names(parsed)[bioc]
+            cli::cli_alert_info(
+              "{.pkg {names}} {?isn't/aren't} on conda-forge, but {?it's a/they're} Bioconductor package{?s}, so rpix adds {?it/them} from bioconda."
+            )
+            specs <- package_references(parsed)
+            specs[bioc] <- paste0("bioc::", names, parsed$constraint[bioc])
+            return(structure(
+              list(packages = c(specs, github)),
+              class = "rpix_retry"
+            ))
+          }
           retry <- offer_cran_source(parsed, missing, call = caller)
           return(structure(
             list(packages = c(retry, github)),
@@ -227,6 +245,12 @@ project_channels <- function(path = NULL) {
   channels <- envs$channels[[which(envs$name == "default")]]
   # Channels can be listed as URLs, so compare on names as well
   unique(c(channels, basename(sub("/+$", "", channels))))
+}
+
+# Which of the rows are Bioconductor packages on bioconda
+on_bioconda <- function(parsed, rows) {
+  names <- paste0("bioconductor-", tolower(package_r_names(parsed)[rows]))
+  vapply(names, on_channel, logical(1), "bioconda", USE.NAMES = FALSE)
 }
 
 # The CRAN packages that aren't on conda-forge, by row
