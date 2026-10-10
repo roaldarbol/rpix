@@ -62,6 +62,10 @@
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
 <ul><li>rpix’s questions, when it offers to install Pixi or to build a package from source, say what will happen, then offer a numbered menu (<a href="https://github.com/roaldarbol/rpix/issues/104" class="external-link">#104</a>).</li>
 </ul></div>
+<div class="section level3">
+<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
+<ul><li>In a package, <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to <code>.Rbuildignore</code>, and the IDE setup adds <code>.vscode</code>, so they stay out of the package’s builds. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports them when they’re missing (<a href="https://github.com/roaldarbol/rpix/issues/114" class="external-link">#114</a>).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="rpix-070-2026-10-10">rpix 0.7.0 (2026-10-10)<a class="anchor" aria-label="anchor" href="#rpix-070-2026-10-10"></a></h2>

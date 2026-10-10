@@ -13,7 +13,9 @@ It also adds a block to the project's .Rprofile that calls
 pixi_activate(), so the environment is activated when an IDE starts its
 R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
-R at the Pixi library. It's removed."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
+R at the Pixi library. It's removed.
+In a package, it adds .pixi, pixi.toml and pixi.lock to
+.Rbuildignore, so they stay out of the package's builds."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
 it, and install rpix into its environment.
 It also adds conda-forge's conda-ecosystem-user-package-isolation, which
 keeps your personal R library out of the environment's R. Otherwise
@@ -27,7 +29,9 @@ It also adds a block to the project's .Rprofile that calls
 pixi_activate(), so the environment is activated when an IDE starts its
 R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
-R at the Pixi library. It's removed."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
+R at the Pixi library. It's removed.
+In a package, it adds .pixi, pixi.toml and pixi.lock to
+.Rbuildignore, so they stay out of the package's builds."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -101,6 +105,8 @@ Pixi library: packages built for a different R can crash it.</p>
 R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
 library setup" block in their <code>.Rprofile</code> instead, which pointed a running
 R at the Pixi library. It's removed.</p>
+<p>In a package, it adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to
+<code>.Rbuildignore</code>, so they stay out of the package's builds.</p>
     </div>
 
     <div class="section level2">

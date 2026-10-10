@@ -22,6 +22,9 @@ Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
 block in their `.Rprofile` instead, which pointed a running R at the
 Pixi library. It's removed.
 
+In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
+`.Rbuildignore`, so they stay out of the package's builds.
+
 ## Usage
 
 ``` r

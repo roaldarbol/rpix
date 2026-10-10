@@ -21,7 +21,8 @@ calls these with its `ide` argument.
   when the environment is activated, so it leaves R to be found on the
   `PATH` instead: start VS Code with `pixi run code .`.
 
-Existing settings in `.vscode/settings.json` are kept.
+Existing settings in `.vscode/settings.json` are kept. In a package,
+`.vscode` is added to `.Rbuildignore`.
 
 ## Usage
 

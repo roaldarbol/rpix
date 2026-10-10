@@ -8,6 +8,16 @@
   from source, say what will happen, then offer a numbered menu
   ([\#104](https://github.com/roaldarbol/rpix/issues/104)).
 
+### Fixed
+
+- In a package,
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  adds `.pixi`, `pixi.toml` and `pixi.lock` to `.Rbuildignore`, and the
+  IDE setup adds `.vscode`, so they stay out of the package’s builds.
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  reports them when they’re missing
+  ([\#114](https://github.com/roaldarbol/rpix/issues/114)).
+
 ## rpix 0.7.0 (2026-10-10)
 
 ### Added
