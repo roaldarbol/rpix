@@ -41,6 +41,10 @@ call, invisibly, with any secret hidden.
 }
 }
 \description{
+\strong{Experimental.} These may change, e.g. to pass the secret to Pixi on
+standard input once it can read it from there. See
+\url{https://github.com/roaldarbol/rpix/issues/97}.
+
 Pixi needs credentials to install packages from private conda channels,
 e.g. on prefix.dev, anaconda.org, Artifactory or S3. These functions run
 \verb{pixi auth}, which stores credentials in your system's keychain, or in
