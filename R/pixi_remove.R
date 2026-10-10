@@ -24,14 +24,21 @@ pixi_remove <- function(
   path = NULL,
   dry_run = FALSE
 ) {
-  parsed <- parse_packages(packages)
+  github <- packages[is_github(packages)]
+  names <- vapply(github, function(p) parse_github(p)$name, character(1))
+  others <- packages[!is_github(packages)]
+  parsed <- if (length(others) > 0) {
+    parse_packages(others)
+  } else {
+    data.frame(name = character(), constraint = character())
+  }
   if (any(nzchar(parsed$constraint))) {
     cli::cli_abort(
       "{.fn pixi_remove} takes package names without version constraints."
     )
   }
   run_pixi(
-    c("remove", parsed$name, scope_args(feature, platform)),
+    c("remove", parsed$name, unname(names), scope_args(feature, platform)),
     path = path,
     echo = TRUE,
     dry_run = dry_run

@@ -13,6 +13,15 @@
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
+#' * `"github::user/repo"` (experimental): an R package on GitHub, which Pixi
+#'   builds from source with its R build backend, `pixi-build-r`. Add `@ref` for a branch,
+#'   tag or commit, as in `"github::cran/praise@1.0.0"`; `pixi.lock` records
+#'   the exact commit either way. rpix writes it into `pixi.toml`, turns on
+#'   Pixi's `pixi-build` preview, and pins the build to the project's R. Its
+#'   dependencies come from conda-forge. See
+#'   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This may
+#'   change, e.g. to use `pixi add` once it can set a build backend; see
+#'   <https://github.com/roaldarbol/rpix/issues/96>.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
@@ -20,7 +29,8 @@
 #'   in `"dplyr>=1.1"`.
 #' @param versions Optional. Version constraints, either one for all packages
 #'   or one per package (use `NA` for no constraint). A version without an
-#'   operator, such as `"1.1"`, means `1.1.*`.
+#'   operator, such as `"1.1"`, means `1.1.*`. For a package from GitHub, it's
+#'   a branch, tag or commit instead, as with `@ref`.
 #' @param channel Optional. A conda channel to install the packages from. It's
 #'   added to the project's channels if it isn't there yet.
 #' @param feature Optional. The feature to add the packages to, rather than
@@ -48,20 +58,44 @@ pixi_add <- function(
   path = NULL,
   dry_run = FALSE
 ) {
-  parsed <- parse_packages(packages)
-
   if (!is.null(versions)) {
-    if (!length(versions) %in% c(1, nrow(parsed))) {
+    if (!length(versions) %in% c(1, length(packages))) {
       cli::cli_abort(
         "{.arg versions} must have length 1 or the same length as {.arg packages}."
       )
     }
+    versions <- rep_len(versions, length(packages))
+  }
+  on_github <- is_github(packages)
+  github <- with_github_refs(packages[on_github], versions[on_github])
+  packages <- packages[!on_github]
+  versions <- versions[!on_github]
+  if (all(is.na(versions))) {
+    versions <- NULL
+  }
+  if (length(github) > 0 && !is.null(channel)) {
+    cli::cli_abort(
+      "{.arg channel} doesn't apply to packages from GitHub."
+    )
+  }
+  if (length(packages) == 0) {
+    return(invisible(add_github_packages(
+      github,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )))
+  }
+  parsed <- parse_packages(packages)
+
+  if (!is.null(versions)) {
     if (any(nzchar(parsed$constraint))) {
       cli::cli_abort(
         "Give version constraints either in {.arg packages} or in {.arg versions}, not both."
       )
     }
-    parsed$constraint <- normalise_versions(rep_len(versions, nrow(parsed)))
+    parsed$constraint <- normalise_versions(versions)
   }
 
   if (!is.null(channel)) {
@@ -123,6 +157,15 @@ pixi_add <- function(
     }
   )
 
+  if (length(github) > 0) {
+    add_github_packages(
+      github,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )
+  }
   if (isTRUE(dry_run)) {
     return(invisible(c(commands, result)))
   }
