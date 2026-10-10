@@ -300,10 +300,6 @@ package_r_names <- function(parsed) {
   sub("[[:space:]=<>!~].*$", "", base)
 }
 
-is_interactive <- function() {
-  interactive()
-}
-
 ask_yes_no <- function(question) {
   utils::askYesNo(question)
 }
