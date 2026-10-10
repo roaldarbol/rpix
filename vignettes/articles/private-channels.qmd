@@ -8,6 +8,8 @@ knitr:
 
 Most packages come from public channels: conda-forge and bioconda. Some organisations also keep packages in private channels, e.g. on [prefix.dev](https://prefix.dev), anaconda.org, Artifactory, Nexus or S3. And some networks need a mirror, a proxy or their own certificates. Pixi handles all of these; this guide shows how to set them up.
 
+**Experimental:** logging in from R with `pixi_auth_login()` and its companions may still change. See [#97](https://github.com/roaldarbol/rpix/issues/97).
+
 ## Logging in
 
 Pixi needs credentials for a private channel. Log in once per host, and every Pixi project on your computer can use them:
