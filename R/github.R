@@ -7,8 +7,9 @@ is_github <- function(packages) {
   grepl("^github::", packages, ignore.case = TRUE)
 }
 
-# "github::user/repo@ref" as a list with the repository, the ref (or NULL)
-# and the conda name, from the package's DESCRIPTION
+# "github::user/repo@ref" as a list with the repository, the ref (or NULL),
+# and from the package's DESCRIPTION, its conda name and what pixi-build-r
+# doesn't add to its build yet (see build_requirements())
 parse_github <- function(package, call = parent.frame()) {
   pattern <- "^github::([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)(@(.+))?$"
   if (!grepl(pattern, package, ignore.case = TRUE)) {
@@ -24,17 +25,18 @@ parse_github <- function(package, call = parent.frame()) {
   repo <- sub(pattern, "\\2", package, ignore.case = TRUE)
   ref <- sub(pattern, "\\4", package, ignore.case = TRUE)
   ref <- if (nzchar(ref)) ref else NULL
-  name <- github_package_name(user, repo, ref, call = call)
+  description <- github_description(user, repo, ref, call = call)
   list(
     git = paste0("https://github.com/", user, "/", repo),
     ref = ref,
-    name = paste0("r-", tolower(name))
+    # The package's name can differ from the repository's
+    name = paste0("r-", tolower(description$Package)),
+    requirements = build_requirements(description)
   )
 }
 
-# The package's name, from its DESCRIPTION, which can differ from the
-# repository's name
-github_package_name <- function(user, repo, ref = NULL, call = parent.frame()) {
+# The package's DESCRIPTION, as a list of its fields
+github_description <- function(user, repo, ref = NULL, call = parent.frame()) {
   url <- paste0(
     "https://raw.githubusercontent.com/",
     user,
@@ -45,10 +47,10 @@ github_package_name <- function(user, repo, ref = NULL, call = parent.frame()) {
     "/DESCRIPTION"
   )
   lines <- tryCatch(read_url(url), error = function(e) NULL)
-  name <- if (!is.null(lines)) {
-    read.dcf(textConnection(lines), fields = "Package")[1, 1]
+  description <- if (!is.null(lines)) {
+    as.list(read.dcf(textConnection(lines))[1, ])
   }
-  if (is.null(name) || is.na(name)) {
+  if (is.null(description$Package)) {
     cli::cli_abort(
       c(
         "Couldn't read the R package in {.url https://github.com/{user}/{repo}}{if (!is.null(ref)) paste0(' at ', ref)}.",
@@ -57,7 +59,7 @@ github_package_name <- function(user, repo, ref = NULL, call = parent.frame()) {
       call = call
     )
   }
-  unname(name)
+  description
 }
 
 read_url <- function(url) {
@@ -118,6 +120,12 @@ add_github_packages <- function(
   for (package in packages) {
     github <- parse_github(package, call = call)
     entry <- github_entry(github, r_base)
+    added <- unique(unlist(github$requirements))
+    if (length(added) > 0) {
+      cli::cli_alert_info(
+        "Adding {.pkg {added}} to the build of {.pkg {github$name}}, as {.code pixi-build-r} doesn't yet."
+      )
+    }
     if (isTRUE(dry_run)) {
       cli::cli_alert_info(
         "Would add to {.file pixi.toml}: {.code {entry}}"
@@ -165,20 +173,53 @@ add_github_packages <- function(
 }
 
 # The inline package for a GitHub package, built with pixi-build-r. R is
-# pinned for the build, as it otherwise builds for the newest R.
+# pinned for the build, as it otherwise builds for the newest R
+# (https://github.com/prefix-dev/pixi/issues/7214).
 github_entry <- function(github, r_base = NULL) {
-  host <- if (!is.null(r_base)) {
-    paste0(', host-dependencies = { r-base = "', r_base, '" }')
+  requirements <- github$requirements
+  any_version <- function(packages) {
+    stats::setNames(rep("*", length(packages)), packages)
   }
+  tables <- list(
+    "build-dependencies" = any_version(requirements$build),
+    "host-dependencies" = c(
+      if (!is.null(r_base)) c("r-base" = r_base),
+      any_version(requirements$host)
+    ),
+    "run-dependencies" = any_version(requirements$run)
+  )
+  tables <- tables[lengths(tables) > 0]
+  package <- ', package = { build.backend.name = "pixi-build-r"'
+  if (length(tables) > 0) {
+    package <- paste0(
+      package,
+      paste0(
+        ", ",
+        names(tables),
+        " = ",
+        vapply(tables, toml_table, character(1)),
+        collapse = ""
+      )
+    )
+  }
+  package <- paste0(package, " }")
   paste0(
     github$name,
     ' = { git = "',
     github$git,
     '"',
     if (!is.null(github$ref)) paste0(', rev = "', github$ref, '"'),
-    ', package = { build.backend.name = "pixi-build-r"',
-    host,
-    " } }"
+    package,
+    " }"
+  )
+}
+
+# A named character vector as an inline TOML table of strings
+toml_table <- function(values) {
+  paste0(
+    "{ ",
+    paste0(names(values), ' = "', values, '"', collapse = ", "),
+    " }"
   )
 }
 

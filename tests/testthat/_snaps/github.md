@@ -27,6 +27,15 @@
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
+# pixi_add() says what it adds to a GitHub package's build
+
+    Code
+      pixi_add("github::me/rusty", path = calls$dir)
+    Message
+      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
 # pixi_add() puts pixi.toml back if Pixi can't build the package
 
     Code
