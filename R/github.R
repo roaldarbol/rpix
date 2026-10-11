@@ -204,7 +204,7 @@ github_entry <- function(github, r_base = NULL) {
   }
   package <- paste0(package, " }")
   paste0(
-    github$name,
+    toml_key(github$name),
     ' = { git = "',
     github$git,
     '"',
@@ -214,11 +214,17 @@ github_entry <- function(github, r_base = NULL) {
   )
 }
 
+# A TOML key, quoted unless it's a bare key: in r-data.table, the dot would
+# otherwise start a nested table
+toml_key <- function(key) {
+  ifelse(grepl("^[A-Za-z0-9_-]+$", key), key, paste0('"', key, '"'))
+}
+
 # A named character vector as an inline TOML table of strings
 toml_table <- function(values) {
   paste0(
     "{ ",
-    paste0(names(values), ' = "', values, '"', collapse = ", "),
+    paste0(toml_key(names(values)), ' = "', values, '"', collapse = ", "),
     " }"
   )
 }
@@ -251,7 +257,11 @@ set_dependency <- function(lines, table, name, entry) {
     }
     return(c(lines, "", paste0("[", table, "]"), entry))
   }
-  key <- paste0("^\\s*", gsub(".", "\\.", name, fixed = TRUE), "\\s*=")
+  key <- paste0(
+    '^\\s*"?',
+    gsub(".", "\\.", name, fixed = TRUE),
+    '"?\\s*='
+  )
   existing <- rows[grepl(key, lines[rows])]
   if (length(existing) > 0) {
     lines[existing[1]] <- entry

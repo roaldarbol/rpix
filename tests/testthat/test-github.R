@@ -124,6 +124,36 @@ manifest <- c(
   'test = "Rscript -e 1"'
 )
 
+test_that("github_entry() quotes names with a dot", {
+  github <- list(
+    git = "https://github.com/cran/data.table",
+    ref = NULL,
+    name = "r-data.table",
+    requirements = list(build = character(), host = "r-mass", run = character())
+  )
+  expect_match(github_entry(github), '^"r-data.table" = \\{ git = ')
+  expect_equal(
+    toml_key(c("r-cli", "r-data.table")),
+    c("r-cli", '"r-data.table"')
+  )
+
+  # And replaces the quoted entry when it's added again
+  lines <- set_dependency(
+    manifest,
+    "dependencies",
+    "r-data.table",
+    '"r-data.table" = 1'
+  )
+  lines <- set_dependency(
+    lines,
+    "dependencies",
+    "r-data.table",
+    '"r-data.table" = 2'
+  )
+  expect_equal(sum(grepl("data.table", lines, fixed = TRUE)), 1)
+  expect_true('"r-data.table" = 2' %in% lines)
+})
+
 test_that("set_dependency() adds to a table, or replaces what's there", {
   lines <- set_dependency(manifest, "dependencies", "r-emo", "r-emo = 1")
   expect_equal(
