@@ -16,7 +16,10 @@ builds from source with its R build backend, pixi-build-r. Add @ref for a branch
 tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
 the exact commit either way. rpix writes it into pixi.toml, turns on
 Pixi's pixi-build preview, and pins the build to the project's R. Its
-dependencies come from conda-forge. See
+dependencies come from conda-forge. rpix also adds what pixi-build-r
+doesn't yet: the recommended packages it uses (such as Matrix and MASS),
+and the build tools its SystemRequirements names (Rust, Java, CMake,
+pkg-config). See
 https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
 change, e.g. to use pixi add once it can set a build backend; see
 https://github.com/roaldarbol/rpix/issues/96.
@@ -39,7 +42,10 @@ builds from source with its R build backend, pixi-build-r. Add @ref for a branch
 tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
 the exact commit either way. rpix writes it into pixi.toml, turns on
 Pixi's pixi-build preview, and pins the build to the project's R. Its
-dependencies come from conda-forge. See
+dependencies come from conda-forge. rpix also adds what pixi-build-r
+doesn't yet: the recommended packages it uses (such as Matrix and MASS),
+and the build tools its SystemRequirements names (Rust, Java, CMake,
+pkg-config). See
 https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
 change, e.g. to use pixi add once it can set a build backend; see
 https://github.com/roaldarbol/rpix/issues/96.
@@ -120,7 +126,10 @@ builds from source with its R build backend, <code>pixi-build-r</code>. Add <cod
 tag or commit, as in <code>"github::cran/praise@1.0.0"</code>; <code>pixi.lock</code> records
 the exact commit either way. rpix writes it into <code>pixi.toml</code>, turns on
 Pixi's <code>pixi-build</code> preview, and pins the build to the project's R. Its
-dependencies come from conda-forge. See
+dependencies come from conda-forge. rpix also adds what <code>pixi-build-r</code>
+doesn't yet: the recommended packages it uses (such as Matrix and MASS),
+and the build tools its <code>SystemRequirements</code> names (Rust, Java, CMake,
+pkg-config). See
 <a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link">https://pixi.prefix.dev/latest/build/backends/pixi-build-r/</a>. This may
 change, e.g. to use <code>pixi add</code> once it can set a build backend; see
 <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">https://github.com/roaldarbol/rpix/issues/96</a>.</p></li>

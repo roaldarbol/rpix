@@ -4,12 +4,21 @@
 
 ### Changed
 
+- Packages built from source (`pixi_add("github::...")`, and CRAN
+  packages that aren’t on conda-forge) get what `pixi-build-r` doesn’t
+  add yet: R’s recommended packages they use, such as Matrix and MASS,
+  and the build tools their `SystemRequirements` names: Rust, Java,
+  CMake or pkg-config
+  ([\#118](https://github.com/roaldarbol/rpix/issues/118)).
 - rpix’s questions, when it offers to install Pixi or to build a package
   from source, say what will happen, then offer a numbered menu
   ([\#104](https://github.com/roaldarbol/rpix/issues/104)).
 
 ### Fixed
 
+- Packages built from source whose names have a dot, such as sym.arma,
+  are written correctly into `pixi.toml`; Pixi couldn’t read them before
+  ([\#120](https://github.com/roaldarbol/rpix/issues/120)).
 - In a package,
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   adds `.pixi`, `pixi.toml` and `pixi.lock` to `.Rbuildignore`, and the

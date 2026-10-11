@@ -112,9 +112,12 @@ pixi_add("github::cran/mypackage@1.2.3")
 ```
 
 rpix writes the package into `pixi.toml`, turns on Pixi’s `pixi-build`
-preview, and builds it for the project’s version of R. Building takes a
-minute or so. It doesn’t work yet for packages that need Bioconductor
-packages.
+preview, and builds it for the project’s version of R. It also adds what
+`pixi-build-r` doesn’t add yet: R’s recommended packages that the
+package uses, such as Matrix and MASS, and the build tools its
+`SystemRequirements` names: Rust, Java, CMake or pkg-config. Building
+takes a minute or so. It doesn’t work yet for packages that need
+Bioconductor packages, or system libraries such as GDAL.
 
 Better still, add the package to conda-forge, so it’s available for
 everyone. conda-forge accepts new packages through
