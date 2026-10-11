@@ -111,11 +111,29 @@ $pixi-yellow: #ffd432;
   --bs-code-color: #{$pixi-yellow};
 }
 
-// The yellow accent: the current page in the navbar, and selected text
-.navbar .nav-link.active,
-.navbar .nav-item.active > .nav-link {
-  box-shadow: inset 0 -3px 0 $pixi-yellow;
+// As Pixi's header: a thin warm rule under it, and the current section in
+// navy (yellow in dark mode) rather than pkgdown's tinted box
+.navbar {
+  border-bottom: 1px solid #f1ede4;
 }
+
+[data-bs-theme="dark"] .navbar {
+  border-bottom-color: #181f25;
+}
+
+.navbar .nav-item.active .nav-link,
+.navbar .nav-link.active {
+  background: none;
+  color: $pixi-navy;
+  font-weight: 600;
+}
+
+[data-bs-theme="dark"] .navbar .nav-item.active .nav-link,
+[data-bs-theme="dark"] .navbar .nav-link.active {
+  color: $pixi-yellow;
+}
+
+// Selected text in the yellow accent
 
 ::selection {
   background: rgba(255, 212, 50, 0.45);
