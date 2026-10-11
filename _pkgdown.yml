@@ -19,8 +19,9 @@ template:
     # Pixi's link blue is #5773FF, which is too light for text on #F8F6F2
     # (3.7:1); this one is 5:1.
     link-color: "#3D5AF1"
-    navbar-light-bg: "#F8F6F2"
-    navbar-dark-bg: "#001838"
+    # As Pixi's header: white in light mode, slate in dark mode
+    navbar-light-bg: "#FFFFFF"
+    navbar-dark-bg: "#181F25"
     # Both SIL Open Font License, fetched at build time and written into the
     # site's deps/, so pages make no request to Google.
     base_font: {google: "Source Sans Pro"}
