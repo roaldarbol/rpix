@@ -76,7 +76,7 @@ Add `@ref` for a branch, tag or commit, e.g. `"github::user/mypackage@v1.2.0"`, 
 pixi_add("github::cran/mypackage@1.2.3")
 ```
 
-rpix writes the package into `pixi.toml`, turns on Pixi's `pixi-build` preview, and builds it for the project's version of R. Building takes a minute or so. It doesn't work yet for packages that need Bioconductor packages.
+rpix writes the package into `pixi.toml`, turns on Pixi's `pixi-build` preview, and builds it for the project's version of R. It also adds what `pixi-build-r` doesn't add yet: R's recommended packages that the package uses, such as Matrix and MASS, and the build tools its `SystemRequirements` names: Rust, Java, CMake or pkg-config. Building takes a minute or so. It doesn't work yet for packages that need Bioconductor packages, or system libraries such as GDAL.
 
 Better still, add the package to conda-forge, so it's available for everyone. conda-forge accepts new packages through [staged-recipes](https://github.com/conda-forge/staged-recipes). [rattler-build](https://rattler.build) writes a recipe for a CRAN package for you:
 

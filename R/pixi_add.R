@@ -20,7 +20,10 @@
 #'   tag or commit, as in `"github::cran/praise@1.0.0"`; `pixi.lock` records
 #'   the exact commit either way. rpix writes it into `pixi.toml`, turns on
 #'   Pixi's `pixi-build` preview, and pins the build to the project's R. Its
-#'   dependencies come from conda-forge. See
+#'   dependencies come from conda-forge. rpix also adds what `pixi-build-r`
+#'   doesn't yet: the recommended packages it uses (such as Matrix and MASS),
+#'   and the build tools its `SystemRequirements` names (Rust, Java, CMake,
+#'   pkg-config). See
 #'   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This may
 #'   change, e.g. to use `pixi add` once it can set a build backend; see
 #'   <https://github.com/roaldarbol/rpix/issues/96>.

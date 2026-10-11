@@ -61,7 +61,10 @@ builds from source with its R build backend, \code{pixi-build-r}. Add \verb{@ref
 tag or commit, as in \code{"github::cran/praise@1.0.0"}; \code{pixi.lock} records
 the exact commit either way. rpix writes it into \code{pixi.toml}, turns on
 Pixi's \code{pixi-build} preview, and pins the build to the project's R. Its
-dependencies come from conda-forge. See
+dependencies come from conda-forge. rpix also adds what \code{pixi-build-r}
+doesn't yet: the recommended packages it uses (such as Matrix and MASS),
+and the build tools its \code{SystemRequirements} names (Rust, Java, CMake,
+pkg-config). See
 \url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}. This may
 change, e.g. to use \verb{pixi add} once it can set a build backend; see
 \url{https://github.com/roaldarbol/rpix/issues/96}.

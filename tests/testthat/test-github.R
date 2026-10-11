@@ -1,6 +1,18 @@
-# Pretend GitHub, with a DESCRIPTION for each repository
+# Pretend GitHub, with a DESCRIPTION for each repository. `fields` adds
+# lines to a repository's DESCRIPTION.
 local_github <- function(
-  packages = c(emo = "emo", praise = "praise", Rcppy = "RcppY"),
+  packages = c(
+    emo = "emo",
+    praise = "praise",
+    Rcppy = "RcppY",
+    rusty = "rusty"
+  ),
+  fields = list(
+    rusty = c(
+      "Imports: MASS (>= 7.3), stats",
+      "SystemRequirements: Cargo (Rust's package manager), rustc"
+    )
+  ),
   env = parent.frame()
 ) {
   local_mocked_bindings(
@@ -13,7 +25,11 @@ local_github <- function(
       if (!repo %in% names(packages)) {
         stop("404")
       }
-      c(paste("Package:", packages[[repo]]), "Version: 1.0.0")
+      c(
+        paste("Package:", packages[[repo]]),
+        "Version: 1.0.0",
+        fields[[repo]]
+      )
     },
     .env = env
   )
@@ -23,7 +39,21 @@ test_that("parse_github() reads the repository, ref and package name", {
   local_github()
   expect_equal(
     parse_github("github::hadley/emo"),
-    list(git = "https://github.com/hadley/emo", ref = NULL, name = "r-emo")
+    list(
+      git = "https://github.com/hadley/emo",
+      ref = NULL,
+      name = "r-emo",
+      requirements = list(
+        build = character(),
+        host = character(),
+        run = character()
+      )
+    )
+  )
+  # What pixi-build-r doesn't add to the build yet
+  expect_equal(
+    parse_github("github::me/rusty")$requirements,
+    list(build = "rust", host = "r-mass", run = "r-mass")
   )
   expect_equal(parse_github("github::cran/praise@1.0.0")$ref, "1.0.0")
   # The package's name, which can differ from the repository's
@@ -43,7 +73,12 @@ test_that("github_entry() builds with pixi-build-r, pinned to the project's R", 
   github <- list(
     git = "https://github.com/hadley/emo",
     ref = "v1",
-    name = "r-emo"
+    name = "r-emo",
+    requirements = list(
+      build = character(),
+      host = character(),
+      run = character()
+    )
   )
   expect_equal(
     github_entry(github, "4.5.*"),
@@ -53,6 +88,23 @@ test_that("github_entry() builds with pixi-build-r, pinned to the project's R", 
   expect_equal(
     github_entry(github),
     'r-emo = { git = "https://github.com/hadley/emo", package = { build.backend.name = "pixi-build-r" } }'
+  )
+
+  # With what pixi-build-r doesn't add yet
+  github$requirements <- list(
+    build = c("rust", "openjdk"),
+    host = "r-mass",
+    run = c("openjdk", "r-mass")
+  )
+  expect_equal(
+    github_entry(github, "4.5.*"),
+    paste0(
+      'r-emo = { git = "https://github.com/hadley/emo", package = { ',
+      'build.backend.name = "pixi-build-r", ',
+      'build-dependencies = { rust = "*", openjdk = "*" }, ',
+      'host-dependencies = { r-base = "4.5.*", r-mass = "*" }, ',
+      'run-dependencies = { openjdk = "*", r-mass = "*" } } }'
+    )
   )
 })
 
@@ -71,6 +123,36 @@ manifest <- c(
   "[tasks]",
   'test = "Rscript -e 1"'
 )
+
+test_that("github_entry() quotes names with a dot", {
+  github <- list(
+    git = "https://github.com/cran/data.table",
+    ref = NULL,
+    name = "r-data.table",
+    requirements = list(build = character(), host = "r-mass", run = character())
+  )
+  expect_match(github_entry(github), '^"r-data.table" = \\{ git = ')
+  expect_equal(
+    toml_key(c("r-cli", "r-data.table")),
+    c("r-cli", '"r-data.table"')
+  )
+
+  # And replaces the quoted entry when it's added again
+  lines <- set_dependency(
+    manifest,
+    "dependencies",
+    "r-data.table",
+    '"r-data.table" = 1'
+  )
+  lines <- set_dependency(
+    lines,
+    "dependencies",
+    "r-data.table",
+    '"r-data.table" = 2'
+  )
+  expect_equal(sum(grepl("data.table", lines, fixed = TRUE)), 1)
+  expect_true('"r-data.table" = 2' %in% lines)
+})
 
 test_that("set_dependency() adds to a table, or replaces what's there", {
   lines <- set_dependency(manifest, "dependencies", "r-emo", "r-emo = 1")
@@ -183,6 +265,16 @@ test_that("pixi_add() adds GitHub packages to pixi.toml, and Pixi installs them"
   lines <- readLines(file.path(calls$dir, "pixi.toml"))
   expect_true(any(grepl(
     '^r-praise = .*rev = "1.0.0".*r-base = "4.4.\\*"',
+    lines
+  )))
+})
+
+test_that("pixi_add() says what it adds to a GitHub package's build", {
+  calls <- local_github_project()
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  lines <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_true(any(grepl(
+    '^r-rusty = .*build-dependencies = \\{ rust = "\\*" \\}',
     lines
   )))
 })
