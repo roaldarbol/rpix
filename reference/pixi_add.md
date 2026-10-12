@@ -28,7 +28,9 @@ a prefix to say where a package comes from:
   dependencies come from conda-forge. rpix also adds what `pixi-build-r`
   doesn't yet: the recommended packages it uses (such as Matrix and
   MASS), and the build tools its `SystemRequirements` names (Rust, Java,
-  CMake, pkg-config). See
+  CMake, pkg-config). In a project for Windows, it also adds what builds
+  there need: R's library folder, and MSYS2's `make`, `sed` and
+  `coreutils`. See
   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This
   may change, e.g. to use `pixi add` once it can set a build backend;
   see <https://github.com/roaldarbol/rpix/issues/96>.
