@@ -6,7 +6,9 @@ pixi_check_matrix() runs them. Each environment needs the package's
 dependencies, and testthat and pkgload for the tests, or rcmdcheck for
 R CMD check.
 use_pixi_check_matrix() adds an environment for each version of R, with
-those packages, named after the version: r44 for R 4.4.
+those packages, named after the version: r44 for R 4.4. With
+minimum = TRUE, it also adds a minimum environment, with the oldest
+versions the package's DESCRIPTION allows.
 
 "><meta property="og:description" content="For package developers: run the tests or R CMD check in several of the
 project's environments, e.g. one for each version of R, and see the results
@@ -15,7 +17,9 @@ pixi_check_matrix() runs them. Each environment needs the package's
 dependencies, and testthat and pkgload for the tests, or rcmdcheck for
 R CMD check.
 use_pixi_check_matrix() adds an environment for each version of R, with
-those packages, named after the version: r44 for R 4.4.
+those packages, named after the version: r44 for R 4.4. With
+minimum = TRUE, it also adds a minimum environment, with the oldest
+versions the package's DESCRIPTION allows.
 
 "><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -82,7 +86,9 @@ side by side.</p><ul><li><p><code>pixi_check_matrix()</code> runs them. Each env
 dependencies, and testthat and pkgload for the tests, or rcmdcheck for
 <code>R CMD check</code>.</p></li>
 <li><p><code>use_pixi_check_matrix()</code> adds an environment for each version of R, with
-those packages, named after the version: <code>r44</code> for R 4.4.</p></li>
+those packages, named after the version: <code>r44</code> for R 4.4. With
+<code>minimum = TRUE</code>, it also adds a <code>minimum</code> environment, with the oldest
+versions the package's <code>DESCRIPTION</code> allows.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -95,7 +101,7 @@ those packages, named after the version: <code>r44</code> for R 4.4.</p></li>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">use_pixi_check_matrix</span><span class="op">(</span><span class="va">r_versions</span>, path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">use_pixi_check_matrix</span><span class="op">(</span>r_versions <span class="op">=</span> <span class="cn">NULL</span>, minimum <span class="op">=</span> <span class="cn">FALSE</span>, path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -126,7 +132,12 @@ environment, or the working directory.</p></dd>
 
 
 <dt id="arg-r-versions">r_versions<a class="anchor" aria-label="anchor" href="#arg-r-versions"></a></dt>
-<dd><p>Versions of R, such as <code>"4.4"</code>.</p></dd>
+<dd><p>Versions of R, such as <code>"4.4"</code>. Optional with
+<code>minimum = TRUE</code>.</p></dd>
+
+
+<dt id="arg-minimum">minimum<a class="anchor" aria-label="anchor" href="#arg-minimum"></a></dt>
+<dd><p>If <code>TRUE</code>, also add a <code>minimum</code> environment; see below.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -138,11 +149,30 @@ columns <code>environment</code>, <code>r_version</code>, <code>ok</code>, the c
 <code>R CMD check</code>), <code>seconds</code>, and <code>output</code>: what it printed.</p></li>
 <li><p><code>use_pixi_check_matrix()</code>: the names of the environments, invisibly.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="the-minimum-environment">The <code>minimum</code> environment<a class="anchor" aria-label="anchor" href="#the-minimum-environment"></a></h2>
+
+
+<p>Checks that the minimum versions in <code>DESCRIPTION</code> really work: R at the
+version <code>Depends</code> asks for, and each package in <code>Depends</code>, <code>Imports</code> and
+<code>LinkingTo</code> at the lowest version its constraint allows (Pixi's
+<code>solve-strategy = "lowest-direct"</code>; their own dependencies are the newest
+that fit). testthat, pkgload and rcmdcheck, which run the checks, aren't
+the packages under test, so they're kept at recent minimums.</p><ul><li><p>A package without a minimum gets the oldest version on conda-forge for
+that R, which may be much older than you meant; rpix lists them.</p></li>
+<li><p>Without a minimum R in <code>Depends</code>, it uses the oldest of <code>r_versions</code>, or
+the project's R.</p></li>
+<li><p>Only versions on conda-forge (and bioconda) count, for the project's
+platforms. An old build's own dependencies are as conda-forge recorded
+them, which for old builds is sometimes looser than its <code>DESCRIPTION</code>:
+then R refuses to load it, although Pixi installed it.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">use_pixi_check_matrix</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.3"</span>, <span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">use_pixi_check_matrix</span><span class="op">(</span>minimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pixi_check_matrix</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pixi_check_matrix</span><span class="op">(</span>what <span class="op">=</span> <span class="st">"check"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
