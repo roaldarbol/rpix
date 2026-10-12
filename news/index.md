@@ -14,6 +14,11 @@
   with R and the package’s dependencies at the lowest versions its
   `DESCRIPTION` allows, to check that those minimums really work
   ([\#112](https://github.com/roaldarbol/rpix/issues/112)).
+- [`use_pixi_github_action()`](https://roald-arboel.com/rpix/reference/use_pixi_github_action.md)
+  writes a GitHub Actions workflow that uses the project’s environments
+  exactly as `pixi.lock` records them: `R CMD check` on Linux, macOS and
+  Windows for each environment, test coverage, a pkgdown site, or a Pixi
+  task ([\#107](https://github.com/roaldarbol/rpix/issues/107)).
 
 ### Changed
 

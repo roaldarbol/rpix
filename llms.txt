@@ -126,6 +126,8 @@ workflow.*
 - [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   : Test a package in several environments
+- [`use_pixi_github_action()`](https://roald-arboel.com/rpix/reference/use_pixi_github_action.md)
+  : Set up GitHub Actions with the project's Pixi environments
 
 ## Private channels
 

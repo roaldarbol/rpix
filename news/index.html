@@ -64,6 +64,8 @@
 <code><a href="../reference/pixi_set_date.html">pixi_set_date()</a></code> and <code>use_pixi(date = )</code> use packages as they were on a date, with Pixi’s <code>exclude-newer</code>, e.g. to rerun an old analysis; a duration such as <code>"7d"</code> leaves out the newest releases instead. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports it (<a href="https://github.com/roaldarbol/rpix/issues/106" class="external-link">#106</a>).</li>
 <li>
 <code>use_pixi_check_matrix(minimum = TRUE)</code> adds a <code>minimum</code> environment, with R and the package’s dependencies at the lowest versions its <code>DESCRIPTION</code> allows, to check that those minimums really work (<a href="https://github.com/roaldarbol/rpix/issues/112" class="external-link">#112</a>).</li>
+<li>
+<code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that uses the project’s environments exactly as <code>pixi.lock</code> records them: <code>R CMD check</code> on Linux, macOS and Windows for each environment, test coverage, a pkgdown site, or a Pixi task (<a href="https://github.com/roaldarbol/rpix/issues/107" class="external-link">#107</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>

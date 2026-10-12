@@ -141,14 +141,11 @@
 <p><code>report</code> runs <code>analysis</code> first. <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code> lists a project’s tasks.</p>
 </section><section class="level2"><h2 id="continuous-integration">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration"></a>
 </h2>
-<p>The <a href="https://github.com/prefix-dev/setup-pixi" class="external-link">setup-pixi</a> action installs Pixi and the environment on GitHub Actions:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> prefix-dev/setup-pixi@v0.10.2</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> pixi run report</span></span></code></pre></div>
-<p>It uses <code>pixi install --locked</code> by default, so the run fails if <code>pixi.lock</code> is out of date.</p>
+<p><code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that installs the project’s environments exactly as <code>pixi.lock</code> records them, with the <a href="https://github.com/prefix-dev/setup-pixi" class="external-link">setup-pixi</a> action, so CI runs with the same R and packages as your computer:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/use_pixi_github_action.html">use_pixi_github_action</a></span><span class="op">(</span><span class="st">"task"</span>, task <span class="op">=</span> <span class="st">"report"</span><span class="op">)</span>   <span class="co"># run a Pixi task, e.g. render a report</span></span>
+<span><span class="fu"><a href="../reference/use_pixi_github_action.html">use_pixi_github_action</a></span><span class="op">(</span><span class="st">"check"</span><span class="op">)</span>                   <span class="co"># R CMD check, for a package</span></span></code></pre></div>
+<p>For a package, <code>"check"</code> runs r-lib’s <code>check-r-package</code> on Linux, macOS and Windows (those of the project’s platforms), and takes several environments, e.g. those from <code><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix()</a></code>, including the <code>minimum</code> one. <code>"test-coverage"</code> and <code>"pkgdown"</code> do what r-lib’s workflows of the same name do. Pixi is pinned to the version you have, and the run fails if <code>pixi.lock</code> is out of date with <code>pixi.toml</code>, so commit both.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
