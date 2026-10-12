@@ -94,6 +94,7 @@ reference:
       - pixi_search
       - pixi_scan
       - pixi_install
+      - pixi_set_date
 
   - title: "Environments, channels and platforms"
     contents:
@@ -106,6 +107,7 @@ reference:
     contents:
       - pixi_import_description
       - pixi_check_matrix
+      - use_pixi_github_action
 
   - title: "Private channels"
     contents:

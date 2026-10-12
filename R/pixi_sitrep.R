@@ -6,6 +6,8 @@
 #'
 #' * Pixi: where it is, and its version.
 #' * The project, and whether `pixi.lock` is up to date with `pixi.toml`.
+#' * The date the project's packages are as of, if it has one (see
+#'   [pixi_set_date()]).
 #' * In a package, whether `pixi.toml` has what its `DESCRIPTION` needs: the
 #'   `Depends`, `Imports` and `LinkingTo` packages in the default environment,
 #'   the `Suggests` somewhere (e.g. a `test` environment), and installed
@@ -71,6 +73,14 @@ pixi_sitrep <- function(path = NULL) {
     }
     if (length(report$logins) > 0) {
       cli::cli_alert_info("Pixi has logins for {.val {report$logins}}.")
+    }
+    date <- report$exclude_newer
+    if (is_absolute_date(date)) {
+      cli::cli_alert_info("Packages are as they were on {.val {date}}.")
+    } else if (!is.null(date)) {
+      cli::cli_alert_info(
+        "Packages published in the last {.val {date}} are left out."
+      )
     }
     unignored <- report$build_unignored
     if (length(unignored) > 0) {
@@ -260,6 +270,7 @@ sitrep_data <- function(path = NULL) {
     access_denied = attr(lock, "denied") %||%
       if (!is.null(project) && !is.null(pixi)) channel_access(project),
     logins = if (!is.null(pixi)) logins(),
+    exclude_newer = if (!is.null(project)) project_exclude_newer(project),
     r_home = r_home(),
     r_version = as.character(getRversion()),
     environment = environment,
@@ -405,4 +416,13 @@ ide_set_up <- function(ide, project) {
   } else {
     grepl(".pixi", settings[["r.executablePath"]] %||% "", fixed = TRUE)
   }
+}
+
+# The project's exclude-newer, or NULL
+project_exclude_newer <- function(root) {
+  manifest <- find_manifest(root)
+  if (is.null(manifest)) {
+    return(NULL)
+  }
+  manifest_exclude_newer(readLines(manifest, warn = FALSE))
 }

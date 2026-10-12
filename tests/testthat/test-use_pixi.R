@@ -202,3 +202,17 @@ test_that("use_pixi() leaves Pixi's files out of a package's builds", {
     c("^demo\\.Rproj$", "^\\.pixi$", "^pixi\\.toml$", "^pixi\\.lock$")
   )
 })
+
+test_that("use_pixi() sets the date before adding anything", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  suppressMessages(use_pixi(
+    date = "2025-06-01",
+    path = dir,
+    install_rpix = FALSE
+  ))
+  expect_true(
+    'exclude-newer = "2025-06-01"' %in% readLines(file.path(dir, "pixi.toml"))
+  )
+  expect_error(use_pixi(date = "soon", path = dir), "must be a date")
+})

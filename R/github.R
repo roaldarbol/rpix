@@ -116,10 +116,17 @@ add_github_packages <- function(
   lines <- readLines(manifest, warn = FALSE)
   original <- lines
   r_base <- manifest_r_base(lines, feature)
+  date <- manifest_exclude_newer(lines)
+  windows <- "win-64" %in% manifest_platforms(lines)
+  if (windows) {
+    cli::cli_alert_info(
+      "On Windows, rpix sets R's library folder and adds MSYS2's build tools, as {.code pixi-build-r} doesn't yet."
+    )
+  }
 
   for (package in packages) {
     github <- parse_github(package, call = call)
-    entry <- github_entry(github, r_base)
+    entry <- github_entry(github, r_base, windows = windows)
     added <- unique(unlist(github$requirements))
     if (length(added) > 0) {
       cli::cli_alert_info(
@@ -162,7 +169,12 @@ add_github_packages <- function(
       cli::cli_abort(
         c(
           "Pixi couldn't build {.pkg {packages}}, so {.file pixi.toml} is as it was.",
-          "i" = "See Pixi's output above."
+          "i" = "See Pixi's output above.",
+          if (is_absolute_date(date)) {
+            c(
+              "i" = "The project uses packages as of {.val {date}}, which applies to Pixi's build backend too; it may not have existed then. See {.help rpix::pixi_set_date}."
+            )
+          }
         ),
         parent = e,
         call = call
@@ -174,8 +186,9 @@ add_github_packages <- function(
 
 # The inline package for a GitHub package, built with pixi-build-r. R is
 # pinned for the build, as it otherwise builds for the newest R
-# (https://github.com/prefix-dev/pixi/issues/7214).
-github_entry <- function(github, r_base = NULL) {
+# (https://github.com/prefix-dev/pixi/issues/7214). With `windows`, it also
+# gets what builds on Windows need (see windows_build()).
+github_entry <- function(github, r_base = NULL, windows = FALSE) {
   requirements <- github$requirements
   any_version <- function(packages) {
     stats::setNames(rep("*", length(packages)), packages)
@@ -190,6 +203,16 @@ github_entry <- function(github, r_base = NULL) {
   )
   tables <- tables[lengths(tables) > 0]
   package <- ', package = { build.backend.name = "pixi-build-r"'
+  if (windows) {
+    build <- windows_build(requirements)
+    package <- paste0(
+      package,
+      ", build.target.win-64.config.extra-args = [",
+      paste0('"', build$extra_args, '"', collapse = ", "),
+      "]"
+    )
+    tables[["target.win-64.build-dependencies"]] <- any_version(build$tools)
+  }
   if (length(tables) > 0) {
     package <- paste0(
       package,
@@ -212,6 +235,44 @@ github_entry <- function(github, r_base = NULL) {
     package,
     " }"
   )
+}
+
+# What pixi-build-r doesn't add to builds on Windows yet:
+# * R's library: it installs into Library\R\library, but conda-forge's R
+#   uses Lib\R\library (https://github.com/prefix-dev/pixi/issues/7231). A
+#   second --library wins.
+# * MSYS2's make, sed and coreutils, which R's build rules need for compiled
+#   code (https://github.com/prefix-dev/pixi/issues/7232)
+# * for Rust, the standard library for the GNU target R builds for
+#   (https://github.com/prefix-dev/pixi/issues/7228)
+windows_build <- function(requirements) {
+  list(
+    extra_args = "--library=%PREFIX%/Lib/R/library",
+    tools = c(
+      "m2-make",
+      "m2-sed",
+      "m2-coreutils",
+      if ("rust" %in% requirements$build) "rust-std-x86_64-pc-windows-gnu"
+    )
+  )
+}
+
+# The project's platforms, from [workspace] (or [project]). The list can span
+# several lines.
+manifest_platforms <- function(lines) {
+  rows <- table_lines(lines, "workspace") %||% table_lines(lines, "project")
+  start <- rows[grepl("^\\s*platforms\\s*=", lines[rows])]
+  if (length(start) == 0) {
+    return(character())
+  }
+  following <- lines[start[1]:max(rows)]
+  end <- which(grepl("]", following, fixed = TRUE))[1]
+  text <- paste(
+    following[seq_len(end %|NA|% length(following))],
+    collapse = " "
+  )
+  quoted <- regmatches(text, gregexpr('"[^"]*"', text))[[1]]
+  gsub('"', "", quoted, fixed = TRUE)
 }
 
 # A TOML key, quoted unless it's a bare key: in r-data.table, the dot would

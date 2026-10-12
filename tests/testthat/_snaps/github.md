@@ -27,6 +27,15 @@
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
+# pixi_add() adds what builds on Windows need, in projects for Windows
+
+    Code
+      pixi_add("github::hadley/emo", path = calls$dir)
+    Message
+      i On Windows, rpix sets R's library folder and adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
 # pixi_add() says what it adds to a GitHub package's build
 
     Code
@@ -35,6 +44,21 @@
       i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
+# pixi_add() explains a failed build in a project with a date
+
+    Code
+      pixi_add("github::hadley/emo", path = calls$dir)
+    Message
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+    Condition
+      Error in `pixi_add()`:
+      ! Pixi couldn't build github::hadley/emo, so 'pixi.toml' is as it was.
+      i See Pixi's output above.
+      i The project uses packages as of "2025-06-01", which applies to Pixi's build backend too; it may not have existed then. See `?rpix::pixi_set_date()`.
+      Caused by error in `run_pixi()`:
+      ! build failed
 
 # pixi_add() puts pixi.toml back if Pixi can't build the package
 

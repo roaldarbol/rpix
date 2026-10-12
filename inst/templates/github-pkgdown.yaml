@@ -1,0 +1,48 @@
+# Written by rpix::use_pixi_github_action("pkgdown"): build the pkgdown site
+# with the project's Pixi environment, and publish it to GitHub Pages. The
+# environment needs pkgdown and pandoc.
+name: pixi-pkgdown
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # Only restrict concurrency for non-PR jobs
+    concurrency:
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: prefix-dev/setup-pixi@{{setup_pixi}}
+        with:
+          pixi-version: {{pixi_version}}
+          cache: true
+          locked: true
+          environments: {{environment}}
+          activate-environment: {{environment}}
+
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
