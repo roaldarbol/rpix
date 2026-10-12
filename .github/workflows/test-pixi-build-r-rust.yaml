@@ -1,0 +1,73 @@
+# Temporary: build pixi-build-r from the Rust feature (prefix-dev/pixi#7228)
+# and build a Rust package with it, without adding rust by hand. On Windows,
+# the library folder (#7231) and MSYS2's tools (#7232) are still worked
+# around in the entry, as this branch doesn't have those fixes.
+name: test-pixi-build-r-rust
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+
+permissions: read-all
+
+jobs:
+  build:
+    name: ${{ matrix.os }} / hellorust
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-64
+            binary: pixi-build-r
+            entry: 'r-hellorust = { git = "https://github.com/cran/hellorust", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+          - os: windows-latest
+            platform: win-64
+            binary: pixi-build-r.exe
+            entry: 'r-hellorust = { git = "https://github.com/cran/hellorust", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" }, host-dependencies = { r-base = "4.5.*" } } }'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: feat/pixi-build-r-rust
+          path: pixi-src
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pixi-src
+      - name: Build pixi-build-r from the branch
+        working-directory: pixi-src
+        run: cargo build -p pixi-build-r
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Write the project
+        env:
+          ENTRY: ${{ matrix.entry }}
+        run: |
+          mkdir project
+          cat > project/pixi.toml <<TOML
+          [workspace]
+          name = "source-build"
+          channels = ["conda-forge"]
+          platforms = ["${{ matrix.platform }}"]
+          preview = ["pixi-build"]
+
+          [dependencies]
+          r-base = "4.5.*"
+          # r-base in host-dependencies only works around prefix-dev/pixi#7214
+          $ENTRY
+          TOML
+      - name: Build and install, with the branch's backend
+        working-directory: project
+        run: |
+          export PIXI_BUILD_BACKEND_OVERRIDE="pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/${{ matrix.binary }}"
+          pixi install 2>&1 | tee ../install.log; exit "${PIPESTATUS[0]}"
+      - name: Load it
+        working-directory: project
+        run: pixi run Rscript -e "library(hellorust); hello(); print(random())"
