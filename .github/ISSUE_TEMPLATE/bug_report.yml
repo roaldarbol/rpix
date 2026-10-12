@@ -1,0 +1,109 @@
+name: Bug report
+description: Something in rpix doesn't work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. The fields below are what's needed to reproduce it.
+
+        For questions, [GitHub Discussions](https://github.com/roaldarbol/rpix/discussions) is the better place. If the same thing happens with the `pixi` command in a terminal, it's likely a bug in Pixi itself, for [Pixi's issues](https://github.com/prefix-dev/pixi/issues).
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I've searched the [existing issues](https://github.com/roaldarbol/rpix/issues?q=is%3Aissue), and this hasn't been reported.
+          required: true
+        - label: I'm using the latest rpix (`packageVersion("rpix")`) and Pixi (`pixi --version`).
+          required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What went wrong, and what you were trying to do.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reprex
+    attributes:
+      label: Reproducible example
+      description: |
+        The smallest piece of R code that shows the problem, with its output. If it depends on the project, include its `pixi.toml`, or the part that matters.
+      render: r
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: sitrep
+    attributes:
+      label: Situation report
+      description: |
+        In the project, run `rpix::pixi_sitrep()` and paste its output. It reports Pixi, the project, R and its libraries, the IDE and logins, with secrets hidden.
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: rpix version
+      description: The output of `packageVersion("rpix")`.
+      placeholder: "0.7.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ide
+    attributes:
+      label: Where do you run R?
+      options:
+        - RStudio
+        - Positron
+        - VS Code
+        - A terminal (`pixi run R`)
+        - Somewhere else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pixi
+    attributes:
+      label: Does it also happen with the `pixi` command in a terminal?
+      description: rpix shows the Pixi command it runs, e.g. "Running `pixi add r-dplyr`".
+      options:
+        - "Yes"
+        - "No"
+        - I haven't tried
+        - It doesn't apply
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: The full error message, `pixi info` output, screenshots, or what you were working towards.
+    validations:
+      required: false
