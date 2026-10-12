@@ -1,0 +1,67 @@
+# Temporary: do bioconda's annotation packages (data fetched by a post-link
+# script) load when added with Pixi, with and without post-link scripts, and
+# through rpix's pixi_add("bioc::...")?
+name: test-bioc-annotation
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  annotation:
+    name: ${{ matrix.os }}, ${{ matrix.via }}, post-link ${{ matrix.post-link }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        via: [pixi, rpix]
+        post-link: [default, insecure]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: rpix
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Set up the project
+        run: |
+          mkdir project && cd project
+          pixi init --channel conda-forge --channel bioconda
+          pixi add "r-base=4.5" r-askpass r-cli r-jsonlite r-processx r-rlang
+          if [ "${{ matrix.post-link }}" = insecure ]; then
+            mkdir -p .pixi
+            echo 'run-post-link-scripts = "insecure"' > .pixi/config.toml
+          fi
+          pixi run R CMD INSTALL ../rpix
+      - name: Add org.Hs.eg.db
+        working-directory: project
+        run: |
+          if [ "${{ matrix.via }}" = rpix ]; then
+            pixi run Rscript -e 'rpix::pixi_add("bioc::org.Hs.eg.db")' 2>&1 | tee ../add.log
+          else
+            pixi add bioconductor-org.hs.eg.db 2>&1 | tee ../add.log
+          fi
+          echo "::group::Installed package folder"
+          ls -la .pixi/envs/default/lib/R/library/org.Hs.eg.db 2>&1 || true
+          echo "::endgroup::"
+          grep -i "post-link\|post_link" ../add.log || echo "(no mention of post-link scripts)"
+      - name: Load it
+        working-directory: project
+        run: |
+          set +e
+          pixi run Rscript -e 'library(org.Hs.eg.db); print(head(keys(org.Hs.eg.db)))' > ../load.log 2>&1
+          status=$?
+          cat ../load.log
+          echo "### ${{ matrix.os }}, ${{ matrix.via }}, post-link ${{ matrix.post-link }}: exit $status" >> "$GITHUB_STEP_SUMMARY"
+          tail -3 ../load.log | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY"
+          exit $status

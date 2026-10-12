@@ -3,8 +3,7 @@
 name: test-bioconductor-branch
 
 on:
-  push:
-    branches: [test/windows-source-builds]
+  workflow_dispatch:
 
 permissions: read-all
 
