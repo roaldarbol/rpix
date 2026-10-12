@@ -84,15 +84,11 @@ rpix::pixi_run("report")
 
 ## Continuous integration
 
-The [setup-pixi](https://github.com/prefix-dev/setup-pixi) action installs Pixi and the environment on GitHub Actions:
+`use_pixi_github_action()` writes a GitHub Actions workflow that installs the project's environments exactly as `pixi.lock` records them, with the [setup-pixi](https://github.com/prefix-dev/setup-pixi) action, so CI runs with the same R and packages as your computer:
 
-```yaml
-steps:
-  - uses: actions/checkout@v4
-  - uses: prefix-dev/setup-pixi@v0.10.2
-    with:
-      cache: true
-  - run: pixi run report
+```r
+use_pixi_github_action("task", task = "report")   # run a Pixi task, e.g. render a report
+use_pixi_github_action("check")                   # R CMD check, for a package
 ```
 
-It uses `pixi install --locked` by default, so the run fails if `pixi.lock` is out of date.
+For a package, `"check"` runs r-lib's `check-r-package` on Linux, macOS and Windows (those of the project's platforms), and takes several environments, e.g. those from `use_pixi_check_matrix()`, including the `minimum` one. `"test-coverage"` and `"pkgdown"` do what r-lib's workflows of the same name do. Pixi is pinned to the version you have, and the run fails if `pixi.lock` is out of date with `pixi.toml`, so commit both.

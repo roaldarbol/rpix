@@ -9,6 +9,10 @@
 * `use_pixi_check_matrix(minimum = TRUE)` adds a `minimum` environment, with
   R and the package's dependencies at the lowest versions its `DESCRIPTION`
   allows, to check that those minimums really work (#112).
+* `use_pixi_github_action()` writes a GitHub Actions workflow that uses the
+  project's environments exactly as `pixi.lock` records them: `R CMD check`
+  on Linux, macOS and Windows for each environment, test coverage, a pkgdown
+  site, or a Pixi task (#107).
 
 ## Changed
 
