@@ -72,7 +72,7 @@ use_pixi <- function(
   # conda-forge's R puts the user library of a regular R install first on
   # .libPaths() (https://github.com/conda-forge/r-base-feedstock/issues/37).
   # This package's activation script points R_LIBS_USER at nothing instead.
-  isolation <- "conda-ecosystem-user-package-isolation"
+  isolation <- isolation_package
   # Added together with R, so Pixi picks the newest R they're all built for.
   # A new R comes out on conda-forge before its packages are rebuilt for it.
   packages <- c(
@@ -227,3 +227,7 @@ warn_legacy_rprofile <- function(file) {
 count_char <- function(x, char) {
   lengths(regmatches(x, gregexpr(char, x, fixed = TRUE)))
 }
+
+# conda-forge's package that keeps the personal R library out of an
+# environment's R (https://github.com/conda-forge/r-base-feedstock/issues/37)
+isolation_package <- "conda-ecosystem-user-package-isolation"

@@ -194,6 +194,7 @@ test_that("use_pixi_check_matrix() adds an environment per version of R", {
     added$r44,
     c(
       "r-base=4.4",
+      "conda::conda-ecosystem-user-package-isolation",
       "cli",
       "jsonlite",
       "testthat",
@@ -204,6 +205,148 @@ test_that("use_pixi_check_matrix() adds an environment per version of R", {
   )
   expect_equal(added$r45[1], "r-base=4.5")
   expect_equal(environments$r45, list("r45", FALSE, TRUE))
+})
+
+# A package project with a pixi.toml, and use_pixi_check_matrix()'s calls to
+# Pixi recorded
+local_minimum_project <- function(
+  description = c(
+    "Package: demo",
+    "Depends: R (>= 4.1), methods",
+    "Imports: cli (>= 3.0), rlang, limma (>= 3.50)",
+    "LinkingTo: Rcpp",
+    "Suggests: testthat (>= 3.0.0)"
+  ),
+  fail = FALSE,
+  env = parent.frame()
+) {
+  dir <- withr::local_tempdir(.local_envir = env)
+  writeLines(description, file.path(dir, "DESCRIPTION"))
+  writeLines(
+    c(
+      "[workspace]",
+      'channels = ["conda-forge"]',
+      "",
+      "[dependencies]",
+      'r-base = "4.5.*"'
+    ),
+    file.path(dir, "pixi.toml")
+  )
+  calls <- new.env()
+  calls$args <- list()
+  local_mocked_bindings(
+    require_project = function(path) dir,
+    find_r_packages = function(packages) {
+      refs <- ifelse(
+        packages == "limma",
+        "bioc::limma",
+        ifelse(packages == "nowhere", NA, paste0("cran::", packages))
+      )
+      stats::setNames(refs, packages)
+    },
+    project_channels = function(...) "conda-forge",
+    pixi_add_environment = function(name, ...) {
+      calls$args <- c(calls$args, list(c("environment", name)))
+    },
+    run_pixi = function(args, ...) {
+      calls$args <- c(calls$args, list(args))
+      if (fail && args[1] == "lock") {
+        stop("no solution")
+      }
+      invisible(list(status = 0))
+    },
+    .env = env
+  )
+  calls$dir <- dir
+  calls
+}
+
+test_that("use_pixi_check_matrix() adds a minimum-versions environment", {
+  calls <- local_minimum_project()
+  expect_snapshot(names <- use_pixi_check_matrix(minimum = TRUE))
+  expect_equal(names, "minimum")
+
+  lines <- readLines(file.path(calls$dir, "pixi.toml"))
+  feature <- lines[seq(match("[feature.minimum]", lines), length(lines))]
+  expect_true('solve-strategy = "lowest-direct"' %in% feature)
+  expect_true(all(
+    c(
+      'r-base = ">=4.1"',
+      'conda-ecosystem-user-package-isolation = "*"',
+      'r-cli = ">=3.0"',
+      'r-rlang = "*"',
+      'r-rcpp = "*"',
+      'bioconductor-limma = { version = ">=3.50", channel = "bioconda" }',
+      'r-testthat = ">=3.1.0"',
+      'r-pkgload = ">=1.3.0"',
+      'r-rcmdcheck = ">=1.4.0"'
+    ) %in%
+      feature
+  ))
+  # bioconda is added, the environment set up, and Pixi solves it
+  expect_equal(
+    calls$args[[1]][1:4],
+    c("workspace", "channel", "add", "bioconda")
+  )
+  expect_equal(calls$args[[2]], c("environment", "minimum"))
+  expect_equal(calls$args[[3]], "lock")
+
+  # Again replaces it, rather than adding a second one
+  suppressMessages(use_pixi_check_matrix(minimum = TRUE))
+  lines <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_equal(sum(lines == "[feature.minimum]"), 1)
+  expect_equal(sum(lines == "[feature.minimum.dependencies]"), 1)
+})
+
+test_that("the minimum environment takes R from r_versions or the project", {
+  calls <- local_minimum_project(c("Package: demo", "Imports: cli"))
+  suppressMessages(use_pixi_check_matrix(minimum = TRUE))
+  expect_true(
+    'r-base = "4.5.*"' %in% readLines(file.path(calls$dir, "pixi.toml"))
+  )
+
+  local_mocked_bindings(pixi_add = function(...) NULL)
+  suppressMessages(use_pixi_check_matrix(c("4.5", "4.3"), minimum = TRUE))
+  expect_true(
+    'r-base = ">=4.3"' %in% readLines(file.path(calls$dir, "pixi.toml"))
+  )
+})
+
+test_that("the minimum environment leaves out packages it can't find", {
+  calls <- local_minimum_project(c(
+    "Package: demo",
+    "Depends: R (>= 4.1)",
+    "Imports: nowhere (>= 1.0)"
+  ))
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE))
+  expect_false(any(grepl(
+    "nowhere",
+    readLines(file.path(calls$dir, "pixi.toml"))
+  )))
+})
+
+test_that("use_pixi_check_matrix() puts pixi.toml back if Pixi can't solve it", {
+  calls <- local_minimum_project(fail = TRUE)
+  before <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE), error = TRUE)
+  expect_equal(readLines(file.path(calls$dir, "pixi.toml")), before)
+})
+
+test_that("use_pixi_check_matrix() needs R versions or minimum, and a pixi.toml", {
+  calls <- local_minimum_project()
+  expect_error(use_pixi_check_matrix(), "r_versions")
+  file.remove(file.path(calls$dir, "pixi.toml"))
+  writeLines("[tool.pixi.workspace]", file.path(calls$dir, "pyproject.toml"))
+  expect_error(use_pixi_check_matrix(minimum = TRUE), "pixi.toml")
+})
+
+test_that("remove_table() removes a table and its lines", {
+  lines <- c("[workspace]", "x = 1", "", "[feature.a]", "y = 2", "", "[tasks]")
+  expect_equal(
+    remove_table(lines, "feature.a"),
+    c("[workspace]", "x = 1", "", "[tasks]")
+  )
+  expect_identical(remove_table(lines, "feature.b"), lines)
 })
 
 test_that("use_pixi_check_matrix() needs a package", {
@@ -297,10 +440,12 @@ test_that("run_tests() and run_check() summarise the results", {
 
 test_that("the tests run in the environment's R", {
   skip_if_no_pixi()
-  skip_if(is.null(pixi_r_location(r_home())), "not in a Pixi environment")
+  here <- pixi_r_location(r_home())
+  skip_if(is.null(here), "not in a Pixi environment")
 
+  # The environment these tests run in, which needn't be the default one
   tests <- suppressMessages(finish_run(start_run(
-    "default",
+    here$name,
     "test",
     NULL,
     find_project_root(),

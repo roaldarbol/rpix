@@ -58,8 +58,10 @@ test_that("pixi_r() checks its arguments", {
 test_that("pixi_r() runs in the project's R", {
   skip_on_cran()
   skip_if_no_pixi()
-  skip_if(is.null(pixi_r_location(r_home())), "not in a Pixi environment")
+  here <- pixi_r_location(r_home())
+  skip_if(is.null(here), "not in a Pixi environment")
 
-  home <- pixi_r(R.home, show = FALSE)
+  # The environment these tests run in, which needn't be the default one
+  home <- pixi_r(R.home, environment = here$name, show = FALSE)
   expect_true(same_path(home, R.home()))
 })
