@@ -23,6 +23,11 @@ names. rpix translates the names for you.
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   looks for it on bioconda, so `pixi_add("DESeq2")` works. Use a
   `bioc::` prefix to say so up front, e.g. when a name exists on both.
+  Bioconductor’s annotation and data packages, such as org.Hs.eg.db,
+  download their data when they’re installed, with a script that Pixi
+  only runs in projects that allow it.
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  offers to allow it.
 - **Conda packages that aren’t R packages**, such as GDAL or Quarto,
   take a `conda::` prefix. Names containing `-` or `_` can’t be R
   package names, so they’re used as they are.

@@ -11,7 +11,10 @@ pixi_lock() updates pixi.lock to match pixi.toml, without
 installing anything.
 
 
-Package names are translated like in pixi_add().
+Package names are translated like in pixi_add(). If Pixi skips an install
+script that a package needs, such as the ones Bioconductor's data packages
+download their data with, these functions offer to allow them in the
+project, as pixi_add() does.
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/install/,
 https://pixi.prefix.dev/latest/reference/cli/pixi/update/,
 https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/ and
@@ -27,7 +30,10 @@ pixi_lock() updates pixi.lock to match pixi.toml, without
 installing anything.
 
 
-Package names are translated like in pixi_add().
+Package names are translated like in pixi_add(). If Pixi skips an install
+script that a package needs, such as the ones Bioconductor's data packages
+download their data with, these functions offer to allow them in the
+project, as pixi_add() does.
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/install/,
 https://pixi.prefix.dev/latest/reference/cli/pixi/update/,
 https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/ and
@@ -99,7 +105,10 @@ allows, in <code>pixi.lock</code>.</p></li>
 <code>pixi.toml</code> to match.</p></li>
 <li><p><code>pixi_lock()</code> updates <code>pixi.lock</code> to match <code>pixi.toml</code>, without
 installing anything.</p></li>
-</ul><p>Package names are translated like in <code><a href="pixi_add.html">pixi_add()</a></code>.</p>
+</ul><p>Package names are translated like in <code><a href="pixi_add.html">pixi_add()</a></code>. If Pixi skips an install
+script that a package needs, such as the ones Bioconductor's data packages
+download their data with, these functions offer to allow them in the
+project, as <code><a href="pixi_add.html">pixi_add()</a></code> does.</p>
 <p>For more information, see <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/install/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/install/</a>,
 <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/update/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/update/</a>,
 <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/upgrade/</a> and

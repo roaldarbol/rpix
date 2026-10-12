@@ -31,6 +31,16 @@ the lock file first. To install exactly what’s in the lock file instead,
 use `pixi install --frozen`. Or use `pixi install --locked`, which stops
 if the lock file is out of date.
 
+Some packages finish installing with a script, which Pixi only runs in
+projects that allow it. Bioconductor’s annotation and data packages,
+such as org.Hs.eg.db, download their data that way. The setting is in
+`.pixi/config.toml`, which isn’t committed, so allow it on each
+computer:
+[`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+offers to, or run
+`pixi config set --local run-post-link-scripts insecure`. `pixi.lock`
+pins these packages, but not the data the script downloads.
+
 ## Platforms
 
 `pixi.lock` covers every platform listed in `pixi.toml`, under
