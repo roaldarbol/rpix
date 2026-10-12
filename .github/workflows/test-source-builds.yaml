@@ -1,6 +1,6 @@
 # Temporary: does building R packages from source with pixi-build-r work on
-# Windows? Round 6: minimal reproductions for the upstream issues, with
-# `pixi info`.
+# Windows? Round 7: the entries rpix would write (#123), with the Windows
+# parts in win-64 targets, in a project for macOS and Windows.
 #   library-folder: a pure R package, as pixi-build-r writes it
 #   build-tools:    a C++ package, with only the library folder worked around
 name: test-source-builds
@@ -19,12 +19,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - case: library-folder
+          - case: pure-r
             pkg: fortunes
-            entry: 'r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
-          - case: build-tools
+            entry: 'r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r", build.target.win-64.config.extra-args = ["--library=%PREFIX%/Lib/R/library"], host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" } } }'
+          - case: cxx
             pkg: datey
-            entry: 'r-datey = { git = "https://github.com/cran/datey", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, host-dependencies = { r-base = "4.5.*" } } }'
+            entry: 'r-datey = { git = "https://github.com/cran/datey", package = { build.backend.name = "pixi-build-r", build.target.win-64.config.extra-args = ["--library=%PREFIX%/Lib/R/library"], host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" } } }'
+          - case: rust
+            pkg: hellorust
+            entry: 'r-hellorust = { git = "https://github.com/cran/hellorust", package = { build.backend.name = "pixi-build-r", build.target.win-64.config.extra-args = ["--library=%PREFIX%/Lib/R/library"], build-dependencies = { rust = "*" }, host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*", rust-std-x86_64-pc-windows-gnu = "*" } } }'
     defaults:
       run:
         shell: bash
@@ -42,7 +45,7 @@ jobs:
           [workspace]
           name = "source-build"
           channels = ["conda-forge"]
-          platforms = ["win-64"]
+          platforms = ["osx-64", "win-64"]
           preview = ["pixi-build"]
 
           [dependencies]
