@@ -65,6 +65,8 @@ pixi_add("bioc::DESeq2")
 pixi_remove("ggplot2")
 ```
 
+A package that isn’t on conda-forge or bioconda can be built from source, which `pixi_add()` offers. Together, that’s [80% of CRAN and nearly all of Bioconductor](https://roald-arboel.com/rpix/articles/package-availability.html).
+
 `pixi_sitrep()` checks the setup, and suggests fixes if something’s off.
 
 To start a new project from a template instead, see
@@ -87,6 +89,17 @@ To start a new project from a template instead, see
 - [Coming from
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.html):
   renv’s functions and their rpix counterparts.
+
+## For coding agents
+
+rpix comes with an agent skill, so coding agents such as Claude Code, Codex and Cursor add packages through Pixi, run the project’s R, and start from `pixi_sitrep()` when something’s off. In Claude Code:
+
+```
+/plugin marketplace add roaldarbol/rpix
+/plugin install rpix@rpix
+```
+
+For other agents that read [Agent Skills](https://agentskills.io), copy the [`skills/rpix`](https://github.com/roaldarbol/rpix/tree/main/skills/rpix) folder to where they look for skills.
 
 ## Getting help
 
