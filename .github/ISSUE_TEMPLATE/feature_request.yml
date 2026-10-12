@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest an idea for rpix
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. To talk it through first, [GitHub Discussions](https://github.com/roaldarbol/rpix/discussions) is a good place.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: What you're trying to do, and where rpix gets in the way. Describing the problem rather than the solution often leads somewhere better.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+      description: If you have a sense of how it could look in R, sketching the call helps. It doesn't have to be right.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pixi
+    attributes:
+      label: Does Pixi do this already?
+      description: If Pixi has a command or setting for it, a link to its docs helps. rpix may only need to make it available from R.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What alternatives have you considered?
+      description: Including whether an existing function nearly does the job.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+    validations:
+      required: false
