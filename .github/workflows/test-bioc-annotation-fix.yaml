@@ -1,0 +1,66 @@
+# Temporary: rpix's fix for bioconda's data packages (#142), end to end: the
+# yes answer, a collaborator's pixi_install(), and the warning when it can't ask.
+name: test-bioc-annotation-fix
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  fix:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/bioc-data-packages
+          path: rpix
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Set up a project with rpix from the branch
+        run: |
+          mkdir project && cd project
+          pixi init --channel conda-forge
+          pixi add "r-base=4.5" r-askpass r-cli r-jsonlite r-processx r-rlang
+          pixi run R CMD INSTALL ../rpix
+          # The interactive answers, without a terminal
+          cat > ../answer-yes.R <<'R'
+          ns <- asNamespace("rpix")
+          unlockBinding("is_interactive", ns); assign("is_interactive", function() TRUE, ns)
+          unlockBinding("ask_yes_no", ns); assign("ask_yes_no", function(question) { cat("ASKED:", question, "\n"); TRUE }, ns)
+          R
+      - name: pixi_add(), answering yes
+        working-directory: project
+        run: |
+          pixi run Rscript -e 'source("../answer-yes.R"); rpix::pixi_add("bioc::org.Hs.eg.db")' 2>&1 | tee ../add.log
+          grep -q "ASKED: Allow install scripts in this project" ../add.log
+          cat .pixi/config.toml
+          pixi run Rscript -e 'library(org.Hs.eg.db); print(head(keys(org.Hs.eg.db)))'
+      - name: A collaborator's pixi_install(), answering yes
+        run: |
+          mkdir clone && cp project/pixi.toml project/pixi.lock clone/
+          cd project
+          pixi run Rscript -e 'source("../answer-yes.R"); rpix::pixi_install(path = "../clone")' 2>&1 | tee ../install.log
+          grep -q "ASKED: Allow install scripts in this project" ../install.log
+          cd ../clone && pixi run Rscript -e 'library(org.Hs.eg.db); print(head(keys(org.Hs.eg.db)))'
+      - name: Without asking, rpix warns
+        run: |
+          mkdir quiet && cp project/pixi.toml project/pixi.lock quiet/
+          cd project
+          pixi run Rscript -e 'rpix::pixi_install(path = "../quiet")' 2>&1 | tee ../quiet.log
+          grep -q "isn't fully installed: Pixi didn't run its install script" ../quiet.log
+          grep -q "pixi reinstall bioconductor-org.hs.eg.db" ../quiet.log
+          echo "As expected: it warned"
