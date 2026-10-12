@@ -14,3 +14,7 @@
 # vignettes/ only holds pkgdown articles
 ^vignettes$
 ^tests/testthat/_problems$
+# The agent skill, its plugin manifests and its evals
+^skills$
+^\.claude-plugin$
+^evals$

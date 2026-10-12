@@ -19,3 +19,6 @@ docs
 
 # Reproductions testthat writes for failing tests
 tests/testthat/_problems/
+
+# Results of `claude plugin eval`
+evals/results/

@@ -17,6 +17,12 @@
   `DESCRIPTION` needs: the `Depends`, `Imports` and `LinkingTo` packages in
   the default environment, the `Suggests` somewhere, and installed versions at
   least the minimums `DESCRIPTION` asks for (#113).
+* An agent skill, in `skills/rpix/`, teaches coding agents such as Claude
+  Code, Codex and Cursor to work in R projects the Pixi way: add packages with
+  `pixi_add()` rather than `install.packages()`, run the environment's R, and
+  start from `pixi_sitrep()` when something's off. In Claude Code, install it
+  with `/plugin marketplace add roaldarbol/rpix` and
+  `/plugin install rpix@rpix` (#155).
 
 ## Changed
 
