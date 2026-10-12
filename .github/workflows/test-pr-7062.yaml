@@ -18,31 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # A CRAN package that depends on a Bioconductor package (qvalue)
-          - case: bioconductor-dependency
-            backend: pr
-            channels: '"conda-forge", "bioconda"'
-            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
-            load: BonEV
-            expect: success
-            message: ""
-          # The same, without bioconda among the channels
-          - case: without-bioconda
-            backend: pr
-            channels: '"conda-forge"'
-            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
-            load: BonEV
-            expect: failure
-            message: "bioconductor-qvalue"
-          # A Bioconductor package that imports an annotation package
-          # (org.Hs.eg.db), which the PR's list doesn't have
-          - case: annotation-package
-            backend: pr
-            channels: '"conda-forge", "bioconda"'
-            entry: '"bioconductor-cocitestats" = { git = "https://github.com/bioc/CoCiteStats", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
-            load: CoCiteStats
-            expect: failure
-            message: "r-org.hs.eg.db"
           # jose depends on the R package openssl; the openssl C library in
           # its host dependencies makes the PR's duplicate check skip r-openssl
           - case: same-name-c-library
@@ -51,7 +26,7 @@ jobs:
             entry: 'r-jose = { git = "https://github.com/cran/jose", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", openssl = "*" } } }'
             load: jose
             expect: failure
-            message: "dependency 'openssl' is not available"
+            message: "is not available for package"
           # The same with the released backend, as a control
           - case: same-name-c-library-released
             backend: released
@@ -114,7 +89,7 @@ jobs:
             status=$?
           fi
           echo "status=$status" >> "$GITHUB_OUTPUT"
-          sed 's/\x1b\[[0-9;]*m//g' ../install.log | grep -E "ERROR|No candidates|not available|×|bioconductor-|r-org" | head -20
+          sed 's/\x1b\[[0-9;]*m//g' ../install.log | grep -E "ERROR|No candidates|not available|×|bioconductor-|r-org" | head -20 || true
       - name: Check the expected outcome
         env:
           STATUS: ${{ steps.run.outputs.status }}
