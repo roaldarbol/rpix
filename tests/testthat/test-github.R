@@ -124,6 +124,55 @@ manifest <- c(
   'test = "Rscript -e 1"'
 )
 
+test_that("github_entry() adds what builds on Windows need", {
+  github <- list(
+    git = "https://github.com/cran/hellorust",
+    ref = NULL,
+    name = "r-hellorust",
+    requirements = list(build = "rust", host = character(), run = character())
+  )
+  expect_equal(
+    github_entry(github, "4.5.*", windows = TRUE),
+    paste0(
+      'r-hellorust = { git = "https://github.com/cran/hellorust", package = { ',
+      'build.backend.name = "pixi-build-r", ',
+      'build.target.win-64.config.extra-args = ["--library=%PREFIX%/Lib/R/library"], ',
+      'build-dependencies = { rust = "*" }, ',
+      'host-dependencies = { r-base = "4.5.*" }, ',
+      'target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", ',
+      'm2-coreutils = "*", rust-std-x86_64-pc-windows-gnu = "*" } } }'
+    )
+  )
+  # Rust's GNU target only for packages that need Rust
+  github$requirements$build <- character()
+  expect_no_match(github_entry(github, windows = TRUE), "rust-std")
+  expect_no_match(github_entry(github), "win-64")
+})
+
+test_that("manifest_platforms() reads the project's platforms", {
+  expect_equal(
+    manifest_platforms(c(
+      "[workspace]",
+      'platforms = ["osx-64", "win-64"]',
+      "[dependencies]"
+    )),
+    c("osx-64", "win-64")
+  )
+  # Over several lines, and in [project]
+  expect_equal(
+    manifest_platforms(c(
+      "[project]",
+      "platforms = [",
+      '  "linux-64",',
+      '  "win-64",',
+      "]",
+      "[tasks]"
+    )),
+    c("linux-64", "win-64")
+  )
+  expect_equal(manifest_platforms(c("[workspace]", 'name = "x"')), character())
+})
+
 test_that("github_entry() quotes names with a dot", {
   github <- list(
     git = "https://github.com/cran/data.table",
@@ -266,6 +315,21 @@ test_that("pixi_add() adds GitHub packages to pixi.toml, and Pixi installs them"
   expect_true(any(grepl(
     '^r-praise = .*rev = "1.0.0".*r-base = "4.4.\\*"',
     lines
+  )))
+})
+
+test_that("pixi_add() adds what builds on Windows need, in projects for Windows", {
+  calls <- local_github_project()
+  manifest <- file.path(calls$dir, "pixi.toml")
+  lines <- readLines(manifest)
+  writeLines(
+    append(lines, 'platforms = ["linux-64", "win-64"]', after = 3),
+    manifest
+  )
+  expect_snapshot(pixi_add("github::hadley/emo", path = calls$dir))
+  expect_true(any(grepl(
+    "^r-emo = .*target.win-64.build-dependencies",
+    readLines(manifest)
   )))
 })
 
