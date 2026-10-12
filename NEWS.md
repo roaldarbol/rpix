@@ -6,6 +6,9 @@
   date, with Pixi's `exclude-newer`, e.g. to rerun an old analysis; a duration
   such as `"7d"` leaves out the newest releases instead. `pixi_sitrep()`
   reports it (#106).
+* `use_pixi_check_matrix(minimum = TRUE)` adds a `minimum` environment, with
+  R and the package's dependencies at the lowest versions its `DESCRIPTION`
+  allows, to check that those minimums really work (#112).
 
 ## Changed
 
@@ -22,6 +25,9 @@
 
 ## Fixed
 
+* The check matrix's environments keep your personal R library out, as the
+  default environment does. Without it, R could load packages built for your
+  usual R, and crash (#112).
 * Packages built from source whose names have a dot, such as sym.arma, are
   written correctly into `pixi.toml`; Pixi couldn't read them before (#120).
 * In a package, `use_pixi()` adds `.pixi`, `pixi.toml` and `pixi.lock` to

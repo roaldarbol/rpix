@@ -13,7 +13,7 @@ pixi_check_matrix(
   path = NULL
 )
 
-use_pixi_check_matrix(r_versions, path = NULL)
+use_pixi_check_matrix(r_versions = NULL, minimum = FALSE, path = NULL)
 }
 \arguments{
 \item{environments}{Optional. The environments. Defaults to all of them.}
@@ -29,7 +29,10 @@ passes if it succeeds.}
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}
 
-\item{r_versions}{Versions of R, such as \code{"4.4"}.}
+\item{r_versions}{Versions of R, such as \code{"4.4"}. Optional with
+\code{minimum = TRUE}.}
+
+\item{minimum}{If \code{TRUE}, also add a \code{minimum} environment; see below.}
 }
 \value{
 \itemize{
@@ -49,12 +52,35 @@ side by side.
 dependencies, and testthat and pkgload for the tests, or rcmdcheck for
 \verb{R CMD check}.
 \item \code{use_pixi_check_matrix()} adds an environment for each version of R, with
-those packages, named after the version: \code{r44} for R 4.4.
+those packages, named after the version: \code{r44} for R 4.4. With
+\code{minimum = TRUE}, it also adds a \code{minimum} environment, with the oldest
+versions the package's \code{DESCRIPTION} allows.
 }
 }
+\section{The \code{minimum} environment}{
+
+Checks that the minimum versions in \code{DESCRIPTION} really work: R at the
+version \code{Depends} asks for, and each package in \code{Depends}, \code{Imports} and
+\code{LinkingTo} at the lowest version its constraint allows (Pixi's
+\code{solve-strategy = "lowest-direct"}; their own dependencies are the newest
+that fit). testthat, pkgload and rcmdcheck, which run the checks, aren't
+the packages under test, so they're kept at recent minimums.
+\itemize{
+\item A package without a minimum gets the oldest version on conda-forge for
+that R, which may be much older than you meant; rpix lists them.
+\item Without a minimum R in \code{Depends}, it uses the oldest of \code{r_versions}, or
+the project's R.
+\item Only versions on conda-forge (and bioconda) count, for the project's
+platforms. An old build's own dependencies are as conda-forge recorded
+them, which for old builds is sometimes looser than its \code{DESCRIPTION}:
+then R refuses to load it, although Pixi installed it.
+}
+}
+
 \examples{
 \dontrun{
 use_pixi_check_matrix(c("4.3", "4.4", "4.5"))
+use_pixi_check_matrix(minimum = TRUE)
 pixi_check_matrix()
 pixi_check_matrix(what = "check", parallel = TRUE)
 }
