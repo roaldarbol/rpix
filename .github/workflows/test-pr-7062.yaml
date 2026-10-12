@@ -4,8 +4,7 @@
 name: test-pr-7062
 
 on:
-  push:
-    branches: [test/windows-source-builds]
+  workflow_dispatch:
 
 permissions: read-all
 

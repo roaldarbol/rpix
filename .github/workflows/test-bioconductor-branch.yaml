@@ -1,0 +1,124 @@
+# Temporary: the branch that carries on prefix-dev/pixi#7062, with the review's
+# fixes: its tests, clippy and formatting, and real builds with its backend.
+name: test-bioconductor-branch
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+
+permissions: read-all
+
+jobs:
+  checks:
+    name: tests, clippy, fmt
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: feat/pixi-build-r-bioconductor
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt -p pixi-build-r --check
+      - run: cargo clippy -p pixi-build-r --all-targets -- -D warnings
+      - run: cargo test -p pixi-build-r
+
+  case:
+    name: ${{ matrix.case }} (expect ${{ matrix.expect }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case: bioconductor-dependency
+            channels: '"conda-forge", "bioconda"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: success
+            message: ""
+          - case: without-bioconda
+            channels: '"conda-forge"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: failure
+            message: "bioconda isn't among the channels"
+          - case: annotation-package
+            channels: '"conda-forge", "bioconda"'
+            entry: '"bioconductor-cocitestats" = { git = "https://github.com/bioc/CoCiteStats", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: CoCiteStats
+            expect: success
+            message: ""
+          - case: same-name-c-library
+            channels: '"conda-forge"'
+            entry: 'r-jose = { git = "https://github.com/cran/jose", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", openssl = "*" } } }'
+            load: jose
+            expect: success
+            message: ""
+          - case: bioconductor-from-source
+            channels: '"conda-forge", "bioconda"'
+            entry: 'bioconductor-dnacopy = { git = "https://github.com/bioc/DNAcopy", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: DNAcopy
+            expect: success
+            message: ""
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: feat/pixi-build-r-bioconductor
+          path: pixi-src
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pixi-src
+      - name: Build pixi-build-r from the branch, and use it for every Pixi command
+        working-directory: pixi-src
+        run: |
+          cargo build -p pixi-build-r
+          echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/pixi-build-r" >> "$GITHUB_ENV"
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Write the project
+        env:
+          ENTRY: ${{ matrix.entry }}
+        run: |
+          mkdir project
+          cat > project/pixi.toml <<TOML
+          [workspace]
+          name = "bioc-branch"
+          channels = [${{ matrix.channels }}]
+          platforms = ["linux-64"]
+          preview = ["pixi-build"]
+
+          [dependencies]
+          r-base = "4.5.*"
+          # r-base in host-dependencies only works around prefix-dev/pixi#7214
+          $ENTRY
+          TOML
+      - name: Build, install and load
+        id: run
+        working-directory: project
+        run: |
+          set +e
+          pixi install > ../install.log 2>&1
+          status=$?
+          if [ $status -eq 0 ]; then
+            pixi run Rscript -e "library(${{ matrix.load }})" >> ../install.log 2>&1
+            status=$?
+          fi
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          sed 's/\x1b\[[0-9;]*m//g' ../install.log | grep -E "ERROR|No candidates|not available|×|help:|bioconda" | head -20 || true
+      - name: Check the expected outcome
+        env:
+          STATUS: ${{ steps.run.outputs.status }}
+          EXPECT: ${{ matrix.expect }}
+          MESSAGE: ${{ matrix.message }}
+        run: |
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' install.log)
+          if [ "$EXPECT" = success ] && [ "$STATUS" = 0 ]; then echo "As expected: it worked"; exit 0; fi
+          if [ "$EXPECT" = failure ] && [ "$STATUS" != 0 ] && grep -qF "$MESSAGE" <<< "$clean"; then echo "As expected: it failed, saying '$MESSAGE'"; exit 0; fi
+          echo "Not as expected: status $STATUS, expected $EXPECT (message '$MESSAGE')"; exit 1
