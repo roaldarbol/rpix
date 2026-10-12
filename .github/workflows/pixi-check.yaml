@@ -1,0 +1,40 @@
+# Written by rpix::use_pixi_github_action("check"): R CMD check with the
+# project's Pixi environments, exactly as pixi.lock records them.
+# Each environment needs rcmdcheck.
+name: pixi-check
+
+on:
+  push:
+    branches: [main, master, test/windows-source-builds]
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  check:
+    name: ${{ matrix.os }} (${{ matrix.environment }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        environment: [default]
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          cache: true
+          locked: true
+          environments: ${{ matrix.environment }}
+          activate-environment: ${{ matrix.environment }}
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual")'
+          args: 'c("--no-manual")'

@@ -1,0 +1,33 @@
+# Written by rpix::use_pixi_github_action("task"): run the project's Pixi
+# task "test", with the environments exactly as pixi.lock records them.
+name: pixi-test
+
+on:
+  push:
+    branches: [main, master, test/windows-source-builds]
+  pull_request:
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  run:
+    name: ${{ matrix.os }} (${{ matrix.environment }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        environment: [default]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          cache: true
+          locked: true
+          environments: ${{ matrix.environment }}
+
+      - run: pixi run --environment ${{ matrix.environment }} test
