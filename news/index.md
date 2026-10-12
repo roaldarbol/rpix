@@ -19,6 +19,13 @@
   exactly as `pixi.lock` records them: `R CMD check` on Linux, macOS and
   Windows for each environment, test coverage, a pkgdown site, or a Pixi
   task ([\#107](https://github.com/roaldarbol/rpix/issues/107)).
+- In a package,
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  checks that `pixi.toml` has what `DESCRIPTION` needs: the `Depends`,
+  `Imports` and `LinkingTo` packages in the default environment, the
+  `Suggests` somewhere, and installed versions at least the minimums
+  `DESCRIPTION` asks for
+  ([\#113](https://github.com/roaldarbol/rpix/issues/113)).
 
 ### Changed
 

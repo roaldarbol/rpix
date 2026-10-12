@@ -66,6 +66,7 @@
 <code>use_pixi_check_matrix(minimum = TRUE)</code> adds a <code>minimum</code> environment, with R and the package’s dependencies at the lowest versions its <code>DESCRIPTION</code> allows, to check that those minimums really work (<a href="https://github.com/roaldarbol/rpix/issues/112" class="external-link">#112</a>).</li>
 <li>
 <code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that uses the project’s environments exactly as <code>pixi.lock</code> records them: <code>R CMD check</code> on Linux, macOS and Windows for each environment, test coverage, a pkgdown site, or a Pixi task (<a href="https://github.com/roaldarbol/rpix/issues/107" class="external-link">#107</a>).</li>
+<li>In a package, <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> checks that <code>pixi.toml</code> has what <code>DESCRIPTION</code> needs: the <code>Depends</code>, <code>Imports</code> and <code>LinkingTo</code> packages in the default environment, the <code>Suggests</code> somewhere, and installed versions at least the minimums <code>DESCRIPTION</code> asks for (<a href="https://github.com/roaldarbol/rpix/issues/113" class="external-link">#113</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>

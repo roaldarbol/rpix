@@ -10,6 +10,11 @@ environment, and suggest fixes for what doesn't. It reports:
 - The date the project's packages are as of, if it has one (see
   [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
 
+- In a package, whether `pixi.toml` has what its `DESCRIPTION` needs:
+  the `Depends`, `Imports` and `LinkingTo` packages in the default
+  environment, the `Suggests` somewhere (e.g. a `test` environment), and
+  installed versions at least the minimums `DESCRIPTION` asks for.
+
 - In a package, whether `.Rbuildignore` leaves Pixi's files out of its
   builds.
 
