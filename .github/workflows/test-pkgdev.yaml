@@ -1,0 +1,73 @@
+# Temporary: for the Package development guide (#117). Does devtools work on a
+# package with C code in a Pixi environment, on each platform, and what does
+# Windows need besides r-base?
+name: test-pkgdev
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  compiled:
+    name: ${{ matrix.os }}${{ matrix.extra && format(', with {0}', matrix.extra) || '' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, extra: '' }
+          - { os: macos-latest, extra: '' }
+          - { os: windows-latest, extra: '' }
+          - { os: windows-latest, extra: 'm2-make' }
+          - { os: windows-latest, extra: 'm2-make m2-sed m2-coreutils' }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: A package with C code and a test, in a Pixi project
+        run: |
+          mkdir -p addr/R addr/src addr/tests/testthat && cd addr
+          cat > DESCRIPTION <<'X'
+          Package: addr
+          Title: Adds Numbers in C
+          Version: 0.1.0
+          Authors@R: person("A", "B", email = "a@b.c", role = c("aut", "cre"))
+          Description: Adds two numbers in C, to test building compiled code.
+          License: MIT + file LICENSE
+          Encoding: UTF-8
+          Suggests: testthat (>= 3.0.0)
+          Config/testthat/edition: 3
+          X
+          printf 'YEAR: 2026\nCOPYRIGHT HOLDER: A B\n' > LICENSE
+          printf 'useDynLib(addr, .registration = TRUE)\nexport(add)\n' > NAMESPACE
+          cat > R/add.R <<'X'
+          add <- function(x, y) .Call(C_add, as.numeric(x), as.numeric(y))
+          X
+          cat > src/add.c <<'X'
+          #include <R.h>
+          #include <Rinternals.h>
+          #include <R_ext/Rdynload.h>
+          SEXP add(SEXP x, SEXP y) { return Rf_ScalarReal(REAL(x)[0] + REAL(y)[0]); }
+          static const R_CallMethodDef calls[] = {{"C_add", (DL_FUNC) &add, 2}, {NULL, NULL, 0}};
+          void R_init_addr(DllInfo *dll) { R_registerRoutines(dll, NULL, calls, NULL, NULL); R_useDynamicSymbols(dll, FALSE); }
+          X
+          printf 'library(testthat)\nlibrary(addr)\ntest_check("addr")\n' > tests/testthat.R
+          printf 'test_that("add() adds", expect_equal(add(1, 2), 3))\n' > tests/testthat/test-add.R
+          pixi init
+          pixi add r-base=4.5 r-devtools ${{ matrix.extra }}
+      - name: load_all(), test() and check()
+        working-directory: addr
+        run: |
+          set +e
+          pixi run Rscript -e 'devtools::load_all(); stopifnot(add(1, 2) == 3); cat("LOAD_ALL OK\n")' 2>&1 | tail -15
+          pixi run Rscript -e 'r <- as.data.frame(devtools::test()); stopifnot(sum(r$failed) == 0); cat("TEST OK\n")' 2>&1 | tail -6
+          pixi run Rscript -e 'r <- devtools::check(document = FALSE, manual = TRUE, error_on = "never"); print(r); if (length(r$errors)) quit(status = 1); cat("CHECK OK\n")' 2>&1 | tail -25
+          true
