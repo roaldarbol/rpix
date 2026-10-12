@@ -26,6 +26,9 @@
   `Suggests` somewhere, and installed versions at least the minimums
   `DESCRIPTION` asks for
   ([\#113](https://github.com/roaldarbol/rpix/issues/113)).
+- New article: “How many packages you can use”, with how much of CRAN
+  and Bioconductor works through Pixi and rpix, and what’s still missing
+  ([\#121](https://github.com/roaldarbol/rpix/issues/121)).
 
 ### Changed
 

@@ -24,4 +24,6 @@
 
 - [How rpix
   works](https://roald-arboel.com/rpix/articles/how-rpix-works.md):
+- [How many packages you can
+  use](https://roald-arboel.com/rpix/articles/package-availability.md):
 - [Troubleshooting](https://roald-arboel.com/rpix/articles/troubleshooting.md):

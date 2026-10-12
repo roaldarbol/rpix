@@ -47,6 +47,12 @@ pixi_add("bioc::DESeq2")
 pixi_remove("ggplot2")
 ```
 
+A package that isn’t on conda-forge or bioconda can be built from
+source, which
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+offers. Together, that’s [80% of CRAN and nearly all of
+Bioconductor](https://roald-arboel.com/rpix/articles/package-availability.html).
+
 [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
 checks the setup, and suggests fixes if something’s off.
 
@@ -194,4 +200,6 @@ workflow.*
 
 - [How rpix
   works](https://roald-arboel.com/rpix/articles/how-rpix-works.md):
+- [How many packages you can
+  use](https://roald-arboel.com/rpix/articles/package-availability.md):
 - [Troubleshooting](https://roald-arboel.com/rpix/articles/troubleshooting.md):

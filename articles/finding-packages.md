@@ -1,9 +1,12 @@
 # Finding packages
 
-Pixi installs conda packages. Most CRAN and Bioconductor packages are
-available as conda packages on [conda-forge](https://conda-forge.org)
-and [bioconda](https://bioconda.github.io), under slightly different
-names. rpix translates the names for you.
+Pixi installs conda packages. The most used CRAN packages, and nearly
+all of Bioconductor, are available as conda packages on
+[conda-forge](https://conda-forge.org) and
+[bioconda](https://bioconda.github.io), under slightly different names,
+and Pixi can build most others from source. rpix translates the names
+for you. For the numbers, see [How many packages you can
+use](https://roald-arboel.com/rpix/articles/package-availability.md).
 
 ## Package names
 
