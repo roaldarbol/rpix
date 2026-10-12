@@ -343,6 +343,17 @@ test_that("pixi_add() says what it adds to a GitHub package's build", {
   )))
 })
 
+test_that("pixi_add() explains a failed build in a project with a date", {
+  calls <- local_github_project()
+  calls$fail <- TRUE
+  manifest <- file.path(calls$dir, "pixi.toml")
+  writeLines(set_exclude_newer(readLines(manifest), "2025-06-01"), manifest)
+  expect_snapshot(
+    pixi_add("github::hadley/emo", path = calls$dir),
+    error = TRUE
+  )
+})
+
 test_that("pixi_add() puts pixi.toml back if Pixi can't build the package", {
   calls <- local_github_project()
   calls$fail <- TRUE
