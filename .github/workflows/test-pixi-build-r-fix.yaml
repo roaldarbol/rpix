@@ -3,8 +3,7 @@
 name: test-pixi-build-r-fix
 
 on:
-  push:
-    branches: [test/windows-source-builds]
+  workflow_dispatch:
 
 permissions: read-all
 

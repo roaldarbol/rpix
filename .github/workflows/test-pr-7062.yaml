@@ -1,0 +1,127 @@
+# Temporary: try prefix-dev/pixi#7062 (Bioconductor dependencies in
+# pixi-build-r) end to end, with its backend built from the PR's branch.
+# Each case says what it expects; the job passes when that's what happens.
+name: test-pr-7062
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+
+permissions: read-all
+
+jobs:
+  case:
+    name: ${{ matrix.case }} (expect ${{ matrix.expect }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # A CRAN package that depends on a Bioconductor package (qvalue)
+          - case: bioconductor-dependency
+            backend: pr
+            channels: '"conda-forge", "bioconda"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: success
+            message: ""
+          # The same, without bioconda among the channels
+          - case: without-bioconda
+            backend: pr
+            channels: '"conda-forge"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: failure
+            message: "bioconductor-qvalue"
+          # A Bioconductor package that imports an annotation package
+          # (org.Hs.eg.db), which the PR's list doesn't have
+          - case: annotation-package
+            backend: pr
+            channels: '"conda-forge", "bioconda"'
+            entry: '"bioconductor-cocitestats" = { git = "https://github.com/bioc/CoCiteStats", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: CoCiteStats
+            expect: failure
+            message: "r-org.hs.eg.db"
+          # jose depends on the R package openssl; the openssl C library in
+          # its host dependencies makes the PR's duplicate check skip r-openssl
+          - case: same-name-c-library
+            backend: pr
+            channels: '"conda-forge"'
+            entry: 'r-jose = { git = "https://github.com/cran/jose", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", openssl = "*" } } }'
+            load: jose
+            expect: failure
+            message: "dependency 'openssl' is not available"
+          # The same with the released backend, as a control
+          - case: same-name-c-library-released
+            backend: released
+            channels: '"conda-forge"'
+            entry: 'r-jose = { git = "https://github.com/cran/jose", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", openssl = "*" } } }'
+            load: jose
+            expect: success
+            message: ""
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        if: matrix.backend == 'pr'
+        with:
+          repository: aoright/pixi
+          ref: fix-build-r-bioconductor-mapping
+          path: pixi-src
+      - uses: Swatinem/rust-cache@v2
+        if: matrix.backend == 'pr'
+        with:
+          workspaces: pixi-src
+      - name: Build pixi-build-r from the PR, and use it for every Pixi command
+        if: matrix.backend == 'pr'
+        working-directory: pixi-src
+        run: |
+          cargo build -p pixi-build-r
+          echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/pixi-build-r" >> "$GITHUB_ENV"
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Write the project
+        env:
+          ENTRY: ${{ matrix.entry }}
+        run: |
+          mkdir project
+          cat > project/pixi.toml <<TOML
+          [workspace]
+          name = "pr-7062"
+          channels = [${{ matrix.channels }}]
+          platforms = ["linux-64"]
+          preview = ["pixi-build"]
+
+          [dependencies]
+          r-base = "4.5.*"
+          # r-base in host-dependencies only works around prefix-dev/pixi#7214
+          $ENTRY
+          TOML
+          cat project/pixi.toml
+      - name: Build, install and load
+        id: run
+        working-directory: project
+        run: |
+          set +e
+          pixi install > ../install.log 2>&1
+          status=$?
+          if [ $status -eq 0 ]; then
+            pixi run Rscript -e "library(${{ matrix.load }})" >> ../install.log 2>&1
+            status=$?
+          fi
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          sed 's/\x1b\[[0-9;]*m//g' ../install.log | grep -E "ERROR|No candidates|not available|×|bioconductor-|r-org" | head -20
+      - name: Check the expected outcome
+        env:
+          STATUS: ${{ steps.run.outputs.status }}
+          EXPECT: ${{ matrix.expect }}
+          MESSAGE: ${{ matrix.message }}
+        run: |
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' install.log)
+          if [ "$EXPECT" = success ] && [ "$STATUS" = 0 ]; then echo "As expected: it worked"; exit 0; fi
+          if [ "$EXPECT" = failure ] && [ "$STATUS" != 0 ] && grep -qF "$MESSAGE" <<< "$clean"; then echo "As expected: it failed, mentioning '$MESSAGE'"; exit 0; fi
+          echo "Not as expected: status $STATUS, expected $EXPECT (message '$MESSAGE')"; exit 1

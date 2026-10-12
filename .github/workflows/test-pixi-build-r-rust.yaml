@@ -5,8 +5,7 @@
 name: test-pixi-build-r-rust
 
 on:
-  push:
-    branches: [test/windows-source-builds]
+  workflow_dispatch:
 
 permissions: read-all
 
