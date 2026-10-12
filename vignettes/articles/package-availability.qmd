@@ -6,43 +6,57 @@ knitr:
     comment: '#>'
 ---
 
-For years, the answer to "can I use conda for R?" was "only if your packages happen to be on conda-forge". That's no longer the case: with conda-forge, bioconda, and packages built from source, most of CRAN and Bioconductor is usable in a Pixi project. This article has the numbers, for deciding whether Pixi is ready for your R work.
+```{r}
+#| include: false
+# The numbers come from data-raw/package-availability.R
+a <- jsonlite::read_json("package-availability.json")
+cran <- a$cran
+share <- cran$shares
+bioc <- a$bioconductor
+num <- function(x) format(x, big.mark = ",")
+pct <- function(x) paste0(round(100 * x), "%")
+or_list <- function(x) paste0(paste(head(x, -1), collapse = ", "), " or ", tail(x, 1))
+date <- as.Date(a$date)
+most <- if (share$usable > 0.5 && bioc$on_bioconda_share > 0.5) "most" else "much"
+```
 
-The numbers are from 11 October 2026, with Pixi 0.81.0. They'll change as conda-forge, bioconda and Pixi do.
+For years, the answer to "can I use conda for R?" was "only if your packages happen to be on conda-forge". That's no longer the case: with conda-forge, bioconda, and packages built from source, `r most` of CRAN and Bioconductor is usable in a Pixi project. This article has the numbers, for deciding whether Pixi is ready for your R work.
+
+The numbers are from `r as.integer(format(date, "%d"))` `r format(date, "%B %Y")`, with Pixi `r a$pixi`. They'll change as conda-forge, bioconda and Pixi do.
 
 ## CRAN
 
-Of CRAN's 25,404 packages:
+Of CRAN's `r num(cran$packages)` packages:
 
 | | Packages | Share |
 |---|---|---|
-| On conda-forge | 3,434 | 14% |
-| Built from source by rpix | 16,838 | 66% |
-| **Usable through Pixi and rpix** | **20,272** | **80%** |
-| Not yet: a dependency isn't on conda-forge | 4,733 | 19% |
-| Not yet: needs a system library R doesn't bring | 399 | 2% |
+| On conda-forge | `r num(cran$conda_forge)` | `r pct(share$conda_forge)` |
+| Built from source by rpix | `r num(cran$source)` | `r pct(share$source)` |
+| **Usable through Pixi and rpix** | **`r num(cran$usable)`** | **`r pct(share$usable)`** |
+| Not yet: a dependency isn't on conda-forge | `r num(cran$blocked_dependency)` | `r pct(share$blocked_dependency)` |
+| Not yet: needs a system library R doesn't bring | `r num(cran$blocked_system)` | `r pct(share$blocked_system)` |
 
-conda-forge has fewer packages than CRAN, but the ones that matter most: 953 of the 1,000 packages other CRAN packages depend on most, and 93% of its R packages are at CRAN's current version.
+conda-forge has fewer packages than CRAN, but the ones that matter most: `r num(cran$top_on_conda_forge)` of the `r num(cran$top)` packages other CRAN packages depend on most, and `r pct(cran$conda_forge_current)` of its R packages are at CRAN's current version.
 
 **Built from source** is what `pixi_add()` offers for a CRAN package that isn't on conda-forge: Pixi builds it from CRAN's source, with its dependencies from conda-forge (see [Finding packages](finding-packages.html)). A package counts when all its dependencies (`Depends`, `Imports` and `LinkingTo`) are on conda-forge or come with R, and its `SystemRequirements` need nothing beyond what conda-forge's R brings (such as curl, cairo, libxml2 or GSL) and the build tools rpix adds (Rust, CMake, pkg-config, Java). Building one takes a minute or two. A random sample of 25 of them all built and loaded, on macOS.
 
 ### What's still missing
 
-Most of the packages that don't work yet depend on a package that isn't on conda-forge either. For 3,928 of these 4,733, that dependency can be built from source too, so once Pixi can build packages that depend on other packages built from source ([prefix-dev/pixi#6925](https://github.com/prefix-dev/pixi/issues/6925)), rpix can build the whole chain. Most of the rest need a Bioconductor package (often limma, Biostrings, GenomicRanges or S4Vectors), which needs [prefix-dev/pixi#6994](https://github.com/prefix-dev/pixi/issues/6994), or a system library such as GDAL or libsndfile.
+`r if (cran$blocked_dependency > cran$blocked_system) "Most" else "Some"` of the packages that don't work yet depend on a package that isn't on conda-forge either. For `r num(cran$chains_blocked)` of these `r num(cran$blocked_dependency)`, that dependency can be built from source too, so once Pixi can build packages that depend on other packages built from source ([prefix-dev/pixi#6925](https://github.com/prefix-dev/pixi/issues/6925)), rpix can build the whole chain. `r if (cran$rest_bioc_or_library > cran$rest / 2) "Most" else "Some"` of the rest need a Bioconductor package (often `r or_list(cran$bioc_dependencies)`), which needs [prefix-dev/pixi#6994](https://github.com/prefix-dev/pixi/issues/6994), or a system library such as GDAL or libsndfile.
 
 | | Usable | Share |
 |---|---|---|
-| Today | 20,272 | 80% |
-| Building missing dependencies from source too | 24,200 | 95% |
-| And Bioconductor dependencies from bioconda | 24,622 | 97% |
+| Today | `r num(cran$usable)` | `r pct(share$usable)` |
+| Building missing dependencies from source too | `r num(cran$usable_chains)` | `r pct(share$usable_chains)` |
+| And Bioconductor dependencies from bioconda | `r num(cran$usable_bioconda)` | `r pct(share$usable_bioconda)` |
 
 ## Bioconductor
 
-bioconda has essentially all of Bioconductor 3.22, for R 4.5: 2,292 of its 2,300 software packages, 97% of them at their 3.22 version. Add them with a `bioc::` prefix, or without one: `pixi_add()` looks on bioconda when a package isn't on conda-forge.
+bioconda has `r if (bioc$on_bioconda_share >= 0.95) "essentially all" else if (bioc$on_bioconda_share > 0.5) "most" else "some"` of Bioconductor `r bioc$bioconda_release`, for R `r bioc$bioconda_r`: `r num(bioc$on_bioconda)` of its `r num(bioc$bioconda_release_software)` software packages, `r pct(bioc$at_version_share)` of them at their `r bioc$bioconda_release` version or newer. Add them with a `bioc::` prefix, or without one: `pixi_add()` looks on bioconda when a package isn't on conda-forge.
 
 Some things to know:
 
-- **Use R 4.5.** Bioconductor 3.23, for R 4.6, isn't on bioconda yet. That waits on conda-forge building its R packages for R 4.6, which only a few are so far.
+- **Use R `r bioc$bioconda_r`.** `r if (bioc$release != bioc$bioconda_release) paste0("Bioconductor ", bioc$release, ", for R ", bioc$release_r, ", isn't on bioconda yet. That waits on conda-forge building its R packages for R ", bioc$release_r, ", which only a few are so far.") else paste0("bioconda has Bioconductor ", bioc$release, " for R ", bioc$bioconda_r, ".")`
 - **Annotation and data packages**, such as org.Hs.eg.db, download their data with an install script, which Pixi only runs in projects that allow it. `pixi_add()` offers to allow it.
 - **Windows:** bioconda doesn't build its packages for Windows. Bioconductor packages that don't depend on other Bioconductor packages do build from source there, from [Bioconductor's git mirror on GitHub](https://github.com/bioc), but rpix doesn't offer that yet.
 
@@ -53,5 +67,7 @@ The source builds were measured on macOS. Packages of each kind (pure R, R's rec
 ## How these were counted
 
 - **CRAN:** every package in CRAN's package database, with its dependencies and `SystemRequirements`.
-- **conda-forge and bioconda:** the packages in their repodata, for osx-64, matched by name (`r-<name>` and `bioconductor-<name>`).
+- **conda-forge and bioconda:** the packages in their channel data, for `r a$platform`, matched by name (`r-<name>` and `bioconductor-<name>`).
 - **System requirements:** read with Posit's [r-system-requirements](https://github.com/rstudio/r-system-requirements) rules. A language standard ("C++17"), make, and tools only needed when the package runs (pandoc, Python) count as needing nothing.
+
+The script that counts them is [`data-raw/package-availability.R`](https://github.com/roaldarbol/rpix/blob/main/data-raw/package-availability.R).
