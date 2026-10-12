@@ -33,6 +33,11 @@
 
 ## Fixed
 
+* `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
+  when Pixi skips a package's install script, which Bioconductor's annotation
+  and data packages (such as org.Hs.eg.db) use to download their data. They
+  offer to allow these scripts in the project, and otherwise warn. Before,
+  such packages were added without their data, and didn't load (#142).
 * The check matrix's environments keep your personal R library out, as the
   default environment does. Without it, R could load packages built for your
   usual R, and crash (#112).

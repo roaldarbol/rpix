@@ -10,7 +10,10 @@
 #' * `pixi_lock()` updates `pixi.lock` to match `pixi.toml`, without
 #'   installing anything.
 #'
-#' Package names are translated like in [pixi_add()].
+#' Package names are translated like in [pixi_add()]. If Pixi skips an install
+#' script that a package needs, such as the ones Bioconductor's data packages
+#' download their data with, these functions offer to allow them in the
+#' project, as [pixi_add()] does.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/install/>,
 #' <https://pixi.prefix.dev/latest/reference/cli/pixi/update/>,
@@ -42,7 +45,11 @@ pixi_install <- function(
     if (!is.null(environment)) c("--environment", environment),
     if (all) "--all"
   )
-  run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  result <- run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  if (!isTRUE(dry_run)) {
+    check_post_link(result, path = path, environment = environment)
+  }
+  invisible(result)
 }
 
 #' @rdname pixi_install
@@ -58,7 +65,11 @@ pixi_update <- function(
     package_names(packages),
     if (!is.null(environment)) c("--environment", environment)
   )
-  run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  result <- run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  if (!isTRUE(dry_run)) {
+    check_post_link(result, path = path, environment = environment)
+  }
+  invisible(result)
 }
 
 #' @rdname pixi_install
@@ -74,7 +85,11 @@ pixi_upgrade <- function(
     package_names(packages),
     if (!is.null(feature)) c("--feature", feature)
   )
-  run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  result <- run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  if (!isTRUE(dry_run)) {
+    check_post_link(result, path = path)
+  }
+  invisible(result)
 }
 
 #' @rdname pixi_install
