@@ -76,6 +76,8 @@ pixi_environments()
 
 ## Developing a package
 
+For the whole workflow, from setting up to CI, see [Developing a package](package-development.html).
+
 For a package, `pixi_import_description()` adds what the package needs from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment, in the same solve group as the default one:
 
 ```r
