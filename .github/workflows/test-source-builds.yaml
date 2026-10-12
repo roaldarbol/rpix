@@ -1,6 +1,8 @@
 # Temporary: does building R packages from source with pixi-build-r work on
-# Windows? Round 5: Rust, with the GNU target's standard library, MSYS2's
-# make, sed and coreutils, and installing into R's library (Lib\R\library).
+# Windows? Round 6: minimal reproductions for the upstream issues, with
+# `pixi info`.
+#   library-folder: a pure R package, as pixi-build-r writes it
+#   build-tools:    a C++ package, with only the library folder worked around
 name: test-source-builds
 
 on:
@@ -17,12 +19,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - case: rust-gnu-m2
-            pkg: hellorust
-            entry: 'r-hellorust = { git = "https://github.com/cran/hellorust", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, build-dependencies = { rust = "*", rust-std-x86_64-pc-windows-gnu = "*", m2-make = "*", m2-sed = "*", m2-coreutils = "*" }, host-dependencies = { r-base = "4.5.*" } } }'
-          - case: rust-gnu-m2-gifski-tools
-            pkg: heck
-            entry: 'r-heck = { git = "https://github.com/cran/heck", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, build-dependencies = { rust = "*", rust-std-x86_64-pc-windows-gnu = "*", m2-make = "*", m2-sed = "*", m2-coreutils = "*", m2-grep = "*" }, host-dependencies = { r-base = "4.5.*" } } }'
+          - case: library-folder
+            pkg: fortunes
+            entry: 'r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+          - case: build-tools
+            pkg: datey
+            entry: 'r-datey = { git = "https://github.com/cran/datey", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, host-dependencies = { r-base = "4.5.*" } } }'
     defaults:
       run:
         shell: bash
@@ -45,15 +47,21 @@ jobs:
 
           [dependencies]
           r-base = "4.5.*"
+          # r-base in host-dependencies only works around prefix-dev/pixi#7214
           $ENTRY
           TOML
+          cat project/pixi.toml
+      - name: pixi info
+        working-directory: project
+        run: pixi info
       - name: Build and install
         working-directory: project
         run: pixi install 2>&1 | tee ../install.log; exit "${PIPESTATUS[0]}"
       - name: Load it
         working-directory: project
         run: |
-          pixi run Rscript -e "library(${{ matrix.pkg }}); cat('Loaded ${{ matrix.pkg }}', format(packageVersion('${{ matrix.pkg }}')), '\n')"
+          pixi run Rscript -e "library(${{ matrix.pkg }})"
+          pixi run Rscript -e "cat(.libPaths(), sep = '\n')"
       - name: Keep the log
         if: always()
         uses: actions/upload-artifact@v7
