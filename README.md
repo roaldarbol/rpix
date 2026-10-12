@@ -65,6 +65,8 @@ pixi_add("bioc::DESeq2")
 pixi_remove("ggplot2")
 ```
 
+A package that isn’t on conda-forge or bioconda can be built from source, which `pixi_add()` offers. Together, that’s [80% of CRAN and nearly all of Bioconductor](https://roald-arboel.com/rpix/articles/package-availability.html).
+
 `pixi_sitrep()` checks the setup, and suggests fixes if something’s off.
 
 To start a new project from a template instead, see
