@@ -1,5 +1,12 @@
 # rpix (development version)
 
+## Added
+
+* `use_pixi_github_action()` writes a GitHub Actions workflow that uses the
+  project's environments exactly as `pixi.lock` records them: `R CMD check`
+  on Linux, macOS and Windows for each environment, test coverage, a pkgdown
+  site, or a Pixi task (#107).
+
 ## Changed
 
 * Packages built from source (`pixi_add("github::...")`, and CRAN packages that

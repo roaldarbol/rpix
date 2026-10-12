@@ -1,0 +1,33 @@
+# Written by rpix::use_pixi_github_action("task"): run the project's Pixi
+# task "{{task}}", with the environments exactly as pixi.lock records them.
+name: pixi-{{task}}
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  run:
+    name: ${{ matrix.os }} (${{ matrix.environment }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [{{os}}]
+        environment: [{{environments}}]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: prefix-dev/setup-pixi@{{setup_pixi}}
+        with:
+          pixi-version: {{pixi_version}}
+          cache: true
+          locked: true
+          environments: ${{ matrix.environment }}
+
+      - run: pixi run --environment ${{ matrix.environment }} {{task}}
