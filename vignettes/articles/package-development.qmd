@@ -88,12 +88,11 @@ See [Several environments](environments.html) for each of these.
 `use_pixi_github_action()` writes a GitHub Actions workflow that installs the environments from `pixi.lock`, so CI runs with exactly what you ran:
 
 ```r
-use_pixi_github_action("check", environments = c("default", "minimum"))
-use_pixi_github_action("test-coverage")
-use_pixi_github_action("pkgdown")
+use_pixi_check_matrix(c("4.4", "4.5"), minimum = TRUE)
+use_pixi_github_action("check", environments = c("r44", "r45", "minimum"))
 ```
 
-`"check"` runs `R CMD check` on Linux, macOS and Windows (those of the project's platforms), in each environment. Commit `pixi.lock`: the run fails when it's out of date with `pixi.toml`.
+`"check"` runs `R CMD check` on Linux, macOS and Windows (those of the project's platforms), in each environment. Use environments that have `rcmdcheck` and the package's `Suggests`, as the check matrix's do: the default environment has neither. `"test-coverage"` and `"pkgdown"` write the other two workflows a package usually has. Commit `pixi.lock`: the run fails when it's out of date with `pixi.toml`.
 
 ## What Pixi doesn't cover
 
