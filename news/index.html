@@ -59,6 +59,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
 <div class="section level3">
+<h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/pixi_set_date.html">pixi_set_date()</a></code> and <code>use_pixi(date = )</code> use packages as they were on a date, with Pixi’s <code>exclude-newer</code>, e.g. to rerun an old analysis; a duration such as <code>"7d"</code> leaves out the newest releases instead. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports it (<a href="https://github.com/roaldarbol/rpix/issues/106" class="external-link">#106</a>).</li>
+</ul></div>
+<div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
 <ul><li>Packages built from source build on Windows too: in a project for Windows, rpix installs them into R’s library folder and adds MSYS2’s <code>make</code>, <code>sed</code> and <code>coreutils</code> (and, for Rust, the GNU target), which <code>pixi-build-r</code> doesn’t yet (<a href="https://github.com/roaldarbol/rpix/issues/123" class="external-link">#123</a>).</li>
 <li>Packages built from source (<code>pixi_add("github::...")</code>, and CRAN packages that aren’t on conda-forge) get what <code>pixi-build-r</code> doesn’t add yet: R’s recommended packages they use, such as Matrix and MASS, and the build tools their <code>SystemRequirements</code> names: Rust, Java, CMake or pkg-config (<a href="https://github.com/roaldarbol/rpix/issues/118" class="external-link">#118</a>).</li>

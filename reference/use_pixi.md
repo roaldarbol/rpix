@@ -33,6 +33,7 @@ use_pixi(
   ide = NULL,
   init_if_missing = TRUE,
   install_rpix = TRUE,
+  date = NULL,
   path = NULL
 )
 ```
@@ -64,6 +65,13 @@ use_pixi(
   dependencies come from conda-forge, and rpix itself from R-universe
   until it's on conda-forge.
 
+- date:
+
+  Optional. Use packages as they were on this date, such as
+  `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
+  added, so R and the packages are all as of that date. See
+  [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md).
+
 - path:
 
   The folder to set up. Defaults to the working directory.
@@ -78,5 +86,6 @@ The path to the project's manifest, invisibly.
 if (FALSE) { # \dontrun{
 use_pixi()
 use_pixi(r_version = "4.5", ide = "positron")
+use_pixi(date = "2025-06-01")
 } # }
 ```

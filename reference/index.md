@@ -15,6 +15,8 @@
   [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
   [`pixi_lock()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
   : Install and update the project's packages
+- [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)
+  : Use packages as they were on a date
 
 ## Environments, channels and platforms
 

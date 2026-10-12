@@ -7,6 +7,9 @@ environment, and suggest fixes for what doesn't. It reports:
 
 - The project, and whether `pixi.lock` is up to date with `pixi.toml`.
 
+- The date the project's packages are as of, if it has one (see
+  [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
+
 - In a package, whether `.Rbuildignore` leaves Pixi's files out of its
   builds.
 

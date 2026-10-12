@@ -2,6 +2,15 @@
 
 ## rpix (development version)
 
+### Added
+
+- [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)
+  and `use_pixi(date = )` use packages as they were on a date, with
+  Pixi’s `exclude-newer`, e.g. to rerun an old analysis; a duration such
+  as `"7d"` leaves out the newest releases instead.
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  reports it ([\#106](https://github.com/roaldarbol/rpix/issues/106)).
+
 ### Changed
 
 - Packages built from source build on Windows too: in a project for
