@@ -61,3 +61,32 @@
     Message
       v Added the environments "r44" and "r45". Run `pixi_check_matrix()`.
 
+# use_pixi_check_matrix() adds a minimum-versions environment
+
+    Code
+      names <- use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! rlang and Rcpp have no minimum version in 'DESCRIPTION', so they get the oldest version on conda-forge for that R.
+      v Added the environment "minimum". Run `pixi_check_matrix()`.
+
+# the minimum environment leaves out packages it can't find
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! nowhere isn't on conda-forge or bioconda, so the "minimum" environment leaves it out.
+      v Added the environment "minimum". Run `pixi_check_matrix()`.
+
+# use_pixi_check_matrix() puts pixi.toml back if Pixi can't solve it
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! rlang and Rcpp have no minimum version in 'DESCRIPTION', so they get the oldest version on conda-forge for that R.
+    Condition
+      Error:
+      ! Pixi couldn't solve the "minimum" environment, so 'pixi.toml' is as it was.
+      i The lowest versions 'DESCRIPTION' allows may not be on conda-forge for that R, or for all the project's platforms. See Pixi's output above.
+      Caused by error in `run_pixi()`:
+      ! no solution
+

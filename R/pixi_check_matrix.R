@@ -9,7 +9,26 @@
 #'   dependencies, and testthat and pkgload for the tests, or rcmdcheck for
 #'   `R CMD check`.
 #' * `use_pixi_check_matrix()` adds an environment for each version of R, with
-#'   those packages, named after the version: `r44` for R 4.4.
+#'   those packages, named after the version: `r44` for R 4.4. With
+#'   `minimum = TRUE`, it also adds a `minimum` environment, with the oldest
+#'   versions the package's `DESCRIPTION` allows.
+#'
+#' @section The `minimum` environment:
+#' Checks that the minimum versions in `DESCRIPTION` really work: R at the
+#' version `Depends` asks for, and each package in `Depends`, `Imports` and
+#' `LinkingTo` at the lowest version its constraint allows (Pixi's
+#' `solve-strategy = "lowest-direct"`; their own dependencies are the newest
+#' that fit). testthat, pkgload and rcmdcheck, which run the checks, aren't
+#' the packages under test, so they're kept at recent minimums.
+#'
+#' * A package without a minimum gets the oldest version on conda-forge for
+#'   that R, which may be much older than you meant; rpix lists them.
+#' * Without a minimum R in `Depends`, it uses the oldest of `r_versions`, or
+#'   the project's R.
+#' * Only versions on conda-forge (and bioconda) count, for the project's
+#'   platforms. An old build's own dependencies are as conda-forge recorded
+#'   them, which for old builds is sometimes looser than its `DESCRIPTION`:
+#'   then R refuses to load it, although Pixi installed it.
 #'
 #' @param environments Optional. The environments. Defaults to all of them.
 #' @param what `"test"` to run the tests with `testthat::test_local()`, or
@@ -17,7 +36,9 @@
 #' @param task Optional. A Pixi task to run instead, such as `"check"`. It
 #'   passes if it succeeds.
 #' @param parallel If `TRUE`, run in all environments at once.
-#' @param r_versions Versions of R, such as `"4.4"`.
+#' @param r_versions Versions of R, such as `"4.4"`. Optional with
+#'   `minimum = TRUE`.
+#' @param minimum If `TRUE`, also add a `minimum` environment; see below.
 #' @inheritParams pixi_environments
 #' @returns
 #' * `pixi_check_matrix()`: a data frame with a row per environment, and the
@@ -29,6 +50,7 @@
 #' @examples
 #' \dontrun{
 #' use_pixi_check_matrix(c("4.3", "4.4", "4.5"))
+#' use_pixi_check_matrix(minimum = TRUE)
 #' pixi_check_matrix()
 #' pixi_check_matrix(what = "check", parallel = TRUE)
 #' }
@@ -85,18 +107,34 @@ check_counts <- list(
 
 #' @rdname pixi_check_matrix
 #' @export
-use_pixi_check_matrix <- function(r_versions, path = NULL) {
+use_pixi_check_matrix <- function(
+  r_versions = NULL,
+  minimum = FALSE,
+  path = NULL
+) {
   root <- require_project(path)
+  if (length(r_versions) == 0 && !minimum) {
+    cli::cli_abort("Give {.arg r_versions}, or {.code minimum = TRUE}.")
+  }
   packages <- c(
     package_dependencies(file.path(root, "DESCRIPTION")),
     "testthat",
     "pkgload",
     "rcmdcheck"
   )
-  names <- paste0("r", gsub(".", "", r_versions, fixed = TRUE))
+  names <- character()
+  if (length(r_versions) > 0) {
+    names <- paste0("r", gsub(".", "", r_versions, fixed = TRUE))
+  }
   for (i in seq_along(r_versions)) {
+    # Without the default feature, the environments need their own isolation
+    # from the personal library, or R loads packages built for another R
     pixi_add(
-      c(paste0("r-base=", r_versions[i]), unique(packages)),
+      c(
+        paste0("r-base=", r_versions[i]),
+        paste0("conda::", isolation_package),
+        unique(packages)
+      ),
       feature = names[i],
       path = root
     )
@@ -108,10 +146,166 @@ use_pixi_check_matrix <- function(r_versions, path = NULL) {
       path = root
     )
   }
+  if (minimum) {
+    names <- c(names, add_minimum_environment(root, r_versions))
+  }
   cli::cli_alert_success(
     "Added the environment{?s} {.val {names}}. Run {.code pixi_check_matrix()}."
   )
   invisible(names)
+}
+
+# The tools that run the checks, at recent minimums: they aren't what's tested
+check_tools <- c(
+  testthat = ">=3.1.0",
+  pkgload = ">=1.3.0",
+  rcmdcheck = ">=1.4.0"
+)
+
+# Add the `minimum` environment: R and the hard dependencies at the lowest
+# versions DESCRIPTION allows
+add_minimum_environment <- function(root, r_versions = NULL) {
+  deps <- description_dependencies(file.path(root, "DESCRIPTION"))
+  hard <- deps[deps$field %in% c("Depends", "Imports", "LinkingTo"), ]
+  r_row <- hard[hard$package == "R" & nzchar(hard$constraint), ]
+  hard <- hard[!hard$package %in% c("R", base_packages()), ]
+  hard <- hard[!duplicated(hard$package), ]
+
+  manifest <- find_manifest(root)
+  if (basename(manifest) != "pixi.toml") {
+    cli::cli_abort(
+      "The {.val minimum} environment needs a {.file pixi.toml} manifest.",
+      call = NULL
+    )
+  }
+  lines <- readLines(manifest, warn = FALSE)
+  r_base <- if (nrow(r_row) > 0) {
+    r_row$constraint[1]
+  } else if (length(r_versions) > 0) {
+    oldest <- r_versions[order(package_version(r_versions))][1]
+    paste0(">=", oldest)
+  } else {
+    manifest_r_base(lines) %||% "*"
+  }
+  if (nrow(r_row) == 0) {
+    cli::cli_alert_info(
+      "{.file DESCRIPTION} has no minimum R in {.field Depends}, so the {.val minimum} environment uses {.code r-base {r_base}}."
+    )
+  }
+
+  tools <- check_tools[!names(check_tools) %in% hard$package]
+  packages <- c(hard$package, names(tools))
+  constraints <- c(hard$constraint, unname(tools))
+  constraints[!nzchar(constraints)] <- "*"
+  refs <- find_r_packages(packages)[packages]
+
+  missing <- packages[is.na(refs)]
+  if (length(missing) > 0) {
+    cli::cli_alert_warning(
+      "{.pkg {missing}} {?isn't/aren't} on conda-forge or bioconda, so the {.val minimum} environment leaves {?it/them} out."
+    )
+  }
+  unpinned <- hard$package[
+    !nzchar(hard$constraint) & !hard$package %in% missing
+  ]
+  if (length(unpinned) > 0) {
+    cli::cli_alert_warning(
+      "{.pkg {unpinned}} {?has/have} no minimum version in {.file DESCRIPTION}, so {?it gets/they get} the oldest version on conda-forge for that R."
+    )
+  }
+
+  found <- !is.na(refs)
+  bioc <- startsWith(refs[found], "bioc::")
+  conda <- ifelse(
+    bioc,
+    paste0("bioconductor-", tolower(packages[found])),
+    paste0("r-", tolower(packages[found]))
+  )
+  entries <- ifelse(
+    bioc,
+    paste0(
+      toml_key(conda),
+      ' = { version = "',
+      constraints[found],
+      '", channel = "bioconda" }'
+    ),
+    paste0(toml_key(conda), ' = "', constraints[found], '"')
+  )
+
+  original <- lines
+  lines <- remove_table(lines, "feature.minimum.dependencies")
+  lines <- remove_table(lines, "feature.minimum")
+  lines <- set_dependency(
+    lines,
+    "feature.minimum",
+    "solve-strategy",
+    'solve-strategy = "lowest-direct"'
+  )
+  lines <- set_dependency(
+    lines,
+    "feature.minimum.dependencies",
+    "r-base",
+    paste0('r-base = "', r_base, '"')
+  )
+  lines <- set_dependency(
+    lines,
+    "feature.minimum.dependencies",
+    isolation_package,
+    paste0(isolation_package, ' = "*"')
+  )
+  for (i in seq_along(conda)) {
+    lines <- set_dependency(
+      lines,
+      "feature.minimum.dependencies",
+      conda[i],
+      entries[i]
+    )
+  }
+  writeLines(lines, manifest)
+
+  tryCatch(
+    {
+      if (any(bioc) && !"bioconda" %in% project_channels(root)) {
+        run_pixi(
+          c("workspace", "channel", "add", "bioconda", "--no-install"),
+          path = root,
+          echo = TRUE
+        )
+      }
+      pixi_add_environment(
+        "minimum",
+        features = "minimum",
+        default_feature = FALSE,
+        overwrite = TRUE,
+        path = root
+      )
+      run_pixi("lock", path = root, echo = TRUE)
+    },
+    error = function(e) {
+      writeLines(original, manifest)
+      cli::cli_abort(
+        c(
+          "Pixi couldn't solve the {.val minimum} environment, so {.file pixi.toml} is as it was.",
+          "i" = "The lowest versions {.file DESCRIPTION} allows may not be on conda-forge for that R, or for all the project's platforms. See Pixi's output above."
+        ),
+        parent = e,
+        call = NULL
+      )
+    }
+  )
+  "minimum"
+}
+
+# Remove a TOML table, header and all
+remove_table <- function(lines, table) {
+  rows <- table_lines(lines, table)
+  if (is.null(rows)) {
+    return(lines)
+  }
+  lines <- lines[-rows]
+  # Don't leave two blank lines behind
+  blank <- !nzchar(trimws(lines))
+  lines[!(blank & c(FALSE, utils::head(blank, -1)))]
 }
 
 # Start a run in an environment, in the background

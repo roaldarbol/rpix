@@ -94,6 +94,7 @@ reference:
       - pixi_search
       - pixi_scan
       - pixi_install
+      - pixi_set_date
 
   - title: "Environments, channels and platforms"
     contents:

@@ -47,6 +47,24 @@ pixi update
 
 This updates to the newest versions `pixi.toml` allows. `pixi upgrade` also raises the version constraints in `pixi.toml`.
 
+## Packages as of a date
+
+Pixi can leave out every package published after a date, so a project gets packages as they were on that day. That's useful to rerun an old analysis with the versions it was written for, without its lock file, or to check that a package still works with what users had a year ago. Set the date when you create the project, so R and every package you add are as of that day:
+
+```r
+use_pixi(date = "2025-06-01")
+```
+
+In an existing project, `pixi_set_date()` sets it and updates `pixi.lock` to match. That fails when the project pins versions newer than the date, which `pixi_add()` does for what it adds; `pixi.toml` is then left as it was.
+
+A duration leaves out only the newest releases, e.g. those from the last week, in case one turns out to be broken or compromised:
+
+```r
+pixi_set_date("7d")
+```
+
+Only packages that were on conda-forge at the time are available. The date applies to Pixi's build backend as well, so packages built from source (`pixi_add("github::...")`) need a date after the backend's release, or a duration. `pixi_set_date(NULL)` removes the date.
+
 ## Tasks
 
 Save the commands that run the project as tasks in `pixi.toml`, so collaborators run them the same way:

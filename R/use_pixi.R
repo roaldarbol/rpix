@@ -30,6 +30,10 @@
 #'   `"positron"` and `"vscode"`. See [use_pixi_rstudio()],
 #'   [use_pixi_positron()] and [use_pixi_vscode()].
 #' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
+#' @param date Optional. Use packages as they were on this date, such as
+#'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
+#'   added, so R and the packages are all as of that date. See
+#'   [pixi_set_date()].
 #' @param install_rpix If `TRUE`, install rpix into the project's environment.
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
 #'   until it's on conda-forge.
@@ -40,12 +44,14 @@
 #' \dontrun{
 #' use_pixi()
 #' use_pixi(r_version = "4.5", ide = "positron")
+#' use_pixi(date = "2025-06-01")
 #' }
 use_pixi <- function(
   r_version = NULL,
   ide = NULL,
   init_if_missing = TRUE,
   install_rpix = TRUE,
+  date = NULL,
   path = NULL
 ) {
   if (!is.null(ide)) {
@@ -67,12 +73,20 @@ use_pixi <- function(
   }
   path <- dirname(manifest)
   build_ignore(path, pixi_files(path))
+  if (!is.null(date)) {
+    value <- exclude_newer_value(date)
+    lines <- readLines(manifest, warn = FALSE)
+    writeLines(set_exclude_newer(lines, value), manifest)
+    cli::cli_alert_success(
+      "Using packages as they were on {.val {value}} ({.code exclude-newer})."
+    )
+  }
 
   r_base <- if (is.null(r_version)) "r-base" else paste0("r-base=", r_version)
   # conda-forge's R puts the user library of a regular R install first on
   # .libPaths() (https://github.com/conda-forge/r-base-feedstock/issues/37).
   # This package's activation script points R_LIBS_USER at nothing instead.
-  isolation <- "conda-ecosystem-user-package-isolation"
+  isolation <- isolation_package
   # Added together with R, so Pixi picks the newest R they're all built for.
   # A new R comes out on conda-forge before its packages are rebuilt for it.
   packages <- c(
@@ -227,3 +241,7 @@ warn_legacy_rprofile <- function(file) {
 count_char <- function(x, char) {
   lengths(regmatches(x, gregexpr(char, x, fixed = TRUE)))
 }
+
+# conda-forge's package that keeps the personal R library out of an
+# environment's R (https://github.com/conda-forge/r-base-feedstock/issues/37)
+isolation_package <- "conda-ecosystem-user-package-isolation"
