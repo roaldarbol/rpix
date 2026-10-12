@@ -8,6 +8,10 @@
 
 ## Changed
 
+* Packages built from source build on Windows too: in a project for Windows,
+  rpix installs them into R's library folder and adds MSYS2's `make`, `sed`
+  and `coreutils` (and, for Rust, the GNU target), which `pixi-build-r` doesn't
+  yet (#123).
 * Packages built from source (`pixi_add("github::...")`, and CRAN packages that
   aren't on conda-forge) get what `pixi-build-r` doesn't add yet: R's
   recommended packages they use, such as Matrix and MASS, and the build tools
