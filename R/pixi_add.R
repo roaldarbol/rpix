@@ -11,7 +11,10 @@
 #' * `"bioc::DESeq2"`: a Bioconductor package (`bioconductor-deseq2` from the
 #'   bioconda channel, which is added to the project if needed). Without the
 #'   prefix, a package that isn't on conda-forge is looked for on bioconda
-#'   too, so `"DESeq2"` works as well.
+#'   too, so `"DESeq2"` works as well. Bioconductor's annotation and data
+#'   packages, such as org.Hs.eg.db, download their data with an install
+#'   script, which Pixi only runs in projects that allow it; `pixi_add()`
+#'   offers to allow it.
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
@@ -208,6 +211,7 @@ pixi_add <- function(
   if (isTRUE(dry_run)) {
     return(invisible(c(commands, result)))
   }
+  check_post_link(result, path = path)
   invisible(result)
 }
 

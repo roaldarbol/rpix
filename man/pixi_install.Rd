@@ -45,7 +45,10 @@ allows, in \code{pixi.lock}.
 installing anything.
 }
 
-Package names are translated like in \code{\link[=pixi_add]{pixi_add()}}.
+Package names are translated like in \code{\link[=pixi_add]{pixi_add()}}. If Pixi skips an install
+script that a package needs, such as the ones Bioconductor's data packages
+download their data with, these functions offer to allow them in the
+project, as \code{\link[=pixi_add]{pixi_add()}} does.
 
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/install/},
 \url{https://pixi.prefix.dev/latest/reference/cli/pixi/update/},

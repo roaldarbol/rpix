@@ -52,7 +52,10 @@ say where a package comes from:
 \item \code{"bioc::DESeq2"}: a Bioconductor package (\code{bioconductor-deseq2} from the
 bioconda channel, which is added to the project if needed). Without the
 prefix, a package that isn't on conda-forge is looked for on bioconda
-too, so \code{"DESeq2"} works as well.
+too, so \code{"DESeq2"} works as well. Bioconductor's annotation and data
+packages, such as org.Hs.eg.db, download their data with an install
+script, which Pixi only runs in projects that allow it; \code{pixi_add()}
+offers to allow it.
 \item \code{"conda::gdal"}: a conda package that isn't an R package, used as is.
 Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also used as is.
 \item \code{"cran::dplyr"}: same as \code{"dplyr"}.
