@@ -85,6 +85,23 @@ test_that("reports a missing Pixi, project or Pixi R", {
   expect_match(out, "another project")
 })
 
+test_that("reports the date packages are as of", {
+  out <- sitrep_output(good_report(exclude_newer = "2025-06-01"))
+  expect_match(out, "as they were on \"2025-06-01\"")
+  out <- sitrep_output(good_report(exclude_newer = "7d"))
+  expect_match(out, "last \"7d\" are left out")
+})
+
+test_that("project_exclude_newer() reads it from the project's manifest", {
+  dir <- withr::local_tempdir()
+  expect_null(project_exclude_newer(dir))
+  writeLines(
+    c("[workspace]", 'exclude-newer = "7d"'),
+    file.path(dir, "pixi.toml")
+  )
+  expect_equal(project_exclude_newer(dir), "7d")
+})
+
 test_that("returns the report invisibly", {
   local_mocked_bindings(sitrep_data = function(...) good_report())
   expect_invisible(suppressMessages(pixi_sitrep()))

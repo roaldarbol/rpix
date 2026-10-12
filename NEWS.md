@@ -1,5 +1,12 @@
 # rpix (development version)
 
+## Added
+
+* `pixi_set_date()` and `use_pixi(date = )` use packages as they were on a
+  date, with Pixi's `exclude-newer`, e.g. to rerun an old analysis; a duration
+  such as `"7d"` leaves out the newest releases instead. `pixi_sitrep()`
+  reports it (#106).
+
 ## Changed
 
 * Packages built from source (`pixi_add("github::...")`, and CRAN packages that
