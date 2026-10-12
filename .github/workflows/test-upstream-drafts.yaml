@@ -1,6 +1,6 @@
 # Temporary: evidence for two Pixi issues. pixi-build-r without the build
-# tools SystemRequirements names (Java, CMake, pkg-config), and exclude-newer
-# reaching the build backend.
+# tools SystemRequirements names, in a container without the runner's own
+# cmake and pkg-config; and exclude-newer reaching the build backend.
 name: test-upstream-drafts
 
 on:
@@ -12,21 +12,26 @@ permissions: read-all
 
 jobs:
   build-tools:
-    name: ${{ matrix.package }} without ${{ matrix.tool }}
+    name: ${{ matrix.package }} without ${{ matrix.tool }}, clean container
     runs-on: ubuntu-latest
+    container: ubuntu:24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
           - { package: sundialr, tool: cmake }
-          - { package: mallet, tool: openjdk }
           - { package: xmlrectr, tool: pkg-config }
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: prefix-dev/setup-pixi@v0.10.2
-        with:
-          pixi-version: v0.81.0
-          run-install: false
+      - name: Install Pixi, and nothing else
+        run: |
+          apt-get update -qq && apt-get install -y -qq curl ca-certificates git > /dev/null
+          curl -fsSL https://pixi.sh/install.sh | PIXI_VERSION=v0.81.0 bash
+          echo "$HOME/.pixi/bin" >> $GITHUB_PATH
+          for t in cmake pkg-config java cc gcc make; do printf "%s: " $t; command -v $t || echo "not on the PATH"; done
       - name: Without the tool, then with it
         run: |
           pkg=${{ matrix.package }}
@@ -35,7 +40,6 @@ jobs:
             rm -rf p && mkdir p && cd p
             extra=""
             [ $with = yes ] && extra=", build-dependencies = { ${{ matrix.tool }} = \"*\" }"
-            [ $with = yes ] && [ ${{ matrix.tool }} = openjdk ] && extra="$extra, run-dependencies = { openjdk = \"*\" }"
             cat > pixi.toml <<TOML
           [workspace]
           name = "t"
@@ -46,50 +50,20 @@ jobs:
           r-base = "4.5.*"
           r-$lower = { git = "https://github.com/cran/$pkg", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" }$extra } }
           TOML
-            echo "::group::$pkg, with ${{ matrix.tool }}: $with"
-            cat pixi.toml
             set +e
             pixi run Rscript -e "library($pkg); cat('LOADED\n')" > ../log-$with.txt 2>&1
             echo "exit $?" >> ../log-$with.txt
             set -e
-            sed 's/\x1b\[[0-9;]*m//g' ../log-$with.txt | grep -E "LOADED|exit|ERROR|rror:|not found|No such|cannot|failed|CMake|cmake|java|Java|JAVA|pkg-config|PKG_CONFIG" | head -25
+            echo "::group::$pkg, with ${{ matrix.tool }}: $with"
+            sed 's/\x1b\[[0-9;]*m//g' ../log-$with.txt | grep -E "LOADED|^exit|ERROR|rror:|not found|No such|cannot|failed|cmake|pkg-config" | grep -v "Building C" | head -25
             echo "::endgroup::"
             cd ..
           done
-          echo "## $pkg without ${{ matrix.tool }}" >> $GITHUB_STEP_SUMMARY
-          for with in no yes; do echo "- with: $with → $(tail -1 log-$with.txt)" >> $GITHUB_STEP_SUMMARY; done
 
   exclude-newer:
-    name: exclude-newer, ${{ matrix.case }}
+    name: exclude-newer, overriding pixi-build-r and its API version
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - case: no date
-            workspace: ''
-            extra: ''
-            backend: ''
-          - case: a date
-            workspace: 'exclude-newer = "2025-06-01"'
-            extra: ''
-            backend: ''
-          - case: a date, with a package override
-            workspace: 'exclude-newer = "2025-06-01"'
-            extra: |
-              [exclude-newer]
-              pixi-build-r = "0d"
-            backend: ''
-          - case: a date, with the backend from its own channel without a cutoff
-            workspace: |
-              exclude-newer = "2025-06-01"
-            extra: ''
-            backend: ', build.backend.channels = [{ channel = "https://prefix.dev/pixi-build-backends", exclude-newer = "0d" }]'
-          - case: a recent date
-            workspace: 'exclude-newer = "2026-08-01"'
-            extra: ''
-            backend: ''
     steps:
       - uses: prefix-dev/setup-pixi@v0.10.2
         with:
@@ -104,17 +78,16 @@ jobs:
           channels = ["conda-forge"]
           platforms = ["linux-64"]
           preview = ["pixi-build"]
-          ${{ matrix.workspace }}
+          exclude-newer = "2025-06-01"
           [dependencies]
           r-base = "4.5.*"
-          r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r"${{ matrix.backend }}, host-dependencies = { r-base = "4.5.*" } } }
-          ${{ matrix.extra }}
+          r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }
+          [exclude-newer]
+          pixi-build-r = "0d"
+          pixi-build-api-version = "0d"
           TOML
-          cat pixi.toml
           set +e
-          pixi run -v Rscript -e "library(fortunes); cat('LOADED\n')" > ../log.txt 2>&1
-          status=$?
+          pixi run Rscript -e "library(fortunes); cat('LOADED\n')" > ../log.txt 2>&1
+          echo "exit $?"
           set -e
-          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "LOADED|pixi-build-r|cannot be installed|exclude|error|backend" | grep -v "^\s*$" | head -30
-          echo "## ${{ matrix.case }}: exit $status" >> $GITHUB_STEP_SUMMARY
-          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "pixi-build-r[ =-]+[0-9]|cannot be installed|LOADED" | head -4 | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "LOADED|cannot be installed|excluded|error|would require|r-base" | head -30
