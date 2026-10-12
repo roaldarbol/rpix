@@ -61,6 +61,8 @@ jobs:
           mkdir quiet && cp project/pixi.toml project/pixi.lock quiet/
           cd project
           pixi run Rscript -e 'rpix::pixi_install(path = "../quiet")' 2>&1 | tee ../quiet.log
-          grep -q "isn't fully installed: Pixi didn't run its install script" ../quiet.log
-          grep -q "pixi reinstall bioconductor-org.hs.eg.db" ../quiet.log
+          # R wraps the warning, so compare without the line breaks
+          tr -s '\n ' '  ' < ../quiet.log > ../quiet-flat.log
+          grep -q "isn't fully installed: Pixi didn't run its install script" ../quiet-flat.log
+          grep -q "pixi reinstall bioconductor-org.hs.eg.db" ../quiet-flat.log
           echo "As expected: it warned"
