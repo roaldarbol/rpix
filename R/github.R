@@ -116,6 +116,7 @@ add_github_packages <- function(
   lines <- readLines(manifest, warn = FALSE)
   original <- lines
   r_base <- manifest_r_base(lines, feature)
+  date <- manifest_exclude_newer(lines)
   windows <- "win-64" %in% manifest_platforms(lines)
   if (windows) {
     cli::cli_alert_info(
@@ -168,7 +169,12 @@ add_github_packages <- function(
       cli::cli_abort(
         c(
           "Pixi couldn't build {.pkg {packages}}, so {.file pixi.toml} is as it was.",
-          "i" = "See Pixi's output above."
+          "i" = "See Pixi's output above.",
+          if (is_absolute_date(date)) {
+            c(
+              "i" = "The project uses packages as of {.val {date}}, which applies to Pixi's build backend too; it may not have existed then. See {.help rpix::pixi_set_date}."
+            )
+          }
         ),
         parent = e,
         call = call

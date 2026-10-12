@@ -9,6 +9,7 @@ use_pixi(
   ide = NULL,
   init_if_missing = TRUE,
   install_rpix = TRUE,
+  date = NULL,
   path = NULL
 )
 }
@@ -26,6 +27,11 @@ conda-forge.}
 \item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
 Its dependencies come from conda-forge, and rpix itself from R-universe
 until it's on conda-forge.}
+
+\item{date}{Optional. Use packages as they were on this date, such as
+\code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is
+added, so R and the packages are all as of that date. See
+\code{\link[=pixi_set_date]{pixi_set_date()}}.}
 
 \item{path}{The folder to set up. Defaults to the working directory.}
 }
@@ -59,5 +65,6 @@ In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
 \dontrun{
 use_pixi()
 use_pixi(r_version = "4.5", ide = "positron")
+use_pixi(date = "2025-06-01")
 }
 }
