@@ -1,0 +1,62 @@
+# Temporary: does building R packages from source with pixi-build-r work on
+# Windows? Round 5: Rust, with the GNU target's standard library, MSYS2's
+# make, sed and coreutils, and installing into R's library (Lib\R\library).
+name: test-source-builds
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+
+permissions: read-all
+
+jobs:
+  build:
+    name: windows-latest / ${{ matrix.case }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case: rust-gnu-m2
+            pkg: hellorust
+            entry: 'r-hellorust = { git = "https://github.com/cran/hellorust", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, build-dependencies = { rust = "*", rust-std-x86_64-pc-windows-gnu = "*", m2-make = "*", m2-sed = "*", m2-coreutils = "*" }, host-dependencies = { r-base = "4.5.*" } } }'
+          - case: rust-gnu-m2-gifski-tools
+            pkg: heck
+            entry: 'r-heck = { git = "https://github.com/cran/heck", package = { build = { backend = { name = "pixi-build-r" }, config = { extra-args = ["--library=%PREFIX%/Lib/R/library"] } }, build-dependencies = { rust = "*", rust-std-x86_64-pc-windows-gnu = "*", m2-make = "*", m2-sed = "*", m2-coreutils = "*", m2-grep = "*" }, host-dependencies = { r-base = "4.5.*" } } }'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Write the project
+        env:
+          ENTRY: ${{ matrix.entry }}
+        run: |
+          mkdir project
+          cat > project/pixi.toml <<TOML
+          [workspace]
+          name = "source-build"
+          channels = ["conda-forge"]
+          platforms = ["win-64"]
+          preview = ["pixi-build"]
+
+          [dependencies]
+          r-base = "4.5.*"
+          $ENTRY
+          TOML
+      - name: Build and install
+        working-directory: project
+        run: pixi install 2>&1 | tee ../install.log; exit "${PIPESTATUS[0]}"
+      - name: Load it
+        working-directory: project
+        run: |
+          pixi run Rscript -e "library(${{ matrix.pkg }}); cat('Loaded ${{ matrix.pkg }}', format(packageVersion('${{ matrix.pkg }}')), '\n')"
+      - name: Keep the log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: log-${{ matrix.case }}
+          path: install.log
