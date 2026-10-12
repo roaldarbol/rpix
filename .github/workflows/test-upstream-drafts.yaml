@@ -1,0 +1,120 @@
+# Temporary: evidence for two Pixi issues. pixi-build-r without the build
+# tools SystemRequirements names (Java, CMake, pkg-config), and exclude-newer
+# reaching the build backend.
+name: test-upstream-drafts
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build-tools:
+    name: ${{ matrix.package }} without ${{ matrix.tool }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { package: sundialr, tool: cmake }
+          - { package: mallet, tool: openjdk }
+          - { package: xmlrectr, tool: pkg-config }
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Without the tool, then with it
+        run: |
+          pkg=${{ matrix.package }}
+          lower=$(echo $pkg | tr A-Z a-z)
+          for with in no yes; do
+            rm -rf p && mkdir p && cd p
+            extra=""
+            [ $with = yes ] && extra=", build-dependencies = { ${{ matrix.tool }} = \"*\" }"
+            [ $with = yes ] && [ ${{ matrix.tool }} = openjdk ] && extra="$extra, run-dependencies = { openjdk = \"*\" }"
+            cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["linux-64"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-$lower = { git = "https://github.com/cran/$pkg", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" }$extra } }
+          TOML
+            echo "::group::$pkg, with ${{ matrix.tool }}: $with"
+            cat pixi.toml
+            set +e
+            pixi run Rscript -e "library($pkg); cat('LOADED\n')" > ../log-$with.txt 2>&1
+            echo "exit $?" >> ../log-$with.txt
+            set -e
+            sed 's/\x1b\[[0-9;]*m//g' ../log-$with.txt | grep -E "LOADED|exit|ERROR|rror:|not found|No such|cannot|failed|CMake|cmake|java|Java|JAVA|pkg-config|PKG_CONFIG" | head -25
+            echo "::endgroup::"
+            cd ..
+          done
+          echo "## $pkg without ${{ matrix.tool }}" >> $GITHUB_STEP_SUMMARY
+          for with in no yes; do echo "- with: $with → $(tail -1 log-$with.txt)" >> $GITHUB_STEP_SUMMARY; done
+
+  exclude-newer:
+    name: exclude-newer, ${{ matrix.case }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case: no date
+            workspace: ''
+            extra: ''
+            backend: ''
+          - case: a date
+            workspace: 'exclude-newer = "2025-06-01"'
+            extra: ''
+            backend: ''
+          - case: a date, with a package override
+            workspace: 'exclude-newer = "2025-06-01"'
+            extra: |
+              [exclude-newer]
+              pixi-build-r = "0d"
+            backend: ''
+          - case: a date, with the backend from its own channel without a cutoff
+            workspace: |
+              exclude-newer = "2025-06-01"
+            extra: ''
+            backend: ', build.backend.channels = [{ channel = "https://prefix.dev/pixi-build-backends", exclude-newer = "0d" }]'
+          - case: a recent date
+            workspace: 'exclude-newer = "2026-08-01"'
+            extra: ''
+            backend: ''
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Build fortunes from source
+        run: |
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["linux-64"]
+          preview = ["pixi-build"]
+          ${{ matrix.workspace }}
+          [dependencies]
+          r-base = "4.5.*"
+          r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r"${{ matrix.backend }}, host-dependencies = { r-base = "4.5.*" } } }
+          ${{ matrix.extra }}
+          TOML
+          cat pixi.toml
+          set +e
+          pixi run -v Rscript -e "library(fortunes); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "LOADED|pixi-build-r|cannot be installed|exclude|error|backend" | grep -v "^\s*$" | head -30
+          echo "## ${{ matrix.case }}: exit $status" >> $GITHUB_STEP_SUMMARY
+          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "pixi-build-r[ =-]+[0-9]|cannot be installed|LOADED" | head -4 | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
