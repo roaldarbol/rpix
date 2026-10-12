@@ -1,5 +1,12 @@
 # rpix (development version)
 
+## Added
+
+* In a package, `pixi_sitrep()` checks that `pixi.toml` has what
+  `DESCRIPTION` needs: the `Depends`, `Imports` and `LinkingTo` packages in
+  the default environment, the `Suggests` somewhere, and installed versions at
+  least the minimums `DESCRIPTION` asks for (#113).
+
 ## Changed
 
 * Packages built from source (`pixi_add("github::...")`, and CRAN packages that
