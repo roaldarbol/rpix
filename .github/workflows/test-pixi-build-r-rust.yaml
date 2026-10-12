@@ -42,6 +42,8 @@ jobs:
       - name: Build pixi-build-r from the branch
         working-directory: pixi-src
         run: cargo build -p pixi-build-r
+      - name: Use the branch's backend for every Pixi command that follows
+        run: echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/${{ matrix.binary }}" >> "$GITHUB_ENV"
       - uses: prefix-dev/setup-pixi@v0.10.2
         with:
           pixi-version: v0.81.0
@@ -66,7 +68,6 @@ jobs:
       - name: Build and install, with the branch's backend
         working-directory: project
         run: |
-          export PIXI_BUILD_BACKEND_OVERRIDE="pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/${{ matrix.binary }}"
           pixi install 2>&1 | tee ../install.log; exit "${PIPESTATUS[0]}"
       - name: Load it
         working-directory: project
