@@ -1,0 +1,67 @@
+# Temporary: build pixi-build-r from the fix for prefix-dev/pixi#7231 (the
+# library folder on Windows) and use it, without rpix's workaround.
+name: test-pixi-build-r-fix
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+
+permissions: read-all
+
+jobs:
+  build:
+    name: windows-latest / ${{ matrix.pkg }}
+    runs-on: windows-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pkg: fortunes
+            entry: 'r-fortunes = { git = "https://github.com/cran/fortunes", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+          - pkg: PearsonDS
+            entry: 'r-pearsonds = { git = "https://github.com/cran/PearsonDS", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: fix/pixi-build-r-windows-library
+          path: pixi-src
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: pixi-src
+      - name: Build pixi-build-r from the fix
+        working-directory: pixi-src
+        run: cargo build -p pixi-build-r
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          run-install: false
+      - name: Write the project
+        env:
+          ENTRY: ${{ matrix.entry }}
+        run: |
+          mkdir project
+          cat > project/pixi.toml <<TOML
+          [workspace]
+          name = "source-build"
+          channels = ["conda-forge"]
+          platforms = ["win-64"]
+          preview = ["pixi-build"]
+
+          [dependencies]
+          r-base = "4.5.*"
+          # r-base in host-dependencies only works around prefix-dev/pixi#7214
+          $ENTRY
+          TOML
+      - name: Build and install, with the fixed backend
+        working-directory: project
+        run: |
+          export PIXI_BUILD_BACKEND_OVERRIDE="pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/pixi-build-r.exe"
+          pixi install 2>&1 | tee ../install.log; exit "${PIPESTATUS[0]}"
+      - name: Load it
+        working-directory: project
+        run: pixi run Rscript -e "library(${{ matrix.pkg }}); cat('Loaded ${{ matrix.pkg }} from', find.package('${{ matrix.pkg }}'), '\n')"
