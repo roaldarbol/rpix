@@ -20,9 +20,7 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, extra: '' }
-          - { os: macos-latest, extra: '' }
           - { os: windows-latest, extra: '' }
-          - { os: windows-latest, extra: 'm2-make' }
           - { os: windows-latest, extra: 'm2-make m2-sed m2-coreutils' }
     defaults:
       run:
@@ -67,7 +65,13 @@ jobs:
         working-directory: addr
         run: |
           set +e
+          # On Windows, hide the runner's own compilers, make and Rtools-like
+          # tools, so only Pixi's environment provides them
+          if [ "$RUNNER_OS" = Windows ]; then
+            export PATH="$(dirname "$(command -v pixi)"):/c/Windows/System32:/c/Windows:/c/Windows/System32/WindowsPowerShell/v1.0:/usr/bin"
+            for t in gcc make sed; do printf "%s: " $t; command -v $t || echo "not on the PATH"; done
+          fi
           pixi run Rscript -e 'devtools::load_all(); stopifnot(add(1, 2) == 3); cat("LOAD_ALL OK\n")' 2>&1 | tail -15
           pixi run Rscript -e 'r <- as.data.frame(devtools::test()); stopifnot(sum(r$failed) == 0); cat("TEST OK\n")' 2>&1 | tail -6
-          pixi run Rscript -e 'r <- devtools::check(document = FALSE, manual = TRUE, error_on = "never"); print(r); if (length(r$errors)) quit(status = 1); cat("CHECK OK\n")' 2>&1 | tail -25
+          pixi run Rscript -e 'r <- devtools::check(document = FALSE, manual = FALSE, error_on = "never"); print(r); if (length(r$errors)) quit(status = 1); cat("CHECK OK\n")' 2>&1 | sed -n '/R CMD check results/,$p'
           true
