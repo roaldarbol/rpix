@@ -76,6 +76,9 @@ jobs:
           # r-base in host-dependencies only works around prefix-dev/pixi#7214
           $ENTRY
           TOML
+          # bioconda's data packages fetch their data in a post-link script
+          mkdir project/.pixi
+          echo 'run-post-link-scripts = "insecure"' > project/.pixi/config.toml
       - name: Build, install and load
         id: run
         working-directory: project
