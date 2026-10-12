@@ -64,7 +64,8 @@ Pixi's \code{pixi-build} preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. rpix also adds what \code{pixi-build-r}
 doesn't yet: the recommended packages it uses (such as Matrix and MASS),
 and the build tools its \code{SystemRequirements} names (Rust, Java, CMake,
-pkg-config). See
+pkg-config). In a project for Windows, it also adds what builds there
+need: R's library folder, and MSYS2's \code{make}, \code{sed} and \code{coreutils}. See
 \url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}. This may
 change, e.g. to use \verb{pixi add} once it can set a build backend; see
 \url{https://github.com/roaldarbol/rpix/issues/96}.

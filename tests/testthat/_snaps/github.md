@@ -27,6 +27,15 @@
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
+# pixi_add() adds what builds on Windows need, in projects for Windows
+
+    Code
+      pixi_add("github::hadley/emo", path = calls$dir)
+    Message
+      i On Windows, rpix sets R's library folder and adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
 # pixi_add() says what it adds to a GitHub package's build
 
     Code
