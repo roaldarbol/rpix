@@ -8,6 +8,10 @@
 #' * The project, and whether `pixi.lock` is up to date with `pixi.toml`.
 #' * The date the project's packages are as of, if it has one (see
 #'   [pixi_set_date()]).
+#' * In a package, whether `pixi.toml` has what its `DESCRIPTION` needs: the
+#'   `Depends`, `Imports` and `LinkingTo` packages in the default environment,
+#'   the `Suggests` somewhere (e.g. a `test` environment), and installed
+#'   versions at least the minimums `DESCRIPTION` asks for.
 #' * In a package, whether `.Rbuildignore` leaves Pixi's files out of its
 #'   builds.
 #' * Private channels that refuse access, and the hosts Pixi has logins for
@@ -85,6 +89,48 @@ pixi_sitrep <- function(path = NULL) {
       )
       fix <- paste0("usethis::use_build_ignore(", deparse(unignored), ")")
       hint("Leave {cli::qty(unignored)}{?it/them} out with {.code {fix}}.")
+    }
+  }
+
+  check <- report$description
+  if (!is.null(check)) {
+    cli::cli_h2("Package")
+    if (length(check$missing) > 0) {
+      cli::cli_alert_warning(
+        "{.file DESCRIPTION} needs {.pkg {check$missing}}, which {cli::qty(length(check$missing))}{?isn't/aren't} in the default environment in {.file pixi.toml}."
+      )
+    }
+    if (length(check$missing_suggests) > 0) {
+      cli::cli_alert_info(
+        "{.file DESCRIPTION} suggests {.pkg {check$missing_suggests}}, which {cli::qty(length(check$missing_suggests))}{?isn't/aren't} in {.file pixi.toml}."
+      )
+    }
+    if (length(check$missing) + length(check$missing_suggests) > 0) {
+      hint("Add them with {.code pixi_import_description()}.")
+    }
+    old <- check$too_old
+    if (nrow(old) > 0) {
+      versions <- paste0(
+        old$package,
+        " ",
+        old$installed,
+        " (needs >= ",
+        old$needs,
+        ")"
+      )
+      cli::cli_alert_warning(
+        "Older than {.file DESCRIPTION} asks for: {versions}."
+      )
+      hint(
+        "Update them with {.code pixi_update()}, or raise their constraints in {.file pixi.toml}."
+      )
+    }
+    if (
+      length(check$missing) + length(check$missing_suggests) + nrow(old) == 0
+    ) {
+      cli::cli_alert_success(
+        "{.file pixi.toml} has what {.file DESCRIPTION} needs."
+      )
     }
   }
 
@@ -239,6 +285,9 @@ sitrep_data <- function(path = NULL) {
       character()
     },
     build_unignored = unignored %||% character(),
+    description = if (!is.null(project)) {
+      description_check(project, in_project)
+    },
     rprofile = !is.null(project) &&
       has_rprofile_block(file.path(project, ".Rprofile")),
     ide = ide,

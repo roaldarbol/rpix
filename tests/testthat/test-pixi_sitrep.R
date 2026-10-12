@@ -85,6 +85,41 @@ test_that("reports a missing Pixi, project or Pixi R", {
   expect_match(out, "another project")
 })
 
+test_that("reports what a package's DESCRIPTION needs", {
+  out <- sitrep_output(good_report(
+    description = list(
+      missing = c("rlang", "limma"),
+      missing_suggests = "knitr",
+      too_old = data.frame(
+        package = "cli",
+        installed = "3.3.0",
+        needs = "3.6.0"
+      )
+    )
+  ))
+  expect_match(
+    out,
+    "needs rlang and limma, which aren't in the default environment"
+  )
+  expect_match(out, "suggests knitr, which isn't in 'pixi.toml'")
+  expect_match(out, "pixi_import_description\\(\\)")
+  expect_match(out, "cli 3.3.0 \\(needs >= 3.6.0\\)")
+
+  out <- sitrep_output(good_report(
+    description = list(
+      missing = character(),
+      missing_suggests = character(),
+      too_old = data.frame(
+        package = character(),
+        installed = character(),
+        needs = character()
+      )
+    )
+  ))
+  expect_match(out, "'pixi.toml' has what 'DESCRIPTION' needs")
+  expect_no_match(sitrep_output(good_report()), "Package")
+})
+
 test_that("reports the date packages are as of", {
   out <- sitrep_output(good_report(exclude_newer = "2025-06-01"))
   expect_match(out, "as they were on \"2025-06-01\"")
