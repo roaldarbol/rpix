@@ -27,7 +27,7 @@ pixi init
 Rscript --no-init-file -e 'rpix::pixi_import_renv(); rpix::use_pixi()'
 ```
 
-`--no-init-file` keeps renv from starting, so this runs in the usual R, where rpix is installed. `pixi_import_renv()` adds the packages in `renv.lock` that nothing else there needs, at least at their locked versions (`versions = "exact"` for those versions, where conda-forge has them), with the lock file's R. It lists what it can't add, packages from GitHub or not on conda-forge or bioconda (see `packages.md`), and removes `source("renv/activate.R")` from `.Rprofile`. `renv.lock` and `renv/` stay; delete them only when the user says so.
+`--no-init-file` keeps renv from starting, so this runs in the usual R, where rpix is installed. `pixi_import_renv()` adds the packages in `renv.lock` that nothing else there needs, at least at their locked versions (`versions = "exact"` for those versions, where conda-forge has them), with the lock file's R. Packages from GitHub are added too, built from source at the commit `renv.lock` records, and it offers to build CRAN packages that aren't on conda-forge; both are experimental, so ask the user first (an older rpix lists them instead). It lists what it still can't add (packages in a subfolder of a repository, other sources, packages on neither conda-forge nor bioconda that can't be built; see `packages.md`), and removes `source("renv/activate.R")` from `.Rprofile`. `renv.lock` and `renv/` stay; delete them only when the user says so.
 
 ## Sharing and reproducing
 

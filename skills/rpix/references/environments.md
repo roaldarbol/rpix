@@ -22,14 +22,11 @@ The feature has to exist before an environment can use it, so add its packages f
 Another version of R, next to the default environment's:
 
 ```r
-pixi_add(
-  c("r-base=4.4", "dplyr", "conda::conda-ecosystem-user-package-isolation"),
-  feature = "r44"
-)
+pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
 pixi_add_environment("r44", features = "r44", default_feature = FALSE)
 ```
 
-`default_feature = FALSE` is needed because the default feature has its own R, and an environment can't have two. It also leaves out the default feature's `conda-ecosystem-user-package-isolation`, so add it to the new feature as above: without it, conda-forge's R loads packages from the user's personal library, built for another R. For a package's checks across R versions, `use_pixi_check_matrix()` does all this (see `package-development.md`).
+`default_feature = FALSE` is needed because the default feature has its own R, and an environment can't have two. It also leaves out the default feature's `conda-ecosystem-user-package-isolation`, without which conda-forge's R loads packages from the user's personal library, built for another R. `pixi_add_environment()` adds it to the environment's first feature when the environment has R; an older rpix doesn't, so check with `pixi_sitrep()`, which reports environments with R that lack it, with the `pixi_add()` call that adds it. Write `no-default-feature = true` into `pixi.toml` by hand only with that check after. For a package's checks across R versions, `use_pixi_check_matrix()` does all this (see `package-development.md`).
 
 ## Using an environment
 
