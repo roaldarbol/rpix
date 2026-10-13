@@ -6,23 +6,23 @@ conda-forge, bioconda, and packages built from source, most of CRAN and
 Bioconductor is usable in a Pixi project. This article has the numbers,
 for deciding whether Pixi is ready for your R work.
 
-The numbers are from 11 October 2026, with Pixi 0.81.0. They’ll change
+The numbers are from 12 October 2026, with Pixi 0.81.0. They’ll change
 as conda-forge, bioconda and Pixi do.
 
 ## CRAN
 
-Of CRAN’s 25,404 packages:
+Of CRAN’s 25,299 packages:
 
 |                                                 | Packages   | Share   |
 |-------------------------------------------------|------------|---------|
-| On conda-forge                                  | 3,434      | 14%     |
-| Built from source by rpix                       | 16,838     | 66%     |
-| **Usable through Pixi and rpix**                | **20,272** | **80%** |
-| Not yet: a dependency isn’t on conda-forge      | 4,733      | 19%     |
-| Not yet: needs a system library R doesn’t bring | 399        | 2%      |
+| On conda-forge                                  | 3,423      | 14%     |
+| Built from source by rpix                       | 16,751     | 66%     |
+| **Usable through Pixi and rpix**                | **20,174** | **80%** |
+| Not yet: a dependency isn’t on conda-forge      | 4,754      | 19%     |
+| Not yet: needs a system library R doesn’t bring | 371        | 1%      |
 
 conda-forge has fewer packages than CRAN, but the ones that matter most:
-953 of the 1,000 packages other CRAN packages depend on most, and 93% of
+945 of the 1,000 packages other CRAN packages depend on most, and 93% of
 its R packages are at CRAN’s current version.
 
 **Built from source** is what
@@ -40,7 +40,7 @@ random sample of 25 of them all built and loaded, on macOS.
 ### What’s still missing
 
 Most of the packages that don’t work yet depend on a package that isn’t
-on conda-forge either. For 3,928 of these 4,733, that dependency can be
+on conda-forge either. For 3,938 of these 4,754, that dependency can be
 built from source too, so once Pixi can build packages that depend on
 other packages built from source
 ([prefix-dev/pixi#6925](https://github.com/prefix-dev/pixi/issues/6925)),
@@ -52,15 +52,15 @@ or a system library such as GDAL or libsndfile.
 
 |                                               | Usable | Share |
 |-----------------------------------------------|--------|-------|
-| Today                                         | 20,272 | 80%   |
-| Building missing dependencies from source too | 24,200 | 95%   |
-| And Bioconductor dependencies from bioconda   | 24,622 | 97%   |
+| Today                                         | 20,174 | 80%   |
+| Building missing dependencies from source too | 24,112 | 95%   |
+| And Bioconductor dependencies from bioconda   | 24,592 | 97%   |
 
 ## Bioconductor
 
-bioconda has essentially all of Bioconductor 3.22, for R 4.5: 2,292 of
-its 2,300 software packages, 97% of them at their 3.22 version. Add them
-with a `bioc::` prefix, or without one:
+bioconda has essentially all of Bioconductor 3.22, for R 4.5: 2,291 of
+its 2,300 software packages, 98% of them at their 3.22 version or newer.
+Add them with a `bioc::` prefix, or without one:
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
 looks on bioconda when a package isn’t on conda-forge.
 
@@ -89,9 +89,12 @@ build on Linux, and on Windows with what rpix adds for building there.
 
 - **CRAN:** every package in CRAN’s package database, with its
   dependencies and `SystemRequirements`.
-- **conda-forge and bioconda:** the packages in their repodata, for
+- **conda-forge and bioconda:** the packages in their channel data, for
   osx-64, matched by name (`r-<name>` and `bioconductor-<name>`).
 - **System requirements:** read with Posit’s
   [r-system-requirements](https://github.com/rstudio/r-system-requirements)
   rules. A language standard (“C++17”), make, and tools only needed when
   the package runs (pandoc, Python) count as needing nothing.
+
+The script that counts them is
+[`data-raw/package-availability.R`](https://github.com/roaldarbol/rpix/blob/main/data-raw/package-availability.R).

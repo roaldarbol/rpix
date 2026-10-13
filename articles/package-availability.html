@@ -94,10 +94,10 @@
 
 
     <p>For years, the answer to “can I use conda for R?” was “only if your packages happen to be on conda-forge”. That’s no longer the case: with conda-forge, bioconda, and packages built from source, most of CRAN and Bioconductor is usable in a Pixi project. This article has the numbers, for deciding whether Pixi is ready for your R work.</p>
-<p>The numbers are from 11 October 2026, with Pixi 0.81.0. They’ll change as conda-forge, bioconda and Pixi do.</p>
+<p>The numbers are from 12 October 2026, with Pixi 0.81.0. They’ll change as conda-forge, bioconda and Pixi do.</p>
 <section class="level2"><h2 id="cran">CRAN<a class="anchor" aria-label="anchor" href="#cran"></a>
 </h2>
-<p>Of CRAN’s 25,404 packages:</p>
+<p>Of CRAN’s 25,299 packages:</p>
 <table class="table caption-top">
 <thead><tr class="header">
 <th></th>
@@ -107,36 +107,36 @@
 <tbody>
 <tr class="odd">
 <td>On conda-forge</td>
-<td>3,434</td>
+<td>3,423</td>
 <td>14%</td>
 </tr>
 <tr class="even">
 <td>Built from source by rpix</td>
-<td>16,838</td>
+<td>16,751</td>
 <td>66%</td>
 </tr>
 <tr class="odd">
 <td><strong>Usable through Pixi and rpix</strong></td>
-<td><strong>20,272</strong></td>
+<td><strong>20,174</strong></td>
 <td><strong>80%</strong></td>
 </tr>
 <tr class="even">
 <td>Not yet: a dependency isn’t on conda-forge</td>
-<td>4,733</td>
+<td>4,754</td>
 <td>19%</td>
 </tr>
 <tr class="odd">
 <td>Not yet: needs a system library R doesn’t bring</td>
-<td>399</td>
-<td>2%</td>
+<td>371</td>
+<td>1%</td>
 </tr>
 </tbody>
 </table>
-<p>conda-forge has fewer packages than CRAN, but the ones that matter most: 953 of the 1,000 packages other CRAN packages depend on most, and 93% of its R packages are at CRAN’s current version.</p>
+<p>conda-forge has fewer packages than CRAN, but the ones that matter most: 945 of the 1,000 packages other CRAN packages depend on most, and 93% of its R packages are at CRAN’s current version.</p>
 <p><strong>Built from source</strong> is what <code><a href="../reference/pixi_add.html">pixi_add()</a></code> offers for a CRAN package that isn’t on conda-forge: Pixi builds it from CRAN’s source, with its dependencies from conda-forge (see <a href="finding-packages.html">Finding packages</a>). A package counts when all its dependencies (<code>Depends</code>, <code>Imports</code> and <code>LinkingTo</code>) are on conda-forge or come with R, and its <code>SystemRequirements</code> need nothing beyond what conda-forge’s R brings (such as curl, cairo, libxml2 or GSL) and the build tools rpix adds (Rust, CMake, pkg-config, Java). Building one takes a minute or two. A random sample of 25 of them all built and loaded, on macOS.</p>
 <section class="level3"><h3 id="whats-still-missing">What’s still missing<a class="anchor" aria-label="anchor" href="#whats-still-missing"></a>
 </h3>
-<p>Most of the packages that don’t work yet depend on a package that isn’t on conda-forge either. For 3,928 of these 4,733, that dependency can be built from source too, so once Pixi can build packages that depend on other packages built from source (<a href="https://github.com/prefix-dev/pixi/issues/6925" class="external-link">prefix-dev/pixi#6925</a>), rpix can build the whole chain. Most of the rest need a Bioconductor package (often limma, Biostrings, GenomicRanges or S4Vectors), which needs <a href="https://github.com/prefix-dev/pixi/issues/6994" class="external-link">prefix-dev/pixi#6994</a>, or a system library such as GDAL or libsndfile.</p>
+<p>Most of the packages that don’t work yet depend on a package that isn’t on conda-forge either. For 3,938 of these 4,754, that dependency can be built from source too, so once Pixi can build packages that depend on other packages built from source (<a href="https://github.com/prefix-dev/pixi/issues/6925" class="external-link">prefix-dev/pixi#6925</a>), rpix can build the whole chain. Most of the rest need a Bioconductor package (often limma, Biostrings, GenomicRanges or S4Vectors), which needs <a href="https://github.com/prefix-dev/pixi/issues/6994" class="external-link">prefix-dev/pixi#6994</a>, or a system library such as GDAL or libsndfile.</p>
 <table class="table caption-top">
 <thead><tr class="header">
 <th></th>
@@ -146,23 +146,23 @@
 <tbody>
 <tr class="odd">
 <td>Today</td>
-<td>20,272</td>
+<td>20,174</td>
 <td>80%</td>
 </tr>
 <tr class="even">
 <td>Building missing dependencies from source too</td>
-<td>24,200</td>
+<td>24,112</td>
 <td>95%</td>
 </tr>
 <tr class="odd">
 <td>And Bioconductor dependencies from bioconda</td>
-<td>24,622</td>
+<td>24,592</td>
 <td>97%</td>
 </tr>
 </tbody>
 </table></section></section><section class="level2"><h2 id="bioconductor">Bioconductor<a class="anchor" aria-label="anchor" href="#bioconductor"></a>
 </h2>
-<p>bioconda has essentially all of Bioconductor 3.22, for R 4.5: 2,292 of its 2,300 software packages, 97% of them at their 3.22 version. Add them with a <code>bioc::</code> prefix, or without one: <code><a href="../reference/pixi_add.html">pixi_add()</a></code> looks on bioconda when a package isn’t on conda-forge.</p>
+<p>bioconda has essentially all of Bioconductor 3.22, for R 4.5: 2,291 of its 2,300 software packages, 98% of them at their 3.22 version or newer. Add them with a <code>bioc::</code> prefix, or without one: <code><a href="../reference/pixi_add.html">pixi_add()</a></code> looks on bioconda when a package isn’t on conda-forge.</p>
 <p>Some things to know:</p>
 <ul>
 <li>
@@ -180,10 +180,12 @@
 <li>
 <strong>CRAN:</strong> every package in CRAN’s package database, with its dependencies and <code>SystemRequirements</code>.</li>
 <li>
-<strong>conda-forge and bioconda:</strong> the packages in their repodata, for osx-64, matched by name (<code>r-&lt;name&gt;</code> and <code>bioconductor-&lt;name&gt;</code>).</li>
+<strong>conda-forge and bioconda:</strong> the packages in their channel data, for osx-64, matched by name (<code>r-&lt;name&gt;</code> and <code>bioconductor-&lt;name&gt;</code>).</li>
 <li>
 <strong>System requirements:</strong> read with Posit’s <a href="https://github.com/rstudio/r-system-requirements" class="external-link">r-system-requirements</a> rules. A language standard (“C++17”), make, and tools only needed when the package runs (pandoc, Python) count as needing nothing.</li>
-</ul></section><script id="quarto-html-after-body" type="application/javascript">
+</ul>
+<p>The script that counts them is <a href="https://github.com/roaldarbol/rpix/blob/main/data-raw/package-availability.R" class="external-link"><code>data-raw/package-availability.R</code></a>.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
