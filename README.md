@@ -90,6 +90,17 @@ To start a new project from a template instead, see
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.html):
   renv’s functions and their rpix counterparts.
 
+## For coding agents
+
+rpix comes with an agent skill, so coding agents such as Claude Code, Codex and Cursor add packages through Pixi, run the project’s R, and start from `pixi_sitrep()` when something’s off. In Claude Code:
+
+```
+/plugin marketplace add roaldarbol/rpix
+/plugin install rpix@rpix
+```
+
+For other agents that read [Agent Skills](https://agentskills.io), copy the [`skills/rpix`](https://github.com/roaldarbol/rpix/tree/main/skills/rpix) folder to where they look for skills.
+
 ## Getting help
 
 Ask questions and share ideas in [GitHub

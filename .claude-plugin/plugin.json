@@ -1,0 +1,20 @@
+{
+  "name": "rpix",
+  "version": "0.7.0.9000",
+  "description": "An agent skill for R projects managed with Pixi: add packages so pixi.toml and pixi.lock record them, run the project's R, diagnose a setup with pixi_sitrep(), and develop and check R packages with rpix.",
+  "author": {
+    "name": "Mikkel Roald-Arbøl",
+    "url": "https://roald-arboel.com"
+  },
+  "homepage": "https://roald-arboel.com/rpix/",
+  "repository": "https://github.com/roaldarbol/rpix",
+  "license": "MIT",
+  "keywords": [
+    "r",
+    "pixi",
+    "rpix",
+    "conda-forge",
+    "bioconductor",
+    "reproducibility"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "rpix",
+  "owner": {
+    "name": "Mikkel Roald-Arbøl",
+    "url": "https://roald-arboel.com"
+  },
+  "description": "rpix's agent skill, for R projects managed with Pixi.",
+  "plugins": [
+    {
+      "name": "rpix",
+      "source": "./"
+    }
+  ]
+}

@@ -26,6 +26,12 @@
   conda-forge from CRAN's source, as `pixi_add()` does. As building from
   source is experimental, it says which packages it built (#162).
 * New guide: "Developing a package", from setting up to CI (#117).
+* An agent skill, in `skills/rpix/`, teaches coding agents such as Claude
+  Code, Codex and Cursor to work in R projects the Pixi way: add packages with
+  `pixi_add()` rather than `install.packages()`, run the environment's R, and
+  start from `pixi_sitrep()` when something's off. In Claude Code, install it
+  with `/plugin marketplace add roaldarbol/rpix` and
+  `/plugin install rpix@rpix` (#155).
 
 ## Changed
 

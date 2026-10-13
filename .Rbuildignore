@@ -15,3 +15,7 @@
 ^vignettes$
 ^tests/testthat/_problems$
 ^data-raw$
+# The agent skill, its plugin manifests and its evals
+^skills$
+^\.claude-plugin$
+^evals$

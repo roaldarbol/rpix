@@ -1,0 +1,5 @@
+# Run from the repository root: claude plugin eval . --scaffold
+schema_version: "1.1"
+name: bioc-data-package
+context:
+  scaffold_script: scaffold.sh
