@@ -19,6 +19,10 @@
   least the minimums `DESCRIPTION` asks for (#113).
 * New article: "How many packages you can use", with how much of CRAN and
   Bioconductor works through Pixi and rpix, and what's still missing (#121).
+* `pixi_import_renv()` adds the lock file's GitHub packages, built from source
+  at the commit it records, and offers to build CRAN packages that aren't on
+  conda-forge from CRAN's source, as `pixi_add()` does. As building from
+  source is experimental, it says which packages it built (#162).
 
 ## Changed
 
