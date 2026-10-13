@@ -30,6 +30,7 @@ Read this when the project is an R package (a `DESCRIPTION` with a `Package` fie
 
 - `"check"`: r-lib's `check-r-package`, for each environment, on each of the project's platforms that GitHub runs (`linux-64`, `osx-arm64`, `win-64`). Each environment needs rcmdcheck and the package's dependencies, `Suggests` included; the default environment has neither rcmdcheck nor the `Suggests`. Without `environments`, rpix picks every environment that has them, e.g. the check matrix's `r44` and `r45`, and stops with the `pixi_add()` call to run if none does; so set up the check matrix first (`use_pixi_check_matrix(c("4.4", "4.5"))`), or add rcmdcheck to the `test` feature. With `environments`, it warns about each that lacks something. An older rpix defaults to `"default"` without checking: name the environments then.
 - `"test-coverage"` needs covr and xml2 (and the package's dependencies) in the environment it uses; `"pkgdown"` needs pkgdown and `conda::pandoc`. Without `environments`, rpix picks the first that has them. `"task"` runs a Pixi task (`task = "..."`) in the default environment.
+- It adds `.github` to `.Rbuildignore` itself, so the workflow stays out of the package's builds.
 - The workflow pins Pixi to the version installed locally, and fails when `pixi.lock` is out of date with `pixi.toml`: commit `pixi.toml`, `pixi.lock` and the workflow together.
 - Missing platforms are reported; add them with `pixi_add_platform()` before writing the workflow.
 - Private channels in CI: setup-pixi's `auth-*` inputs, with the credentials in repository secrets.
