@@ -384,3 +384,51 @@ test_that("channel_access() finds a channel that refuses access", {
   )
   expect_null(channel_access("/project"))
 })
+
+test_that("reports environments that don't keep the personal library out", {
+  out <- sitrep_output(good_report(
+    unisolated = data.frame(
+      name = c("r44", "plain"),
+      feature = c("r44", "default")
+    )
+  ))
+  expect_match(
+    out,
+    "\"r44\" and \"plain\" don't keep your personal R library out"
+  )
+  expect_match(
+    out,
+    'pixi_add("conda::conda-ecosystem-user-package-isolation", feature = "r44")',
+    fixed = TRUE
+  )
+  expect_match(
+    out,
+    'pixi_add("conda::conda-ecosystem-user-package-isolation")',
+    fixed = TRUE
+  )
+  expect_no_match(
+    sitrep_output(good_report()),
+    "personal R library out"
+  )
+})
+
+test_that("unisolated_environments() finds environments with R but no isolation", {
+  envs <- data.frame(name = c("default", "r44", "py", "test"))
+  envs$features <- list("default", "r44", "py", c("test", "default"))
+  envs$dependencies <- list(
+    c("r-base", "conda-ecosystem-user-package-isolation"),
+    "r-base",
+    "python",
+    c("r-testthat", "r-base", "conda-ecosystem-user-package-isolation")
+  )
+  local_mocked_bindings(pixi_info = function(path) {
+    list(environments_info = envs)
+  })
+  expect_equal(
+    unisolated_environments("/p"),
+    data.frame(name = "r44", feature = "r44")
+  )
+
+  local_mocked_bindings(pixi_info = function(path) stop("no pixi"))
+  expect_null(unisolated_environments("/p"))
+})

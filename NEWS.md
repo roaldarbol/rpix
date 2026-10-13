@@ -47,7 +47,9 @@
   keeps the personal R library out, as `use_pixi()` does for the default
   feature. Before, such an environment, e.g. with another version of R, could
   load packages built for another R, and crash. `pixi_add()` adds it too when
-  it adds R to the default feature without it (#160).
+  it adds R to the default feature without it, and `pixi_sitrep()` reports
+  environments with R that lack it, e.g. after editing `pixi.toml` by hand
+  (#160).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
