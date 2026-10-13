@@ -1,0 +1,93 @@
+# Temporary: prefix-dev/pixi#7239 (CMake and pkg-config from SystemRequirements)
+# on roaldarbol/pixi's branch: its tests, clippy and formatting, then real builds
+# in a clean container, where no cmake or pkg-config is on the PATH.
+name: test-pr-7239
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  checks:
+    name: tests, clippy, fmt
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: feat/pixi-build-r-cmake-pkg-config
+      - run: rustup component add rustfmt clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt -p pixi-build-r --check
+      - run: cargo clippy -p pixi-build-r --all-targets -- -D warnings
+      - run: cargo test -p pixi-build-r
+
+  backend:
+    name: build the backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: feat/pixi-build-r-cmake-pkg-config
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build -p pixi-build-r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pixi-build-r
+          path: target/debug/pixi-build-r
+
+  build:
+    name: ${{ matrix.package }} (SystemRequirements ${{ matrix.tool }}), clean container
+    needs: backend
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { package: sundialr, tool: cmake }
+          - { package: xmlrectr, tool: pkg-config }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pixi-build-r
+          path: backend
+      - name: Install Pixi, and nothing else
+        run: |
+          apt-get update -qq && apt-get install -y -qq curl ca-certificates git > /dev/null
+          curl -fsSL https://pixi.sh/install.sh | PIXI_VERSION=v0.81.0 bash
+          echo "$HOME/.pixi/bin" >> $GITHUB_PATH
+          chmod +x backend/pixi-build-r
+          echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$PWD/backend/pixi-build-r" >> "$GITHUB_ENV"
+          for t in cmake pkg-config; do printf "%s: " $t; command -v $t || echo "not on the PATH"; done
+      - name: Build and load, with nothing but R in the entry
+        run: |
+          pkg=${{ matrix.package }}
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["linux-64"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-$pkg = { git = "https://github.com/cran/$pkg", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }
+          TOML
+          set +e
+          pixi run Rscript -e "library($pkg); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -E "LOADED|${{ matrix.tool }} |\\b${{ matrix.tool }}\\b.*conda-forge|ERROR|rror:|not found" | grep -v "Building C" | head -20
+          echo "## ${{ matrix.package }}: exit $status" >> $GITHUB_STEP_SUMMARY
+          exit $status
