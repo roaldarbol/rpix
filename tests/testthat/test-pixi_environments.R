@@ -129,3 +129,81 @@ test_that("environments work with a real Pixi project", {
   expect_equal(envs$features[[1]], "default")
   expect_type(envs$solve_group, "character")
 })
+
+test_that("pixi_add_environment() keeps the personal library out without the default feature", {
+  root <- local_pixi_project(
+    content = c("[feature.r44.dependencies]", 'r-base = "4.4.*"')
+  )
+  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  local_mocked_bindings(project_channels = function(...) "conda-forge")
+
+  expect_message(
+    commands <- pixi_add_environment(
+      "r44",
+      features = "r44",
+      default_feature = FALSE,
+      path = root,
+      dry_run = TRUE
+    ),
+    "keep your personal R library out"
+  )
+  expect_length(commands, 2)
+  expect_match(
+    commands[1],
+    "pixi add conda-ecosystem-user-package-isolation --feature r44",
+    fixed = TRUE
+  )
+  expect_match(commands[2], "--no-default-feature", fixed = TRUE)
+
+  # Not with the default feature, without R, or when a feature has it
+  expect_length(
+    suppressMessages(pixi_add_environment(
+      "r44",
+      features = "r44",
+      path = root,
+      dry_run = TRUE
+    )),
+    1
+  )
+  writeLines(
+    c("[feature.py.dependencies]", 'python = "*"'),
+    file.path(root, "pixi.toml")
+  )
+  expect_length(
+    suppressMessages(pixi_add_environment(
+      "py",
+      features = "py",
+      default_feature = FALSE,
+      path = root,
+      dry_run = TRUE
+    )),
+    1
+  )
+  writeLines(
+    c(
+      "[feature.r44.dependencies]",
+      'r-base = "4.4.*"',
+      'conda-ecosystem-user-package-isolation = "*"'
+    ),
+    file.path(root, "pixi.toml")
+  )
+  expect_length(
+    suppressMessages(pixi_add_environment(
+      "r44",
+      features = "r44",
+      default_feature = FALSE,
+      path = root,
+      dry_run = TRUE
+    )),
+    1
+  )
+  expect_length(
+    suppressMessages(pixi_add_environment(
+      "none",
+      default_feature = FALSE,
+      path = root,
+      dry_run = TRUE
+    )),
+    1
+  )
+})

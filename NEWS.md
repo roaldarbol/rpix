@@ -23,6 +23,7 @@
   at the commit it records, and offers to build CRAN packages that aren't on
   conda-forge from CRAN's source, as `pixi_add()` does. As building from
   source is experimental, it says which packages it built (#162).
+* New guide: "Developing a package", from setting up to CI (#117).
 
 ## Changed
 
@@ -42,6 +43,14 @@
 * After allowing install scripts, rpix says that committing `.pixi/config.toml`
   allows them for everyone who uses the project, CI included. It said the file
   isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
+* `pixi_add_environment(default_feature = FALSE)` adds
+  `conda-ecosystem-user-package-isolation` to an environment with R, which
+  keeps the personal R library out, as `use_pixi()` does for the default
+  feature. Before, such an environment, e.g. with another version of R, could
+  load packages built for another R, and crash. `pixi_add()` adds it too when
+  it adds R to the default feature without it, and `pixi_sitrep()` reports
+  environments with R that lack it, e.g. after editing `pixi.toml` by hand
+  (#160).
 * "Coming from renv" no longer says that packages from GitHub aren't
   available, and that only a few CRAN packages aren't on conda-forge: it says
   that Pixi can build them from source (#161).

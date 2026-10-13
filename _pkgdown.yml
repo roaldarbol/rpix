@@ -76,6 +76,7 @@ articles:
       - articles/ide
       - articles/finding-packages
       - articles/environments
+      - articles/package-development
       - articles/coming-from-renv
       - articles/reproducibility
       - articles/private-channels

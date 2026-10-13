@@ -35,7 +35,7 @@ pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
 pixi_add_environment("r44", features = "r44", default_feature = FALSE)
 ```
 
-`default_feature = FALSE` leaves out the default feature. Here that's needed: the default feature has its own version of R, and an environment can't have two.
+`default_feature = FALSE` leaves out the default feature. Here that's needed: the default feature has its own version of R, and an environment can't have two. It also leaves out `conda-ecosystem-user-package-isolation`, which `use_pixi()` adds to the default feature to keep your personal R library out, so `pixi_add_environment()` adds it to the `r44` feature. Without it, R 4.4 could load packages from your personal library that were built for another R, and crash.
 
 ## Keeping environments in step
 
@@ -75,6 +75,8 @@ pixi_environments()
 ```
 
 ## Developing a package
+
+For the whole workflow, from setting up to CI, see [Developing a package](package-development.html).
 
 For a package, `pixi_import_description()` adds what the package needs from its `DESCRIPTION`: `Depends` and `Imports` to the project, and `Suggests` to a `test` environment, in the same solve group as the default one:
 

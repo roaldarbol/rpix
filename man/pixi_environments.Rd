@@ -33,7 +33,10 @@ add packages to them first with \code{pixi_add(feature = )}.}
 same versions of the packages they share.}
 
 \item{default_feature}{If \code{FALSE}, leave out the default feature. Needed
-when a feature conflicts with it, e.g. pins another version of R.}
+when a feature conflicts with it, e.g. pins another version of R. If the
+environment has R, rpix then adds \code{conda-ecosystem-user-package-isolation}
+to its first feature, as \code{\link[=use_pixi]{use_pixi()}} does to the default one, to keep
+your personal R library out.}
 
 \item{overwrite}{If \code{TRUE}, replace an environment that already exists.}
 

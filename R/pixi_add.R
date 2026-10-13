@@ -32,6 +32,10 @@
 #'   change, e.g. to use `pixi add` once it can set a build backend; see
 #'   <https://github.com/roaldarbol/rpix/issues/96>.
 #'
+#' When it adds R (`r-base`) to the default feature, it also adds
+#' `conda-ecosystem-user-package-isolation`, unless it's there, to keep your
+#' personal R library out of the environment's R, as [use_pixi()] does.
+#'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
 #' @param packages Package names. A version constraint can follow the name, as
@@ -111,6 +115,7 @@ pixi_add <- function(
   if (!is.null(channel)) {
     parsed$channel <- channel
   }
+  parsed <- with_isolation(parsed, feature, path)
 
   # pixi only installs from channels listed in the project
   commands <- NULL
@@ -213,6 +218,33 @@ pixi_add <- function(
   }
   check_post_link(result, path = path)
   invisible(result)
+}
+
+# R in the default feature comes with the isolation from the personal library,
+# as use_pixi() adds it, e.g. in a project it didn't set up. Other features
+# get it from the default one, or from pixi_add_environment() when an
+# environment leaves the default feature out.
+with_isolation <- function(parsed, feature = NULL, path = NULL) {
+  if (
+    !is.null(feature) ||
+      !"r-base" %in% parsed$name ||
+      isolation_package %in% parsed$name
+  ) {
+    return(parsed)
+  }
+  manifest <- find_manifest(path)
+  if (!is.null(manifest)) {
+    lines <- readLines(manifest, warn = FALSE)
+    rows <- table_lines(lines, dependency_table(feature))
+    pattern <- paste0("^\\s*", isolation_package, "\\s*=")
+    if (any(grepl(pattern, lines[rows]))) {
+      return(parsed)
+    }
+  }
+  cli::cli_alert_info(
+    "Adding {.pkg {isolation_package}} with R, to keep your personal R library out."
+  )
+  rbind(parsed, parse_packages(paste0("conda::", isolation_package)))
 }
 
 # The --feature and --platform arguments of pixi add and pixi remove
