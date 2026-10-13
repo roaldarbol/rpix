@@ -7,9 +7,8 @@ setup-r-dependencies and setup-pandoc from
 r-lib/actions, whose other actions run
 as usual on top.
 &quot;check&quot;: R CMD check, with r-lib's check-r-package, for each
-environment on each operating system. The environments need rcmdcheck.
-Use it with use_pixi_check_matrix()'s environments, e.g.
-environments = c(&quot;r44&quot;, &quot;r45&quot;, &quot;minimum&quot;).
+environment on each operating system. The environments need rcmdcheck,
+as use_pixi_check_matrix()'s do.
 &quot;test-coverage&quot;: test coverage, reported to Codecov. The environment
 needs covr and xml2.
 &quot;pkgdown&quot;: build the pkgdown site and publish it to GitHub Pages. The
@@ -17,6 +16,9 @@ environment needs pkgdown and pandoc.
 &quot;task&quot;: run one of the project's Pixi tasks, e.g. to render a report.
 
 
+In a package, &quot;check&quot;, &quot;test-coverage&quot; and &quot;pkgdown&quot; also need the
+package's dependencies from DESCRIPTION, Suggests included. rpix warns
+about each environment that lacks any of these.
 The operating systems are those of the project's platforms that GitHub
 runs: Linux (linux-64), macOS (osx-arm64) and Windows (win-64). Add
 platforms with pixi_add_platform(). Pixi is pinned to the version you
@@ -29,9 +31,8 @@ setup-r-dependencies and setup-pandoc from
 r-lib/actions, whose other actions run
 as usual on top.
 &quot;check&quot;: R CMD check, with r-lib's check-r-package, for each
-environment on each operating system. The environments need rcmdcheck.
-Use it with use_pixi_check_matrix()'s environments, e.g.
-environments = c(&quot;r44&quot;, &quot;r45&quot;, &quot;minimum&quot;).
+environment on each operating system. The environments need rcmdcheck,
+as use_pixi_check_matrix()'s do.
 &quot;test-coverage&quot;: test coverage, reported to Codecov. The environment
 needs covr and xml2.
 &quot;pkgdown&quot;: build the pkgdown site and publish it to GitHub Pages. The
@@ -39,6 +40,9 @@ environment needs pkgdown and pandoc.
 &quot;task&quot;: run one of the project's Pixi tasks, e.g. to render a report.
 
 
+In a package, &quot;check&quot;, &quot;test-coverage&quot; and &quot;pkgdown&quot; also need the
+package's dependencies from DESCRIPTION, Suggests included. rpix warns
+about each environment that lacks any of these.
 The operating systems are those of the project's platforms that GitHub
 runs: Linux (linux-64), macOS (osx-arm64) and Windows (win-64). Add
 platforms with pixi_add_platform(). Pixi is pinned to the version you
@@ -110,15 +114,17 @@ R and packages as your computer. It replaces <code>setup-r</code>,
 <code>setup-r-dependencies</code> and <code>setup-pandoc</code> from
 <a href="https://github.com/r-lib/actions" class="external-link">r-lib/actions</a>, whose other actions run
 as usual on top.</p><ul><li><p><code>"check"</code>: <code>R CMD check</code>, with r-lib's <code>check-r-package</code>, for each
-environment on each operating system. The environments need rcmdcheck.
-Use it with <code><a href="pixi_check_matrix.html">use_pixi_check_matrix()</a></code>'s environments, e.g.
-<code>environments = c("r44", "r45", "minimum")</code>.</p></li>
+environment on each operating system. The environments need rcmdcheck,
+as <code><a href="pixi_check_matrix.html">use_pixi_check_matrix()</a></code>'s do.</p></li>
 <li><p><code>"test-coverage"</code>: test coverage, reported to Codecov. The environment
 needs covr and xml2.</p></li>
 <li><p><code>"pkgdown"</code>: build the pkgdown site and publish it to GitHub Pages. The
 environment needs pkgdown and pandoc.</p></li>
 <li><p><code>"task"</code>: run one of the project's Pixi tasks, e.g. to render a report.</p></li>
-</ul><p>The operating systems are those of the project's platforms that GitHub
+</ul><p>In a package, <code>"check"</code>, <code>"test-coverage"</code> and <code>"pkgdown"</code> also need the
+package's dependencies from <code>DESCRIPTION</code>, <code>Suggests</code> included. rpix warns
+about each environment that lacks any of these.</p>
+<p>The operating systems are those of the project's platforms that GitHub
 runs: Linux (<code>linux-64</code>), macOS (<code>osx-arm64</code>) and Windows (<code>win-64</code>). Add
 platforms with <code><a href="pixi_add_channel.html">pixi_add_platform()</a></code>. Pixi is pinned to the version you
 have, and the workflow fails if <code>pixi.lock</code> is out of date with
@@ -129,7 +135,7 @@ have, and the workflow fails if <code>pixi.lock</code> is out of date with
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">use_pixi_github_action</span><span class="op">(</span></span>
 <span>  workflow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check"</span>, <span class="st">"test-coverage"</span>, <span class="st">"pkgdown"</span>, <span class="st">"task"</span><span class="op">)</span>,</span>
-<span>  environments <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  environments <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  task <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -146,8 +152,11 @@ or <code>"task"</code>.</p></dd>
 
 
 <dt id="arg-environments">environments<a class="anchor" aria-label="anchor" href="#arg-environments"></a></dt>
-<dd><p>The environments to use. Defaults to the default
-environment. <code>"test-coverage"</code> and <code>"pkgdown"</code> use the first.</p></dd>
+<dd><p>Optional. The environments to use; <code>"test-coverage"</code>
+and <code>"pkgdown"</code> use the first. Defaults to those that have what the
+workflow needs: for <code>"check"</code> all of them, and for <code>"test-coverage"</code> and
+<code>"pkgdown"</code> the first, or else the default environment. <code>"task"</code> defaults
+to the default environment.</p></dd>
 
 
 <dt id="arg-task">task<a class="anchor" aria-label="anchor" href="#arg-task"></a></dt>
@@ -171,7 +180,7 @@ environment. <code>"test-coverage"</code> and <code>"pkgdown"</code> use the fir
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">use_pixi_github_action</span><span class="op">(</span><span class="st">"check"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">use_pixi_github_action</span><span class="op">(</span><span class="st">"check"</span>, environments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r44"</span>, <span class="st">"r45"</span>, <span class="st">"minimum"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">use_pixi_github_action</span><span class="op">(</span><span class="st">"check"</span>, environments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r44"</span>, <span class="st">"r45"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">use_pixi_github_action</span><span class="op">(</span><span class="st">"task"</span>, task <span class="op">=</span> <span class="st">"render"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

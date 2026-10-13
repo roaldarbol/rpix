@@ -138,10 +138,13 @@ use_pixi_github_action("check")                   # R CMD check, for a package
 ```
 
 For a package, `"check"` runs r-lib’s `check-r-package` on Linux, macOS
-and Windows (those of the project’s platforms), and takes several
-environments, e.g. those from
-[`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md),
-including the `minimum` one. `"test-coverage"` and `"pkgdown"` do what
-r-lib’s workflows of the same name do. Pixi is pinned to the version you
+and Windows (those of the project’s platforms), in each environment that
+has rcmdcheck and the package’s dependencies, `Suggests` included,
+e.g. those from
+[`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md).
+`"test-coverage"` and `"pkgdown"` do what r-lib’s workflows of the same
+name do, in the first environment that has what they need. Name the
+environments with `environments =`; rpix warns about any that lack
+something, and says how to add it. Pixi is pinned to the version you
 have, and the run fails if `pixi.lock` is out of date with `pixi.toml`,
 so commit both.

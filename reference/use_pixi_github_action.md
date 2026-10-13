@@ -9,10 +9,10 @@ same R and packages as your computer. It replaces `setup-r`,
 run as usual on top.
 
 - `"check"`: `R CMD check`, with r-lib's `check-r-package`, for each
-  environment on each operating system. The environments need rcmdcheck.
-  Use it with
+  environment on each operating system. The environments need rcmdcheck,
+  as
   [`use_pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)'s
-  environments, e.g. `environments = c("r44", "r45", "minimum")`.
+  do.
 
 - `"test-coverage"`: test coverage, reported to Codecov. The environment
   needs covr and xml2.
@@ -22,6 +22,10 @@ run as usual on top.
 
 - `"task"`: run one of the project's Pixi tasks, e.g. to render a
   report.
+
+In a package, `"check"`, `"test-coverage"` and `"pkgdown"` also need the
+package's dependencies from `DESCRIPTION`, `Suggests` included. rpix
+warns about each environment that lacks any of these.
 
 The operating systems are those of the project's platforms that GitHub
 runs: Linux (`linux-64`), macOS (`osx-arm64`) and Windows (`win-64`).
@@ -35,7 +39,7 @@ Pixi is pinned to the version you have, and the workflow fails if
 ``` r
 use_pixi_github_action(
   workflow = c("check", "test-coverage", "pkgdown", "task"),
-  environments = "default",
+  environments = NULL,
   task = NULL,
   overwrite = FALSE,
   path = NULL
@@ -50,8 +54,11 @@ use_pixi_github_action(
 
 - environments:
 
-  The environments to use. Defaults to the default environment.
-  `"test-coverage"` and `"pkgdown"` use the first.
+  Optional. The environments to use; `"test-coverage"` and `"pkgdown"`
+  use the first. Defaults to those that have what the workflow needs:
+  for `"check"` all of them, and for `"test-coverage"` and `"pkgdown"`
+  the first, or else the default environment. `"task"` defaults to the
+  default environment.
 
 - task:
 
@@ -74,7 +81,7 @@ The path to the workflow file, invisibly.
 ``` r
 if (FALSE) { # \dontrun{
 use_pixi_github_action("check")
-use_pixi_github_action("check", environments = c("r44", "r45", "minimum"))
+use_pixi_github_action("check", environments = c("r44", "r45"))
 use_pixi_github_action("task", task = "render")
 } # }
 ```
