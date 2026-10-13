@@ -1,6 +1,6 @@
 # Changelog
 
-## rpix (development version)
+## rpix 0.8.0 (2026-10-13)
 
 ### Added
 
@@ -21,7 +21,11 @@
   writes a GitHub Actions workflow that uses the project’s environments
   exactly as `pixi.lock` records them: `R CMD check` on Linux, macOS and
   Windows for each environment, test coverage, a pkgdown site, or a Pixi
-  task ([\#107](https://github.com/roaldarbol/rpix/issues/107)).
+  task. It uses the environments that have what the workflow needs, such
+  as the check matrix’s for `R CMD check`, and says how to add what an
+  environment lacks
+  ([\#107](https://github.com/roaldarbol/rpix/issues/107),
+  [\#159](https://github.com/roaldarbol/rpix/issues/159)).
 - In a package,
   [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
   checks that `pixi.toml` has what `DESCRIPTION` needs: the `Depends`,
@@ -73,11 +77,6 @@
 
 ### Fixed
 
-- After allowing install scripts, rpix says that committing
-  `.pixi/config.toml` allows them for everyone who uses the project, CI
-  included. It said the file isn’t shared, but `pixi init` leaves it out
-  of `.gitignore`
-  ([\#158](https://github.com/roaldarbol/rpix/issues/158)).
 - `pixi_add_environment(default_feature = FALSE)` adds
   `conda-ecosystem-user-package-isolation` to an environment with R,
   which keeps the personal R library out, as
@@ -104,8 +103,10 @@
   Bioconductor’s annotation and data packages (such as org.Hs.eg.db) use
   to download their data. They offer to allow these scripts in the
   project, and otherwise warn. Before, such packages were added without
-  their data, and didn’t load
-  ([\#142](https://github.com/roaldarbol/rpix/issues/142)).
+  their data, and didn’t load. Committing `.pixi/config.toml` allows the
+  scripts for everyone who uses the project, CI included
+  ([\#142](https://github.com/roaldarbol/rpix/issues/142),
+  [\#158](https://github.com/roaldarbol/rpix/issues/158)).
 - The check matrix’s environments keep your personal R library out, as
   the default environment does. Without it, R could load packages built
   for your usual R, and crash
@@ -120,15 +121,6 @@
   [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
   reports them when they’re missing
   ([\#114](https://github.com/roaldarbol/rpix/issues/114)).
-- [`use_pixi_github_action()`](https://roald-arboel.com/rpix/reference/use_pixi_github_action.md)
-  uses the environments that have what the workflow needs: for
-  `"check"`, each one with rcmdcheck and the package’s dependencies,
-  `Suggests` included, such as the check matrix’s. Before, it used the
-  default environment, where a package set up with
-  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
-  has neither, so the check failed on CI. It warns about each
-  environment that lacks something, and says how to add it
-  ([\#159](https://github.com/roaldarbol/rpix/issues/159)).
 
 ## rpix 0.7.0 (2026-10-10)
 

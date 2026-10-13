@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,15 +59,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.0" id="rpix-080-2026-10-13">rpix 0.8.0 (2026-10-13)<a class="anchor" aria-label="anchor" href="#rpix-080-2026-10-13"></a></h2>
 <div class="section level3">
-<h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<h3 id="added-0-8-0">Added<a class="anchor" aria-label="anchor" href="#added-0-8-0"></a></h3>
 <ul><li>
 <code><a href="../reference/pixi_set_date.html">pixi_set_date()</a></code> and <code>use_pixi(date = )</code> use packages as they were on a date, with Pixi’s <code>exclude-newer</code>, e.g. to rerun an old analysis; a duration such as <code>"7d"</code> leaves out the newest releases instead. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports it (<a href="https://github.com/roaldarbol/rpix/issues/106" class="external-link">#106</a>).</li>
 <li>
 <code>use_pixi_check_matrix(minimum = TRUE)</code> adds a <code>minimum</code> environment, with R and the package’s dependencies at the lowest versions its <code>DESCRIPTION</code> allows, to check that those minimums really work. It has the <code>Suggests</code> too, for the tests and examples; those without a minimum get at least the version the project has (<a href="https://github.com/roaldarbol/rpix/issues/112" class="external-link">#112</a>, <a href="https://github.com/roaldarbol/rpix/issues/168" class="external-link">#168</a>).</li>
 <li>
-<code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that uses the project’s environments exactly as <code>pixi.lock</code> records them: <code>R CMD check</code> on Linux, macOS and Windows for each environment, test coverage, a pkgdown site, or a Pixi task (<a href="https://github.com/roaldarbol/rpix/issues/107" class="external-link">#107</a>).</li>
+<code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that uses the project’s environments exactly as <code>pixi.lock</code> records them: <code>R CMD check</code> on Linux, macOS and Windows for each environment, test coverage, a pkgdown site, or a Pixi task. It uses the environments that have what the workflow needs, such as the check matrix’s for <code>R CMD check</code>, and says how to add what an environment lacks (<a href="https://github.com/roaldarbol/rpix/issues/107" class="external-link">#107</a>, <a href="https://github.com/roaldarbol/rpix/issues/159" class="external-link">#159</a>).</li>
 <li>In a package, <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> checks that <code>pixi.toml</code> has what <code>DESCRIPTION</code> needs: the <code>Depends</code>, <code>Imports</code> and <code>LinkingTo</code> packages in the default environment, the <code>Suggests</code> somewhere, and installed versions at least the minimums <code>DESCRIPTION</code> asks for (<a href="https://github.com/roaldarbol/rpix/issues/113" class="external-link">#113</a>).</li>
 <li>New article: “How many packages you can use”, with how much of CRAN and Bioconductor works through Pixi and rpix, and what’s still missing (<a href="https://github.com/roaldarbol/rpix/issues/121" class="external-link">#121</a>).</li>
 <li>
@@ -76,24 +76,21 @@
 <li>An agent skill, in <code>skills/rpix/</code>, teaches coding agents such as Claude Code, Codex and Cursor to work in R projects the Pixi way: add packages with <code><a href="../reference/pixi_add.html">pixi_add()</a></code> rather than <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>, run the environment’s R, and start from <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> when something’s off. In Claude Code, install it with <code>/plugin marketplace add roaldarbol/rpix</code> and <code>/plugin install rpix@rpix</code> (<a href="https://github.com/roaldarbol/rpix/issues/155" class="external-link">#155</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
+<h3 id="changed-0-8-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-8-0"></a></h3>
 <ul><li>Packages built from source build on Windows too: in a project for Windows, rpix installs them into R’s library folder and adds MSYS2’s <code>make</code>, <code>sed</code> and <code>coreutils</code> (and, for Rust, the GNU target), which <code>pixi-build-r</code> doesn’t yet (<a href="https://github.com/roaldarbol/rpix/issues/123" class="external-link">#123</a>).</li>
 <li>Packages built from source (<code>pixi_add("github::...")</code>, and CRAN packages that aren’t on conda-forge) get what <code>pixi-build-r</code> doesn’t add yet: R’s recommended packages they use, such as Matrix and MASS, and the build tools their <code>SystemRequirements</code> names: Rust, Java, CMake or pkg-config (<a href="https://github.com/roaldarbol/rpix/issues/118" class="external-link">#118</a>).</li>
 <li>rpix’s questions, when it offers to install Pixi or to build a package from source, say what will happen, then offer a numbered menu (<a href="https://github.com/roaldarbol/rpix/issues/104" class="external-link">#104</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
-<ul><li>After allowing install scripts, rpix says that committing <code>.pixi/config.toml</code> allows them for everyone who uses the project, CI included. It said the file isn’t shared, but <code>pixi init</code> leaves it out of <code>.gitignore</code> (<a href="https://github.com/roaldarbol/rpix/issues/158" class="external-link">#158</a>).</li>
-<li>
+<h3 id="fixed-0-8-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-8-0"></a></h3>
+<ul><li>
 <code>pixi_add_environment(default_feature = FALSE)</code> adds <code>conda-ecosystem-user-package-isolation</code> to an environment with R, which keeps the personal R library out, as <code><a href="../reference/use_pixi.html">use_pixi()</a></code> does for the default feature. Before, such an environment, e.g. with another version of R, could load packages built for another R, and crash. <code><a href="../reference/pixi_add.html">pixi_add()</a></code> adds it too when it adds R to the default feature without it, and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports environments with R that lack it, e.g. after editing <code>pixi.toml</code> by hand (<a href="https://github.com/roaldarbol/rpix/issues/160" class="external-link">#160</a>).</li>
 <li>“Coming from renv” no longer says that packages from GitHub aren’t available, and that only a few CRAN packages aren’t on conda-forge: it says that Pixi can build them from source (<a href="https://github.com/roaldarbol/rpix/issues/161" class="external-link">#161</a>).</li>
 <li>
-<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_install.html">pixi_install()</a></code>, <code><a href="../reference/pixi_install.html">pixi_update()</a></code> and <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> notice when Pixi skips a package’s install script, which Bioconductor’s annotation and data packages (such as org.Hs.eg.db) use to download their data. They offer to allow these scripts in the project, and otherwise warn. Before, such packages were added without their data, and didn’t load (<a href="https://github.com/roaldarbol/rpix/issues/142" class="external-link">#142</a>).</li>
+<code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_install.html">pixi_install()</a></code>, <code><a href="../reference/pixi_install.html">pixi_update()</a></code> and <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> notice when Pixi skips a package’s install script, which Bioconductor’s annotation and data packages (such as org.Hs.eg.db) use to download their data. They offer to allow these scripts in the project, and otherwise warn. Before, such packages were added without their data, and didn’t load. Committing <code>.pixi/config.toml</code> allows the scripts for everyone who uses the project, CI included (<a href="https://github.com/roaldarbol/rpix/issues/142" class="external-link">#142</a>, <a href="https://github.com/roaldarbol/rpix/issues/158" class="external-link">#158</a>).</li>
 <li>The check matrix’s environments keep your personal R library out, as the default environment does. Without it, R could load packages built for your usual R, and crash (<a href="https://github.com/roaldarbol/rpix/issues/112" class="external-link">#112</a>).</li>
 <li>Packages built from source whose names have a dot, such as sym.arma, are written correctly into <code>pixi.toml</code>; Pixi couldn’t read them before (<a href="https://github.com/roaldarbol/rpix/issues/120" class="external-link">#120</a>).</li>
 <li>In a package, <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to <code>.Rbuildignore</code>, and the IDE setup adds <code>.vscode</code>, so they stay out of the package’s builds. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> reports them when they’re missing (<a href="https://github.com/roaldarbol/rpix/issues/114" class="external-link">#114</a>).</li>
-<li>
-<code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> uses the environments that have what the workflow needs: for <code>"check"</code>, each one with rcmdcheck and the package’s dependencies, <code>Suggests</code> included, such as the check matrix’s. Before, it used the default environment, where a package set up with <code><a href="../reference/pixi_import_description.html">pixi_import_description()</a></code> has neither, so the check failed on CI. It warns about each environment that lacks something, and says how to add it (<a href="https://github.com/roaldarbol/rpix/issues/159" class="external-link">#159</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
