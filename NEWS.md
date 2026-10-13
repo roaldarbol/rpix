@@ -35,6 +35,10 @@
 
 ## Fixed
 
+* "Several environments" and `?pixi_add_environment` add
+  `conda-ecosystem-user-package-isolation` to an environment without the
+  default feature, which keeps the personal R library out of it, as
+  `use_pixi()` does for the default one (#160).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They

@@ -31,11 +31,14 @@ The feature has to exist before an environment can use it, so add its packages f
 An environment with R 4.4, next to the default one with the latest R:
 
 ```r
-pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
+pixi_add(
+  c("r-base=4.4", "conda::conda-ecosystem-user-package-isolation", "dplyr"),
+  feature = "r44"
+)
 pixi_add_environment("r44", features = "r44", default_feature = FALSE)
 ```
 
-`default_feature = FALSE` leaves out the default feature. Here that's needed: the default feature has its own version of R, and an environment can't have two.
+`default_feature = FALSE` leaves out the default feature. Here that's needed: the default feature has its own version of R, and an environment can't have two. It also leaves out what `use_pixi()` added there to keep your personal R library out, `conda-ecosystem-user-package-isolation`, so the `r44` feature adds it again. Without it, R 4.4 could load packages from your personal library that were built for another R, and crash.
 
 ## Keeping environments in step
 

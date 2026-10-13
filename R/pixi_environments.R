@@ -24,7 +24,10 @@
 #' @param solve_group Optional. Environments in the same solve group get the
 #'   same versions of the packages they share.
 #' @param default_feature If `FALSE`, leave out the default feature. Needed
-#'   when a feature conflicts with it, e.g. pins another version of R.
+#'   when a feature conflicts with it, e.g. pins another version of R. Add
+#'   `conda::conda-ecosystem-user-package-isolation` to the environment's
+#'   features then, as [use_pixi()] does to the default one, to keep your
+#'   personal R library out.
 #' @param overwrite If `TRUE`, replace an environment that already exists.
 #' @param path The project. Defaults to the project of the running Pixi
 #'   environment, or the working directory.
@@ -39,8 +42,12 @@
 #' @examples
 #' \dontrun{
 #' # An environment with R 4.4, next to the default one. It leaves out the
-#' # default feature, since that has another version of R.
-#' pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
+#' # default feature, since that has another version of R, so it needs its
+#' # own isolation from the personal library.
+#' pixi_add(
+#'   c("r-base=4.4", "conda::conda-ecosystem-user-package-isolation", "dplyr"),
+#'   feature = "r44"
+#' )
 #' pixi_add_environment("r44", features = "r44", default_feature = FALSE)
 #'
 #' # An environment with the default packages plus testthat, on the same
