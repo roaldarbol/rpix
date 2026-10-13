@@ -1,5 +1,7 @@
 # Changelog
 
+## rpix (development version)
+
 ## rpix 0.8.0 (2026-10-13)
 
 ### Added
