@@ -51,6 +51,9 @@
   it adds R to the default feature without it, and `pixi_sitrep()` reports
   environments with R that lack it, e.g. after editing `pixi.toml` by hand
   (#160).
+* "Coming from renv" no longer says that packages from GitHub aren't
+  available, and that only a few CRAN packages aren't on conda-forge: it says
+  that Pixi can build them from source (#161).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
