@@ -85,6 +85,7 @@ articles:
     navbar: Background
     contents:
       - articles/how-rpix-works
+      - articles/package-availability
       - articles/troubleshooting
 
 reference:

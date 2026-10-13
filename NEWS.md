@@ -17,6 +17,8 @@
   `DESCRIPTION` needs: the `Depends`, `Imports` and `LinkingTo` packages in
   the default environment, the `Suggests` somewhere, and installed versions at
   least the minimums `DESCRIPTION` asks for (#113).
+* New article: "How many packages you can use", with how much of CRAN and
+  Bioconductor works through Pixi and rpix, and what's still missing (#121).
 * New guide: "Developing a package", from setting up to CI (#117).
 
 ## Changed
