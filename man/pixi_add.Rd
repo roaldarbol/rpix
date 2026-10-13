@@ -74,6 +74,10 @@ change, e.g. to use \verb{pixi add} once it can set a build backend; see
 \url{https://github.com/roaldarbol/rpix/issues/96}.
 }
 
+When it adds R (\code{r-base}) to the default feature, it also adds
+\code{conda-ecosystem-user-package-isolation}, unless it's there, to keep your
+personal R library out of the environment's R, as \code{\link[=use_pixi]{use_pixi()}} does.
+
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/add/}.
 }
 \examples{

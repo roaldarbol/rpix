@@ -27,6 +27,8 @@ the \code{Suggests} somewhere (e.g. a \code{test} environment), and installed
 versions at least the minimums \code{DESCRIPTION} asks for.
 \item In a package, whether \code{.Rbuildignore} leaves Pixi's files out of its
 builds.
+\item Environments with R that don't keep your personal R library out, e.g.
+ones that leave out the default feature.
 \item Private channels that refuse access, and the hosts Pixi has logins for
 (see \code{\link[=pixi_auth_login]{pixi_auth_login()}}).
 \item Whether the running R is the R of the project's environment, and whether
