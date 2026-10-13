@@ -2,6 +2,14 @@
 
 ## rpix (development version)
 
+### Added
+
+- [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  makes the default environment’s R Positron’s default for the project,
+  so Positron (2026.10 or later) starts it when the project opens,
+  without picking it first. `default_r = FALSE` leaves it out
+  ([\#133](https://github.com/roaldarbol/rpix/issues/133)).
+
 ## rpix 0.8.0 (2026-10-13)
 
 ### Added

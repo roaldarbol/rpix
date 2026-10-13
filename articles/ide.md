@@ -29,15 +29,22 @@ checks that it runs the project’s R, and suggests fixes if it doesn’t.
 rpix::use_pixi_positron()
 ```
 
-This turns on Positron’s discovery of R in Pixi environments, in the
-project’s `.vscode/settings.json`.
+This turns on Positron’s discovery of R in Pixi environments, and makes
+the R from the project’s default environment Positron’s default for the
+project, in `.vscode/settings.json`.
 
 ### Every day
 
-In Positron’s interpreter picker, pick **R (Pixi: default)**: the R from
-the project’s default environment. Positron remembers it for the
-project, and starts it whenever you open the project. It activates the
-environment when it starts R, on Windows too.
+Open the project, and Positron (2026.10 or later) starts its R. With an
+older Positron, or `use_pixi_positron(default_r = FALSE)`, pick **R
+(Pixi: default)** in the interpreter picker once; Positron remembers it
+for the project. Either way, the environment is activated when R starts,
+on Windows too.
+
+The default’s path is for the operating system
+[`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+ran on. On another one, Positron ignores it, so collaborators there pick
+**R (Pixi: default)** once.
 
 ### Another environment
 
@@ -48,9 +55,9 @@ the picker.
 
 ### If something’s off
 
-- **Positron starts another R.** Positron prefers the R you last used in
-  the project. If you used another R there before setting up Pixi, pick
-  **R (Pixi: default)** once.
+- **Positron starts another R.** Positron prefers the R you last picked
+  in the project over the default. If you used another R there before
+  setting up Pixi, pick **R (Pixi: default)** once.
 - **R (Pixi: default) isn’t listed.** Positron may still show the R
   installations it found before, even in a new project. Run
   **Interpreter: Discover All Interpreters** from the Command Palette.

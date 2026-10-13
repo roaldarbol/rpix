@@ -105,10 +105,11 @@
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_positron</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This turns on Positron’s discovery of R in Pixi environments, in the project’s <code>.vscode/settings.json</code>.</p>
+<p>This turns on Positron’s discovery of R in Pixi environments, and makes the R from the project’s default environment Positron’s default for the project, in <code>.vscode/settings.json</code>.</p>
 </section><section class="level3"><h3 id="every-day">Every day<a class="anchor" aria-label="anchor" href="#every-day"></a>
 </h3>
-<p>In Positron’s interpreter picker, pick <strong>R (Pixi: default)</strong>: the R from the project’s default environment. Positron remembers it for the project, and starts it whenever you open the project. It activates the environment when it starts R, on Windows too.</p>
+<p>Open the project, and Positron (2026.10 or later) starts its R. With an older Positron, or <code>use_pixi_positron(default_r = FALSE)</code>, pick <strong>R (Pixi: default)</strong> in the interpreter picker once; Positron remembers it for the project. Either way, the environment is activated when R starts, on Windows too.</p>
+<p>The default’s path is for the operating system <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> ran on. On another one, Positron ignores it, so collaborators there pick <strong>R (Pixi: default)</strong> once.</p>
 </section><section class="level3"><h3 id="another-environment">Another environment<a class="anchor" aria-label="anchor" href="#another-environment"></a>
 </h3>
 <p>Each of the project’s environments is listed as its own R, e.g. <strong>R 4.4.3 (Pixi: r44)</strong>. Pick it in the interpreter picker, or run <code>rpix::pixi_switch("r44")</code>, which looks for interpreters again and opens the picker.</p>
@@ -116,7 +117,7 @@
 </h3>
 <ul>
 <li>
-<strong>Positron starts another R.</strong> Positron prefers the R you last used in the project. If you used another R there before setting up Pixi, pick <strong>R (Pixi: default)</strong> once.</li>
+<strong>Positron starts another R.</strong> Positron prefers the R you last picked in the project over the default. If you used another R there before setting up Pixi, pick <strong>R (Pixi: default)</strong> once.</li>
 <li>
 <strong>R (Pixi: default) isn’t listed.</strong> Positron may still show the R installations it found before, even in a new project. Run <strong>Interpreter: Discover All Interpreters</strong> from the Command Palette. Restart Positron if you’ve only just turned on discovery.</li>
 </ul></section></section><section class="level2"><h2 id="rstudio">RStudio<a class="anchor" aria-label="anchor" href="#rstudio"></a>

@@ -6,9 +6,11 @@ the project's platforms, that starts a new RStudio with the
 environment's R and the project's .Rproj file. It creates the .Rproj
 file if there isn't one. Start RStudio with pixi run rstudio.
 use_pixi_positron() turns on Positron's discovery of R in Pixi
-environments, in .vscode/settings.json. Pick the project's R (&quot;R
-(Pixi: default)&quot;) once in Positron's interpreter picker; Positron
-activates the environment when it starts R.
+environments, and makes the default environment's R Positron's default
+for the project, in .vscode/settings.json. Positron (2026.10 or later)
+then starts that R when the project opens, until you pick another R
+there. The path is for the operating system you run it on; on another
+one, Positron ignores it.
 use_pixi_vscode() adds languageserver to the environment, and points
 the R extension for VS Code (and VSCodium) at the environment's R, in
 .vscode/settings.json. On Windows, the environment's R only starts
@@ -24,9 +26,11 @@ the project's platforms, that starts a new RStudio with the
 environment's R and the project's .Rproj file. It creates the .Rproj
 file if there isn't one. Start RStudio with pixi run rstudio.
 use_pixi_positron() turns on Positron's discovery of R in Pixi
-environments, in .vscode/settings.json. Pick the project's R (&quot;R
-(Pixi: default)&quot;) once in Positron's interpreter picker; Positron
-activates the environment when it starts R.
+environments, and makes the default environment's R Positron's default
+for the project, in .vscode/settings.json. Positron (2026.10 or later)
+then starts that R when the project opens, until you pick another R
+there. The path is for the operating system you run it on; on another
+one, Positron ignores it.
 use_pixi_vscode() adds languageserver to the environment, and points
 the R extension for VS Code (and VSCodium) at the environment's R, in
 .vscode/settings.json. On Windows, the environment's R only starts
@@ -102,9 +106,11 @@ the project's platforms, that starts a new RStudio with the
 environment's R and the project's <code>.Rproj</code> file. It creates the <code>.Rproj</code>
 file if there isn't one. Start RStudio with <code>pixi run rstudio</code>.</p></li>
 <li><p><code>use_pixi_positron()</code> turns on Positron's discovery of R in Pixi
-environments, in <code>.vscode/settings.json</code>. Pick the project's R ("R
-(Pixi: default)") once in Positron's interpreter picker; Positron
-activates the environment when it starts R.</p></li>
+environments, and makes the default environment's R Positron's default
+for the project, in <code>.vscode/settings.json</code>. Positron (2026.10 or later)
+then starts that R when the project opens, until you pick another R
+there. The path is for the operating system you run it on; on another
+one, Positron ignores it.</p></li>
 <li><p><code>use_pixi_vscode()</code> adds languageserver to the environment, and points
 the R extension for VS Code (and VSCodium) at the environment's R, in
 <code>.vscode/settings.json</code>. On Windows, the environment's R only starts
@@ -118,7 +124,7 @@ when the environment is activated, so it leaves R to be found on the
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">use_pixi_rstudio</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">use_pixi_positron</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">use_pixi_positron</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, default_r <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">use_pixi_vscode</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -129,6 +135,11 @@ when the environment is activated, so it leaves R to be found on the
 
 <dl><dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>The project. Defaults to the working directory.</p></dd>
+
+
+<dt id="arg-default-r">default_r<a class="anchor" aria-label="anchor" href="#arg-default-r"></a></dt>
+<dd><p>For <code>use_pixi_positron()</code>: if <code>TRUE</code>, make the default
+environment's R Positron's default for the project.</p></dd>
 
 </dl></div>
     <div class="section level2">

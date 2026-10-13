@@ -11,9 +11,11 @@ calls these with its `ide` argument.
   `pixi run rstudio`.
 
 - `use_pixi_positron()` turns on Positron's discovery of R in Pixi
-  environments, in `.vscode/settings.json`. Pick the project's R ("R
-  (Pixi: default)") once in Positron's interpreter picker; Positron
-  activates the environment when it starts R.
+  environments, and makes the default environment's R Positron's default
+  for the project, in `.vscode/settings.json`. Positron (2026.10 or
+  later) then starts that R when the project opens, until you pick
+  another R there. The path is for the operating system you run it on;
+  on another one, Positron ignores it.
 
 - `use_pixi_vscode()` adds languageserver to the environment, and points
   the R extension for VS Code (and VSCodium) at the environment's R, in
@@ -29,7 +31,7 @@ Existing settings in `.vscode/settings.json` are kept. In a package,
 ``` r
 use_pixi_rstudio(path = NULL)
 
-use_pixi_positron(path = NULL)
+use_pixi_positron(path = NULL, default_r = TRUE)
 
 use_pixi_vscode(path = NULL)
 ```
@@ -39,6 +41,11 @@ use_pixi_vscode(path = NULL)
 - path:
 
   The project. Defaults to the working directory.
+
+- default_r:
+
+  For `use_pixi_positron()`: if `TRUE`, make the default environment's R
+  Positron's default for the project.
 
 ## Value
 
