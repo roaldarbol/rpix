@@ -35,6 +35,9 @@
 
 ## Fixed
 
+* After allowing install scripts, rpix says that committing `.pixi/config.toml`
+  allows them for everyone who uses the project, CI included. It said the file
+  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
