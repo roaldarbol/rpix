@@ -36,16 +36,16 @@
     Code
       use_pixi_github_action("check")
     Message
-      i Using the environments "r44" and "r45", which have what the workflow needs.
+      i Using the environments "r44", "r45", and "minimum", which have what the workflow needs.
       v Added `^\.github$` to '.Rbuildignore'.
       v Wrote '.github/workflows/pixi-check.yaml'. Commit it with 'pixi.toml' and 'pixi.lock'.
 
 ---
 
     Code
-      use_pixi_github_action("check", c("r44", "minimum"), overwrite = TRUE)
+      use_pixi_github_action("check", c("r44", "default"), overwrite = TRUE)
     Message
-      ! "minimum" lacks withr, which the workflow needs. Add it with `pixi_add("withr", feature = "minimum")`.
+      ! "default" lacks rcmdcheck, testthat, and withr, which the workflow needs. Add them with `pixi_add(c("rcmdcheck", "testthat", "withr"))`.
       v Wrote '.github/workflows/pixi-check.yaml'. Commit it with 'pixi.toml' and 'pixi.lock'.
 
 # use_pixi_github_action() stops if no environment can check

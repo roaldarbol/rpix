@@ -208,7 +208,9 @@ test_that("use_pixi_check_matrix() adds an environment per version of R", {
 })
 
 # A package project with a pixi.toml, and use_pixi_check_matrix()'s calls to
-# Pixi recorded
+# Pixi recorded. `resolved` has the packages `pixi list` finds in each
+# environment; it fails for the others. `fail` makes `pixi lock` fail: always
+# if `TRUE`, or the first `fail` times.
 local_minimum_project <- function(
   description = c(
     "Package: demo",
@@ -218,6 +220,7 @@ local_minimum_project <- function(
     "Suggests: testthat (>= 3.0.0)"
   ),
   fail = FALSE,
+  resolved = list(),
   env = parent.frame()
 ) {
   dir <- withr::local_tempdir(.local_envir = env)
@@ -234,6 +237,7 @@ local_minimum_project <- function(
   )
   calls <- new.env()
   calls$args <- list()
+  calls$locks <- 0
   local_mocked_bindings(
     require_project = function(path) dir,
     find_r_packages = function(packages) {
@@ -250,8 +254,18 @@ local_minimum_project <- function(
     },
     run_pixi = function(args, ...) {
       calls$args <- c(calls$args, list(args))
-      if (fail && args[1] == "lock") {
-        stop("no solution")
+      if (args[1] == "list") {
+        packages <- resolved[[args[3]]]
+        if (is.null(packages)) {
+          stop("no such environment")
+        }
+        return(packages)
+      }
+      if (args[1] == "lock") {
+        calls$locks <- calls$locks + 1
+        if (isTRUE(fail) || calls$locks <= fail) {
+          stop("no solution")
+        }
       }
       invisible(list(status = 0))
     },
@@ -296,6 +310,113 @@ test_that("use_pixi_check_matrix() adds a minimum-versions environment", {
   lines <- readLines(file.path(calls$dir, "pixi.toml"))
   expect_equal(sum(lines == "[feature.minimum]"), 1)
   expect_equal(sum(lines == "[feature.minimum.dependencies]"), 1)
+})
+
+# The minimum feature's lines in pixi.toml
+minimum_feature <- function(dir) {
+  lines <- readLines(file.path(dir, "pixi.toml"))
+  lines[seq(match("[feature.minimum.dependencies]", lines), length(lines))]
+}
+
+test_that("the minimum environment has the Suggests, at recent minimums", {
+  calls <- local_minimum_project(
+    c(
+      "Package: demo",
+      "Depends: R (>= 4.1)",
+      "Imports: cli (>= 3.0)",
+      paste(
+        "Suggests: testthat (>= 3.2.0), pkgload, cli, knitr (>= 1.40),",
+        "withr, limma, covr, nowhere, tools"
+      )
+    ),
+    resolved = list(
+      test = data.frame(
+        name = c("r-withr", "bioconductor-limma", "r-knitr"),
+        version = c("3.0.2", "3.62.1", "1.50")
+      )
+    )
+  )
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE))
+  feature <- minimum_feature(calls$dir)
+  expect_true(all(
+    c(
+      # A minimum in DESCRIPTION
+      'r-knitr = ">=1.40"',
+      # None: the version the test environment has
+      'r-withr = ">=3.0.2"',
+      'bioconductor-limma = { version = ">=3.62.1", channel = "bioconda" }',
+      # Nowhere in the project
+      'r-covr = "*"',
+      # The check tools: the higher minimum
+      'r-testthat = ">=3.2.0"',
+      'r-pkgload = ">=1.3.0"',
+      # A hard dependency's minimum wins
+      'r-cli = ">=3.0"'
+    ) %in%
+      feature
+  ))
+  expect_equal(sum(startsWith(feature, "r-cli ")), 1)
+  expect_equal(sum(startsWith(feature, "r-testthat ")), 1)
+  expect_false(any(grepl("nowhere|r-tools", feature)))
+  expect_equal(
+    calls$args[[1]],
+    c("list", "--environment", "test", "--no-install")
+  )
+})
+
+test_that("the Suggests' versions come from the default environment, or none", {
+  description <- c(
+    "Package: demo",
+    "Depends: R (>= 4.1)",
+    "Suggests: withr"
+  )
+  calls <- local_minimum_project(
+    description,
+    resolved = list(default = data.frame(name = "r-withr", version = "3.0.1"))
+  )
+  suppressMessages(use_pixi_check_matrix(minimum = TRUE))
+  expect_true('r-withr = ">=3.0.1"' %in% minimum_feature(calls$dir))
+  expect_equal(
+    vapply(calls$args[1:2], `[`, character(1), 3),
+    c("test", "default")
+  )
+
+  calls <- local_minimum_project(description)
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE))
+  expect_true('r-withr = "*"' %in% minimum_feature(calls$dir))
+})
+
+test_that("the Suggests get the oldest versions if the project's don't solve", {
+  description <- c(
+    "Package: demo",
+    "Depends: R (>= 4.1)",
+    "Suggests: withr, knitr (>= 1.40)"
+  )
+  resolved <- list(test = data.frame(name = "r-withr", version = "3.0.2"))
+  calls <- local_minimum_project(description, fail = 1, resolved = resolved)
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE))
+  feature <- minimum_feature(calls$dir)
+  expect_true(all(
+    c('r-withr = "*"', 'r-knitr = ">=1.40"', 'r-testthat = ">=3.1.0"') %in%
+      feature
+  ))
+  expect_equal(sum(feature == "[feature.minimum.dependencies]"), 1)
+  expect_equal(calls$locks, 2)
+
+  # If that fails too, pixi.toml is put back
+  calls <- local_minimum_project(description, fail = TRUE, resolved = resolved)
+  before <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_snapshot(use_pixi_check_matrix(minimum = TRUE), error = TRUE)
+  expect_equal(readLines(file.path(calls$dir, "pixi.toml")), before)
+  expect_equal(calls$locks, 2)
+})
+
+test_that("higher_minimum() keeps the higher minimum", {
+  expect_equal(higher_minimum(">=3.1.0", ">=3.2.0"), ">=3.2.0")
+  expect_equal(higher_minimum(">=3.1.0", ">=3.0.0"), ">=3.1.0")
+  expect_equal(higher_minimum(">=1.4.0", ">=1.4.0_1"), ">=1.4.0_1")
+  expect_equal(higher_minimum(">=1.3.0", ""), ">=1.3.0")
+  expect_equal(higher_minimum(">=1.3.0", "==2.0"), ">=1.3.0")
 })
 
 test_that("the minimum environment takes R from r_versions or the project", {
