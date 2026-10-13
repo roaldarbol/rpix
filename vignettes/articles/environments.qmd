@@ -115,6 +115,6 @@ use_pixi_check_matrix(minimum = TRUE)
 pixi_check_matrix("minimum")
 ```
 
-A dependency without a minimum gets the oldest version on conda-forge for that R, which rpix points out. Only versions on conda-forge count, and for old builds, conda-forge's record of their own dependencies is sometimes looser than their `DESCRIPTION`; then R refuses to load one even though Pixi installed it. That's worth knowing when a failure doesn't seem to be about your package.
+A dependency without a minimum gets the oldest version on conda-forge for that R, which rpix points out. The `Suggests` are there too, for the tests and examples: those without a minimum get at least the version the project has, as they aren't what's tested. Only versions on conda-forge count, and for old builds, conda-forge's record of their own dependencies is sometimes looser than their `DESCRIPTION`; then R refuses to load one even though Pixi installed it. That's worth knowing when a failure doesn't seem to be about your package.
 
 Install an environment with `pixi_install(environment = "r44")`, or all of them with `pixi_install(all = TRUE)`. `pixi run` also installs an environment the first time it's used.
