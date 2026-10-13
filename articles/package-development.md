@@ -132,7 +132,8 @@ without Rtools or a separately installed compiler.
   runs the tests in all of them.
 - **The minimum versions in `DESCRIPTION`:**
   `use_pixi_check_matrix(minimum = TRUE)` adds an environment with R and
-  each dependency at the lowest version `DESCRIPTION` allows.
+  each dependency at the lowest version `DESCRIPTION` allows, `Suggests`
+  included.
 - **Packages as of a date:**
   [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)
   uses packages as they were on a date, e.g. to see whether a bug came
@@ -150,16 +151,17 @@ writes a GitHub Actions workflow that installs the environments from
 
 ``` r
 
-use_pixi_check_matrix(c("4.4", "4.5"))
-use_pixi_github_action("check", environments = c("r44", "r45"))
+use_pixi_check_matrix(c("4.4", "4.5"), minimum = TRUE)
+use_pixi_github_action("check")
 ```
 
 `"check"` runs `R CMD check` on Linux, macOS and Windows (those of the
-project’s platforms), in each environment. Use environments that have
-`rcmdcheck` and the package’s `Suggests`, as the check matrix’s `r44`
-and `r45` do: the default environment has neither. `"test-coverage"` and
-`"pkgdown"` write the other two workflows a package usually has. Commit
-`pixi.lock`: the run fails when it’s out of date with `pixi.toml`.
+project’s platforms), in each environment that has `rcmdcheck` and the
+package’s `Suggests`, as the check matrix’s `r44`, `r45` and `minimum`
+do: the default environment has neither. Or name the environments with
+`environments =`. `"test-coverage"` and `"pkgdown"` write the other two
+workflows a package usually has. Commit `pixi.lock`: the run fails when
+it’s out of date with `pixi.toml`.
 
 ## What Pixi doesn’t cover
 

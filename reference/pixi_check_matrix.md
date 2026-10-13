@@ -74,14 +74,23 @@ use_pixi_check_matrix(r_versions = NULL, minimum = FALSE, path = NULL)
 ## The `minimum` environment
 
 Checks that the minimum versions in `DESCRIPTION` really work: R at the
-version `Depends` asks for, and each package in `Depends`, `Imports` and
-`LinkingTo` at the lowest version its constraint allows (Pixi's
-`solve-strategy = "lowest-direct"`; their own dependencies are the
-newest that fit). testthat, pkgload and rcmdcheck, which run the checks,
-aren't the packages under test, so they're kept at recent minimums.
+version `Depends` asks for, and each package in `Depends`, `Imports`,
+`LinkingTo` and `Suggests` at the lowest version its constraint allows
+(Pixi's `solve-strategy = "lowest-direct"`; their own dependencies are
+the newest that fit).
 
-- A package without a minimum gets the oldest version on conda-forge for
-  that R, which may be much older than you meant; rpix lists them.
+- A package in `Depends`, `Imports` or `LinkingTo` without a minimum
+  gets the oldest version on conda-forge for that R, which may be much
+  older than you meant; rpix lists them.
+
+- A `Suggests` without a minimum isn't what's tested, so it gets at
+  least the version the project has, in its `test` environment or else
+  the default one. rpix lists those the project doesn't have, which get
+  the oldest version, as do the others if those versions don't solve for
+  that R.
+
+- testthat, pkgload and rcmdcheck, which run the checks, get recent
+  minimums, or a higher one from `DESCRIPTION`.
 
 - Without a minimum R in `Depends`, it uses the oldest of `r_versions`,
   or the project's R.

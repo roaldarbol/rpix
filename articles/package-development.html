@@ -151,7 +151,7 @@
 <li>
 <strong>Several versions of R:</strong> <code>use_pixi_check_matrix(c("4.3", "4.4", "4.5"))</code> adds an environment for each, and <code><a href="../reference/pixi_check_matrix.html">pixi_check_matrix()</a></code> runs the tests in all of them.</li>
 <li>
-<strong>The minimum versions in <code>DESCRIPTION</code>:</strong> <code>use_pixi_check_matrix(minimum = TRUE)</code> adds an environment with R and each dependency at the lowest version <code>DESCRIPTION</code> allows.</li>
+<strong>The minimum versions in <code>DESCRIPTION</code>:</strong> <code>use_pixi_check_matrix(minimum = TRUE)</code> adds an environment with R and each dependency at the lowest version <code>DESCRIPTION</code> allows, <code>Suggests</code> included.</li>
 <li>
 <strong>Packages as of a date:</strong> <code><a href="../reference/pixi_set_date.html">pixi_set_date()</a></code> uses packages as they were on a date, e.g. to see whether a bug came with a dependency’s release.</li>
 </ul>
@@ -160,9 +160,9 @@
 </h2>
 <p><code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that installs the environments from <code>pixi.lock</code>, so CI runs with exactly what you ran:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/use_pixi_github_action.html">use_pixi_github_action</a></span><span class="op">(</span><span class="st">"check"</span>, environments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r44"</span>, <span class="st">"r45"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><code>"check"</code> runs <code>R CMD check</code> on Linux, macOS and Windows (those of the project’s platforms), in each environment. Use environments that have <code>rcmdcheck</code> and the package’s <code>Suggests</code>, as the check matrix’s <code>r44</code> and <code>r45</code> do: the default environment has neither. <code>"test-coverage"</code> and <code>"pkgdown"</code> write the other two workflows a package usually has. Commit <code>pixi.lock</code>: the run fails when it’s out of date with <code>pixi.toml</code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span>, minimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/use_pixi_github_action.html">use_pixi_github_action</a></span><span class="op">(</span><span class="st">"check"</span><span class="op">)</span></span></code></pre></div>
+<p><code>"check"</code> runs <code>R CMD check</code> on Linux, macOS and Windows (those of the project’s platforms), in each environment that has <code>rcmdcheck</code> and the package’s <code>Suggests</code>, as the check matrix’s <code>r44</code>, <code>r45</code> and <code>minimum</code> do: the default environment has neither. Or name the environments with <code>environments =</code>. <code>"test-coverage"</code> and <code>"pkgdown"</code> write the other two workflows a package usually has. Commit <code>pixi.lock</code>: the run fails when it’s out of date with <code>pixi.toml</code>.</p>
 </section><section class="level2"><h2 id="what-pixi-doesnt-cover">What Pixi doesn’t cover<a class="anchor" aria-label="anchor" href="#what-pixi-doesnt-cover"></a>
 </h2>
 <ul>

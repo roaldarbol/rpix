@@ -156,12 +156,19 @@ columns <code>environment</code>, <code>r_version</code>, <code>ok</code>, the c
 
 
 <p>Checks that the minimum versions in <code>DESCRIPTION</code> really work: R at the
-version <code>Depends</code> asks for, and each package in <code>Depends</code>, <code>Imports</code> and
-<code>LinkingTo</code> at the lowest version its constraint allows (Pixi's
-<code>solve-strategy = "lowest-direct"</code>; their own dependencies are the newest
-that fit). testthat, pkgload and rcmdcheck, which run the checks, aren't
-the packages under test, so they're kept at recent minimums.</p><ul><li><p>A package without a minimum gets the oldest version on conda-forge for
-that R, which may be much older than you meant; rpix lists them.</p></li>
+version <code>Depends</code> asks for, and each package in <code>Depends</code>, <code>Imports</code>,
+<code>LinkingTo</code> and <code>Suggests</code> at the lowest version its constraint allows
+(Pixi's <code>solve-strategy = "lowest-direct"</code>; their own dependencies are the
+newest that fit).</p><ul><li><p>A package in <code>Depends</code>, <code>Imports</code> or <code>LinkingTo</code> without a minimum gets
+the oldest version on conda-forge for that R, which may be much older
+than you meant; rpix lists them.</p></li>
+<li><p>A <code>Suggests</code> without a minimum isn't what's tested, so it gets at least
+the version the project has, in its <code>test</code> environment or else the
+default one. rpix lists those the project doesn't have, which get the
+oldest version, as do the others if those versions don't solve for that
+R.</p></li>
+<li><p>testthat, pkgload and rcmdcheck, which run the checks, get recent
+minimums, or a higher one from <code>DESCRIPTION</code>.</p></li>
 <li><p>Without a minimum R in <code>Depends</code>, it uses the oldest of <code>r_versions</code>, or
 the project's R.</p></li>
 <li><p>Only versions on conda-forge (and bioconda) count, for the project's
