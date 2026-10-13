@@ -49,6 +49,11 @@
 
 ### Fixed
 
+- After allowing install scripts, rpix says that committing
+  `.pixi/config.toml` allows them for everyone who uses the project, CI
+  included. It said the file isn’t shared, but `pixi init` leaves it out
+  of `.gitignore`
+  ([\#158](https://github.com/roaldarbol/rpix/issues/158)).
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
