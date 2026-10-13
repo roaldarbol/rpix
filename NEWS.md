@@ -35,6 +35,9 @@
 
 ## Fixed
 
+* After allowing install scripts, rpix says that committing `.pixi/config.toml`
+  allows them for everyone who uses the project, CI included. It said the file
+  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
 * "Several environments" and `?pixi_add_environment` add
   `conda-ecosystem-user-package-isolation` to an environment without the
   default feature, which keeps the personal R library out of it, as

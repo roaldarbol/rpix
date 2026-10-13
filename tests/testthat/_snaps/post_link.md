@@ -8,7 +8,7 @@
         that way. The scripts run with your permissions, so Pixi only runs them in
         projects that allow it.
       v Allowed install scripts in this project, in '.pixi/config.toml'.
-      i '.pixi/config.toml' isn't shared with the project, so others need to allow them too, e.g. when `pixi_install()` asks.
+      i To allow them for everyone who uses the project, CI included, commit '.pixi/config.toml': `pixi init` leaves it out of '.gitignore'. Otherwise, others are asked when they run `pixi_install()`.
 
 # check_post_link() says how to run them when it can't ask, or the answer is no
 
