@@ -1,4 +1,4 @@
-# rpix (development version)
+# rpix 0.8.0 (2026-10-13)
 
 ## Added
 
@@ -14,7 +14,9 @@
 * `use_pixi_github_action()` writes a GitHub Actions workflow that uses the
   project's environments exactly as `pixi.lock` records them: `R CMD check`
   on Linux, macOS and Windows for each environment, test coverage, a pkgdown
-  site, or a Pixi task (#107).
+  site, or a Pixi task. It uses the environments that have what the workflow
+  needs, such as the check matrix's for `R CMD check`, and says how to add
+  what an environment lacks (#107, #159).
 * In a package, `pixi_sitrep()` checks that `pixi.toml` has what
   `DESCRIPTION` needs: the `Depends`, `Imports` and `LinkingTo` packages in
   the default environment, the `Suggests` somewhere, and installed versions at
@@ -48,9 +50,6 @@
 
 ## Fixed
 
-* After allowing install scripts, rpix says that committing `.pixi/config.toml`
-  allows them for everyone who uses the project, CI included. It said the file
-  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
 * `pixi_add_environment(default_feature = FALSE)` adds
   `conda-ecosystem-user-package-isolation` to an environment with R, which
   keeps the personal R library out, as `use_pixi()` does for the default
@@ -66,7 +65,9 @@
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
   offer to allow these scripts in the project, and otherwise warn. Before,
-  such packages were added without their data, and didn't load (#142).
+  such packages were added without their data, and didn't load. Committing
+  `.pixi/config.toml` allows the scripts for everyone who uses the project,
+  CI included (#142, #158).
 * The check matrix's environments keep your personal R library out, as the
   default environment does. Without it, R could load packages built for your
   usual R, and crash (#112).
@@ -75,13 +76,6 @@
 * In a package, `use_pixi()` adds `.pixi`, `pixi.toml` and `pixi.lock` to
   `.Rbuildignore`, and the IDE setup adds `.vscode`, so they stay out of the
   package's builds. `pixi_sitrep()` reports them when they're missing (#114).
-* `use_pixi_github_action()` uses the environments that have what the
-  workflow needs: for `"check"`, each one with rcmdcheck and the package's
-  dependencies, `Suggests` included, such as the check matrix's. Before, it
-  used the default environment, where a package set up with
-  `pixi_import_description()` has neither, so the check failed on CI. It
-  warns about each environment that lacks something, and says how to add it
-  (#159).
 
 # rpix 0.7.0 (2026-10-10)
 
