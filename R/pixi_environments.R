@@ -24,7 +24,10 @@
 #' @param solve_group Optional. Environments in the same solve group get the
 #'   same versions of the packages they share.
 #' @param default_feature If `FALSE`, leave out the default feature. Needed
-#'   when a feature conflicts with it, e.g. pins another version of R.
+#'   when a feature conflicts with it, e.g. pins another version of R. If the
+#'   environment has R, rpix then adds `conda-ecosystem-user-package-isolation`
+#'   to its first feature, as [use_pixi()] does to the default one, to keep
+#'   your personal R library out.
 #' @param overwrite If `TRUE`, replace an environment that already exists.
 #' @param path The project. Defaults to the project of the running Pixi
 #'   environment, or the working directory.
@@ -83,7 +86,47 @@ pixi_add_environment <- function(
     if (!default_feature) "--no-default-feature",
     if (overwrite) "--force"
   )
-  run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  isolation <- if (!default_feature) {
+    add_isolation(features, path = path, dry_run = dry_run)
+  }
+  result <- run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
+  if (isTRUE(dry_run)) {
+    return(invisible(c(isolation, result)))
+  }
+  invisible(result)
+}
+
+# An environment without the default feature lacks the isolation from the
+# personal library that use_pixi() adds there. If it has R, add the isolation
+# to its first feature, unless one of its features has it.
+add_isolation <- function(features, path = NULL, dry_run = FALSE) {
+  manifest <- find_manifest(path)
+  if (length(features) == 0 || is.null(manifest)) {
+    return(NULL)
+  }
+  lines <- readLines(manifest, warn = FALSE)
+  has <- function(package) {
+    pattern <- paste0("^\\s*", package, "\\s*=")
+    any(vapply(
+      features,
+      function(f) {
+        any(grepl(pattern, lines[table_lines(lines, dependency_table(f))]))
+      },
+      logical(1)
+    ))
+  }
+  if (!has("r-base") || has(isolation_package)) {
+    return(NULL)
+  }
+  cli::cli_alert_info(
+    "Adding {.pkg {isolation_package}} to {.val {features[1]}}, to keep your personal R library out: the environment leaves out the default feature, which has it."
+  )
+  pixi_add(
+    paste0("conda::", isolation_package),
+    feature = features[1],
+    path = path,
+    dry_run = dry_run
+  )
 }
 
 #' @rdname pixi_environments

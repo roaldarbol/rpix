@@ -14,6 +14,8 @@
 #'   versions at least the minimums `DESCRIPTION` asks for.
 #' * In a package, whether `.Rbuildignore` leaves Pixi's files out of its
 #'   builds.
+#' * Environments with R that don't keep your personal R library out, e.g.
+#'   ones that leave out the default feature.
 #' * Private channels that refuse access, and the hosts Pixi has logins for
 #'   (see [pixi_auth_login()]).
 #' * Whether the running R is the R of the project's environment, and whether
@@ -81,6 +83,17 @@ pixi_sitrep <- function(path = NULL) {
       cli::cli_alert_info(
         "Packages published in the last {.val {date}} are left out."
       )
+    }
+    unisolated <- report$unisolated
+    if (NROW(unisolated) > 0) {
+      n <- nrow(unisolated)
+      cli::cli_alert_warning(
+        "{cli::qty(n)}The environment{?s} {.val {unisolated$name}} {?doesn't/don't} keep your personal R library out, so {?its/their} R can load packages built for another R, and crash."
+      )
+      for (feature in unique(unisolated$feature)) {
+        fix <- isolation_fix(feature)
+        hint("Add the isolation with {.code {fix}}.")
+      }
     }
     unignored <- report$build_unignored
     if (length(unignored) > 0) {
@@ -271,6 +284,9 @@ sitrep_data <- function(path = NULL) {
       if (!is.null(project) && !is.null(pixi)) channel_access(project),
     logins = if (!is.null(pixi)) logins(),
     exclude_newer = if (!is.null(project)) project_exclude_newer(project),
+    unisolated = if (!is.null(project) && !is.null(pixi)) {
+      unisolated_environments(project)
+    },
     r_home = r_home(),
     r_version = as.character(getRversion()),
     environment = environment,
@@ -425,4 +441,41 @@ project_exclude_newer <- function(root) {
     return(NULL)
   }
   manifest_exclude_newer(readLines(manifest, warn = FALSE))
+}
+
+# Environments with R but without the isolation from the personal library,
+# e.g. ones that leave out the default feature, where use_pixi() adds it. A
+# data frame with the environment and the feature to add it to.
+unisolated_environments <- function(project) {
+  envs <- tryCatch(pixi_info(project)$environments_info, error = function(e) {
+    NULL
+  })
+  if (is.null(envs$name)) {
+    return(NULL)
+  }
+  deps <- lapply(envs$dependencies, unlist)
+  keep <- vapply(
+    deps,
+    function(d) "r-base" %in% d && !isolation_package %in% d,
+    logical(1)
+  )
+  data.frame(
+    name = envs$name[keep],
+    feature = vapply(
+      envs$features[keep],
+      function(f) unlist(f)[1],
+      character(1)
+    )
+  )
+}
+
+# The pixi_add() call that adds the isolation to a feature
+isolation_fix <- function(feature) {
+  paste0(
+    'pixi_add("conda::',
+    isolation_package,
+    '"',
+    if (!identical(feature, "default")) paste0(', feature = "', feature, '"'),
+    ")"
+  )
 }

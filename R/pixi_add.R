@@ -32,6 +32,10 @@
 #'   change, e.g. to use `pixi add` once it can set a build backend; see
 #'   <https://github.com/roaldarbol/rpix/issues/96>.
 #'
+#' When it adds R (`r-base`) to the default feature, it also adds
+#' `conda-ecosystem-user-package-isolation`, unless it's there, to keep your
+#' personal R library out of the environment's R, as [use_pixi()] does.
+#'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
 #' @param packages Package names. A version constraint can follow the name, as
@@ -111,6 +115,7 @@ pixi_add <- function(
   if (!is.null(channel)) {
     parsed$channel <- channel
   }
+  parsed <- with_isolation(parsed, feature, path)
 
   # pixi only installs from channels listed in the project
   commands <- NULL
@@ -215,6 +220,33 @@ pixi_add <- function(
   invisible(result)
 }
 
+# R in the default feature comes with the isolation from the personal library,
+# as use_pixi() adds it, e.g. in a project it didn't set up. Other features
+# get it from the default one, or from pixi_add_environment() when an
+# environment leaves the default feature out.
+with_isolation <- function(parsed, feature = NULL, path = NULL) {
+  if (
+    !is.null(feature) ||
+      !"r-base" %in% parsed$name ||
+      isolation_package %in% parsed$name
+  ) {
+    return(parsed)
+  }
+  manifest <- find_manifest(path)
+  if (!is.null(manifest)) {
+    lines <- readLines(manifest, warn = FALSE)
+    rows <- table_lines(lines, dependency_table(feature))
+    pattern <- paste0("^\\s*", isolation_package, "\\s*=")
+    if (any(grepl(pattern, lines[rows]))) {
+      return(parsed)
+    }
+  }
+  cli::cli_alert_info(
+    "Adding {.pkg {isolation_package}} with R, to keep your personal R library out."
+  )
+  rbind(parsed, parse_packages(paste0("conda::", isolation_package)))
+}
+
 # The --feature and --platform arguments of pixi add and pixi remove
 # When Pixi can't add a package because it isn't built for the project's R,
 # the package and the newest R it's built for. NULL for other errors.
@@ -269,8 +301,14 @@ missing_from_conda_forge <- function(parsed) {
 
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
 # mirror, which has a tag for every version. Returns the packages to add
-# instead, or fails.
-offer_cran_source <- function(parsed, missing, call = parent.frame()) {
+# instead, or fails. With `abort = FALSE`, it says how to build them instead of
+# failing, and returns NULL.
+offer_cran_source <- function(
+  parsed,
+  missing,
+  abort = TRUE,
+  call = parent.frame()
+) {
   specs <- package_references(parsed)
   names <- package_r_names(parsed)[missing]
   constraints <- parsed$constraint[missing]
@@ -309,11 +347,18 @@ offer_cran_source <- function(parsed, missing, call = parent.frame()) {
   } else {
     "{.pkg {names}} {?isn't/aren't} on conda-forge."
   }
+  # deparse() splits long vectors over several lines
+  command <- paste0("pixi_add(", paste(deparse(github), collapse = ""), ")")
+  how <- "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code {command}}."
+  if (!abort) {
+    if (!is_interactive()) {
+      header <- "Not on conda-forge, so not added: {.pkg {names}}."
+    }
+    cli::cli_inform(c("!" = header, "i" = how))
+    return(NULL)
+  }
   cli::cli_abort(
-    c(
-      header,
-      "i" = "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code pixi_add({deparse(github)})}."
-    ),
+    c(header, "i" = how),
     class = "rpix_error_package_not_found",
     call = call
   )

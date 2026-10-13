@@ -6,7 +6,7 @@
 \usage{
 use_pixi_github_action(
   workflow = c("check", "test-coverage", "pkgdown", "task"),
-  environments = "default",
+  environments = NULL,
   task = NULL,
   overwrite = FALSE,
   path = NULL
@@ -16,8 +16,11 @@ use_pixi_github_action(
 \item{workflow}{Which workflow: \code{"check"}, \code{"test-coverage"}, \code{"pkgdown"}
 or \code{"task"}.}
 
-\item{environments}{The environments to use. Defaults to the default
-environment. \code{"test-coverage"} and \code{"pkgdown"} use the first.}
+\item{environments}{Optional. The environments to use; \code{"test-coverage"}
+and \code{"pkgdown"} use the first. Defaults to those that have what the
+workflow needs: for \code{"check"} all of them, and for \code{"test-coverage"} and
+\code{"pkgdown"} the first, or else the default environment. \code{"task"} defaults
+to the default environment.}
 
 \item{task}{For \code{"task"}, the task to run.}
 
@@ -38,15 +41,18 @@ R and packages as your computer. It replaces \code{setup-r},
 as usual on top.
 \itemize{
 \item \code{"check"}: \verb{R CMD check}, with r-lib's \code{check-r-package}, for each
-environment on each operating system. The environments need rcmdcheck.
-Use it with \code{\link[=use_pixi_check_matrix]{use_pixi_check_matrix()}}'s environments, e.g.
-\code{environments = c("r44", "r45", "minimum")}.
+environment on each operating system. The environments need rcmdcheck,
+as \code{\link[=use_pixi_check_matrix]{use_pixi_check_matrix()}}'s do.
 \item \code{"test-coverage"}: test coverage, reported to Codecov. The environment
 needs covr and xml2.
 \item \code{"pkgdown"}: build the pkgdown site and publish it to GitHub Pages. The
 environment needs pkgdown and pandoc.
 \item \code{"task"}: run one of the project's Pixi tasks, e.g. to render a report.
 }
+
+In a package, \code{"check"}, \code{"test-coverage"} and \code{"pkgdown"} also need the
+package's dependencies from \code{DESCRIPTION}, \code{Suggests} included. rpix warns
+about each environment that lacks any of these.
 
 The operating systems are those of the project's platforms that GitHub
 runs: Linux (\code{linux-64}), macOS (\code{osx-arm64}) and Windows (\code{win-64}). Add
@@ -57,7 +63,7 @@ have, and the workflow fails if \code{pixi.lock} is out of date with
 \examples{
 \dontrun{
 use_pixi_github_action("check")
-use_pixi_github_action("check", environments = c("r44", "r45", "minimum"))
+use_pixi_github_action("check", environments = c("r44", "r45"))
 use_pixi_github_action("task", task = "render")
 }
 }

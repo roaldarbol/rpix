@@ -20,5 +20,7 @@ docs
 # Reproductions testthat writes for failing tests
 tests/testthat/_problems/
 
+# Downloads cached by data-raw/package-availability.R (AVAILABILITY_CACHE)
+data-raw/cache/
 # Results of `claude plugin eval`
 evals/results/

@@ -45,7 +45,7 @@ check_post_link <- function(result, path = NULL, environment = NULL) {
       )
       run_pixi(reinstall, path = path, echo = TRUE)
       cli::cli_alert_info(
-        "{.file .pixi/config.toml} isn't shared with the project, so others need to allow them too, e.g. when {.fn pixi_install} asks."
+        "To allow them for everyone who uses the project, CI included, commit {.file .pixi/config.toml}: {.code pixi init} leaves it out of {.file .gitignore}. Otherwise, others are asked when they run {.fn pixi_install}."
       )
       return(invisible(TRUE))
     }

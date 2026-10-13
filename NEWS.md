@@ -19,6 +19,11 @@
   least the minimums `DESCRIPTION` asks for (#113).
 * New article: "How many packages you can use", with how much of CRAN and
   Bioconductor works through Pixi and rpix, and what's still missing (#121).
+* `pixi_import_renv()` adds the lock file's GitHub packages, built from source
+  at the commit it records, and offers to build CRAN packages that aren't on
+  conda-forge from CRAN's source, as `pixi_add()` does. As building from
+  source is experimental, it says which packages it built (#162).
+* New guide: "Developing a package", from setting up to CI (#117).
 * An agent skill, in `skills/rpix/`, teaches coding agents such as Claude
   Code, Codex and Cursor to work in R projects the Pixi way: add packages with
   `pixi_add()` rather than `install.packages()`, run the environment's R, and
@@ -41,6 +46,20 @@
 
 ## Fixed
 
+* After allowing install scripts, rpix says that committing `.pixi/config.toml`
+  allows them for everyone who uses the project, CI included. It said the file
+  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
+* `pixi_add_environment(default_feature = FALSE)` adds
+  `conda-ecosystem-user-package-isolation` to an environment with R, which
+  keeps the personal R library out, as `use_pixi()` does for the default
+  feature. Before, such an environment, e.g. with another version of R, could
+  load packages built for another R, and crash. `pixi_add()` adds it too when
+  it adds R to the default feature without it, and `pixi_sitrep()` reports
+  environments with R that lack it, e.g. after editing `pixi.toml` by hand
+  (#160).
+* "Coming from renv" no longer says that packages from GitHub aren't
+  available, and that only a few CRAN packages aren't on conda-forge: it says
+  that Pixi can build them from source (#161).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
@@ -54,6 +73,13 @@
 * In a package, `use_pixi()` adds `.pixi`, `pixi.toml` and `pixi.lock` to
   `.Rbuildignore`, and the IDE setup adds `.vscode`, so they stay out of the
   package's builds. `pixi_sitrep()` reports them when they're missing (#114).
+* `use_pixi_github_action()` uses the environments that have what the
+  workflow needs: for `"check"`, each one with rcmdcheck and the package's
+  dependencies, `Suggests` included, such as the check matrix's. Before, it
+  used the default environment, where a package set up with
+  `pixi_import_description()` has neither, so the check failed on CI. It
+  warns about each environment that lacks something, and says how to add it
+  (#159).
 
 # rpix 0.7.0 (2026-10-10)
 
