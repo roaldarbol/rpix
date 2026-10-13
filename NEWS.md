@@ -23,6 +23,7 @@
   at the commit it records, and offers to build CRAN packages that aren't on
   conda-forge from CRAN's source, as `pixi_add()` does. As building from
   source is experimental, it says which packages it built (#162).
+* New guide: "Developing a package", from setting up to CI (#117).
 
 ## Changed
 
