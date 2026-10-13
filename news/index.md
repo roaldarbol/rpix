@@ -61,6 +61,19 @@
   included. It said the file isn’t shared, but `pixi init` leaves it out
   of `.gitignore`
   ([\#158](https://github.com/roaldarbol/rpix/issues/158)).
+- `pixi_add_environment(default_feature = FALSE)` adds
+  `conda-ecosystem-user-package-isolation` to an environment with R,
+  which keeps the personal R library out, as
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  does for the default feature. Before, such an environment, e.g. with
+  another version of R, could load packages built for another R, and
+  crash.
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  adds it too when it adds R to the default feature without it, and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  reports environments with R that lack it, e.g. after editing
+  `pixi.toml` by hand
+  ([\#160](https://github.com/roaldarbol/rpix/issues/160)).
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)

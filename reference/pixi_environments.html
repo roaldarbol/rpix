@@ -143,7 +143,10 @@ same versions of the packages they share.</p></dd>
 
 <dt id="arg-default-feature">default_feature<a class="anchor" aria-label="anchor" href="#arg-default-feature"></a></dt>
 <dd><p>If <code>FALSE</code>, leave out the default feature. Needed
-when a feature conflicts with it, e.g. pins another version of R.</p></dd>
+when a feature conflicts with it, e.g. pins another version of R. If the
+environment has R, rpix then adds <code>conda-ecosystem-user-package-isolation</code>
+to its first feature, as <code><a href="use_pixi.html">use_pixi()</a></code> does to the default one, to keep
+your personal R library out.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>

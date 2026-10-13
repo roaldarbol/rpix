@@ -63,7 +63,11 @@ pixi_remove_environment(name, path = NULL, dry_run = FALSE)
 - default_feature:
 
   If `FALSE`, leave out the default feature. Needed when a feature
-  conflicts with it, e.g. pins another version of R.
+  conflicts with it, e.g. pins another version of R. If the environment
+  has R, rpix then adds `conda-ecosystem-user-package-isolation` to its
+  first feature, as
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  does to the default one, to keep your personal R library out.
 
 - overwrite:
 

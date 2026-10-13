@@ -29,6 +29,9 @@ change, e.g. to use pixi add once it can set a build backend; see
 https://github.com/roaldarbol/rpix/issues/96.
 
 
+When it adds R (r-base) to the default feature, it also adds
+conda-ecosystem-user-package-isolation, unless it's there, to keep your
+personal R library out of the environment's R, as use_pixi() does.
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/add/."><meta property="og:description" content="Add packages to the Pixi manifest and install them. Pixi only adds them if
 they can be solved together with the rest of the project's dependencies.
 R package names are translated to conda names: &quot;dplyr&quot; becomes r-dplyr
@@ -59,6 +62,9 @@ change, e.g. to use pixi add once it can set a build backend; see
 https://github.com/roaldarbol/rpix/issues/96.
 
 
+When it adds R (r-base) to the default feature, it also adds
+conda-ecosystem-user-package-isolation, unless it's there, to keep your
+personal R library out of the environment's R, as use_pixi() does.
 For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/add/."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -146,7 +152,10 @@ need: R's library folder, and MSYS2's <code>make</code>, <code>sed</code> and <c
 <a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link">https://pixi.prefix.dev/latest/build/backends/pixi-build-r/</a>. This may
 change, e.g. to use <code>pixi add</code> once it can set a build backend; see
 <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">https://github.com/roaldarbol/rpix/issues/96</a>.</p></li>
-</ul><p>For more information, see <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/add/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/add/</a>.</p>
+</ul><p>When it adds R (<code>r-base</code>) to the default feature, it also adds
+<code>conda-ecosystem-user-package-isolation</code>, unless it's there, to keep your
+personal R library out of the environment's R, as <code><a href="use_pixi.html">use_pixi()</a></code> does.</p>
+<p>For more information, see <a href="https://pixi.prefix.dev/latest/reference/cli/pixi/add/" class="external-link">https://pixi.prefix.dev/latest/reference/cli/pixi/add/</a>.</p>
     </div>
 
     <div class="section level2">

@@ -18,6 +18,9 @@ environment, and suggest fixes for what doesn't. It reports:
 - In a package, whether `.Rbuildignore` leaves Pixi's files out of its
   builds.
 
+- Environments with R that don't keep your personal R library out, e.g.
+  ones that leave out the default feature.
+
 - Private channels that refuse access, and the hosts Pixi has logins for
   (see
   [`pixi_auth_login()`](https://roald-arboel.com/rpix/reference/pixi_auth_login.md)).
