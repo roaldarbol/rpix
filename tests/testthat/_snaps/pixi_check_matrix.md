@@ -69,6 +69,44 @@
       ! rlang and Rcpp have no minimum version in 'DESCRIPTION', so they get the oldest version on conda-forge for that R.
       v Added the environment "minimum". Run `pixi_check_matrix()`.
 
+# the minimum environment has the Suggests, at recent minimums
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! nowhere isn't on conda-forge or bioconda, so the "minimum" environment leaves it out.
+      ! covr has no minimum version in 'DESCRIPTION', and the project doesn't have it, so it gets the oldest version on conda-forge for that R.
+      v Added the environment "minimum". Run `pixi_check_matrix()`.
+
+# the Suggests' versions come from the default environment, or none
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! withr has no minimum version in 'DESCRIPTION', and the project doesn't have it, so it gets the oldest version on conda-forge for that R.
+      v Added the environment "minimum". Run `pixi_check_matrix()`.
+
+# the Suggests get the oldest versions if the project's don't solve
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! Pixi couldn't solve the "minimum" environment with withr at the project's version, which may not be built for `r-base >=4.1`, so it gets the oldest version on conda-forge instead.
+      v Added the environment "minimum". Run `pixi_check_matrix()`.
+
+---
+
+    Code
+      use_pixi_check_matrix(minimum = TRUE)
+    Message
+      ! Pixi couldn't solve the "minimum" environment with withr at the project's version, which may not be built for `r-base >=4.1`, so it gets the oldest version on conda-forge instead.
+    Condition
+      Error:
+      ! Pixi couldn't solve the "minimum" environment, so 'pixi.toml' is as it was.
+      i The lowest versions 'DESCRIPTION' allows may not be on conda-forge for that R, or for all the project's platforms. See Pixi's output above.
+      Caused by error in `run_pixi()`:
+      ! no solution
+
 # the minimum environment leaves out packages it can't find
 
     Code

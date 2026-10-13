@@ -60,14 +60,21 @@ versions the package's \code{DESCRIPTION} allows.
 \section{The \code{minimum} environment}{
 
 Checks that the minimum versions in \code{DESCRIPTION} really work: R at the
-version \code{Depends} asks for, and each package in \code{Depends}, \code{Imports} and
-\code{LinkingTo} at the lowest version its constraint allows (Pixi's
-\code{solve-strategy = "lowest-direct"}; their own dependencies are the newest
-that fit). testthat, pkgload and rcmdcheck, which run the checks, aren't
-the packages under test, so they're kept at recent minimums.
+version \code{Depends} asks for, and each package in \code{Depends}, \code{Imports},
+\code{LinkingTo} and \code{Suggests} at the lowest version its constraint allows
+(Pixi's \code{solve-strategy = "lowest-direct"}; their own dependencies are the
+newest that fit).
 \itemize{
-\item A package without a minimum gets the oldest version on conda-forge for
-that R, which may be much older than you meant; rpix lists them.
+\item A package in \code{Depends}, \code{Imports} or \code{LinkingTo} without a minimum gets
+the oldest version on conda-forge for that R, which may be much older
+than you meant; rpix lists them.
+\item A \code{Suggests} without a minimum isn't what's tested, so it gets at least
+the version the project has, in its \code{test} environment or else the
+default one. rpix lists those the project doesn't have, which get the
+oldest version, as do the others if those versions don't solve for that
+R.
+\item testthat, pkgload and rcmdcheck, which run the checks, get recent
+minimums, or a higher one from \code{DESCRIPTION}.
 \item Without a minimum R in \code{Depends}, it uses the oldest of \code{r_versions}, or
 the project's R.
 \item Only versions on conda-forge (and bioconda) count, for the project's

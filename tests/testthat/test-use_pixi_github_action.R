@@ -62,7 +62,7 @@ package_environments <- list(
   test = c("r-testthat", "r-withr", "r-base", "r-cli"),
   r44 = matrix_packages,
   r45 = matrix_packages,
-  minimum = c("r-base", "r-cli", "r-testthat", "r-pkgload", "r-rcmdcheck")
+  minimum = matrix_packages
 )
 package_features <- list(
   "default",
@@ -141,17 +141,17 @@ test_that("use_pixi_github_action() checks in the environments that can", {
   local_package(dir, suggests = c("testthat", "withr", "notonconda"))
   expect_snapshot(use_pixi_github_action("check"))
   expect_true(
-    "        environment: [r44, r45]" %in% workflow_file(dir, "check")
+    "        environment: [r44, r45, minimum]" %in% workflow_file(dir, "check")
   )
 
-  # minimum lacks the Suggests
+  # The default environment lacks the Suggests, and rcmdcheck
   expect_snapshot(use_pixi_github_action(
     "check",
-    c("r44", "minimum"),
+    c("r44", "default"),
     overwrite = TRUE
   ))
   expect_true(
-    "        environment: [r44, minimum]" %in% workflow_file(dir, "check")
+    "        environment: [r44, default]" %in% workflow_file(dir, "check")
   )
 })
 
