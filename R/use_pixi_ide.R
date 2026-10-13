@@ -9,9 +9,11 @@
 #'   environment's R and the project's `.Rproj` file. It creates the `.Rproj`
 #'   file if there isn't one. Start RStudio with `pixi run rstudio`.
 #' * `use_pixi_positron()` turns on Positron's discovery of R in Pixi
-#'   environments, in `.vscode/settings.json`. Pick the project's R ("R
-#'   (Pixi: default)") once in Positron's interpreter picker; Positron
-#'   activates the environment when it starts R.
+#'   environments, and makes the default environment's R Positron's default
+#'   for the project, in `.vscode/settings.json`. Positron (2026.10 or later)
+#'   then starts that R when the project opens, until you pick another R
+#'   there. The path is for the operating system you run it on; on another
+#'   one, Positron ignores it.
 #' * `use_pixi_vscode()` adds languageserver to the environment, and points
 #'   the R extension for VS Code (and VSCodium) at the environment's R, in
 #'   `.vscode/settings.json`. On Windows, the environment's R only starts
@@ -22,6 +24,8 @@
 #' `.vscode` is added to `.Rbuildignore`.
 #'
 #' @param path The project. Defaults to the working directory.
+#' @param default_r For `use_pixi_positron()`: if `TRUE`, make the default
+#'   environment's R Positron's default for the project.
 #' @returns The file they changed, invisibly.
 #' @name use_pixi_ide
 #' @examples
@@ -72,16 +76,29 @@ use_pixi_rstudio <- function(path = NULL) {
 
 #' @rdname use_pixi_ide
 #' @export
-use_pixi_positron <- function(path = NULL) {
+use_pixi_positron <- function(path = NULL, default_r = TRUE) {
   root <- require_project(path)
-  file <- update_vscode_settings(
-    root,
-    list("positron.r.interpreters.pixiDiscovery" = TRUE)
-  )
-  cli::cli_alert_info(
-    "In Positron, pick {.val R (Pixi: default)} in the interpreter picker. Positron remembers it for the project. If it isn't listed, run {.strong Interpreter: Discover All Interpreters} from the Command Palette."
-  )
+  settings <- list("positron.r.interpreters.pixiDiscovery" = TRUE)
+  if (isTRUE(default_r)) {
+    settings[["positron.r.interpreters.default"]] <- positron_default_r()
+  }
+  file <- update_vscode_settings(root, settings)
+  if (isTRUE(default_r)) {
+    cli::cli_alert_info(
+      "Positron (2026.10 or later) now starts the project's R when you open the project; restart it if it's open. If you've picked another R in this project before, pick {.val R (Pixi: default)} once."
+    )
+  } else {
+    cli::cli_alert_info(
+      "In Positron, pick {.val R (Pixi: default)} in the interpreter picker. Positron remembers it for the project. If it isn't listed, run {.strong Interpreter: Discover All Interpreters} from the Command Palette."
+    )
+  }
   invisible(file)
+}
+
+# The default environment's R, as Positron's settings take it: relative to
+# the project, for this operating system
+positron_default_r <- function() {
+  environment_r("${workspaceFolder}", "default")
 }
 
 #' @rdname use_pixi_ide

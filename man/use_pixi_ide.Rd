@@ -9,12 +9,15 @@
 \usage{
 use_pixi_rstudio(path = NULL)
 
-use_pixi_positron(path = NULL)
+use_pixi_positron(path = NULL, default_r = TRUE)
 
 use_pixi_vscode(path = NULL)
 }
 \arguments{
 \item{path}{The project. Defaults to the working directory.}
+
+\item{default_r}{For \code{use_pixi_positron()}: if \code{TRUE}, make the default
+environment's R Positron's default for the project.}
 }
 \value{
 The file they changed, invisibly.
@@ -28,9 +31,11 @@ the project's platforms, that starts a new RStudio with the
 environment's R and the project's \code{.Rproj} file. It creates the \code{.Rproj}
 file if there isn't one. Start RStudio with \verb{pixi run rstudio}.
 \item \code{use_pixi_positron()} turns on Positron's discovery of R in Pixi
-environments, in \code{.vscode/settings.json}. Pick the project's R ("R
-(Pixi: default)") once in Positron's interpreter picker; Positron
-activates the environment when it starts R.
+environments, and makes the default environment's R Positron's default
+for the project, in \code{.vscode/settings.json}. Positron (2026.10 or later)
+then starts that R when the project opens, until you pick another R
+there. The path is for the operating system you run it on; on another
+one, Positron ignores it.
 \item \code{use_pixi_vscode()} adds languageserver to the environment, and points
 the R extension for VS Code (and VSCodium) at the environment's R, in
 \code{.vscode/settings.json}. On Windows, the environment's R only starts
