@@ -43,7 +43,8 @@ Rscript --no-init-file -e 'rpix::pixi_import_renv(); rpix::use_pixi()'
 
 - adds the packages in `renv.lock` to `pixi.toml`, at least at their locked versions, with the lock file's version of R. Use `versions = "exact"` for the locked versions themselves, where conda-forge has them.
 - adds only the packages that nothing else in the lock file needs: the ones your project uses. Pixi installs what they need.
-- lists packages it can't add: those from GitHub, and those not on conda-forge or bioconda. Add them with `pixi_add()`, which builds them from source: `pixi_add("github::user/repo")` for a GitHub package, and for a CRAN package it offers to (see [When a package isn't on conda-forge](finding-packages.html#when-a-package-isnt-on-conda-forge)).
+- adds packages from GitHub too, built from source at the commit `renv.lock` records, and offers to build CRAN packages that aren't on conda-forge from source (see [When a package isn't on conda-forge](finding-packages.html#when-a-package-isnt-on-conda-forge)). Building from source is experimental, so it says which packages it built.
+- lists packages it can't add: those in a subfolder of a GitHub repository, from other sources such as GitLab, and those that aren't on conda-forge or bioconda and can't be built.
 - turns renv off, by removing `source("renv/activate.R")` from `.Rprofile`. Delete `renv.lock` and the `renv` folder when you no longer need them.
 
 Then start R with `pixi run R`, or set up your IDE (see [Using rpix with an IDE](ide.html)).
