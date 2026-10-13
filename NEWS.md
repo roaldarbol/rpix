@@ -19,6 +19,10 @@
   least the minimums `DESCRIPTION` asks for (#113).
 * New article: "How many packages you can use", with how much of CRAN and
   Bioconductor works through Pixi and rpix, and what's still missing (#121).
+* `pixi_import_renv()` adds the lock file's GitHub packages, built from source
+  at the commit it records, and offers to build CRAN packages that aren't on
+  conda-forge from CRAN's source, as `pixi_add()` does. As building from
+  source is experimental, it says which packages it built (#162).
 * New guide: "Developing a package", from setting up to CI (#117).
 
 ## Changed
@@ -36,6 +40,9 @@
 
 ## Fixed
 
+* After allowing install scripts, rpix says that committing `.pixi/config.toml`
+  allows them for everyone who uses the project, CI included. It said the file
+  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They
@@ -49,6 +56,13 @@
 * In a package, `use_pixi()` adds `.pixi`, `pixi.toml` and `pixi.lock` to
   `.Rbuildignore`, and the IDE setup adds `.vscode`, so they stay out of the
   package's builds. `pixi_sitrep()` reports them when they're missing (#114).
+* `use_pixi_github_action()` uses the environments that have what the
+  workflow needs: for `"check"`, each one with rcmdcheck and the package's
+  dependencies, `Suggests` included, such as the check matrix's. Before, it
+  used the default environment, where a package set up with
+  `pixi_import_description()` has neither, so the check failed on CI. It
+  warns about each environment that lacks something, and says how to add it
+  (#159).
 
 # rpix 0.7.0 (2026-10-10)
 

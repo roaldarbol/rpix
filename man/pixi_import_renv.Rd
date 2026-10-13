@@ -37,24 +37,36 @@ environment, or the working directory.}
 \item{dry_run}{If \code{TRUE}, show the Pixi command without running it.}
 }
 \value{
-A list with the package specs added (\code{packages}), and the packages
-left out because they aren't from a repository (\code{not_from_repository})
-or weren't found (\code{missing}), invisibly.
+A list, invisibly, with the package specs added (\code{packages}), the
+packages built from source (\code{from_source}), and the packages left out
+because rpix can't add them from where they came
+(\code{not_from_repository}) or they weren't found (\code{missing}).
 }
 \description{
 Add the packages in a project's \code{renv.lock} to its Pixi project, and turn
 renv off.
 \itemize{
 \item Packages from CRAN, or another CRAN-like repository, are looked up on
-conda-forge, and Bioconductor packages on bioconda. Packages from GitHub
-or elsewhere, and packages that aren't on conda-forge or bioconda, are
-left out, and listed.
+conda-forge, and Bioconductor packages on bioconda. CRAN packages that
+aren't on conda-forge can be built from CRAN's source instead
+(experimental): \code{pixi_import_renv()} offers to, or if it can't ask, lists
+them with the command that does. Other packages that aren't on
+conda-forge or bioconda are left out, and listed.
+\item Packages from GitHub (experimental) are built from source at the commit
+\code{renv.lock} records, as \code{pixi_add("github::user/repo@commit")} does. With
+\code{versions = "none"}, they're built from the newest commit of the branch it
+records. Packages in a subfolder of a repository, and packages from
+elsewhere, are left out, and listed.
 \item By default only the packages that no other package in the lock file
 needs are added, so \code{pixi.toml} lists what the project uses, rather than
-everything those packages need too.
+everything those packages need too. Packages from GitHub are added either
+way, as conda-forge doesn't have them.
 \item The lock file's version of R becomes a constraint on R, if the project
 doesn't have R yet.
 }
+
+It says which packages Pixi builds from source, as building them is
+experimental; see \code{\link[=pixi_add]{pixi_add()}}.
 
 renv's \code{.Rprofile} line, \code{source("renv/activate.R")}, makes R use renv's
 library, so \code{deactivate = TRUE} removes it, like \code{renv::deactivate()}.

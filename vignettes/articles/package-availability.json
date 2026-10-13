@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-12",
+  "platform": "osx-64",
+  "pixi": "0.81.0",
+  "r": "4.5.3",
+  "r_system_requirements": "61f151593bd0cfdb365a5a0d75bbc9e5715d5443",
+  "cran": {
+    "packages": 25299,
+    "conda_forge": 3423,
+    "source": 16751,
+    "usable": 20174,
+    "blocked_dependency": 4754,
+    "blocked_system": 371,
+    "top": 1000,
+    "top_on_conda_forge": 945,
+    "conda_forge_current": 0.9302,
+    "chains_blocked": 3938,
+    "usable_chains": 24112,
+    "usable_bioconda": 24592,
+    "rest": 816,
+    "rest_bioc_or_library": 672,
+    "bioc_dependencies": ["limma", "Biostrings", "GenomicRanges", "S4Vectors"],
+    "system_libraries": ["jags", "gdal", "proj", "fftw3", "geos"],
+    "shares": {
+      "conda_forge": 0.1353,
+      "source": 0.6621,
+      "usable": 0.7974,
+      "blocked_dependency": 0.1879,
+      "blocked_system": 0.0147,
+      "usable_chains": 0.9531,
+      "usable_bioconda": 0.9721
+    }
+  },
+  "bioconductor": {
+    "release": "3.23",
+    "release_r": "4.6",
+    "release_software": 2385,
+    "bioconda_release": "3.22",
+    "bioconda_r": "4.5",
+    "bioconda_release_software": 2300,
+    "on_bioconda": 2291,
+    "on_bioconda_share": 0.9961,
+    "at_version_share": 0.9782
+  }
+}
