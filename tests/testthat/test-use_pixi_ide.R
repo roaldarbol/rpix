@@ -82,6 +82,8 @@ test_that("turns on Pixi discovery, keeping other settings", {
     file.path(p$root, ".vscode", "settings.json")
   )
 
+  local_mocked_bindings(is_windows = function() FALSE)
+
   suppressMessages(use_pixi_positron(p$root))
 
   expect_equal(
@@ -89,9 +91,24 @@ test_that("turns on Pixi discovery, keeping other settings", {
     list(
       editor.tabSize = 2L,
       files.exclude = list("a"),
-      positron.r.interpreters.pixiDiscovery = TRUE
+      positron.r.interpreters.pixiDiscovery = TRUE,
+      positron.r.interpreters.default = "${workspaceFolder}/.pixi/envs/default/bin/R"
     )
   )
+})
+
+test_that("makes the environment's R Positron's default, or leaves it out", {
+  p <- local_ide_project()
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_snapshot(use_pixi_positron(p$root))
+  expect_equal(
+    read_settings(p$root)$positron.r.interpreters.default,
+    "${workspaceFolder}/.pixi/envs/default/lib/R/bin/x64/R.exe"
+  )
+
+  q <- local_ide_project()
+  expect_snapshot(use_pixi_positron(q$root, default_r = FALSE))
+  expect_null(read_settings(q$root)$positron.r.interpreters.default)
 })
 
 test_that("tells comments from URLs", {
