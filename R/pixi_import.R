@@ -180,14 +180,25 @@ find_r_packages <- function(packages) {
 #' renv off.
 #'
 #' * Packages from CRAN, or another CRAN-like repository, are looked up on
-#'   conda-forge, and Bioconductor packages on bioconda. Packages from GitHub
-#'   or elsewhere, and packages that aren't on conda-forge or bioconda, are
-#'   left out, and listed.
+#'   conda-forge, and Bioconductor packages on bioconda. CRAN packages that
+#'   aren't on conda-forge can be built from CRAN's source instead
+#'   (experimental): `pixi_import_renv()` offers to, or if it can't ask, lists
+#'   them with the command that does. Other packages that aren't on
+#'   conda-forge or bioconda are left out, and listed.
+#' * Packages from GitHub (experimental) are built from source at the commit
+#'   `renv.lock` records, as `pixi_add("github::user/repo@commit")` does. With
+#'   `versions = "none"`, they're built from the newest commit of the branch it
+#'   records. Packages in a subfolder of a repository, and packages from
+#'   elsewhere, are left out, and listed.
 #' * By default only the packages that no other package in the lock file
 #'   needs are added, so `pixi.toml` lists what the project uses, rather than
-#'   everything those packages need too.
+#'   everything those packages need too. Packages from GitHub are added either
+#'   way, as conda-forge doesn't have them.
 #' * The lock file's version of R becomes a constraint on R, if the project
 #'   doesn't have R yet.
+#'
+#' It says which packages Pixi builds from source, as building them is
+#' experimental; see [pixi_add()].
 #'
 #' renv's `.Rprofile` line, `source("renv/activate.R")`, makes R use renv's
 #' library, so `deactivate = TRUE` removes it, like `renv::deactivate()`.
@@ -206,9 +217,10 @@ find_r_packages <- function(packages) {
 #' @param deactivate If `TRUE`, remove renv's line from the project's
 #'   `.Rprofile`.
 #' @inheritParams pixi_environments
-#' @returns A list with the package specs added (`packages`), and the packages
-#'   left out because they aren't from a repository (`not_from_repository`)
-#'   or weren't found (`missing`), invisibly.
+#' @returns A list, invisibly, with the package specs added (`packages`), the
+#'   packages built from source (`from_source`), and the packages left out
+#'   because rpix can't add them from where they came
+#'   (`not_from_repository`) or they weren't found (`missing`).
 #' @export
 #' @examples
 #' \dontrun{
@@ -233,18 +245,29 @@ pixi_import_renv <- function(
 
   entries <- lock$Packages
   entries <- entries[!names(entries) %in% c("renv", base_packages())]
+  source <- vapply(entries, lock_source, character(1))
   if (!all) {
+    # conda-forge brings in what other packages need, but only its own
     needed <- unlist(lapply(entries, function(entry) entry$Requirements))
-    entries <- entries[!names(entries) %in% needed]
+    keep <- !names(entries) %in% needed | source != "repository"
+    entries <- entries[keep]
+    source <- source[keep]
   }
-
-  source <- vapply(entries, function(e) e$Source %||% NA_character_, "")
-  from_repository <- source %in% c("Repository", "Bioconductor")
-  other <- names(entries)[!from_repository]
-  entries <- entries[from_repository]
+  github <- entries[source == "github"]
+  subfolder <- names(entries)[source == "subfolder"]
+  other <- names(entries)[source == "other"]
+  entries <- entries[source == "repository"]
 
   found <- find_r_packages(names(entries))
   missing <- names(found)[is.na(found)]
+  repositories <- lock_repositories(lock)
+  cran <- missing[vapply(
+    entries[missing],
+    from_cran,
+    logical(1),
+    repositories = repositories
+  )]
+  missing <- setdiff(missing, cran)
   entries <- entries[!is.na(found[names(entries)])]
   specs <- vapply(
     names(entries),
@@ -254,6 +277,32 @@ pixi_import_renv <- function(
     character(1)
   )
 
+  # CRAN packages that aren't on conda-forge, built from CRAN's source if
+  # asked. A build from source takes an exact version, but not a range.
+  built <- character()
+  declined <- character()
+  if (length(cran) > 0) {
+    constraints <- vapply(
+      cran,
+      function(package) {
+        version <- lock$Packages[[package]]$Version
+        if (versions == "exact" && !is.null(version)) {
+          paste0("==", version)
+        } else {
+          ""
+        }
+      },
+      character(1)
+    )
+    parsed <- parse_packages(paste0("cran::", cran, constraints))
+    built <- offer_cran_source(parsed, seq_along(cran), abort = FALSE)
+    if (is.null(built)) {
+      declined <- cran
+      cran <- character()
+    }
+  }
+  github_specs <- vapply(github, lock_github, character(1), versions = versions)
+
   r_version <- lock$R$Version
   r_constraint <- if (is.null(r_version) || versions == "none") {
     ""
@@ -262,17 +311,35 @@ pixi_import_renv <- function(
     if (versions == "exact") paste0("=", minor) else paste0(">=", minor)
   }
   added <- add_imported(
-    unname(specs),
+    unname(c(specs, built, github_specs)),
     r_constraint = r_constraint,
     root = root,
     dry_run = dry_run
   )
 
-  if (length(other) > 0) {
+  from_source <- c(cran, names(github))
+  if (length(from_source) > 0) {
+    if (isTRUE(dry_run)) {
+      cli::cli_alert_info(
+        "Would build {.pkg {from_source}} from source, which is experimental."
+      )
+    } else {
+      cli::cli_alert_info(
+        "Built {.pkg {from_source}} from source, which is experimental."
+      )
+    }
+  }
+  if (length(subfolder) > 0) {
     cli::cli_alert_warning(
-      "Not from CRAN or Bioconductor, so not added: {.pkg {other}}."
+      "In a subfolder of a GitHub repository, which rpix can't add yet, so not added: {.pkg {subfolder}}."
     )
   }
+  if (length(other) > 0) {
+    cli::cli_alert_warning(
+      "Not from CRAN, Bioconductor or GitHub, so not added: {.pkg {other}}."
+    )
+  }
+  # The CRAN packages it didn't build were listed when it offered to
   if (length(missing) > 0) {
     cli::cli_alert_warning(
       "Not on conda-forge or bioconda, so not added: {.pkg {missing}}."
@@ -283,9 +350,78 @@ pixi_import_renv <- function(
   }
   invisible(list(
     packages = added$packages,
-    not_from_repository = other,
-    missing = missing
+    from_source = from_source,
+    not_from_repository = c(subfolder, other),
+    missing = c(missing, declined)
   ))
+}
+
+# Where a package in renv.lock is from: "repository" (CRAN-like or
+# Bioconductor), "github", "subfolder" (on GitHub, but in a subfolder of the
+# repository, which `github::` can't say), or "other"
+lock_source <- function(entry) {
+  source <- entry$Source %||% ""
+  if (source %in% c("Repository", "Bioconductor")) {
+    return("repository")
+  }
+  github <- identical(source, "GitHub") ||
+    identical(tolower(entry$RemoteType %||% ""), "github")
+  # GitHub Enterprise has its own host
+  host <- entry$RemoteHost %||% "api.github.com"
+  if (
+    !github ||
+      !host %in% c("api.github.com", "github.com") ||
+      is.null(entry$RemoteUsername) ||
+      is.null(entry$RemoteRepo)
+  ) {
+    return("other")
+  }
+  if (nzchar(entry$RemoteSubdir %||% "")) {
+    return("subfolder")
+  }
+  "github"
+}
+
+# A GitHub package in renv.lock as pixi_add() takes it: at the commit renv
+# recorded, or with `versions = "none"`, the branch (or tag)
+lock_github <- function(entry, versions) {
+  ref <- if (versions == "none") {
+    entry$RemoteRef
+  } else {
+    entry$RemoteSha %||% entry$RemoteRef
+  }
+  if (identical(ref, "HEAD")) {
+    ref <- NULL
+  }
+  paste0(
+    "github::",
+    entry$RemoteUsername,
+    "/",
+    entry$RemoteRepo,
+    if (!is.null(ref)) paste0("@", ref)
+  )
+}
+
+# The lock file's repositories, as URLs by name
+lock_repositories <- function(lock) {
+  repositories <- lock$R$Repositories
+  stats::setNames(
+    vapply(repositories, function(r) r$URL %||% "", character(1)),
+    vapply(repositories, function(r) r$Name %||% "", character(1))
+  )
+}
+
+# Whether a package in renv.lock is from CRAN, or a mirror of it, whose
+# source is on CRAN's GitHub mirror
+from_cran <- function(entry, repositories) {
+  if (!identical(entry$Source, "Repository")) {
+    return(FALSE)
+  }
+  repository <- entry$Repository %||% "CRAN"
+  url <- repositories[repository] %|NA|% repository
+  toupper(repository) %in%
+    c("CRAN", "RSPM", "PPM", "P3M") ||
+    grepl("r-project\\.org|//cran\\.|/cran(/|$)", url, ignore.case = TRUE)
 }
 
 # A package spec with the lock file's version, as `versions` says
