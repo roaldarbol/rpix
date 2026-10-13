@@ -33,10 +33,10 @@ add packages to them first with \code{pixi_add(feature = )}.}
 same versions of the packages they share.}
 
 \item{default_feature}{If \code{FALSE}, leave out the default feature. Needed
-when a feature conflicts with it, e.g. pins another version of R. Add
-\code{conda::conda-ecosystem-user-package-isolation} to the environment's
-features then, as \code{\link[=use_pixi]{use_pixi()}} does to the default one, to keep your
-personal R library out.}
+when a feature conflicts with it, e.g. pins another version of R. If the
+environment has R, rpix then adds \code{conda-ecosystem-user-package-isolation}
+to its first feature, as \code{\link[=use_pixi]{use_pixi()}} does to the default one, to keep
+your personal R library out.}
 
 \item{overwrite}{If \code{TRUE}, replace an environment that already exists.}
 
@@ -73,12 +73,8 @@ For more information, see \url{https://pixi.prefix.dev/latest/workspace/multi_en
 \examples{
 \dontrun{
 # An environment with R 4.4, next to the default one. It leaves out the
-# default feature, since that has another version of R, so it needs its
-# own isolation from the personal library.
-pixi_add(
-  c("r-base=4.4", "conda::conda-ecosystem-user-package-isolation", "dplyr"),
-  feature = "r44"
-)
+# default feature, since that has another version of R.
+pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
 pixi_add_environment("r44", features = "r44", default_feature = FALSE)
 
 # An environment with the default packages plus testthat, on the same

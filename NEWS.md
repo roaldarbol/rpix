@@ -42,10 +42,12 @@
 * After allowing install scripts, rpix says that committing `.pixi/config.toml`
   allows them for everyone who uses the project, CI included. It said the file
   isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
-* "Several environments" and `?pixi_add_environment` add
-  `conda-ecosystem-user-package-isolation` to an environment without the
-  default feature, which keeps the personal R library out of it, as
-  `use_pixi()` does for the default one (#160).
+* `pixi_add_environment(default_feature = FALSE)` adds
+  `conda-ecosystem-user-package-isolation` to an environment with R, which
+  keeps the personal R library out, as `use_pixi()` does for the default
+  feature. Before, such an environment, e.g. with another version of R, could
+  load packages built for another R, and crash. `pixi_add()` adds it too when
+  it adds R to the default feature without it (#160).
 * `pixi_add()`, `pixi_install()`, `pixi_update()` and `pixi_upgrade()` notice
   when Pixi skips a package's install script, which Bioconductor's annotation
   and data packages (such as org.Hs.eg.db) use to download their data. They

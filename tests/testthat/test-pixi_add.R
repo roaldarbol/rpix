@@ -335,3 +335,37 @@ test_that("on_bioconda() looks for bioconductor-<name> on bioconda", {
   parsed <- parse_packages(c("DESeq2", "fortunes"))
   expect_equal(on_bioconda(parsed, 1:2), c(TRUE, FALSE))
 })
+
+test_that("pixi_add() adds the isolation from the personal library with R", {
+  root <- local_project_dir()
+
+  expect_message(
+    command <- pixi_add(c("r-base=4.4", "dplyr"), dry_run = TRUE),
+    "conda-ecosystem-user-package-isolation"
+  )
+  expect_match(
+    command,
+    "r-base=4.4 r-dplyr conda-ecosystem-user-package-isolation",
+    fixed = TRUE
+  )
+
+  # Not in another feature (pixi_add_environment() sees to those), when the
+  # packages include it, without R, or when the default feature has it
+  expect_no_match(
+    dry(pixi_add("r-base=4.4", feature = "r44", dry_run = TRUE)),
+    "isolation"
+  )
+  expect_equal(
+    dry(pixi_add(
+      c("r-base", "conda::conda-ecosystem-user-package-isolation"),
+      dry_run = TRUE
+    )),
+    "pixi add r-base conda-ecosystem-user-package-isolation --manifest-path pixi.toml"
+  )
+  expect_no_match(dry(pixi_add("dplyr", dry_run = TRUE)), "isolation")
+  writeLines(
+    c("[dependencies]", 'conda-ecosystem-user-package-isolation = "*"'),
+    file.path(root, "pixi.toml")
+  )
+  expect_no_match(dry(pixi_add("r-base", dry_run = TRUE)), "isolation")
+})
