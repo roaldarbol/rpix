@@ -40,6 +40,7 @@ check = { cmd = """Rscript -e 'devtools::check(error_on = "warning")'""", env = 
 coverage = { cmd = "Rscript -e 'covr::report(covr::package_coverage())'", env = { NOT_CRAN = "true" }, description = "Measure test coverage and open a report of the uncovered lines" }
 format = { cmd = "air format .", description = "Format the R code with air" }
 readme = { cmd = "quarto render README.qmd", description = "Render README.md from README.qmd" }
+availability = { cmd = "Rscript data-raw/package-availability.R", description = "Count the packages Pixi and rpix can install, for the package availability article (optionally for a platform, e.g. `pixi run availability linux-64`)" }
 # CI=true skips building favicons, as on GitHub: the service pkgdown uses for
 # them is unreliable. docs/ only holds generated output, so it's cleared first;
 # otherwise a build that stopped halfway leaves a docs/ pkgdown refuses to use.

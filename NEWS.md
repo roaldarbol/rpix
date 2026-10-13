@@ -35,6 +35,9 @@
 
 ## Fixed
 
+* After allowing install scripts, rpix says that committing `.pixi/config.toml`
+  allows them for everyone who uses the project, CI included. It said the file
+  isn't shared, but `pixi init` leaves it out of `.gitignore` (#158).
 * "Coming from renv" no longer says that packages from GitHub aren't
   available, and that only a few CRAN packages aren't on conda-forge: it says
   that Pixi can build them from source (#161).
