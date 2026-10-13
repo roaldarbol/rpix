@@ -10,14 +10,17 @@
 #' as usual on top.
 #'
 #' * `"check"`: `R CMD check`, with r-lib's `check-r-package`, for each
-#'   environment on each operating system. The environments need rcmdcheck.
-#'   Use it with [use_pixi_check_matrix()]'s environments, e.g.
-#'   `environments = c("r44", "r45", "minimum")`.
+#'   environment on each operating system. The environments need rcmdcheck,
+#'   as [use_pixi_check_matrix()]'s do.
 #' * `"test-coverage"`: test coverage, reported to Codecov. The environment
 #'   needs covr and xml2.
 #' * `"pkgdown"`: build the pkgdown site and publish it to GitHub Pages. The
 #'   environment needs pkgdown and pandoc.
 #' * `"task"`: run one of the project's Pixi tasks, e.g. to render a report.
+#'
+#' In a package, `"check"`, `"test-coverage"` and `"pkgdown"` also need the
+#' package's dependencies from `DESCRIPTION`, `Suggests` included. rpix warns
+#' about each environment that lacks any of these.
 #'
 #' The operating systems are those of the project's platforms that GitHub
 #' runs: Linux (`linux-64`), macOS (`osx-arm64`) and Windows (`win-64`). Add
@@ -27,8 +30,11 @@
 #'
 #' @param workflow Which workflow: `"check"`, `"test-coverage"`, `"pkgdown"`
 #'   or `"task"`.
-#' @param environments The environments to use. Defaults to the default
-#'   environment. `"test-coverage"` and `"pkgdown"` use the first.
+#' @param environments Optional. The environments to use; `"test-coverage"`
+#'   and `"pkgdown"` use the first. Defaults to those that have what the
+#'   workflow needs: for `"check"` all of them, and for `"test-coverage"` and
+#'   `"pkgdown"` the first, or else the default environment. `"task"` defaults
+#'   to the default environment.
 #' @param task For `"task"`, the task to run.
 #' @param overwrite If `TRUE`, replace a workflow that's there.
 #' @param path The project. Defaults to the working directory.
@@ -37,12 +43,12 @@
 #' @examples
 #' \dontrun{
 #' use_pixi_github_action("check")
-#' use_pixi_github_action("check", environments = c("r44", "r45", "minimum"))
+#' use_pixi_github_action("check", environments = c("r44", "r45"))
 #' use_pixi_github_action("task", task = "render")
 #' }
 use_pixi_github_action <- function(
   workflow = c("check", "test-coverage", "pkgdown", "task"),
-  environments = "default",
+  environments = NULL,
   task = NULL,
   overwrite = FALSE,
   path = NULL
@@ -81,13 +87,7 @@ use_pixi_github_action <- function(
     )
   }
 
-  needs <- workflow_needs[[workflow]]
-  lacking <- needs[!vapply(needs, manifest_has_package, logical(1), root)]
-  if (length(lacking) > 0) {
-    cli::cli_alert_warning(
-      "The workflow needs {.pkg {lacking}}, which {cli::qty(length(lacking))}{?isn't/aren't} in {.file pixi.toml}. Add {?it/them}, e.g. with {.code pixi_add()}."
-    )
-  }
+  environments <- workflow_environments(workflow, environments, root)
 
   values <- c(
     os = paste(runners$os, collapse = ", "),
@@ -125,7 +125,7 @@ github_runners <- data.frame(
 )
 
 # What each workflow needs in the environment, as R packages or conda
-# packages
+# packages. In a package, all but "task" need its dependencies too.
 workflow_needs <- list(
   check = "rcmdcheck",
   "test-coverage" = c("covr", "xml2"),
@@ -133,29 +133,122 @@ workflow_needs <- list(
   task = character()
 )
 
+# The environments a workflow runs in: `environments`, or those that have
+# what it needs (all of them for "check", the first for the others). Warns
+# about each one that lacks something.
+workflow_environments <- function(
+  workflow,
+  environments,
+  root,
+  call = rlang::caller_env()
+) {
+  envs <- pixi_info(root)$environments_info
+  unknown <- setdiff(environments, envs$name)
+  if (length(unknown) > 0) {
+    cli::cli_abort(
+      c(
+        "The project has no environment {.val {unknown}}.",
+        "i" = "Its environments are {.val {envs$name}}."
+      ),
+      call = call
+    )
+  }
+  if (workflow == "task") {
+    return(environments %||% "default")
+  }
+
+  deps <- lapply(envs$dependencies, unlist)
+  needs <- workflow_packages(workflow, root, unique(unlist(deps)))
+  lacking <- stats::setNames(
+    lapply(deps, function(d) needs$spec[!needs$conda %in% d]),
+    envs$name
+  )
+  # Where to add what an environment lacks: its own feature
+  features <- stats::setNames(
+    vapply(envs$features, function(f) unlist(f)[1], character(1)),
+    envs$name
+  )
+
+  if (is.null(environments)) {
+    ready <- envs$name[lengths(lacking) == 0]
+    if (workflow == "check" && length(ready) == 0) {
+      best <- names(which.min(lengths(lacking)))
+      cli::cli_abort(
+        c(
+          "No environment has what {.code R CMD check} needs.",
+          "i" = "Add environments that do with {.code use_pixi_check_matrix()}, or add what {.val {best}} lacks with {.code {add_hint(lacking[[best]], features[[best]])}}."
+        ),
+        call = call
+      )
+    }
+    environments <- if (workflow == "check") ready else c(ready, "default")[1]
+    if (length(ready) > 0) {
+      cli::cli_alert_info(
+        "Using {cli::qty(length(environments))}the environment{?s} {.val {environments}}, which {?has/have} what the workflow needs."
+      )
+    }
+  }
+
+  for (environment in environments) {
+    missing <- lacking[[environment]]
+    if (length(missing) > 0) {
+      cli::cli_alert_warning(
+        "{.val {environment}} lacks {.pkg {missing}}, which the workflow needs. Add {cli::qty(length(missing))}{?it/them} with {.code {add_hint(missing, features[[environment]])}}."
+      )
+    }
+  }
+  environments
+}
+
+# What a workflow needs: `spec`, as pixi_add() takes it, and `conda`, the name
+# in an environment's dependencies. Of a package's dependencies, only those
+# some environment has count: no choice of environment helps with the others.
+workflow_packages <- function(workflow, root, available) {
+  tools <- workflow_needs[[workflow]]
+  needs <- data.frame(
+    spec = tools,
+    conda = ifelse(
+      startsWith(tools, "conda::"),
+      sub("^conda::", "", tools),
+      paste0("r-", tolower(tools))
+    )
+  )
+  if (!is_package(root)) {
+    return(needs)
+  }
+  packages <- setdiff(
+    package_dependencies(file.path(root, "DESCRIPTION")),
+    tools
+  )
+  bioc <- paste0("bioconductor-", tolower(packages)) %in% available
+  conda <- ifelse(
+    bioc,
+    paste0("bioconductor-", tolower(packages)),
+    paste0("r-", tolower(packages))
+  )
+  spec <- ifelse(bioc, paste0("bioc::", packages), packages)
+  keep <- conda %in% available
+  rbind(needs, data.frame(spec = spec[keep], conda = conda[keep]))
+}
+
+# The pixi_add() call that adds packages to a feature
+add_hint <- function(packages, feature) {
+  quoted <- paste0('"', packages, '"', collapse = ", ")
+  if (length(packages) > 1) {
+    quoted <- paste0("c(", quoted, ")")
+  }
+  feature <- if (feature == "default") {
+    ""
+  } else {
+    paste0(', feature = "', feature, '"')
+  }
+  paste0("pixi_add(", quoted, feature, ")")
+}
+
 setup_pixi_version <- "v0.10.2"
 
 # The Pixi version that's installed, as setup-pixi takes it: v0.81.0
 installed_pixi_version <- function() {
   version <- trimws(run_pixi("--version", project = "none")$stdout)
   paste0("v", sub("^pixi\\s+", "", version))
-}
-
-# Whether pixi.toml lists a package, in any table. An R package is looked
-# for as r-<name>, a "conda::" one as it is.
-manifest_has_package <- function(package, root) {
-  manifest <- find_manifest(root)
-  if (is.null(manifest)) {
-    return(FALSE)
-  }
-  name <- if (startsWith(package, "conda::")) {
-    sub("^conda::", "", package)
-  } else {
-    paste0("r-", tolower(package))
-  }
-  lines <- readLines(manifest, warn = FALSE)
-  any(grepl(
-    paste0('^\\s*"?', gsub(".", "\\.", name, fixed = TRUE), '"?\\s*='),
-    lines
-  ))
 }

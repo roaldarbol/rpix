@@ -269,8 +269,14 @@ missing_from_conda_forge <- function(parsed) {
 
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
 # mirror, which has a tag for every version. Returns the packages to add
-# instead, or fails.
-offer_cran_source <- function(parsed, missing, call = parent.frame()) {
+# instead, or fails. With `abort = FALSE`, it says how to build them instead of
+# failing, and returns NULL.
+offer_cran_source <- function(
+  parsed,
+  missing,
+  abort = TRUE,
+  call = parent.frame()
+) {
   specs <- package_references(parsed)
   names <- package_r_names(parsed)[missing]
   constraints <- parsed$constraint[missing]
@@ -309,11 +315,18 @@ offer_cran_source <- function(parsed, missing, call = parent.frame()) {
   } else {
     "{.pkg {names}} {?isn't/aren't} on conda-forge."
   }
+  # deparse() splits long vectors over several lines
+  command <- paste0("pixi_add(", paste(deparse(github), collapse = ""), ")")
+  how <- "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code {command}}."
+  if (!abort) {
+    if (!is_interactive()) {
+      header <- "Not on conda-forge, so not added: {.pkg {names}}."
+    }
+    cli::cli_inform(c("!" = header, "i" = how))
+    return(NULL)
+  }
   cli::cli_abort(
-    c(
-      header,
-      "i" = "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code pixi_add({deparse(github)})}."
-    ),
+    c(header, "i" = how),
     class = "rpix_error_package_not_found",
     call = call
   )
