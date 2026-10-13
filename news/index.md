@@ -36,6 +36,8 @@
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
   does. As building from source is experimental, it says which packages
   it built ([\#162](https://github.com/roaldarbol/rpix/issues/162)).
+- New guide: “Developing a package”, from setting up to CI
+  ([\#117](https://github.com/roaldarbol/rpix/issues/117)).
 
 ### Changed
 

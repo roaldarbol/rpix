@@ -97,6 +97,9 @@ pixi_environments()
 
 ## Developing a package
 
+For the whole workflow, from setting up to CI, see [Developing a
+package](https://roald-arboel.com/rpix/articles/package-development.md).
+
 For a package,
 [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md)
 adds what the package needs from its `DESCRIPTION`: `Depends` and
