@@ -76,6 +76,10 @@
   reports environments with R that lack it, e.g. after editing
   `pixi.toml` by hand
   ([\#160](https://github.com/roaldarbol/rpix/issues/160)).
+- “Coming from renv” no longer says that packages from GitHub aren’t
+  available, and that only a few CRAN packages aren’t on conda-forge: it
+  says that Pixi can build them from source
+  ([\#161](https://github.com/roaldarbol/rpix/issues/161)).
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)

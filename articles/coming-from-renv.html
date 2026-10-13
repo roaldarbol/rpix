@@ -101,7 +101,7 @@
 <li>
 <strong>Pixi manages R itself</strong>, and the system libraries packages need, such as GDAL. With renv, you install those yourself.</li>
 <li>
-<strong>Packages come from conda-forge</strong>, as binaries for every platform, rather than from CRAN. A few CRAN packages aren’t on conda-forge, and packages from GitHub aren’t available. See <a href="finding-packages.html">Finding packages</a>.</li>
+<strong>Packages come from conda-forge</strong>, as binaries for every platform, rather than from CRAN. The most used CRAN packages are there; for most of the others, and for packages from GitHub, Pixi can build them from source (experimental). See <a href="finding-packages.html">Finding packages</a>, and <a href="package-availability.html">How many packages you can use</a>.</li>
 <li>
 <strong>Each environment has its own R.</strong> You start R through Pixi rather than activating a library in the R you already have. See <a href="how-rpix-works.html">How rpix works</a>.</li>
 <li>
@@ -167,7 +167,8 @@
 <ul>
 <li>adds the packages in <code>renv.lock</code> to <code>pixi.toml</code>, at least at their locked versions, with the lock file’s version of R. Use <code>versions = "exact"</code> for the locked versions themselves, where conda-forge has them.</li>
 <li>adds only the packages that nothing else in the lock file needs: the ones your project uses. Pixi installs what they need.</li>
-<li>lists packages it can’t add: those from GitHub, and those not on conda-forge or bioconda. They need <a href="finding-packages.html#when-a-package-isnt-on-conda-forge">another route</a>.</li>
+<li>adds packages from GitHub too, built from source at the commit <code>renv.lock</code> records, and offers to build CRAN packages that aren’t on conda-forge from source (see <a href="finding-packages.html#when-a-package-isnt-on-conda-forge">When a package isn’t on conda-forge</a>). Building from source is experimental, so it says which packages it built.</li>
+<li>lists packages it can’t add: those in a subfolder of a GitHub repository, from other sources such as GitLab, and those that aren’t on conda-forge or bioconda and can’t be built.</li>
 <li>turns renv off, by removing <code>source("renv/activate.R")</code> from <code>.Rprofile</code>. Delete <code>renv.lock</code> and the <code>renv</code> folder when you no longer need them.</li>
 </ul>
 <p>Then start R with <code>pixi run R</code>, or set up your IDE (see <a href="ide.html">Using rpix with an IDE</a>).</p>

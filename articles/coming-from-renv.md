@@ -9,9 +9,12 @@ familiar.
 - **Pixi manages R itself**, and the system libraries packages need,
   such as GDAL. With renv, you install those yourself.
 - **Packages come from conda-forge**, as binaries for every platform,
-  rather than from CRAN. A few CRAN packages aren’t on conda-forge, and
-  packages from GitHub aren’t available. See [Finding
-  packages](https://roald-arboel.com/rpix/articles/finding-packages.md).
+  rather than from CRAN. The most used CRAN packages are there; for most
+  of the others, and for packages from GitHub, Pixi can build them from
+  source (experimental). See [Finding
+  packages](https://roald-arboel.com/rpix/articles/finding-packages.md),
+  and [How many packages you can
+  use](https://roald-arboel.com/rpix/articles/package-availability.md).
 - **Each environment has its own R.** You start R through Pixi rather
   than activating a library in the R you already have. See [How rpix
   works](https://roald-arboel.com/rpix/articles/how-rpix-works.md).
@@ -52,9 +55,15 @@ where rpix is installed.
   conda-forge has them.
 - adds only the packages that nothing else in the lock file needs: the
   ones your project uses. Pixi installs what they need.
-- lists packages it can’t add: those from GitHub, and those not on
-  conda-forge or bioconda. They need [another
-  route](https://roald-arboel.com/rpix/articles/finding-packages.html#when-a-package-isnt-on-conda-forge).
+- adds packages from GitHub too, built from source at the commit
+  `renv.lock` records, and offers to build CRAN packages that aren’t on
+  conda-forge from source (see [When a package isn’t on
+  conda-forge](https://roald-arboel.com/rpix/articles/finding-packages.html#when-a-package-isnt-on-conda-forge)).
+  Building from source is experimental, so it says which packages it
+  built.
+- lists packages it can’t add: those in a subfolder of a GitHub
+  repository, from other sources such as GitLab, and those that aren’t
+  on conda-forge or bioconda and can’t be built.
 - turns renv off, by removing `source("renv/activate.R")` from
   `.Rprofile`. Delete `renv.lock` and the `renv` folder when you no
   longer need them.
