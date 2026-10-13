@@ -29,6 +29,13 @@
 - New article: “How many packages you can use”, with how much of CRAN
   and Bioconductor works through Pixi and rpix, and what’s still missing
   ([\#121](https://github.com/roaldarbol/rpix/issues/121)).
+- [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
+  adds the lock file’s GitHub packages, built from source at the commit
+  it records, and offers to build CRAN packages that aren’t on
+  conda-forge from CRAN’s source, as
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  does. As building from source is experimental, it says which packages
+  it built ([\#162](https://github.com/roaldarbol/rpix/issues/162)).
 
 ### Changed
 
