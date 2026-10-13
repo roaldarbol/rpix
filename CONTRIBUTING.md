@@ -55,3 +55,14 @@ Run these in a terminal in the repository:
 - **Pull request titles are [Conventional
   Commits](https://www.conventionalcommits.org/),**
   e.g. `feat: add pixi_sitrep()` or `fix: ...`.
+
+## Releasing
+
+- Set the version in `DESCRIPTION` and in `.claude-plugin/plugin.json`,
+  date the `NEWS.md` heading, and render `README.md`
+  (`pixi run readme`).
+- Re-read the agent skill (`skills/rpix/`) against what changed, and
+  check it: `claude plugin validate .` and
+  `skills-ref validate skills/rpix`. Run the evals
+  (`claude plugin eval . --scaffold`) when the skill changes.
+- After the release, set both versions to the next `.9000`.

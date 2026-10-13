@@ -41,6 +41,18 @@
   it built ([\#162](https://github.com/roaldarbol/rpix/issues/162)).
 - New guide: “Developing a package”, from setting up to CI
   ([\#117](https://github.com/roaldarbol/rpix/issues/117)).
+- An agent skill, in `skills/rpix/`, teaches coding agents such as
+  Claude Code, Codex and Cursor to work in R projects the Pixi way: add
+  packages with
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  rather than
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  run the environment’s R, and start from
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  when something’s off. In Claude Code, install it with
+  `/plugin marketplace add roaldarbol/rpix` and
+  `/plugin install rpix@rpix`
+  ([\#155](https://github.com/roaldarbol/rpix/issues/155)).
 
 ### Changed
 

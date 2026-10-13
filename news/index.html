@@ -73,6 +73,7 @@
 <li>
 <code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code> adds the lock file’s GitHub packages, built from source at the commit it records, and offers to build CRAN packages that aren’t on conda-forge from CRAN’s source, as <code><a href="../reference/pixi_add.html">pixi_add()</a></code> does. As building from source is experimental, it says which packages it built (<a href="https://github.com/roaldarbol/rpix/issues/162" class="external-link">#162</a>).</li>
 <li>New guide: “Developing a package”, from setting up to CI (<a href="https://github.com/roaldarbol/rpix/issues/117" class="external-link">#117</a>).</li>
+<li>An agent skill, in <code>skills/rpix/</code>, teaches coding agents such as Claude Code, Codex and Cursor to work in R projects the Pixi way: add packages with <code><a href="../reference/pixi_add.html">pixi_add()</a></code> rather than <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>, run the environment’s R, and start from <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> when something’s off. In Claude Code, install it with <code>/plugin marketplace add roaldarbol/rpix</code> and <code>/plugin install rpix@rpix</code> (<a href="https://github.com/roaldarbol/rpix/issues/155" class="external-link">#155</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
