@@ -22,8 +22,6 @@ jobs:
       matrix:
         include:
           - { package: sundialr, variant: no-fortran }
-          - { package: sundialr, variant: no-fortran-msys-makefiles }
-          - { package: sundialr, variant: no-fortran-unix-makefiles }
     defaults:
       run:
         shell: bash
@@ -119,6 +117,11 @@ jobs:
           call R.exe CMD config CC
           call R.exe CMD config CXX
           call R.exe CMD config CXX17
+          echo --- R CMD INSTALL by hand, full log in install-full.log
+          git clone -q --depth 1 https://github.com/cran/sundialr "%TEMP%\sundialr-src"
+          mkdir "%TEMP%\rlib"
+          call R.exe CMD INSTALL --no-lock --library="%TEMP%\rlib" "%TEMP%\sundialr-src" > "%GITHUB_WORKSPACE%\install-full.log" 2>&1
+          echo --- exit %ERRORLEVEL%
           echo --- where gcc / g++ / cl / x86_64-w64-mingw32-g++
           where gcc
           where g++
@@ -137,12 +140,19 @@ jobs:
               echo "$name: $deps"
             fi
           done
+          echo "--- the hand-run install: CMake, make and the SUNDIALS build"
+          grep -nE "Building for|Generator|CMake Error|CMake Warning|cmake|make(\[[0-9]\])?: |No targets|Selecting Windows SDK|identification|Make install|sundials|perl|Error|error|Installing|lib" install-full.log | grep -v "^.*-I\|g++ -std" | cut -c1-260 | head -80 || true
           echo "--- CMake's generator and errors"
           sed 's/\x1b\[[0-9;]*m//g' log.txt | grep -E "Building for|CMAKE_GENERATOR|Generator|CMake Error|CMake Warning|make(\[[0-9]\])?: |No targets|Selecting Windows SDK|The C compiler identification|Make install failed|perl" | cut -c1-300 | head -30 || true
           echo "--- the link error, in full"
           grep -n -B40 "collect2.exe: error" log.txt 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-400 | head -45 || true
           log=$(find "$HOME/AppData/Local/rattler/cache/git-v0/checkouts" -name config.log 2>/dev/null | head -1)
           if [ -n "$log" ]; then echo "--- $log"; grep -n -B2 -A25 "checking whether the C++ compiler works" "$log" | head -60; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: install-full-${{ matrix.package }}-${{ matrix.variant }}
+          path: install-full.log
       - name: Result
         run: |
           echo "## ${{ matrix.package }}, ${{ matrix.variant }}: exit ${{ steps.run.outputs.status }}" >> $GITHUB_STEP_SUMMARY
