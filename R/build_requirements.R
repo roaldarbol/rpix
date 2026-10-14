@@ -1,112 +1,35 @@
-# What pixi-build-r doesn't add to a package's build yet, read from its
-# DESCRIPTION: build tools that SystemRequirements asks for, other than Rust
-# (https://github.com/prefix-dev/pixi/issues/7239). With `older_backend` (see
-# older_backend()), also what pixi-build-r only adds since 2026-10-12:
-# * Rust (https://github.com/prefix-dev/pixi/issues/7228)
-# * R's recommended packages, which conda-forge's r-base doesn't include
-#   (https://github.com/prefix-dev/pixi/issues/7229)
+# What pixi-build-r doesn't add to a package's build, read from its
+# DESCRIPTION: Java, when SystemRequirements asks for it. The package needs it
+# when it runs, too. pixi-build-r adds Rust, CMake, pkg-config and R's
+# recommended packages itself since 0.2.0 (see backend_version).
 # A list of conda packages for the build, host and run environments.
-build_requirements <- function(description, older_backend = FALSE) {
+build_requirements <- function(description) {
   system <- description[["SystemRequirements"]] %||% NA
-  found <- !is.na(system) &
-    (older_backend | !build_tools$older_backend) &
-    vapply(
-      build_tools$pattern,
-      grepl,
-      logical(1),
+  java <- !is.na(system) &&
+    grepl(
+      "\\bjava\\b|\\bjdk\\b|\\bjre\\b",
       system,
       ignore.case = TRUE,
-      perl = TRUE,
-      USE.NAMES = FALSE
+      perl = TRUE
     )
-  tools <- build_tools[found, ]
-  recommended <- if (older_backend) {
-    intersect(description_packages(description), recommended_packages)
-  }
-  recommended <- if (length(recommended) > 0) {
-    paste0("r-", tolower(recommended))
-  } else {
-    character()
-  }
-  list(
-    build = tools$package,
-    host = recommended,
-    run = c(tools$package[tools$run], recommended)
-  )
+  tools <- if (java) "openjdk" else character()
+  list(build = tools, host = character(), run = tools)
 }
 
-# Build tools, by what SystemRequirements says, and the conda-forge package
-# that provides each. Java is needed when the package runs, too. pixi-build-r
-# adds Rust itself since 2026-10-12, so only older versions need it.
-build_tools <- data.frame(
-  pattern = c(
-    "\\bcargo\\b|\\brustc\\b",
-    "\\bjava\\b|\\bjdk\\b|\\bjre\\b",
-    "\\bcmake\\b",
-    "\\bpkg-?config\\b"
-  ),
-  package = c("rust", "openjdk", "cmake", "pkg-config"),
-  run = c(FALSE, TRUE, FALSE, FALSE),
-  older_backend = c(TRUE, FALSE, FALSE, FALSE)
-)
+# The pixi-build-r that rpix's entries ask for: 0.2.0, published on
+# conda-forge on 2026-10-14, is the first to add Rust, CMake, pkg-config and R's
+# recommended packages, and to install into R's library on Windows
+# (https://github.com/prefix-dev/pixi/issues/7228,
+# https://github.com/prefix-dev/pixi/issues/7229,
+# https://github.com/prefix-dev/pixi/issues/7231,
+# https://github.com/prefix-dev/pixi/issues/7239).
+backend_version <- ">=0.2"
 
-# Whether Pixi may build with a pixi-build-r from before 2026-10-12, when it
-# started adding Rust and R's recommended packages, and installing into R's
-# library on Windows. Pixi before 0.82 does, and so does Pixi whose version
-# rpix can't read, to be safe. So may a project's date (see
-# older_backend_date()).
-older_backend <- function(date, pixi = pixi_version_number()) {
-  first <- backend_pixi()
-  is.na(first) || !pixi_at_least(first, pixi) || older_backend_date(date)
-}
-
-# The first Pixi that builds with a pixi-build-r from 2026-10-12 or later, or
-# NA while there is none. Pixi 0.82.0 still uses the released pixi-build-r
-# 0.1.8, from before then: hellorust and ACSWR fail without rpix's extras on
-# Linux, macOS and Windows
-# (https://github.com/roaldarbol/rpix/actions/runs/38560208655). Set it once
-# a released pixi-build-r has the fixes and a Pixi uses it.
-backend_pixi <- function() {
-  NA_character_
-}
-
-# Whether the project's exclude-newer may give Pixi a pixi-build-r from before
-# 2026-10-12. It applies to the build backend too
-# (https://github.com/prefix-dev/pixi/issues/7240): a date before then, or a
-# duration, which may reach back before then.
-older_backend_date <- function(date) {
-  !is.null(date) &&
-    (!is_absolute_date(date) ||
-      as.Date(substr(date, 1, 10)) < as.Date("2026-10-13"))
-}
-
-recommended_packages <- c(
-  "KernSmooth",
-  "MASS",
-  "Matrix",
-  "boot",
-  "class",
-  "cluster",
-  "codetools",
-  "foreign",
-  "lattice",
-  "mgcv",
-  "nlme",
-  "nnet",
-  "rpart",
-  "spatial",
-  "survival"
-)
-
-# The packages in a DESCRIPTION's Depends, Imports and LinkingTo
-description_packages <- function(description) {
-  fields <- intersect(c("Depends", "Imports", "LinkingTo"), names(description))
-  values <- unlist(description[fields])
-  values <- values[!is.na(values)]
-  if (length(values) == 0) {
-    return(character())
-  }
-  entries <- trimws(unlist(strsplit(values, ",")))
-  entries <- sub("[[:space:]]*\\(.*$", "", entries)
-  unique(entries[nzchar(entries)])
+# Whether the project's exclude-newer hides pixi-build-r 0.2.0: it applies to
+# the build backend too (https://github.com/prefix-dev/pixi/issues/7240), so a
+# date before 2026-10-15 does. A duration only does for a while after the
+# release, which rpix doesn't work out.
+date_hides_backend <- function(date) {
+  is_absolute_date(date) &&
+    as.Date(substr(date, 1, 10)) < as.Date("2026-10-15")
 }

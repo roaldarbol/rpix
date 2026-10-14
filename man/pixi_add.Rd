@@ -64,14 +64,13 @@ builds from source with its R build backend, \code{pixi-build-r}. Add \verb{@ref
 tag or commit, as in \code{"github::cran/praise@1.0.0"}; \code{pixi.lock} records
 the exact commit either way. rpix writes it into \code{pixi.toml}, turns on
 Pixi's \code{pixi-build} preview, and pins the build to the project's R. Its
-dependencies come from conda-forge. rpix also adds what \code{pixi-build-r}
-doesn't yet: the build tools its \code{SystemRequirements} names (Java, CMake,
-pkg-config), and in a project for Windows, MSYS2's \code{make}, \code{sed} and
-\code{coreutils}, and MinGW's compilers in place of \code{pixi-build-r}'s. Pixi before 0.82 uses an older \code{pixi-build-r}, and so may
-a project with a date of 2026-10-12 or earlier, or a duration (see
-\code{\link[=pixi_set_date]{pixi_set_date()}}). There, rpix also adds what that lacks: the
-recommended packages the package uses (such as Matrix and MASS), Rust,
-and on Windows, R's library folder. See
+dependencies come from conda-forge. It asks for \code{pixi-build-r} 0.2.0 or
+later, which adds the Rust, CMake, pkg-config and R's recommended
+packages a package needs; a project with packages as of a date before
+2026-10-15 can't get it (see \code{\link[=pixi_set_date]{pixi_set_date()}}). rpix also adds what
+\code{pixi-build-r} doesn't: Java when \code{SystemRequirements} names it, and in
+a project for Windows, MSYS2's \code{make}, \code{sed} and \code{coreutils}, and MinGW's
+compilers in place of \code{pixi-build-r}'s. See
 \url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}.
 This may change, e.g. to use \verb{pixi add} once it can set a build backend;
 see \url{https://github.com/roaldarbol/rpix/issues/96}.

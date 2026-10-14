@@ -21,6 +21,12 @@
 
 ## Changed
 
+* Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which rpix
+  now asks for. It adds Rust, CMake, pkg-config and R's recommended packages,
+  and installs into R's library on Windows, so rpix no longer does (#148,
+  #149, #150, #152). rpix still adds Java, and on Windows, MSYS2's tools and
+  MinGW's compilers. A project with packages as of a date before 2026-10-15
+  can't get that `pixi-build-r`, so rpix stops and says so.
 * On Windows, `use_pixi_vscode()` and `pixi_switch()` also give the commands
   that start VSCodium, Cursor and Windsurf from the environment, and the IDE
   guide says the VS Code setup works in them too.
