@@ -309,6 +309,20 @@ test_that("ask_yes_no() asks, then offers Yes and No", {
   }
 })
 
+test_that("ask_choice() asks, then offers the choices", {
+  choice <- 2
+  local_mocked_bindings(
+    menu = function(choices) {
+      expect_equal(choices, c("a", "b"))
+      choice
+    },
+    .package = "utils"
+  )
+  expect_equal(suppressMessages(ask_choice("Which?", c("a", "b"))), 2)
+  choice <- 0
+  expect_equal(suppressMessages(ask_choice("Which?", c("a", "b"))), NA_integer_)
+})
+
 test_that("pixi_add() finds Bioconductor packages on bioconda", {
   calls <- local_not_on_conda_forge(c("deseq2", "DESeq2"), bioc = "DESeq2")
 

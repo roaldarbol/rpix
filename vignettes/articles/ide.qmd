@@ -14,6 +14,12 @@ rpix::use_pixi(ide = "positron")
 
 or later, for one IDE at a time, with `use_pixi_rstudio()`, `use_pixi_positron()` or `use_pixi_vscode()`.
 
+Some settings are a matter of taste, such as VS Code's R console. rpix asks about them as it sets the IDE up. To answer in advance, e.g. in a script, give them as arguments, also to `use_pixi()`:
+
+```r
+rpix::use_pixi(ide = "vscode", console = "arf")
+```
+
 Whichever IDE you use, `rpix::pixi_sitrep()` checks that it runs the project's R, and suggests fixes if it doesn't.
 
 ## Positron
@@ -24,7 +30,7 @@ Whichever IDE you use, `rpix::pixi_sitrep()` checks that it runs the project's R
 rpix::use_pixi_positron()
 ```
 
-This turns on Positron's discovery of R in Pixi environments, and makes the R from the project's default environment Positron's default for the project, in `.vscode/settings.json`.
+This turns on Positron's discovery of R in Pixi environments, and makes the R from the project's default environment Positron's default for the project, in `.vscode/settings.json`. It asks about the default first; `default_r = FALSE` leaves it out.
 
 ### Every day
 
@@ -93,7 +99,7 @@ When the R extension offers to install its sess package, accept: it installs int
 
 ### Another console
 
-The R extension's console can be [arf](https://github.com/eitsupi/arf) or [radian](https://github.com/randy3k/radian), instead of R:
+The R extension's console can be [arf](https://github.com/eitsupi/arf) or [radian](https://github.com/randy3k/radian), instead of R. `use_pixi_vscode()` asks which, or takes it as an argument:
 
 ```r
 rpix::use_pixi_vscode(console = "arf")

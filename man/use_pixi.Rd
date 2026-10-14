@@ -10,7 +10,8 @@ use_pixi(
   init_if_missing = TRUE,
   install_rpix = TRUE,
   date = NULL,
-  path = NULL
+  path = NULL,
+  ...
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ added, so R and the packages are all as of that date. See
 \code{\link[=pixi_set_date]{pixi_set_date()}}.}
 
 \item{path}{The folder to set up. Defaults to the working directory.}
+
+\item{...}{Passed on to the IDE setup, e.g. \code{console = "arf"} for
+\code{\link[=use_pixi_vscode]{use_pixi_vscode()}}, or \code{default_r = FALSE} for \code{\link[=use_pixi_positron]{use_pixi_positron()}}.}
 }
 \value{
 The path to the project's manifest, invisibly.
@@ -65,6 +69,7 @@ In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
 \dontrun{
 use_pixi()
 use_pixi(r_version = "4.5", ide = "positron")
+use_pixi(ide = "vscode", console = "arf")
 use_pixi(date = "2025-06-01")
 }
 }

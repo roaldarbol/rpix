@@ -21,15 +21,20 @@
 #'   when the environment is activated, so it leaves R and the console to be
 #'   found on the `PATH` instead: start VS Code with `pixi run code .`.
 #'
+#' In an interactive session, they ask about the optional settings left as
+#' `NULL`. Otherwise `use_pixi_positron()` makes the default environment's R
+#' the default, and `use_pixi_vscode()` keeps the console already set up, or
+#' R.
+#'
 #' Existing settings in `.vscode/settings.json` are kept. In a package,
 #' `.vscode` is added to `.Rbuildignore`.
 #'
 #' @param path The project. Defaults to the working directory.
 #' @param console For `use_pixi_vscode()`: the R console, `"R"`,
 #'   [`"arf"`](https://github.com/eitsupi/arf) or
-#'   [`"radian"`](https://github.com/randy3k/radian).
+#'   [`"radian"`](https://github.com/randy3k/radian). `NULL` asks.
 #' @param default_r For `use_pixi_positron()`: if `TRUE`, make the default
-#'   environment's R Positron's default for the project.
+#'   environment's R Positron's default for the project. `NULL` asks.
 #' @returns The file they changed, invisibly.
 #' @name use_pixi_ide
 #' @examples
@@ -80,8 +85,14 @@ use_pixi_rstudio <- function(path = NULL) {
 
 #' @rdname use_pixi_ide
 #' @export
-use_pixi_positron <- function(path = NULL, default_r = TRUE) {
+use_pixi_positron <- function(path = NULL, default_r = NULL) {
   root <- require_project(path)
+  if (is.null(default_r)) {
+    default_r <- !is_interactive() ||
+      ask_yes_no(
+        "Should Positron start the default environment's R when the project opens?"
+      )
+  }
   settings <- list("positron.r.interpreters.pixiDiscovery" = TRUE)
   if (isTRUE(default_r)) {
     settings[["positron.r.interpreters.default"]] <- positron_default_r()
@@ -107,9 +118,20 @@ positron_default_r <- function() {
 
 #' @rdname use_pixi_ide
 #' @export
-use_pixi_vscode <- function(path = NULL, console = c("R", "arf", "radian")) {
+use_pixi_vscode <- function(path = NULL, console = NULL) {
   root <- require_project(path)
-  console <- match.arg(console)
+  consoles <- c("R", "arf", "radian")
+  if (is.null(console)) {
+    console <- vscode_console(root)
+    if (is_interactive()) {
+      choice <- ask_choice(
+        "Which R console should VS Code start? arf and radian are added to the environment.",
+        consoles
+      )
+      if (!is.na(choice)) console <- consoles[choice]
+    }
+  }
+  console <- match.arg(console, consoles)
   # sess and jgd, which the R extension also uses, aren't on conda-forge yet
   # (#56)
   run_pixi(

@@ -13,6 +13,7 @@ local_ide_project <- function(platforms = "osx-arm64", env = parent.frame()) {
   calls <- new.env()
   calls$args <- list()
   local_mocked_bindings(
+    is_interactive = function() FALSE,
     project_platforms = function(path) platforms,
     run_pixi = function(args, ...) {
       calls$args <- c(calls$args, list(args))
@@ -115,6 +116,17 @@ test_that("makes the environment's R Positron's default, or leaves it out", {
   expect_null(read_settings(q$root)$positron.r.interpreters.default)
 })
 
+test_that("asks whether to make the environment's R Positron's default", {
+  p <- local_ide_project()
+  local_mocked_bindings(
+    is_windows = function() FALSE,
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) FALSE
+  )
+  suppressMessages(use_pixi_positron(p$root))
+  expect_null(read_settings(p$root)$positron.r.interpreters.default)
+})
+
 test_that("tells comments from URLs", {
   expect_true(has_json_comments(c("{", "  // a comment", "}")))
   expect_true(has_json_comments('{"a": 1} /* block */'))
@@ -187,8 +199,32 @@ test_that("sets up arf or radian as the console, with the environment's R", {
   )
 
   # Back to R, without the other consoles' settings
-  suppressMessages(use_pixi_vscode(p$root))
+  suppressMessages(use_pixi_vscode(p$root, console = "R"))
   expect_named(read_settings(p$root), c("r.executablePath", "r.consolePath"))
+})
+
+test_that("asks which console to use, or keeps the one set up", {
+  p <- local_ide_project()
+  answer <- 2L
+  local_mocked_bindings(
+    is_windows = function() FALSE,
+    is_interactive = function() TRUE,
+    ask_choice = function(question, choices) {
+      expect_equal(choices, c("R", "arf", "radian"))
+      answer
+    }
+  )
+  suppressMessages(use_pixi_vscode(p$root))
+  expect_equal(p$args[[1]], c("add", "r-languageserver", "arf"))
+  expect_equal(vscode_console(p$root), "arf")
+
+  # Esc keeps it, as does not asking
+  answer <- NA_integer_
+  suppressMessages(use_pixi_vscode(p$root))
+  expect_equal(vscode_console(p$root), "arf")
+  local_mocked_bindings(is_interactive = function() FALSE)
+  suppressMessages(use_pixi_vscode(p$root))
+  expect_equal(vscode_console(p$root), "arf")
 })
 
 test_that("leaves the console to the PATH on Windows", {
@@ -201,7 +237,7 @@ test_that("leaves the console to the PATH on Windows", {
     list(r.consolePath = "arf", r.bracketedPaste = TRUE)
   )
 
-  suppressMessages(use_pixi_vscode(p$root))
+  suppressMessages(use_pixi_vscode(p$root, console = "R"))
   expect_equal(read_settings(p$root), setNames(list(), character()))
 })
 
@@ -226,7 +262,7 @@ test_that("says which settings to remove from a file with comments", {
   file <- file.path(p$root, ".vscode", "settings.json")
   writeLines(c("{", "  // a comment", '  "r.consolePath": "arf"', "}"), file)
 
-  expect_error(use_pixi_vscode(p$root), "Remove r.consolePath")
+  expect_error(use_pixi_vscode(p$root, console = "R"), "Remove r.consolePath")
 })
 
 # Helpers ----------------------------------------------------------------------
