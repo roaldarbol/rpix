@@ -20,8 +20,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [backend-compilers, m2w64-compilers]
-        package: [sundialr, minimal]
+        include:
+          - { package: sundialr, variant: m2w64-compilers }
+          - { package: sundialr, variant: no-fortran }
+          - { package: minimal, variant: no-fortran }
+          - { package: sundialr, variant: ldflags-cleared }
+          - { package: minimal, variant: ldflags-cleared }
     defaults:
       run:
         shell: bash
@@ -39,6 +43,13 @@ jobs:
           backend='name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"]'
           tools='m2-make = "*", m2-sed = "*", m2-coreutils = "*"'
           config=''
+          if [ "${{ matrix.variant }}" = no-fortran ]; then
+            # pixi-build-r's compilers without Fortran, i.e. without flang
+            config=', config = { compilers = ["c", "cxx"] }'
+          fi
+          if [ "${{ matrix.variant }}" = ldflags-cleared ]; then
+            config=', config = { env = { LDFLAGS = "" } }'
+          fi
           if [ "${{ matrix.variant }}" = m2w64-compilers ]; then
             config=', config = { compilers = [] }'
             tools="$tools, gcc_win-64 = \"15.*\", gxx_win-64 = \"15.*\", m2w64-sysroot_win-64 = \"12.*\""
@@ -123,7 +134,7 @@ jobs:
             fi
           done
           echo "--- the link error, in full"
-          grep -n -B30 "collect2.exe: error" ../log.txt 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-400 | head -45 || true
+          grep -n -B40 "collect2.exe: error" log.txt 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-400 | head -45 || true
           log=$(find "$HOME/AppData/Local/rattler/cache/git-v0/checkouts" -name config.log 2>/dev/null | head -1)
           if [ -n "$log" ]; then echo "--- $log"; grep -n -B2 -A25 "checking whether the C++ compiler works" "$log" | head -60; fi
       - name: Result
