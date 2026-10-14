@@ -32,15 +32,46 @@
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
-      i On Windows, rpix sets R's library folder and adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i On Windows, rpix adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
 # pixi_add() says what it adds to a GitHub package's build
 
     Code
+      pixi_add("github::me/javan", path = calls$dir)
+    Message
+      i Adding openjdk to the build of r-javan, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
+# pixi_add() adds what older pixi-build-r doesn't, in a project with an earlier date
+
+    Code
       pixi_add("github::me/rusty", path = calls$dir)
     Message
+      i The project's `exclude-newer = "2026-09-01"` applies to Pixi's build backend too, so rpix adds what `pixi-build-r` didn't before 2026-10-12.
+      i On Windows, rpix adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
+# pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82
+
+    Code
+      pixi_add("github::me/rusty", path = calls$dir)
+    Message
+      i Pixi 0.81.0 uses an older `pixi-build-r`, so rpix adds what that lacks. Update to Pixi 0.82.0 or later, e.g. with `pixi self-update`, and it won't need to.
+      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
+# pixi_add() adds what older pixi-build-r doesn't, with an unknown Pixi
+
+    Code
+      pixi_add("github::me/rusty", path = calls$dir)
+    Message
+      i rpix can't tell which version of Pixi this is, so it adds what `pixi-build-r` didn't before Pixi 0.82.0.
       i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
@@ -50,6 +81,7 @@
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
+      i The project's `exclude-newer = "2025-06-01"` applies to Pixi's build backend too, so rpix adds what `pixi-build-r` didn't before 2026-10-12.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
     Condition

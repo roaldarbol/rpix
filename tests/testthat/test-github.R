@@ -5,13 +5,15 @@ local_github <- function(
     emo = "emo",
     praise = "praise",
     Rcppy = "RcppY",
-    rusty = "rusty"
+    rusty = "rusty",
+    javan = "javan"
   ),
   fields = list(
     rusty = c(
       "Imports: MASS (>= 7.3), stats",
       "SystemRequirements: Cargo (Rust's package manager), rustc"
-    )
+    ),
+    javan = "SystemRequirements: Java (>= 8)"
   ),
   env = parent.frame()
 ) {
@@ -50,9 +52,13 @@ test_that("parse_github() reads the repository, ref and package name", {
       )
     )
   )
-  # What pixi-build-r doesn't add to the build yet
+  # pixi-build-r adds Rust and MASS itself, but not before 2026-10-12
   expect_equal(
     parse_github("github::me/rusty")$requirements,
+    list(build = character(), host = character(), run = character())
+  )
+  expect_equal(
+    parse_github("github::me/rusty", older_backend = TRUE)$requirements,
     list(build = "rust", host = "r-mass", run = "r-mass")
   )
   expect_equal(parse_github("github::cran/praise@1.0.0")$ref, "1.0.0")
@@ -131,8 +137,9 @@ test_that("github_entry() adds what builds on Windows need", {
     name = "r-hellorust",
     requirements = list(build = "rust", host = character(), run = character())
   )
+  # For older pixi-build-r, also R's library folder and Rust's GNU target
   expect_equal(
-    github_entry(github, "4.5.*", windows = TRUE),
+    github_entry(github, "4.5.*", windows = TRUE, older_backend = TRUE),
     paste0(
       'r-hellorust = { git = "https://github.com/cran/hellorust", package = { ',
       'build.backend.name = "pixi-build-r", ',
@@ -143,9 +150,23 @@ test_that("github_entry() adds what builds on Windows need", {
       'm2-coreutils = "*", rust-std-x86_64-pc-windows-gnu = "*" } } }'
     )
   )
-  # Rust's GNU target only for packages that need Rust
+  # pixi-build-r adds these itself since 2026-10-12
   github$requirements$build <- character()
-  expect_no_match(github_entry(github, windows = TRUE), "rust-std")
+  expect_equal(
+    github_entry(github, "4.5.*", windows = TRUE),
+    paste0(
+      'r-hellorust = { git = "https://github.com/cran/hellorust", package = { ',
+      'build.backend.name = "pixi-build-r", ',
+      'host-dependencies = { r-base = "4.5.*" }, ',
+      'target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", ',
+      'm2-coreutils = "*" } } }'
+    )
+  )
+  # Rust's GNU target only for packages that need Rust
+  expect_no_match(
+    github_entry(github, windows = TRUE, older_backend = TRUE),
+    "rust-std"
+  )
   expect_no_match(github_entry(github), "win-64")
 })
 
@@ -276,7 +297,7 @@ test_that("dependency_table() names the table for a feature and platform", {
   )
 })
 
-local_github_project <- function(env = parent.frame()) {
+local_github_project <- function(pixi = "0.82.0", env = parent.frame()) {
   dir <- withr::local_tempdir(.local_envir = env)
   writeLines(manifest, file.path(dir, "pixi.toml"))
   local_github(env = env)
@@ -291,6 +312,9 @@ local_github_project <- function(env = parent.frame()) {
       invisible(list(status = 0))
     },
     project_channels = function(...) "conda-forge",
+    pixi_version_number = function() {
+      if (!is.null(pixi)) numeric_version(pixi)
+    },
     .env = env
   )
   calls$dir <- dir
@@ -335,12 +359,55 @@ test_that("pixi_add() adds what builds on Windows need, in projects for Windows"
 
 test_that("pixi_add() says what it adds to a GitHub package's build", {
   calls <- local_github_project()
-  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  expect_snapshot(pixi_add("github::me/javan", path = calls$dir))
   lines <- readLines(file.path(calls$dir, "pixi.toml"))
   expect_true(any(grepl(
-    '^r-rusty = .*build-dependencies = \\{ rust = "\\*" \\}',
+    '^r-javan = .*build-dependencies = \\{ openjdk = "\\*" \\}',
     lines
   )))
+
+  # pixi-build-r adds Rust and MASS itself
+  pixi_add("github::me/rusty", path = calls$dir) |>
+    suppressMessages()
+  lines <- readLines(file.path(calls$dir, "pixi.toml"))
+  expect_false(any(grepl("^r-rusty = .*(rust|r-mass) = ", lines)))
+})
+
+test_that("pixi_add() adds what older pixi-build-r doesn't, in a project with an earlier date", {
+  calls <- local_github_project()
+  manifest <- file.path(calls$dir, "pixi.toml")
+  lines <- readLines(manifest)
+  lines <- append(lines, 'platforms = ["linux-64", "win-64"]', after = 3)
+  writeLines(set_exclude_newer(lines, "2026-09-01"), manifest)
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep("^r-rusty = ", readLines(manifest), value = TRUE)
+  expect_match(entry, 'build-dependencies = { rust = "*" }', fixed = TRUE)
+  expect_match(entry, 'r-mass = "*"', fixed = TRUE)
+  expect_match(entry, "--library=%PREFIX%/Lib/R/library", fixed = TRUE)
+  expect_match(entry, "rust-std-x86_64-pc-windows-gnu", fixed = TRUE)
+})
+
+test_that("pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82", {
+  calls <- local_github_project(pixi = "0.81.0")
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep(
+    "^r-rusty = ",
+    readLines(file.path(calls$dir, "pixi.toml")),
+    value = TRUE
+  )
+  expect_match(entry, 'build-dependencies = { rust = "*" }', fixed = TRUE)
+  expect_match(entry, 'r-mass = "*"', fixed = TRUE)
+})
+
+test_that("pixi_add() adds what older pixi-build-r doesn't, with an unknown Pixi", {
+  calls <- local_github_project(pixi = NULL)
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep(
+    "^r-rusty = ",
+    readLines(file.path(calls$dir, "pixi.toml")),
+    value = TRUE
+  )
+  expect_match(entry, 'build-dependencies = { rust = "*" }', fixed = TRUE)
 })
 
 test_that("pixi_add() explains a failed build in a project with a date", {
