@@ -10,7 +10,11 @@ is_github <- function(packages) {
 # "github::user/repo@ref" as a list with the repository, the ref (or NULL),
 # and from the package's DESCRIPTION, its conda name and what pixi-build-r
 # doesn't add to its build yet (see build_requirements())
-parse_github <- function(package, call = parent.frame()) {
+parse_github <- function(
+  package,
+  older_backend = FALSE,
+  call = parent.frame()
+) {
   pattern <- "^github::([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)(@(.+))?$"
   if (!grepl(pattern, package, ignore.case = TRUE)) {
     cli::cli_abort(
@@ -31,7 +35,7 @@ parse_github <- function(package, call = parent.frame()) {
     ref = ref,
     # The package's name can differ from the repository's
     name = paste0("r-", tolower(description$Package)),
-    requirements = build_requirements(description)
+    requirements = build_requirements(description, older_backend)
   )
 }
 
@@ -117,16 +121,27 @@ add_github_packages <- function(
   original <- lines
   r_base <- manifest_r_base(lines, feature)
   date <- manifest_exclude_newer(lines)
+  older <- older_backend(date)
   windows <- "win-64" %in% manifest_platforms(lines)
+  if (older) {
+    cli::cli_alert_info(
+      "The project's {.code exclude-newer = \"{date}\"} applies to Pixi's build backend too, so rpix adds what {.code pixi-build-r} didn't before 2026-10-12."
+    )
+  }
   if (windows) {
     cli::cli_alert_info(
-      "On Windows, rpix sets R's library folder and adds MSYS2's build tools, as {.code pixi-build-r} doesn't yet."
+      "On Windows, rpix adds MSYS2's build tools, as {.code pixi-build-r} doesn't yet."
     )
   }
 
   for (package in packages) {
-    github <- parse_github(package, call = call)
-    entry <- github_entry(github, r_base, windows = windows)
+    github <- parse_github(package, older_backend = older, call = call)
+    entry <- github_entry(
+      github,
+      r_base,
+      windows = windows,
+      older_backend = older
+    )
     added <- unique(unlist(github$requirements))
     if (length(added) > 0) {
       cli::cli_alert_info(
@@ -188,7 +203,12 @@ add_github_packages <- function(
 # pinned for the build, as it otherwise builds for the newest R
 # (https://github.com/prefix-dev/pixi/issues/7214). With `windows`, it also
 # gets what builds on Windows need (see windows_build()).
-github_entry <- function(github, r_base = NULL, windows = FALSE) {
+github_entry <- function(
+  github,
+  r_base = NULL,
+  windows = FALSE,
+  older_backend = FALSE
+) {
   requirements <- github$requirements
   any_version <- function(packages) {
     stats::setNames(rep("*", length(packages)), packages)
@@ -204,13 +224,15 @@ github_entry <- function(github, r_base = NULL, windows = FALSE) {
   tables <- tables[lengths(tables) > 0]
   package <- ', package = { build.backend.name = "pixi-build-r"'
   if (windows) {
-    build <- windows_build(requirements)
-    package <- paste0(
-      package,
-      ", build.target.win-64.config.extra-args = [",
-      paste0('"', build$extra_args, '"', collapse = ", "),
-      "]"
-    )
+    build <- windows_build(requirements, older_backend)
+    if (length(build$extra_args) > 0) {
+      package <- paste0(
+        package,
+        ", build.target.win-64.config.extra-args = [",
+        paste0('"', build$extra_args, '"', collapse = ", "),
+        "]"
+      )
+    }
     tables[["target.win-64.build-dependencies"]] <- any_version(build$tools)
   }
   if (length(tables) > 0) {
@@ -237,22 +259,25 @@ github_entry <- function(github, r_base = NULL, windows = FALSE) {
   )
 }
 
-# What pixi-build-r doesn't add to builds on Windows yet:
-# * R's library: it installs into Library\R\library, but conda-forge's R
+# What pixi-build-r doesn't add to builds on Windows yet: MSYS2's make, sed
+# and coreutils, which R's build rules need for compiled code
+# (https://github.com/prefix-dev/pixi/issues/7232). With `older_backend` (see
+# older_backend()), also what it only does since 2026-10-12:
+# * R's library: it installed into Library\R\library, but conda-forge's R
 #   uses Lib\R\library (https://github.com/prefix-dev/pixi/issues/7231). A
 #   second --library wins.
-# * MSYS2's make, sed and coreutils, which R's build rules need for compiled
-#   code (https://github.com/prefix-dev/pixi/issues/7232)
 # * for Rust, the standard library for the GNU target R builds for
 #   (https://github.com/prefix-dev/pixi/issues/7228)
-windows_build <- function(requirements) {
+windows_build <- function(requirements, older_backend = FALSE) {
   list(
-    extra_args = "--library=%PREFIX%/Lib/R/library",
+    extra_args = if (older_backend) "--library=%PREFIX%/Lib/R/library",
     tools = c(
       "m2-make",
       "m2-sed",
       "m2-coreutils",
-      if ("rust" %in% requirements$build) "rust-std-x86_64-pc-windows-gnu"
+      if (older_backend && "rust" %in% requirements$build) {
+        "rust-std-x86_64-pc-windows-gnu"
+      }
     )
   )
 }

@@ -1,14 +1,15 @@
 # What pixi-build-r doesn't add to a package's build yet, read from its
-# DESCRIPTION:
-# * build tools that SystemRequirements asks for
-#   (https://github.com/prefix-dev/pixi/issues/7228)
-# * R's recommended packages, which pixi-build-r takes to come with R, but
-#   conda-forge's r-base doesn't include
+# DESCRIPTION: build tools that SystemRequirements asks for, other than Rust
+# (https://github.com/prefix-dev/pixi/issues/7239). With `older_backend` (see
+# older_backend()), also what pixi-build-r only adds since 2026-10-12:
+# * Rust (https://github.com/prefix-dev/pixi/issues/7228)
+# * R's recommended packages, which conda-forge's r-base doesn't include
 #   (https://github.com/prefix-dev/pixi/issues/7229)
 # A list of conda packages for the build, host and run environments.
-build_requirements <- function(description) {
+build_requirements <- function(description, older_backend = FALSE) {
   system <- description[["SystemRequirements"]] %||% NA
   found <- !is.na(system) &
+    (older_backend | !build_tools$older_backend) &
     vapply(
       build_tools$pattern,
       grepl,
@@ -19,10 +20,9 @@ build_requirements <- function(description) {
       USE.NAMES = FALSE
     )
   tools <- build_tools[found, ]
-  recommended <- intersect(
-    description_packages(description),
-    recommended_packages
-  )
+  recommended <- if (older_backend) {
+    intersect(description_packages(description), recommended_packages)
+  }
   recommended <- if (length(recommended) > 0) {
     paste0("r-", tolower(recommended))
   } else {
@@ -36,7 +36,8 @@ build_requirements <- function(description) {
 }
 
 # Build tools, by what SystemRequirements says, and the conda-forge package
-# that provides each. Java is needed when the package runs, too.
+# that provides each. Java is needed when the package runs, too. pixi-build-r
+# adds Rust itself since 2026-10-12, so only older versions need it.
 build_tools <- data.frame(
   pattern = c(
     "\\bcargo\\b|\\brustc\\b",
@@ -45,8 +46,20 @@ build_tools <- data.frame(
     "\\bpkg-?config\\b"
   ),
   package = c("rust", "openjdk", "cmake", "pkg-config"),
-  run = c(FALSE, TRUE, FALSE, FALSE)
+  run = c(FALSE, TRUE, FALSE, FALSE),
+  older_backend = c(TRUE, FALSE, FALSE, FALSE)
 )
+
+# Whether the project may get a pixi-build-r from before 2026-10-12, when it
+# started adding Rust and R's recommended packages, and installing into R's
+# library on Windows. A project's exclude-newer applies to the build backend
+# too (https://github.com/prefix-dev/pixi/issues/7240): a date before then, or
+# a duration, which may reach back before then.
+older_backend <- function(date) {
+  !is.null(date) &&
+    (!is_absolute_date(date) ||
+      as.Date(substr(date, 1, 10)) < as.Date("2026-10-13"))
+}
 
 recommended_packages <- c(
   "KernSmooth",
