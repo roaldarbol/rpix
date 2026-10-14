@@ -201,9 +201,10 @@ test_that("doesn't activate again what Pixi activated", {
 
 test_that("gives a hint, and changes nothing, in an R that isn't the project's", {
   p <- local_activation()
-  local_mocked_bindings(r_home = function() {
-    "/Library/Frameworks/R.framework/Resources"
-  })
+  local_mocked_bindings(
+    r_home = function() "/Library/Frameworks/R.framework/Resources",
+    detect_ide = function() NA_character_
+  )
   paths <- .libPaths()
 
   expect_message(result <- pixi_activate(p$root, quiet = FALSE), "pixi run R")
@@ -211,6 +212,13 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_null(result$lib_paths)
   expect_equal(.libPaths(), paths)
   expect_silent(pixi_activate(p$root, quiet = TRUE))
+
+  # In RStudio, the addin
+  local_mocked_bindings(detect_ide = function() "rstudio")
+  expect_message(
+    pixi_activate(p$root, quiet = FALSE),
+    "Open with the project's Pixi R"
+  )
 })
 
 test_that("gives a hint in a folder without a Pixi project", {

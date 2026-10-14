@@ -1,0 +1,158 @@
+# RStudio's addins (inst/rstudio/addins.dcf) and its New Project template
+# (inst/rstudio/templates/project/rpix.dcf). RStudio calls these by name, so
+# they aren't exported. The project is the working directory, as in an
+# RStudio project.
+
+# Add packages: those in the selection, or those asked for
+addin_add_packages <- function() {
+  text <- rstudio_selection()
+  if (!nzchar(trimws(text))) {
+    text <- ask_text(
+      "Add packages",
+      "Packages to add to the project, e.g. dplyr, tidyr:"
+    )
+  }
+  packages <- text_packages(text %||% "")
+  if (length(packages) == 0) {
+    cli::cli_alert_info("No packages to add.")
+    return(invisible())
+  }
+  pixi_add(packages)
+}
+
+# Add what the active file uses and pixi.toml lacks
+addin_add_file_packages <- function() {
+  file <- rstudio_active_file()
+  if (is.null(file)) {
+    cli::cli_alert_info("Save the file first, so rpix can read it.")
+    return(invisible())
+  }
+  root <- require_project(dirname(file))
+  missing <- missing_packages(root, scan_file(file))
+  if (length(missing) == 0) {
+    cli::cli_alert_success(
+      "{.file pixi.toml} has all the packages {.file {basename(file)}} uses."
+    )
+    return(invisible())
+  }
+  add_missing_packages(root, missing)
+}
+
+# Start RStudio with an environment's R: the only one, or one picked
+addin_open_with_pixi_r <- function() {
+  environments <- pixi_environments(require_project(NULL))$name
+  environment <- if (length(environments) == 1) environments
+  pixi_switch(environment, ide = "rstudio")
+}
+
+addin_sitrep <- function() {
+  pixi_sitrep()
+}
+
+addin_install <- function() {
+  pixi_install()
+}
+
+addin_open_manifest <- function() {
+  utils::file.edit(find_manifest(require_project(NULL)))
+}
+
+# Run a task, picked from the project's
+addin_run_task <- function() {
+  tasks <- pixi_tasks()
+  if (nrow(tasks) == 0) {
+    cli::cli_alert_info(
+      "The project has no tasks. Add one with {.code pixi_add_task()}."
+    )
+    return(invisible())
+  }
+  names <- unique(tasks$name)
+  choice <- ask_choice("Which task do you want to run?", names)
+  if (is.na(choice)) {
+    return(invisible())
+  }
+  pixi_run(names[choice])
+}
+
+# RStudio's New Project template: a project set up with use_pixi() for
+# RStudio. RStudio then opens it in the R it's set up with; the .Rprofile
+# block says how to move to the environment's R.
+rstudio_new_project <- function(
+  path,
+  r_version = "",
+  packages = "",
+  date = "",
+  install_rpix = TRUE,
+  ...
+) {
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  use_pixi(
+    r_version = if (nzchar(trimws(r_version))) trimws(r_version),
+    ide = "rstudio",
+    date = if (nzchar(trimws(date))) trimws(date),
+    install_rpix = isTRUE(as.logical(install_rpix)),
+    path = path
+  )
+  packages <- text_packages(packages)
+  if (length(packages) > 0) {
+    pixi_add(packages, path = path)
+  }
+  invisible(path)
+}
+
+# The packages in some text: R code that uses them, or names separated by
+# commas or spaces
+text_packages <- function(text) {
+  if (grepl("[(:]", text)) {
+    return(code_packages(strsplit(text, "\n", fixed = TRUE)[[1]]))
+  }
+  names <- strsplit(trimws(text), "[,[:space:]]+")[[1]]
+  names <- gsub("^[\"'`]+|[\"'`]+$", "", names)
+  unique(names[nzchar(names)])
+}
+
+# One of RStudio's API functions, which RStudio defines in its own
+# environment; rstudioapi wraps them. NULL outside RStudio.
+rstudio_api <- function(name) {
+  if (!"tools:rstudio" %in% search()) {
+    return(NULL)
+  }
+  get0(
+    paste0(".rs.api.", name),
+    envir = as.environment("tools:rstudio"),
+    mode = "function",
+    inherits = FALSE
+  )
+}
+
+# The text selected in RStudio's editor, or ""
+rstudio_selection <- function() {
+  context <- rstudio_api("getSourceEditorContext")
+  if (is.null(context)) {
+    return("")
+  }
+  context()$selection[[1]]$text %||% ""
+}
+
+# The path of the file open in RStudio's editor, or NULL if it isn't saved
+rstudio_active_file <- function() {
+  context <- rstudio_api("getSourceEditorContext")
+  path <- if (!is.null(context)) context()$path
+  if (is.null(path) || !nzchar(path)) NULL else path
+}
+
+# Ask for some text, in RStudio's dialog or the console. NULL if cancelled.
+ask_text <- function(title, message) {
+  prompt <- rstudio_api("showPrompt")
+  if (!is.null(prompt)) {
+    return(prompt(title, message, ""))
+  }
+  if (!is_interactive()) {
+    return(NULL)
+  }
+  console_input(paste0(message, " "))
+}
+
+console_input <- function(prompt) {
+  readline(prompt)
+}

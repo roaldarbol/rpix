@@ -57,6 +57,8 @@ rpix::use_pixi_rstudio()
 
 This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one.
 
+For a new project, RStudio's **File > New Project > New Directory > Project with Pixi (rpix)** does the same as `use_pixi(ide = "rstudio")`, with fields for R's version, packages and a date. It needs rpix in the R that RStudio runs. RStudio then opens the project in that R, not the environment's: move to the environment's R as below.
+
 ### Every day
 
 Start RStudio with the task, in a terminal in the project folder:
@@ -65,7 +67,21 @@ Start RStudio with the task, in a terminal in the project folder:
 pixi run rstudio
 ```
 
-RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.
+RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project. If RStudio opened the project with another R, **Addins > Open with the project's Pixi R** starts one with the environment's R.
+
+### Addins
+
+rpix adds these to RStudio's **Addins** menu:
+
+- **Open with the project's Pixi R:** a new RStudio with the environment's R (pick the environment if there are several).
+- **Add packages...:** the selected packages, or the code's, or those you name.
+- **Add the packages this file uses:** those the active file uses and `pixi.toml` lacks.
+- **Install the environment:** e.g. after a `git pull`.
+- **Run a task...:** one of the project's tasks.
+- **Open pixi.toml**.
+- **Situation report:** `pixi_sitrep()`.
+
+They're there when rpix is installed in the R that RStudio runs. To give one a keyboard shortcut, use **Tools > Modify Keyboard Shortcuts**.
 
 On Windows, the task expects RStudio in `C:/Program Files/RStudio`. If it's somewhere else, change the path in `pixi.toml`.
 
@@ -83,7 +99,7 @@ From a terminal, `pixi run --environment test rstudio` works too, for environmen
 
 ### If something's off
 
-- **RStudio uses another R.** You probably opened the project another way, e.g. by double-clicking the `.Rproj` file. Close RStudio and use `pixi run rstudio`.
+- **RStudio uses another R.** You probably opened the project another way, e.g. by double-clicking the `.Rproj` file. Use **Addins > Open with the project's Pixi R**, or close RStudio and use `pixi run rstudio`.
 
 ## VS Code
 

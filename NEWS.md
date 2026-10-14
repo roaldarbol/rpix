@@ -2,6 +2,12 @@
 
 ## Added
 
+* RStudio addins: open the project with its Pixi R, add packages (the
+  selection, or those a file uses), install the environment, run a task, open
+  `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi
+  (rpix)", sets up a project as `use_pixi(ide = "rstudio")` does. In
+  RStudio, the message about R not being the project's points to the addin
+  (#137, #143).
 * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those
   editors, and `use_pixi(ide = )` takes them too. They add languageserver,
   and a `.envrc` from the new `use_pixi_direnv()`, which activates the

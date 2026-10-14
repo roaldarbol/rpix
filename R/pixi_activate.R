@@ -43,7 +43,11 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
         inform(c(
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
-          "i" = "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
+          "i" = if (identical(detect_ide(), "rstudio") && !is.null(root)) {
+            "Move to its R with {.strong Addins > Open with the project's Pixi R}, or {.code rpix::pixi_switch()}."
+          } else {
+            "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
+          }
         ))
         return(invisible(result))
       }

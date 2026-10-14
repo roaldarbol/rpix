@@ -1,0 +1,24 @@
+Binding: rstudio_new_project
+Title: Project with Pixi (rpix)
+OpenFiles: pixi.toml
+
+Parameter: r_version
+Widget: TextInput
+Label: R version, e.g. 4.5 (empty: the newest)
+Position: left
+
+Parameter: packages
+Widget: TextInput
+Label: Packages, e.g. dplyr, ggplot2
+Position: left
+
+Parameter: date
+Widget: TextInput
+Label: Packages as of, e.g. 2025-06-01 (optional)
+Position: right
+
+Parameter: install_rpix
+Widget: CheckboxInput
+Label: Install rpix into the environment
+Default: On
+Position: right
