@@ -35,7 +35,7 @@ RStudio picks its R when it starts, so it has to be started from the project's e
 
 ## R doesn't start in VS Code on Windows
 
-On Windows, the environment's R only starts when the environment is activated. Start VS Code from the project's environment, with `pixi run code .`. See [Using rpix with an IDE](ide.html#vs-code).
+On Windows, the environment's R only starts when the environment is activated. Start VS Code from the project's environment, with `pixi run code .`; for VSCodium, Cursor or Windsurf, `pixi run codium .`, `pixi run cursor .` or `pixi run windsurf .`. See [Using rpix with an IDE](ide.html#vs-code).
 
 ## A package can't be found
 

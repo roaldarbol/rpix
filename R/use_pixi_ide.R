@@ -15,11 +15,13 @@
 #'   there. The path is for the operating system you run it on; on another
 #'   one, Positron ignores it.
 #' * `use_pixi_vscode()` adds languageserver, and the console if it isn't R,
-#'   to the environment. It points the R extension for VS Code (and VSCodium)
-#'   at the environment's R and the console, in
-#'   `.vscode/settings.json`. On Windows, the environment's R only starts
-#'   when the environment is activated, so it leaves R and the console to be
-#'   found on the `PATH` instead: start VS Code with `pixi run code .`.
+#'   to the environment. It points the R extension for VS Code, and the
+#'   editors based on it such as VSCodium, Cursor and Windsurf, at the
+#'   environment's R and the console, in `.vscode/settings.json`. On
+#'   Windows, the environment's R only starts when the environment is
+#'   activated, so it leaves R and the console to be found on the `PATH`
+#'   instead: start VS Code with `pixi run code .` (or `codium`, `cursor` or
+#'   `windsurf` instead of `code`).
 #'
 #' In an interactive session, `use_pixi_vscode()` asks which console to use,
 #' unless `console` is given. Otherwise it keeps the console already set up,
@@ -138,11 +140,20 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
     cli::cli_alert_info(
       "Start VS Code from the project's environment, with {.code pixi run code .}: on Windows, its R only starts when the environment is activated."
     )
+    vscode_forks_hint()
   }
   cli::cli_alert_info(
     "When the R extension offers to install its {.pkg sess} package, accept."
   )
   invisible(file)
+}
+
+# VSCodium, Cursor and Windsurf read the same settings, but have their own
+# command
+vscode_forks_hint <- function() {
+  cli::cli_alert_info(
+    "For VSCodium, Cursor or Windsurf, use {.code codium}, {.code cursor} or {.code windsurf} instead of {.code code}."
+  )
 }
 
 # The R extension's settings for an environment's R, and a console. The

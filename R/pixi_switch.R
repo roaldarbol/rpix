@@ -9,10 +9,10 @@
 #'   Close the old one when you're done with it.
 #' * Positron: looks for interpreters again, and opens the interpreter
 #'   picker, to pick the environment's R.
-#' * VS Code: points the R extension at the environment's R, in the project's
-#'   `.vscode/settings.json`, keeping its console (R, arf or radian; see
-#'   [use_pixi_vscode()]). Reload the window to use it. On Windows, start VS
-#'   Code from the environment instead.
+#' * VS Code, and editors based on it: points the R extension at the
+#'   environment's R, in the project's `.vscode/settings.json`, keeping its
+#'   console (R, arf or radian; see [use_pixi_vscode()]). Reload the window
+#'   to use it. On Windows, start the editor from the environment instead.
 #' * Elsewhere: shows the command that starts the environment's R.
 #'
 #' The environment is installed first, if it isn't yet.
@@ -128,6 +128,7 @@ switch_vscode <- function(root, environment) {
     cli::cli_alert_info(
       "Close VS Code, and start it again from the environment with {.code pixi run --environment {environment} code .}."
     )
+    vscode_forks_hint()
     return(invisible())
   }
   update_vscode_settings(root, vscode_settings(environment, console))

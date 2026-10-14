@@ -50,6 +50,7 @@
       pixi_switch("r44", ide = "vscode")
     Message
       i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
+      i For VSCodium, Cursor or Windsurf, use `codium`, `cursor` or `windsurf` instead of `code`.
 
 # pixi_switch() says if the console is missing
 
@@ -67,4 +68,5 @@
     Message
       ! The "r44" environment doesn't have radian. Add it to one of its features with `pixi_add("radian", feature = ...)`.
       i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
+      i For VSCodium, Cursor or Windsurf, use `codium`, `cursor` or `windsurf` instead of `code`.
 

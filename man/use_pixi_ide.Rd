@@ -41,11 +41,13 @@ then starts that R when the project opens, until you pick another R
 there. The path is for the operating system you run it on; on another
 one, Positron ignores it.
 \item \code{use_pixi_vscode()} adds languageserver, and the console if it isn't R,
-to the environment. It points the R extension for VS Code (and VSCodium)
-at the environment's R and the console, in
-\code{.vscode/settings.json}. On Windows, the environment's R only starts
-when the environment is activated, so it leaves R and the console to be
-found on the \code{PATH} instead: start VS Code with \verb{pixi run code .}.
+to the environment. It points the R extension for VS Code, and the
+editors based on it such as VSCodium, Cursor and Windsurf, at the
+environment's R and the console, in \code{.vscode/settings.json}. On
+Windows, the environment's R only starts when the environment is
+activated, so it leaves R and the console to be found on the \code{PATH}
+instead: start VS Code with \verb{pixi run code .} (or \code{codium}, \code{cursor} or
+\code{windsurf} instead of \code{code}).
 }
 
 In an interactive session, \code{use_pixi_vscode()} asks which console to use,
