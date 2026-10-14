@@ -11,15 +11,17 @@ permissions: read-all
 
 jobs:
   build:
-    name: ${{ matrix.package }} on ${{ matrix.os }} (backend ${{ matrix.backend }})
+    name: ${{ matrix.package }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        package: [sundialr]
-        backend: ["0.2.*", "released"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [hellorust, ACSWR, sundialr]
+        exclude:
+          # sundialr's own build doesn't work on Windows outside Rtools (#191)
+          - { os: windows-latest, package: sundialr }
     defaults:
       run:
         shell: bash
@@ -40,12 +42,12 @@ jobs:
             # MSYS2's tools: rpix still adds these on Windows (prefix-dev/pixi#7232)
             windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" }'
           fi
-          if [ "${{ matrix.backend }}" = released ]; then
-            # conda-forge's 0.1.8, with cmake added as rpix does today
-            backend='build.backend.name = "pixi-build-r"'
-            windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*", cmake = "*" }'
-          else
-            backend='build.backend = { name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"] }'
+          # As rpix writes the entry since the stopgaps went: pixi-build-r from
+          # conda-forge, 0.2 or later
+          backend='build.backend.name = "pixi-build-r", build.backend.version = ">=0.2"'
+          if [ "$RUNNER_OS" = Windows ]; then
+            backend="$backend, build.target.win-64.config.compilers = []"
+            windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*", gcc_win-64 = "*", gxx_win-64 = "*", gfortran_win-64 = "*" }'
           fi
           mkdir p && cd p
           cat > pixi.toml <<TOML
