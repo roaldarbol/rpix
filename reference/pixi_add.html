@@ -20,13 +20,16 @@ tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
 the exact commit either way. rpix writes it into pixi.toml, turns on
 Pixi's pixi-build preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. rpix also adds what pixi-build-r
-doesn't yet: the recommended packages it uses (such as Matrix and MASS),
-and the build tools its SystemRequirements names (Rust, Java, CMake,
-pkg-config). In a project for Windows, it also adds what builds there
-need: R's library folder, and MSYS2's make, sed and coreutils. See
-https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
-change, e.g. to use pixi add once it can set a build backend; see
-https://github.com/roaldarbol/rpix/issues/96.
+doesn't yet: the build tools its SystemRequirements names (Java, CMake,
+pkg-config), and in a project for Windows, MSYS2's make, sed and
+coreutils. Pixi before 0.82 uses an older pixi-build-r, and so may
+a project with a date of 2026-10-12 or earlier, or a duration (see
+pixi_set_date()). There, rpix also adds what that lacks: the
+recommended packages the package uses (such as Matrix and MASS), Rust,
+and on Windows, R's library folder. See
+https://pixi.prefix.dev/latest/build/backends/pixi-build-r/.
+This may change, e.g. to use pixi add once it can set a build backend;
+see https://github.com/roaldarbol/rpix/issues/96.
 
 
 When it adds R (r-base) to the default feature, it also adds
@@ -53,13 +56,16 @@ tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
 the exact commit either way. rpix writes it into pixi.toml, turns on
 Pixi's pixi-build preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. rpix also adds what pixi-build-r
-doesn't yet: the recommended packages it uses (such as Matrix and MASS),
-and the build tools its SystemRequirements names (Rust, Java, CMake,
-pkg-config). In a project for Windows, it also adds what builds there
-need: R's library folder, and MSYS2's make, sed and coreutils. See
-https://pixi.prefix.dev/latest/build/backends/pixi-build-r/. This may
-change, e.g. to use pixi add once it can set a build backend; see
-https://github.com/roaldarbol/rpix/issues/96.
+doesn't yet: the build tools its SystemRequirements names (Java, CMake,
+pkg-config), and in a project for Windows, MSYS2's make, sed and
+coreutils. Pixi before 0.82 uses an older pixi-build-r, and so may
+a project with a date of 2026-10-12 or earlier, or a duration (see
+pixi_set_date()). There, rpix also adds what that lacks: the
+recommended packages the package uses (such as Matrix and MASS), Rust,
+and on Windows, R's library folder. See
+https://pixi.prefix.dev/latest/build/backends/pixi-build-r/.
+This may change, e.g. to use pixi add once it can set a build backend;
+see https://github.com/roaldarbol/rpix/issues/96.
 
 
 When it adds R (r-base) to the default feature, it also adds
@@ -146,13 +152,16 @@ tag or commit, as in <code>"github::cran/praise@1.0.0"</code>; <code>pixi.lock</
 the exact commit either way. rpix writes it into <code>pixi.toml</code>, turns on
 Pixi's <code>pixi-build</code> preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. rpix also adds what <code>pixi-build-r</code>
-doesn't yet: the recommended packages it uses (such as Matrix and MASS),
-and the build tools its <code>SystemRequirements</code> names (Rust, Java, CMake,
-pkg-config). In a project for Windows, it also adds what builds there
-need: R's library folder, and MSYS2's <code>make</code>, <code>sed</code> and <code>coreutils</code>. See
-<a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link">https://pixi.prefix.dev/latest/build/backends/pixi-build-r/</a>. This may
-change, e.g. to use <code>pixi add</code> once it can set a build backend; see
-<a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">https://github.com/roaldarbol/rpix/issues/96</a>.</p></li>
+doesn't yet: the build tools its <code>SystemRequirements</code> names (Java, CMake,
+pkg-config), and in a project for Windows, MSYS2's <code>make</code>, <code>sed</code> and
+<code>coreutils</code>. Pixi before 0.82 uses an older <code>pixi-build-r</code>, and so may
+a project with a date of 2026-10-12 or earlier, or a duration (see
+<code><a href="pixi_set_date.html">pixi_set_date()</a></code>). There, rpix also adds what that lacks: the
+recommended packages the package uses (such as Matrix and MASS), Rust,
+and on Windows, R's library folder. See
+<a href="https://pixi.prefix.dev/latest/build/backends/pixi-build-r/" class="external-link">https://pixi.prefix.dev/latest/build/backends/pixi-build-r/</a>.
+This may change, e.g. to use <code>pixi add</code> once it can set a build backend;
+see <a href="https://github.com/roaldarbol/rpix/issues/96" class="external-link">https://github.com/roaldarbol/rpix/issues/96</a>.</p></li>
 </ul><p>When it adds R (<code>r-base</code>) to the default feature, it also adds
 <code>conda-ecosystem-user-package-isolation</code>, unless it's there, to keep your
 personal R library out of the environment's R, as <code><a href="use_pixi.html">use_pixi()</a></code> does.</p>

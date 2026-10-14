@@ -10,6 +10,19 @@
   without picking it first. `default_r = FALSE` leaves it out
   ([\#133](https://github.com/roaldarbol/rpix/issues/133)).
 
+### Changed
+
+- With Pixi 0.82 or later, packages built from source no longer get R’s
+  recommended packages, Rust, and on Windows, R’s library folder and
+  Rust’s GNU target from rpix: `pixi-build-r` adds them itself since
+  2026-10-12 (prefix-dev/pixi#7233, prefix-dev/pixi#7234,
+  prefix-dev/pixi#7235). Older Pixi uses an older `pixi-build-r`, and so
+  may a project with a date of 2026-10-12 or earlier, or a duration, so
+  rpix still adds them there, and says why
+  ([\#148](https://github.com/roaldarbol/rpix/issues/148),
+  [\#149](https://github.com/roaldarbol/rpix/issues/149),
+  [\#150](https://github.com/roaldarbol/rpix/issues/150)).
+
 ## rpix 0.8.0 (2026-10-13)
 
 ### Added

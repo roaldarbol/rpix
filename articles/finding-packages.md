@@ -121,12 +121,16 @@ pixi_add("github::cran/mypackage@1.2.3")
 
 rpix writes the package into `pixi.toml`, turns on Pixi’s `pixi-build`
 preview, and builds it for the project’s version of R. It also adds what
-`pixi-build-r` doesn’t add yet: R’s recommended packages that the
-package uses, such as Matrix and MASS, and the build tools its
-`SystemRequirements` names: Rust, Java, CMake or pkg-config. In a
-project for Windows, it adds what builds there need, too. Building takes
-a minute or so. It doesn’t work yet for packages that need Bioconductor
-packages, or system libraries such as GDAL.
+`pixi-build-r` doesn’t add yet: the build tools its `SystemRequirements`
+names, such as Java, CMake or pkg-config, and in a project for Windows,
+what builds there need. Pixi before 0.82 uses an older `pixi-build-r`,
+and so may a project with a date of 2026-10-12 or earlier, or a duration
+(see
+[`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
+There, rpix also adds what that lacks: R’s recommended packages that the
+package uses, such as Matrix and MASS, Rust, and on Windows, R’s library
+folder. Building takes a minute or so. It doesn’t work yet for packages
+that need Bioconductor packages, or system libraries such as GDAL.
 
 Better still, add the package to conda-forge, so it’s available for
 everyone. conda-forge accepts new packages through

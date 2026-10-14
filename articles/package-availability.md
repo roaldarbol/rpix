@@ -33,9 +33,9 @@ packages](https://roald-arboel.com/rpix/articles/finding-packages.md)).
 A package counts when all its dependencies (`Depends`, `Imports` and
 `LinkingTo`) are on conda-forge or come with R, and its
 `SystemRequirements` need nothing beyond what conda-forge’s R brings
-(such as curl, cairo, libxml2 or GSL) and the build tools rpix adds
-(Rust, CMake, pkg-config, Java). Building one takes a minute or two. A
-random sample of 25 of them all built and loaded, on macOS.
+(such as curl, cairo, libxml2 or GSL) and the build tools Pixi and rpix
+add (Rust, CMake, pkg-config, Java). Building one takes a minute or two.
+A random sample of 25 of them all built and loaded, on macOS.
 
 ### What’s still missing
 

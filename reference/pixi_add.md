@@ -29,11 +29,15 @@ a prefix to say where a package comes from:
   either way. rpix writes it into `pixi.toml`, turns on Pixi's
   `pixi-build` preview, and pins the build to the project's R. Its
   dependencies come from conda-forge. rpix also adds what `pixi-build-r`
-  doesn't yet: the recommended packages it uses (such as Matrix and
-  MASS), and the build tools its `SystemRequirements` names (Rust, Java,
-  CMake, pkg-config). In a project for Windows, it also adds what builds
-  there need: R's library folder, and MSYS2's `make`, `sed` and
-  `coreutils`. See
+  doesn't yet: the build tools its `SystemRequirements` names (Java,
+  CMake, pkg-config), and in a project for Windows, MSYS2's `make`,
+  `sed` and `coreutils`. Pixi before 0.82 uses an older `pixi-build-r`,
+  and so may a project with a date of 2026-10-12 or earlier, or a
+  duration (see
+  [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
+  There, rpix also adds what that lacks: the recommended packages the
+  package uses (such as Matrix and MASS), Rust, and on Windows, R's
+  library folder. See
   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This
   may change, e.g. to use `pixi add` once it can set a build backend;
   see <https://github.com/roaldarbol/rpix/issues/96>.
