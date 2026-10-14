@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         package: [hellorust, ACSWR, quadprog, RcppRoll, minimal]
-        variant: [no-compilers, mingw-compilers]
+        variant: [no-compilers, mingw-compilers, backend-compilers]
     defaults:
       run:
         shell: bash
@@ -33,10 +33,11 @@ jobs:
           pkg=${{ matrix.package }}
           lower=$(echo $pkg | tr A-Z a-z)
           tools='m2-make = "*", m2-sed = "*", m2-coreutils = "*"'
+          compilers='build.target.win-64.config.compilers = [], '
+          [ "${{ matrix.variant }}" = backend-compilers ] && compilers=''
           if [ "${{ matrix.variant }}" = mingw-compilers ]; then
             tools="$tools, gcc_win-64 = \"*\", gxx_win-64 = \"*\", gfortran_win-64 = \"*\""
           fi
-          [ "$pkg" = hellorust ] && tools="$tools, rust-std-x86_64-pc-windows-gnu = \"*\""
           if [ "$pkg" = minimal ]; then
             mkdir -p minimal/src
             printf 'Package: minimal\nVersion: 0.1\nTitle: Minimal\nDescription: Minimal.\nLicense: MIT\nAuthors@R: person("A", "B", role = c("aut", "cre"), email = "a@b.c")\nNeedsCompilation: yes\n' > minimal/DESCRIPTION
@@ -62,7 +63,7 @@ jobs:
           preview = ["pixi-build"]
           [dependencies]
           r-base = "4.5.*"
-          r-$lower = { $src, package = { build.backend.name = "pixi-build-r", build.target.win-64.config.compilers = [], host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { $tools } } }
+          r-$lower = { $src, package = { build.backend = { name = "pixi-build-r", version = ">=0.2", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"] }, ${compilers}host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { $tools } } }
           TOML
           cat pixi.toml
           set +e
