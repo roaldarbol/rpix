@@ -11,6 +11,7 @@ use_pixi(
   install_rpix = TRUE,
   date = NULL,
   path = NULL,
+  activation_cache = TRUE,
   ...
 )
 }
@@ -35,6 +36,9 @@ added, so R and the packages are all as of that date. See
 \code{\link[=pixi_set_date]{pixi_set_date()}}.}
 
 \item{path}{The folder to set up. Defaults to the working directory.}
+
+\item{activation_cache}{If \code{TRUE}, turn on Pixi's activation cache for the
+project.}
 
 \item{...}{Passed on to the IDE setup, e.g. \code{console = "arf"} for
 \code{\link[=use_pixi_vscode]{use_pixi_vscode()}}, or \code{default_r = FALSE} for \code{\link[=use_pixi_positron]{use_pixi_positron()}}.}
@@ -64,6 +68,13 @@ R at the Pixi library. It's removed.
 
 In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
 \code{.Rbuildignore}, so they stay out of the package's builds.
+
+It turns on Pixi's activation cache for the project, in
+\code{.pixi/config.toml}. Pixi then reuses the environment's activation until the
+project changes, so R started through Pixi, e.g. by \verb{pixi run} or Positron,
+starts in a fraction of a second rather than a few. The cache is
+experimental in Pixi, and doesn't notice changes outside the project, e.g.
+a newly installed Java.
 }
 \examples{
 \dontrun{

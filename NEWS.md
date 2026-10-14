@@ -18,6 +18,9 @@
   `use_pixi(ide = "vscode", console = "arf")` (#134).
 * In an interactive session, `pixi_switch()` without an environment asks
   which, from a menu of the project's environments (#189).
+* `use_pixi()` turns on Pixi's activation cache for the project, so R started
+  through Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
+  second rather than a few. `activation_cache = FALSE` leaves it off (#195).
 
 ## Changed
 

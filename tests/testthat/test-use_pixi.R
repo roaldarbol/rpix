@@ -27,6 +27,14 @@ local_mock_setup <- function(env = parent.frame()) {
   calls
 }
 
+activation_cache_args <- c(
+  "config",
+  "set",
+  "--local",
+  "experimental.use-environment-activation-cache",
+  "true"
+)
+
 legacy_fixture <- function() {
   test_path("fixtures", "legacy-rprofile.txt")
 }
@@ -39,7 +47,7 @@ test_that("use_pixi() creates a project and adds R and rpix", {
   manifest <- suppressMessages(use_pixi())
 
   expect_equal(manifest, file.path(dir, "pixi.toml"))
-  expect_length(calls$args, 3)
+  expect_length(calls$args, 4)
   expect_equal(calls$args[[1]], c("init", dir))
   expect_equal(calls$args[[2]][1:2], c("add", "r-base"))
   expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
@@ -52,6 +60,7 @@ test_that("use_pixi() creates a project and adds R and rpix", {
     fixed = TRUE
   )
   expect_match(calls$args[[3]][4], "lib = .Library", fixed = TRUE)
+  expect_equal(calls$args[[4]], activation_cache_args)
   # Commands target the project, not the environment R happens to run in
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
 })
@@ -67,9 +76,42 @@ test_that("use_pixi() uses an existing project and can skip rpix", {
 
   expect_equal(
     calls$args,
-    list(c("add", "r-base=4.5", "conda-ecosystem-user-package-isolation"))
+    list(
+      c("add", "r-base=4.5", "conda-ecosystem-user-package-isolation"),
+      activation_cache_args
+    )
   )
   expect_equal(calls$paths[[1]], dir)
+})
+
+test_that("use_pixi() can leave the activation cache off", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+
+  suppressMessages(use_pixi(
+    path = dir,
+    install_rpix = FALSE,
+    activation_cache = FALSE
+  ))
+  expect_false(list(activation_cache_args) %in% calls$args)
+})
+
+test_that("use_pixi() carries on when Pixi doesn't know the activation cache", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  local_mocked_bindings(
+    run_pixi = function(args, path = NULL, ...) {
+      if (args[1] == "config") {
+        cli::cli_abort("Unknown key", class = "rpix_error_pixi")
+      }
+      invisible(list(status = 0))
+    }
+  )
+
+  messages <- capture_messages(use_pixi(path = dir, install_rpix = FALSE))
+  expect_true(any(grepl("Couldn't turn on Pixi's activation cache", messages)))
 })
 
 test_that("use_pixi() errors without a project if it may not create one", {
