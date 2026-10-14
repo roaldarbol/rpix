@@ -10,11 +10,11 @@ or library, so this starts the other R the way your IDE needs:
 - Positron: looks for interpreters again, and opens the interpreter
   picker, to pick the environment's R.
 
-- VS Code: points the R extension at the environment's R, in the
-  project's `.vscode/settings.json`, keeping its console (R, arf or
-  radian; see
+- VS Code, and editors based on it: points the R extension at the
+  environment's R, in the project's `.vscode/settings.json`, keeping its
+  console (R, arf or radian; see
   [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)).
-  Reload the window to use it. On Windows, start VS Code from the
+  Reload the window to use it. On Windows, start the editor from the
   environment instead.
 
 - Elsewhere: shows the command that starts the environment's R.
@@ -24,14 +24,15 @@ The environment is installed first, if it isn't yet.
 ## Usage
 
 ``` r
-pixi_switch(environment, ide = NULL, path = NULL)
+pixi_switch(environment = NULL, ide = NULL, path = NULL)
 ```
 
 ## Arguments
 
 - environment:
 
-  The environment.
+  The environment. In an interactive session, leave it out to pick one
+  from a menu.
 
 - ide:
 
@@ -45,12 +46,14 @@ pixi_switch(environment, ide = NULL, path = NULL)
 
 ## Value
 
-The environment's R, invisibly.
+The environment's R, invisibly, or `NULL` if you cancel the menu.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 pixi_switch("r44")
+# Pick from a menu
+pixi_switch()
 } # }
 ```

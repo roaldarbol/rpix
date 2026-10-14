@@ -50,7 +50,9 @@ IDE](https://roald-arboel.com/rpix/articles/ide.html#rstudio).
 
 On Windows, the environment’s R only starts when the environment is
 activated. Start VS Code from the project’s environment, with
-`pixi run code .`. See [Using rpix with an
+`pixi run code .`; for VSCodium, Cursor or Windsurf,
+`pixi run codium .`, `pixi run cursor .` or `pixi run windsurf .`. See
+[Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.html#vs-code).
 
 ## A package can’t be found

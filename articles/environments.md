@@ -69,9 +69,11 @@ Start an environment’s R with:
 pixi run --environment r44 R
 ```
 
-To move your IDE to it, run `pixi_switch("r44")`. In RStudio this starts
-a new RStudio with that R; in Positron it opens the interpreter picker;
-in VS Code it points the R extension at that R. See [Using rpix with an
+To move your IDE to it, run `pixi_switch("r44")`, or
+[`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+to pick it from a menu. In RStudio this starts a new RStudio with that
+R; in Positron it opens the interpreter picker; in VS Code it points the
+R extension at that R. See [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
 
 Or run a function in it from the R you’re in, and get the result back:

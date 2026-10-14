@@ -137,7 +137,10 @@ This adds the languageserver package to the environment, and points the
 [R
 extension](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r)
 at the environment’s R, in the project’s `.vscode/settings.json`. It
-works the same in VSCodium.
+works the same in the editors based on VS Code, such as VSCodium, Cursor
+and Windsurf: they read the same settings, and get the R extension from
+[Open VSX](https://open-vsx.org/extension/REditorSupport/r). A project
+set up once works in all of them.
 
 When the R extension offers to install its sess package, accept: it
 installs into the environment.
@@ -171,6 +174,9 @@ the `PATH`. So start VS Code from the project’s environment:
 pixi run code .
 ```
 
+For VSCodium, Cursor or Windsurf, use `codium`, `cursor` or `windsurf`
+instead of `code`.
+
 ### Another environment
 
 Run `rpix::pixi_switch("r44")`. It changes `r.executablePath` and
@@ -181,7 +187,8 @@ the environment’s R. Then run **Developer: Reload Window** from the
 Command Palette.
 
 On Windows, start VS Code with `pixi run --environment r44 code .`
-instead. The console then has to be in that environment too.
+instead (or `codium`, `cursor` or `windsurf`). The console then has to
+be in that environment too.
 
 ### If something’s off
 

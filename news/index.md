@@ -19,8 +19,20 @@
   asks which console to use. `use_pixi(ide = )` passes the IDEs’
   settings on, e.g. `use_pixi(ide = "vscode", console = "arf")`
   ([\#134](https://github.com/roaldarbol/rpix/issues/134)).
+- In an interactive session,
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  without an environment asks which, from a menu of the project’s
+  environments ([\#189](https://github.com/roaldarbol/rpix/issues/189)).
 
 ### Changed
+
+- On Windows,
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  and
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  also give the commands that start VSCodium, Cursor and Windsurf from
+  the environment, and the IDE guide says the VS Code setup works in
+  them too.
 
 - rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from

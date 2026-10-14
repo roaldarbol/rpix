@@ -6,10 +6,10 @@ RStudio: starts a new RStudio with the environment's R, in the project.
 Close the old one when you're done with it.
 Positron: looks for interpreters again, and opens the interpreter
 picker, to pick the environment's R.
-VS Code: points the R extension at the environment's R, in the project's
-.vscode/settings.json, keeping its console (R, arf or radian; see
-use_pixi_vscode()). Reload the window to use it. On Windows, start VS
-Code from the environment instead.
+VS Code, and editors based on it: points the R extension at the
+environment's R, in the project's .vscode/settings.json, keeping its
+console (R, arf or radian; see use_pixi_vscode()). Reload the window
+to use it. On Windows, start the editor from the environment instead.
 Elsewhere: shows the command that starts the environment's R.
 
 
@@ -20,10 +20,10 @@ RStudio: starts a new RStudio with the environment's R, in the project.
 Close the old one when you're done with it.
 Positron: looks for interpreters again, and opens the interpreter
 picker, to pick the environment's R.
-VS Code: points the R extension at the environment's R, in the project's
-.vscode/settings.json, keeping its console (R, arf or radian; see
-use_pixi_vscode()). Reload the window to use it. On Windows, start VS
-Code from the environment instead.
+VS Code, and editors based on it: points the R extension at the
+environment's R, in the project's .vscode/settings.json, keeping its
+console (R, arf or radian; see use_pixi_vscode()). Reload the window
+to use it. On Windows, start the editor from the environment instead.
 Elsewhere: shows the command that starts the environment's R.
 
 
@@ -94,17 +94,17 @@ library, so this starts the other R the way your IDE needs:</p><ul><li><p>RStudi
 Close the old one when you're done with it.</p></li>
 <li><p>Positron: looks for interpreters again, and opens the interpreter
 picker, to pick the environment's R.</p></li>
-<li><p>VS Code: points the R extension at the environment's R, in the project's
-<code>.vscode/settings.json</code>, keeping its console (R, arf or radian; see
-<code><a href="use_pixi_ide.html">use_pixi_vscode()</a></code>). Reload the window to use it. On Windows, start VS
-Code from the environment instead.</p></li>
+<li><p>VS Code, and editors based on it: points the R extension at the
+environment's R, in the project's <code>.vscode/settings.json</code>, keeping its
+console (R, arf or radian; see <code><a href="use_pixi_ide.html">use_pixi_vscode()</a></code>). Reload the window
+to use it. On Windows, start the editor from the environment instead.</p></li>
 <li><p>Elsewhere: shows the command that starts the environment's R.</p></li>
 </ul><p>The environment is installed first, if it isn't yet.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_switch</span><span class="op">(</span><span class="va">environment</span>, ide <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pixi_switch</span><span class="op">(</span>environment <span class="op">=</span> <span class="cn">NULL</span>, ide <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -112,7 +112,8 @@ Code from the environment instead.</p></li>
 
 
 <dl><dt id="arg-environment">environment<a class="anchor" aria-label="anchor" href="#arg-environment"></a></dt>
-<dd><p>The environment.</p></dd>
+<dd><p>The environment. In an interactive session, leave it
+out to pick one from a menu.</p></dd>
 
 
 <dt id="arg-ide">ide<a class="anchor" aria-label="anchor" href="#arg-ide"></a></dt>
@@ -127,13 +128,15 @@ environment, or the working directory.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The environment's R, invisibly.</p>
+    <p>The environment's R, invisibly, or <code>NULL</code> if you cancel the menu.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">pixi_switch</span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Pick from a menu</span></span></span>
+<span class="r-in"><span><span class="fu">pixi_switch</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

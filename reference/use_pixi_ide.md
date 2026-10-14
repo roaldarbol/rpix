@@ -18,11 +18,13 @@ calls these with its `ide` argument.
   on another one, Positron ignores it.
 
 - `use_pixi_vscode()` adds languageserver, and the console if it isn't
-  R, to the environment. It points the R extension for VS Code (and
-  VSCodium) at the environment's R and the console, in
-  `.vscode/settings.json`. On Windows, the environment's R only starts
-  when the environment is activated, so it leaves R and the console to
-  be found on the `PATH` instead: start VS Code with `pixi run code .`.
+  R, to the environment. It points the R extension for VS Code, and the
+  editors based on it such as VSCodium, Cursor and Windsurf, at the
+  environment's R and the console, in `.vscode/settings.json`. On
+  Windows, the environment's R only starts when the environment is
+  activated, so it leaves R and the console to be found on the `PATH`
+  instead: start VS Code with `pixi run code .` (or `codium`, `cursor`
+  or `windsurf` instead of `code`).
 
 In an interactive session, `use_pixi_vscode()` asks which console to
 use, unless `console` is given. Otherwise it keeps the console already

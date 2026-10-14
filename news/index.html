@@ -67,10 +67,12 @@
 <li>
 <code>use_pixi_vscode(console = )</code> sets up arf or radian as the R extension’s console, starting the environment’s R. <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> keeps the console (<a href="https://github.com/roaldarbol/rpix/issues/132" class="external-link">#132</a>).</li>
 <li>In an interactive session, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> asks which console to use. <code>use_pixi(ide = )</code> passes the IDEs’ settings on, e.g. <code>use_pixi(ide = "vscode", console = "arf")</code> (<a href="https://github.com/roaldarbol/rpix/issues/134" class="external-link">#134</a>).</li>
+<li>In an interactive session, <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> without an environment asks which, from a menu of the project’s environments (<a href="https://github.com/roaldarbol/rpix/issues/189" class="external-link">#189</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
-<ul><li>rpix finds the project of the running Pixi environment from <code>PIXI_WORKSPACE_ROOT</code>, as Pixi 0.82 names it, and otherwise from <code>PIXI_PROJECT_ROOT</code>, which Pixi keeps as an alias and older versions set.</li>
+<ul><li><p>On Windows, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> and <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> also give the commands that start VSCodium, Cursor and Windsurf from the environment, and the IDE guide says the VS Code setup works in them too.</p></li>
+<li><p>rpix finds the project of the running Pixi environment from <code>PIXI_WORKSPACE_ROOT</code>, as Pixi 0.82 names it, and otherwise from <code>PIXI_PROJECT_ROOT</code>, which Pixi keeps as an alias and older versions set.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
