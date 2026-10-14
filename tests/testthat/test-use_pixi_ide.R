@@ -156,6 +156,79 @@ test_that("leaves R to the PATH on Windows", {
   expect_false(file.exists(file.path(p$root, ".vscode", "settings.json")))
 })
 
+test_that("sets up arf or radian as the console, with the environment's R", {
+  p <- local_ide_project()
+  local_mocked_bindings(is_windows = function() FALSE)
+  env <- "${workspaceFolder}/.pixi/envs/default"
+
+  suppressMessages(use_pixi_vscode(p$root, console = "arf"))
+  expect_equal(p$args[[1]], c("add", "r-languageserver", "arf"))
+  expect_equal(
+    read_settings(p$root),
+    list(
+      r.executablePath = paste0(env, "/bin/R"),
+      r.consolePath = paste0(env, "/bin/arf"),
+      r.consoleArgs = list(
+        "--r-home",
+        paste0(env, "/lib/R"),
+        "--no-save",
+        "--no-restore"
+      ),
+      r.bracketedPaste = TRUE
+    )
+  )
+
+  suppressMessages(use_pixi_vscode(p$root, console = "radian"))
+  settings <- read_settings(p$root)
+  expect_equal(settings$r.consolePath, paste0(env, "/bin/radian"))
+  expect_equal(
+    settings$r.consoleArgs,
+    list(paste0("--r-binary=", env, "/bin/R"))
+  )
+
+  # Back to R, without the other consoles' settings
+  suppressMessages(use_pixi_vscode(p$root))
+  expect_named(read_settings(p$root), c("r.executablePath", "r.consolePath"))
+})
+
+test_that("leaves the console to the PATH on Windows", {
+  p <- local_ide_project()
+  local_mocked_bindings(is_windows = function() TRUE)
+
+  suppressMessages(use_pixi_vscode(p$root, console = "arf"))
+  expect_equal(
+    read_settings(p$root),
+    list(r.consolePath = "arf", r.bracketedPaste = TRUE)
+  )
+
+  suppressMessages(use_pixi_vscode(p$root))
+  expect_equal(read_settings(p$root), setNames(list(), character()))
+})
+
+test_that("vscode_console() reads the console from the settings", {
+  root <- withr::local_tempdir()
+  expect_equal(vscode_console(root), "R")
+
+  dir.create(file.path(root, ".vscode"))
+  file <- file.path(root, ".vscode", "settings.json")
+  writeLines('{"r.consolePath": "C:/envs/default/Scripts/radian.exe"}', file)
+  expect_equal(vscode_console(root), "radian")
+  writeLines('{"r.consolePath": "/usr/local/bin/R"}', file)
+  expect_equal(vscode_console(root), "R")
+  writeLines(c("{", "  // arf", '  "r.consolePath": "arf"', "}"), file)
+  expect_equal(vscode_console(root), "arf")
+})
+
+test_that("says which settings to remove from a file with comments", {
+  p <- local_ide_project()
+  local_mocked_bindings(is_windows = function() TRUE)
+  dir.create(file.path(p$root, ".vscode"))
+  file <- file.path(p$root, ".vscode", "settings.json")
+  writeLines(c("{", "  // a comment", '  "r.consolePath": "arf"', "}"), file)
+
+  expect_error(use_pixi_vscode(p$root), "Remove r.consolePath")
+})
+
 # Helpers ----------------------------------------------------------------------
 
 test_that("the IDE helpers need a Pixi project", {

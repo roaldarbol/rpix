@@ -5,6 +5,9 @@
 * `use_pixi_positron()` makes the default environment's R Positron's default
   for the project, so Positron (2026.10 or later) starts it when the project
   opens, without picking it first. `default_r = FALSE` leaves it out (#133).
+* `use_pixi_vscode(console = )` sets up arf or radian as the R extension's
+  console, starting the environment's R. `pixi_switch()` keeps the console
+  (#132).
 
 ## Changed
 

@@ -28,7 +28,8 @@ Close the old one when you're done with it.
 \item Positron: looks for interpreters again, and opens the interpreter
 picker, to pick the environment's R.
 \item VS Code: points the R extension at the environment's R, in the project's
-\code{.vscode/settings.json}. Reload the window to use it. On Windows, start VS
+\code{.vscode/settings.json}, keeping its console (R, arf or radian; see
+\code{\link[=use_pixi_vscode]{use_pixi_vscode()}}). Reload the window to use it. On Windows, start VS
 Code from the environment instead.
 \item Elsewhere: shows the command that starts the environment's R.
 }

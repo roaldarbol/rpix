@@ -11,13 +11,17 @@ use_pixi_rstudio(path = NULL)
 
 use_pixi_positron(path = NULL, default_r = TRUE)
 
-use_pixi_vscode(path = NULL)
+use_pixi_vscode(path = NULL, console = c("R", "arf", "radian"))
 }
 \arguments{
 \item{path}{The project. Defaults to the working directory.}
 
 \item{default_r}{For \code{use_pixi_positron()}: if \code{TRUE}, make the default
 environment's R Positron's default for the project.}
+
+\item{console}{For \code{use_pixi_vscode()}: the R console, \code{"R"},
+\href{https://github.com/eitsupi/arf}{\code{"arf"}} or
+\href{https://github.com/randy3k/radian}{\code{"radian"}}.}
 }
 \value{
 The file they changed, invisibly.
@@ -36,11 +40,12 @@ for the project, in \code{.vscode/settings.json}. Positron (2026.10 or later)
 then starts that R when the project opens, until you pick another R
 there. The path is for the operating system you run it on; on another
 one, Positron ignores it.
-\item \code{use_pixi_vscode()} adds languageserver to the environment, and points
-the R extension for VS Code (and VSCodium) at the environment's R, in
+\item \code{use_pixi_vscode()} adds languageserver, and the console if it isn't R,
+to the environment. It points the R extension for VS Code (and VSCodium)
+at the environment's R and the console, in
 \code{.vscode/settings.json}. On Windows, the environment's R only starts
-when the environment is activated, so it leaves R to be found on the
-\code{PATH} instead: start VS Code with \verb{pixi run code .}.
+when the environment is activated, so it leaves R and the console to be
+found on the \code{PATH} instead: start VS Code with \verb{pixi run code .}.
 }
 
 Existing settings in \code{.vscode/settings.json} are kept. In a package,
@@ -50,6 +55,6 @@ Existing settings in \code{.vscode/settings.json} are kept. In a package,
 \dontrun{
 use_pixi_rstudio()
 use_pixi_positron()
-use_pixi_vscode()
+use_pixi_vscode(console = "arf")
 }
 }

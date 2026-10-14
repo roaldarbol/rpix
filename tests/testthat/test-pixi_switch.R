@@ -121,6 +121,59 @@ test_that("pixi_switch() tells VS Code users on Windows to restart it", {
   expect_false(file.exists(file.path(calls$dir, ".vscode", "settings.json")))
 })
 
+test_that("pixi_switch() keeps VS Code's console", {
+  calls <- local_switch_project()
+  local_mocked_bindings(is_windows = function() FALSE)
+  dir.create(file.path(calls$dir, ".vscode"))
+  settings_file <- file.path(calls$dir, ".vscode", "settings.json")
+  writeLines('{"r.consolePath": "arf"}', settings_file)
+  arf <- environment_console(calls$dir, "default", "arf")
+  dir.create(dirname(arf), recursive = TRUE)
+  file.create(arf)
+
+  suppressMessages(pixi_switch("r44", ide = "vscode"))
+  settings <- jsonlite::read_json(settings_file)
+  expect_equal(
+    settings[["r.consolePath"]],
+    "${workspaceFolder}/.pixi/envs/default/bin/arf"
+  )
+  expect_equal(
+    settings[["r.consoleArgs"]][[2]],
+    "${workspaceFolder}/.pixi/envs/r44/lib/R"
+  )
+})
+
+test_that("pixi_switch() says if the console is missing", {
+  calls <- local_switch_project()
+  dir.create(file.path(calls$dir, ".vscode"))
+  writeLines(
+    '{"r.consolePath": "radian"}',
+    file.path(calls$dir, ".vscode", "settings.json")
+  )
+
+  local_mocked_bindings(is_windows = function() FALSE)
+  expect_snapshot(pixi_switch("r44", ide = "vscode"))
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_snapshot(pixi_switch("r44", ide = "vscode"))
+})
+
+test_that("environment_console() finds a console on each platform", {
+  local_mocked_bindings(is_windows = function() FALSE)
+  expect_equal(
+    environment_console("p", "r44", "arf"),
+    "p/.pixi/envs/r44/bin/arf"
+  )
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_equal(
+    environment_console("p", "r44", "arf"),
+    "p/.pixi/envs/r44/Library/bin/arf.exe"
+  )
+  expect_equal(
+    environment_console("p", "r44", "radian"),
+    "p/.pixi/envs/r44/Scripts/radian.exe"
+  )
+})
+
 test_that("environment_r() finds the environment's R on each platform", {
   local_mocked_bindings(is_windows = function() FALSE)
   expect_equal(environment_r("/p", "r44"), "/p/.pixi/envs/r44/bin/R")
