@@ -1,0 +1,93 @@
+# Temporary: why sundialr's configure says "C++ compiler cannot create
+# executables" on Windows. Builds it as pixi-build-r does (compiler('c') and
+# compiler('cxx')), and with conda-forge's compilers for R on Windows instead
+# (m2w64 gcc/gxx, as in conda-forge's R recipes), then shows what the build
+# environment has.
+name: test-windows-cxx
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    name: sundialr, ${{ matrix.variant }}
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [backend-compilers, m2w64-compilers]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.82.0
+          run-install: false
+      - name: The runner's own compilers, on the PATH
+        run: for c in gcc g++ cl cmake; do printf "%s: " $c; command -v $c || echo "-"; done
+      - name: Build and load
+        id: run
+        run: |
+          backend='name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"]'
+          tools='m2-make = "*", m2-sed = "*", m2-coreutils = "*"'
+          config=''
+          if [ "${{ matrix.variant }}" = m2w64-compilers ]; then
+            config=', config = { compilers = [] }'
+            tools="$tools, gcc_win-64 = \"15.*\", gxx_win-64 = \"15.*\", m2w64-sysroot_win-64 = \"12.*\""
+          fi
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["win-64"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-sundialr = { git = "https://github.com/cran/sundialr", package = { build = { backend = { $backend }$config }, host-dependencies = { r-base = "4.5.*" }, build-dependencies = { $tools } } }
+          TOML
+          cat pixi.toml
+          set +e
+          pixi run -v Rscript -e "library(sundialr); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' ../log.txt)
+          echo "--- build environment's compiler packages"
+          grep -E "^\s*│?\s*│?\s*│?\s*(vs20[0-9]+|vs_win|gcc|gxx|m2w64|cmake|clang|lld)[a-z0-9_-]* " <<< "$clean" | sort -u | head -20 || true
+          echo "--- errors"
+          grep -E "error|ERROR" <<< "$clean" | grep -v "errorlevel\|RB_SECTION" | head -15 || true
+          grep -q LOADED <<< "$clean" && echo "LOADED" || echo "NOT LOADED"
+      - name: Inside the build environment
+        if: always()
+        run: |
+          work=$(ls -d p/.pixi/bld/r-sundialr/*/work 2>/dev/null | head -1)
+          if [ -z "$work" ]; then echo "no work directory left"; exit 0; fi
+          cat > diag.bat <<BAT
+          @echo off
+          cd /d "$(cygpath -w "$work")"
+          call build_env.bat > nul
+          echo --- CC=%CC%  CXX=%CXX%
+          echo --- R CMD config CC / CXX / CXX17
+          call R.exe CMD config CC
+          call R.exe CMD config CXX
+          call R.exe CMD config CXX17
+          echo --- where gcc / g++ / cl / x86_64-w64-mingw32-g++
+          where gcc
+          where g++
+          where cl
+          where x86_64-w64-mingw32-g++
+          BAT
+          cmd //c diag.bat || true
+          log=$(find "$HOME/AppData/Local/rattler/cache/git-v0/checkouts" -name config.log 2>/dev/null | head -1)
+          if [ -n "$log" ]; then echo "--- $log"; grep -n -B2 -A25 "checking whether the C++ compiler works" "$log" | head -60; fi
+      - name: Result
+        run: |
+          echo "## sundialr, ${{ matrix.variant }}: exit ${{ steps.run.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          exit ${{ steps.run.outputs.status }}
