@@ -17,6 +17,32 @@ test_that("pixi_switch() needs an environment of the project", {
   expect_snapshot(pixi_switch("r43", ide = "rstudio"), error = TRUE)
 })
 
+test_that("pixi_switch() asks which environment, or says which there are", {
+  calls <- local_switch_project()
+  withr::local_envvar(PIXI_ENVIRONMENT_NAME = "default")
+  answer <- 2L
+  local_mocked_bindings(
+    detect_ide = function() NA_character_,
+    is_interactive = function() TRUE,
+    ask_choice = function(question, choices) {
+      expect_equal(choices, c("default (current)", "r44"))
+      answer
+    }
+  )
+
+  r <- suppressMessages(pixi_switch())
+  expect_equal(calls$args[[1]], c("install", "--environment", "r44"))
+  expect_equal(r, environment_r(calls$dir, "r44"))
+
+  # Esc
+  answer <- NA_integer_
+  expect_null(pixi_switch())
+  expect_length(calls$args, 1)
+
+  local_mocked_bindings(is_interactive = function() FALSE)
+  expect_snapshot(pixi_switch(), error = TRUE)
+})
+
 test_that("pixi_switch() installs the environment, and shows how to start it", {
   calls <- local_switch_project()
   local_mocked_bindings(detect_ide = function() NA_character_)

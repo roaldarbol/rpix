@@ -17,20 +17,29 @@
 #'
 #' The environment is installed first, if it isn't yet.
 #'
-#' @param environment The environment.
+#' @param environment The environment. In an interactive session, leave it
+#'   out to pick one from a menu.
 #' @param ide Optional. The IDE: `"rstudio"`, `"positron"` or `"vscode"`.
 #'   Defaults to the one you're in.
 #' @inheritParams pixi_environments
-#' @returns The environment's R, invisibly.
+#' @returns The environment's R, invisibly, or `NULL` if you cancel the menu.
 #' @export
 #' @examples
 #' \dontrun{
 #' pixi_switch("r44")
+#' # Pick from a menu
+#' pixi_switch()
 #' }
-pixi_switch <- function(environment, ide = NULL, path = NULL) {
+pixi_switch <- function(environment = NULL, ide = NULL, path = NULL) {
   root <- require_project(path)
   ide <- ide %||% detect_ide()
   environments <- pixi_environments(root)$name
+  if (is.null(environment)) {
+    environment <- pick_environment(environments)
+    if (is.na(environment)) {
+      return(invisible(NULL))
+    }
+  }
   if (!environment %in% environments) {
     cli::cli_abort(c(
       "There's no {.val {environment}} environment in the project.",
@@ -50,6 +59,24 @@ pixi_switch <- function(environment, ide = NULL, path = NULL) {
     )
   )
   invisible(r)
+}
+
+# Ask which environment to switch to, marking the one R runs in. NA if
+# cancelled.
+pick_environment <- function(environments, call = parent.frame()) {
+  if (!is_interactive()) {
+    cli::cli_abort(
+      c(
+        "Which environment? Give {.arg environment}.",
+        "i" = "The project's environments are {.val {environments}}."
+      ),
+      call = call
+    )
+  }
+  current <- environments == Sys.getenv("PIXI_ENVIRONMENT_NAME")
+  labels <- paste0(environments, ifelse(current, " (current)", ""))
+  choice <- ask_choice("Which environment do you want to switch to?", labels)
+  environments[choice]
 }
 
 # Where an environment's R is

@@ -11,6 +11,8 @@
 * In an interactive session, `use_pixi_vscode()` asks which console to use.
   `use_pixi(ide = )` passes the IDEs' settings on, e.g.
   `use_pixi(ide = "vscode", console = "arf")` (#134).
+* In an interactive session, `pixi_switch()` without an environment asks
+  which, from a menu of the project's environments (#189).
 
 ## Changed
 
