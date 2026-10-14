@@ -56,11 +56,19 @@ build_tools <- data.frame(
 # rpix can't read, to be safe. So may a project's date (see
 # older_backend_date()).
 older_backend <- function(date, pixi = pixi_version_number()) {
-  !pixi_at_least(backend_pixi, pixi) || older_backend_date(date)
+  first <- backend_pixi()
+  is.na(first) || !pixi_at_least(first, pixi) || older_backend_date(date)
 }
 
-# The first Pixi that uses a pixi-build-r from 2026-10-12 or later
-backend_pixi <- "0.82.0"
+# The first Pixi that builds with a pixi-build-r from 2026-10-12 or later, or
+# NA while there is none. Pixi 0.82.0 still uses the released pixi-build-r
+# 0.1.8, from before then: hellorust and ACSWR fail without rpix's extras on
+# Linux, macOS and Windows
+# (https://github.com/roaldarbol/rpix/actions/runs/38560208655). Set it once
+# a released pixi-build-r has the fixes and a Pixi uses it.
+backend_pixi <- function() {
+  NA_character_
+}
 
 # Whether the project's exclude-newer may give Pixi a pixi-build-r from before
 # 2026-10-12. It applies to the build backend too

@@ -43,7 +43,14 @@ test_that("build_requirements() adds recommended packages for older pixi-build-r
   expect_length(requirements$run, 0)
 })
 
+test_that("older_backend() is TRUE while no Pixi uses a fixed pixi-build-r", {
+  expect_true(is.na(backend_pixi()))
+  expect_true(older_backend(NULL, numeric_version("0.82.0")))
+  expect_true(older_backend(NULL, numeric_version("1.0.0")))
+})
+
 test_that("older_backend() says when a project's date may give older pixi-build-r", {
+  local_mocked_bindings(backend_pixi = function() "0.82.0")
   newer <- numeric_version("0.82.0")
   expect_false(older_backend(NULL, newer))
   expect_false(older_backend("2026-10-13", newer))
@@ -55,6 +62,7 @@ test_that("older_backend() says when a project's date may give older pixi-build-
 })
 
 test_that("older_backend() is TRUE for Pixi before 0.82, or an unknown one", {
+  local_mocked_bindings(backend_pixi = function() "0.82.0")
   expect_true(older_backend(NULL, numeric_version("0.81.0")))
   expect_true(older_backend("2026-11-01", numeric_version("0.81.0")))
   expect_true(older_backend(NULL, NULL))
