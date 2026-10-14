@@ -79,3 +79,19 @@
       i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
       i For VSCodium, Cursor or Windsurf, use `codium`, `cursor` or `windsurf` instead of `code`.
 
+# pixi_switch() points direnv at the environment for Emacs, Neovim and Zed
+
+    Code
+      pixi_switch("r44", ide = "emacs")
+    Message
+      v Set '.envrc' to activate the "r44" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i Run M-x envrc-reload in Emacs, then restart R.
+
+---
+
+    Code
+      pixi_switch("r44", ide = "zed")
+    Message
+      i Close Zed, and start it again from the environment with `pixi run --environment r44 zed .`.
+

@@ -2,6 +2,11 @@
 
 ## Added
 
+* `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those
+  editors, and `use_pixi(ide = )` takes them too. They add languageserver,
+  and a `.envrc` from the new `use_pixi_direnv()`, which activates the
+  project's environment with direnv. `pixi_switch()` and `pixi_sitrep()`
+  know them (#185, #186, #187).
 * `use_pixi_positron()` makes the default environment's R Positron's default
   for the project, so Positron (2026.10 or later) starts it when the project
   opens, without picking it first. `default_r = FALSE` leaves it out (#133).

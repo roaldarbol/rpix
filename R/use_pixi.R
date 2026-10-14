@@ -27,8 +27,8 @@
 #'   to the newest one that the packages `use_pixi()` adds are built for on
 #'   conda-forge.
 #' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
-#'   `"positron"` and `"vscode"`. See [use_pixi_rstudio()],
-#'   [use_pixi_positron()] and [use_pixi_vscode()].
+#'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"`. See
+#'   [use_pixi_ide].
 #' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
 #' @param date Optional. Use packages as they were on this date, such as
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
@@ -61,7 +61,10 @@ use_pixi <- function(
   setup_ide <- list(
     rstudio = use_pixi_rstudio,
     positron = use_pixi_positron,
-    vscode = use_pixi_vscode
+    vscode = use_pixi_vscode,
+    emacs = use_pixi_emacs,
+    neovim = use_pixi_neovim,
+    zed = use_pixi_zed
   )
   if (!is.null(ide)) {
     ide <- match.arg(ide, names(setup_ide), several.ok = TRUE)
@@ -112,7 +115,9 @@ use_pixi <- function(
     r_base,
     isolation,
     if (install_rpix) rpix_dependencies(),
-    if ("vscode" %in% ide) "r-languageserver"
+    if (any(c("vscode", "emacs", "neovim", "zed") %in% ide)) {
+      "r-languageserver"
+    }
   )
   run_pixi(c("add", packages), path = path, echo = TRUE)
 

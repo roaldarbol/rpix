@@ -200,6 +200,29 @@ test_that("environment_console() finds a console on each platform", {
   )
 })
 
+test_that("pixi_switch() points direnv at the environment for Emacs, Neovim and Zed", {
+  calls <- local_switch_project()
+  local_mocked_bindings(
+    is_windows = function() FALSE,
+    direnv_binary = function() "",
+    is_interactive = function() FALSE
+  )
+  writeLines(
+    set_envrc_environment(character(), "default"),
+    file.path(calls$dir, ".envrc")
+  )
+
+  expect_snapshot(pixi_switch("r44", ide = "emacs"))
+  expect_match(
+    readLines(file.path(calls$dir, ".envrc"))[3],
+    "--environment r44",
+    fixed = TRUE
+  )
+
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_snapshot(pixi_switch("r44", ide = "zed"))
+})
+
 test_that("environment_r() finds the environment's R on each platform", {
   local_mocked_bindings(is_windows = function() FALSE)
   expect_equal(environment_r("/p", "r44"), "/p/.pixi/envs/r44/bin/R")

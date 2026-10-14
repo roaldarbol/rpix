@@ -179,7 +179,7 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
       "r-languageserver"
     )
   )
-  expect_error(use_pixi(ide = "emacs"), "should be one of")
+  expect_error(use_pixi(ide = "notepad"), "should be one of")
 })
 
 test_that("use_pixi() sets up the folder in `path`", {

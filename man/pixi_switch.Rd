@@ -10,7 +10,8 @@ pixi_switch(environment = NULL, ide = NULL, path = NULL)
 \item{environment}{The environment. In an interactive session, leave it
 out to pick one from a menu.}
 
-\item{ide}{Optional. The IDE: \code{"rstudio"}, \code{"positron"} or \code{"vscode"}.
+\item{ide}{Optional. The IDE: \code{"rstudio"}, \code{"positron"}, \code{"vscode"},
+\code{"emacs"}, \code{"neovim"} or \code{"zed"}.
 Defaults to the one you're in.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
@@ -32,6 +33,9 @@ picker, to pick the environment's R.
 environment's R, in the project's \code{.vscode/settings.json}, keeping its
 console (R, arf or radian; see \code{\link[=use_pixi_vscode]{use_pixi_vscode()}}). Reload the window
 to use it. On Windows, start the editor from the environment instead.
+\item Emacs, Neovim and Zed: points the project's \code{.envrc} at the environment
+(see \code{\link[=use_pixi_direnv]{use_pixi_direnv()}}). Reload direnv in the editor, and restart R.
+On Windows, start the editor from the environment instead.
 \item Elsewhere: shows the command that starts the environment's R.
 }
 
