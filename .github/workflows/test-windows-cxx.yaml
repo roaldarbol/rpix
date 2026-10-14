@@ -30,7 +30,8 @@ jobs:
           pixi-version: v0.82.0
           run-install: false
       - name: The runner's own compilers, on the PATH
-        run: for c in gcc g++ cl cmake; do printf "%s: " $c; command -v $c || echo "-"; done
+        run: |
+          for c in gcc g++ cl cmake; do printf "%s: " $c; command -v $c || echo "-"; done
       - name: Build and load
         id: run
         run: |
