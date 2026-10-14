@@ -68,6 +68,7 @@
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
 <ul><li>With Pixi 0.82 or later, packages built from source no longer get R’s recommended packages, Rust, and on Windows, R’s library folder and Rust’s GNU target from rpix: <code>pixi-build-r</code> adds them itself since 2026-10-12 (prefix-dev/pixi#7233, prefix-dev/pixi#7234, prefix-dev/pixi#7235). Older Pixi uses an older <code>pixi-build-r</code>, and so may a project with a date of 2026-10-12 or earlier, or a duration, so rpix still adds them there, and says why (<a href="https://github.com/roaldarbol/rpix/issues/148" class="external-link">#148</a>, <a href="https://github.com/roaldarbol/rpix/issues/149" class="external-link">#149</a>, <a href="https://github.com/roaldarbol/rpix/issues/150" class="external-link">#150</a>).</li>
+<li>rpix finds the project of the running Pixi environment from <code>PIXI_WORKSPACE_ROOT</code>, as Pixi 0.82 names it, and otherwise from <code>PIXI_PROJECT_ROOT</code>, which Pixi keeps as an alias and older versions set.</li>
 </ul></div>
 </div>
     <div class="section level2">
