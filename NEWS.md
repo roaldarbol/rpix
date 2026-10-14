@@ -7,8 +7,10 @@
   `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
   sets up a project as `use_pixi(ide = "rstudio")` does, for the version of
   R picked there, optionally as a git repository. In
-  RStudio, the message about R not being the project's points to the addin
-  (#137, #143).
+  RStudio, when the project opens in an R that isn't its Pixi R, rpix offers
+  to reopen it in a new RStudio with that R (#137, #143).
+* At startup and in `pixi_sitrep()`, rpix says when a project also has renv,
+  e.g. because RStudio's New Project set it up, as renv and Pixi clash.
 * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those
   editors, and `use_pixi(ide = )` takes them too. They add languageserver,
   and a `.envrc` from the new `use_pixi_direnv()`, which activates the

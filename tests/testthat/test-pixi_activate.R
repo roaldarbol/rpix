@@ -213,12 +213,77 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_equal(.libPaths(), paths)
   expect_silent(pixi_activate(p$root, quiet = TRUE))
 
-  # In RStudio, the addin
-  local_mocked_bindings(detect_ide = function() "rstudio")
+  # In RStudio, the addin, and once RStudio is ready, the offer to reopen
+  offered <- NULL
+  local_mocked_bindings(
+    detect_ide = function() "rstudio",
+    when_rstudio_ready = function(fun) offered <<- fun
+  )
   expect_message(
     pixi_activate(p$root, quiet = FALSE),
     "Open with the project's Pixi R"
   )
+  expect_true(is.function(offered))
+
+  # Not when quiet, or turned off
+  offered <- NULL
+  pixi_activate(p$root, quiet = TRUE)
+  withr::local_envvar(RPIX_OFFER_SWITCH = "false")
+  suppressMessages(pixi_activate(p$root, quiet = FALSE))
+  expect_null(offered)
+})
+
+test_that("says when the project also has renv", {
+  p <- local_activation()
+  local_mocked_bindings(
+    r_home = function() "/Library/Frameworks/R.framework/Resources",
+    detect_ide = function() NA_character_
+  )
+  expect_false(has_renv(p$root))
+  dir.create(file.path(p$root, "renv"))
+  file.create(file.path(p$root, "renv", "activate.R"))
+  expect_true(has_renv(p$root))
+  expect_message(pixi_activate(p$root, quiet = FALSE), "also has renv")
+})
+
+test_that("offers to reopen the project with its Pixi R, and closes this RStudio", {
+  switched <- "unset"
+  commands <- character()
+  answer <- TRUE
+  environments <- "default"
+  local_mocked_bindings(
+    ask_yes_no = function(question) answer,
+    pixi_environments = function(path) data.frame(name = environments),
+    pixi_switch = function(environment, ide, path) {
+      switched <<- environment
+      if (is.null(environment)) NULL else "/project/.pixi/envs/default/bin/R"
+    },
+    rstudio_api = function(name) {
+      function(command) commands <<- c(commands, command)
+    }
+  )
+  expect_true(offer_pixi_r("/project"))
+  expect_equal(switched, "default")
+  expect_equal(commands, "quitSession")
+
+  # Several environments: the menu, which can be cancelled
+  environments <- c("default", "r44")
+  expect_false(offer_pixi_r("/project"))
+  expect_null(switched)
+  expect_length(commands, 1)
+
+  # No
+  answer <- FALSE
+  expect_message(expect_false(offer_pixi_r("/project")), "RPIX_OFFER_SWITCH")
+})
+
+test_that("waits for RStudio's session to start", {
+  withr::defer(setHook("rstudio.sessionInit", NULL, "replace"))
+  ran <- FALSE
+  when_rstudio_ready(function() ran <<- TRUE)
+  hooks <- getHook("rstudio.sessionInit")
+  hooks[[length(hooks)]](TRUE)
+  expect_true(ran)
 })
 
 test_that("gives a hint in a folder without a Pixi project", {

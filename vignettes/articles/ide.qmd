@@ -57,7 +57,9 @@ rpix::use_pixi_rstudio()
 
 This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one.
 
-For a new project, RStudio's **File > New Project > New Directory > Project with Pixi** does the same as `use_pixi(ide = "rstudio")`, for the version of R you pick (4.5 by default, as conda-forge has more packages for it than for 4.6 so far), and makes it a git repository if you ask. It needs rpix in the R that RStudio runs. RStudio then opens the project in that R, not the environment's: move to the environment's R as below.
+For a new project, RStudio's **File > New Project > New Directory > Project with Pixi** does the same as `use_pixi(ide = "rstudio")`, for the version of R you pick (4.5 by default, as conda-forge has more packages for it than for 4.6 so far), and makes it a git repository if you ask. It needs rpix in the R that RStudio runs. RStudio then opens the project in that R, not the environment's: rpix offers to reopen it in a new RStudio with the environment's R, and to close the old one.
+
+RStudio also applies its own "Create a git repository" and "Use renv with this project" to templates, as you last left them in its New Project dialog, without showing them. renv clashes with Pixi, as both manage the project's packages, so untick **Use renv with this project** there once. If renv got into a project, rpix says so, and how to remove it.
 
 ### Every day
 
@@ -67,7 +69,7 @@ Start RStudio with the task, in a terminal in the project folder:
 pixi run rstudio
 ```
 
-RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project. If RStudio opened the project with another R, **Addins > Open with the project's Pixi R** starts one with the environment's R.
+RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project. If RStudio opened the project with another R, rpix offers to reopen it with the environment's R; **Addins > Open with the project's Pixi R** does the same later. To stop the offer, set `RPIX_OFFER_SWITCH=false` in your `~/.Renviron`.
 
 ### Addins
 
