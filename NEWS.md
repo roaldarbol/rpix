@@ -4,9 +4,9 @@
 
 * RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task, open
-  `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi
-  (rpix)", sets up a project as `use_pixi(ide = "rstudio")` does, for the
-  version of R picked there. In
+  `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
+  sets up a project as `use_pixi(ide = "rstudio")` does, for the version of
+  R picked there, optionally as a git repository. In
   RStudio, the message about R not being the project's points to the addin
   (#137, #143).
 * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those

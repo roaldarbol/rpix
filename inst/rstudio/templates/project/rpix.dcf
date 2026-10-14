@@ -1,5 +1,5 @@
 Binding: rstudio_new_project
-Title: Project with Pixi (rpix)
+Title: Project with Pixi
 OpenFiles: pixi.toml
 Icon: rpix.png
 
@@ -8,4 +8,10 @@ Widget: SelectInput
 Label: R version
 Fields: 4.6, 4.5, 4.4, 4.3
 Default: 4.5
+Position: left
+
+Parameter: git
+Widget: CheckboxInput
+Label: Create a git repository
+Default: Off
 Position: left

@@ -57,7 +57,7 @@ rpix::use_pixi_rstudio()
 
 This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one.
 
-For a new project, RStudio's **File > New Project > New Directory > Project with Pixi (rpix)** does the same as `use_pixi(ide = "rstudio")`, for the version of R you pick (4.5 by default, as conda-forge has more packages for it than for 4.6 so far). It needs rpix in the R that RStudio runs. RStudio then opens the project in that R, not the environment's: move to the environment's R as below.
+For a new project, RStudio's **File > New Project > New Directory > Project with Pixi** does the same as `use_pixi(ide = "rstudio")`, for the version of R you pick (4.5 by default, as conda-forge has more packages for it than for 4.6 so far), and makes it a git repository if you ask. It needs rpix in the R that RStudio runs. RStudio then opens the project in that R, not the environment's: move to the environment's R as below.
 
 ### Every day
 

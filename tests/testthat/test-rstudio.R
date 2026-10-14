@@ -140,6 +140,27 @@ test_that("the New Project template sets the project up for RStudio", {
   # The dialog's default
   rstudio_new_project(path)
   expect_equal(called$r_version, "4.5")
+
+  # With git
+  initialised <- NULL
+  local_mocked_bindings(git_init = function(path) initialised <<- path)
+  rstudio_new_project(path, git = FALSE)
+  expect_null(initialised)
+  rstudio_new_project(path, git = TRUE)
+  expect_equal(initialised, path)
+})
+
+test_that("git_init() makes a git repository, or says it can't", {
+  skip_if(!nzchar(Sys.which("git")))
+  path <- withr::local_tempdir()
+  expect_message(expect_true(git_init(path)), "git repository")
+  expect_true(dir.exists(file.path(path, ".git")))
+
+  local_mocked_bindings(
+    Sys.which = function(names) c(git = ""),
+    .package = "base"
+  )
+  expect_message(expect_false(git_init(path)), "Git isn't installed")
 })
 
 test_that("reads RStudio's editor through its API, and asks in a dialog", {

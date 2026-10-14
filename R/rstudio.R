@@ -75,13 +75,36 @@ addin_run_task <- function() {
 }
 
 # RStudio's New Project template: a project set up with use_pixi() for
-# RStudio, with the R version picked in the dialog. RStudio then opens it in
-# the R it's set up with; the .Rprofile block says how to move to the
-# environment's R.
-rstudio_new_project <- function(path, r_version = "4.5", ...) {
+# RStudio, with the R version picked in the dialog, and a git repository if
+# asked for (RStudio hides its own checkbox for templates). RStudio then
+# opens it in the R it's set up with; the .Rprofile block says how to move to
+# the environment's R.
+rstudio_new_project <- function(path, r_version = "4.5", git = FALSE, ...) {
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   use_pixi(r_version = r_version, ide = "rstudio", path = path)
+  if (isTRUE(as.logical(git))) {
+    git_init(path)
+  }
   invisible(path)
+}
+
+# Make the folder a git repository. Pixi's .gitignore and .gitattributes are
+# there already.
+git_init <- function(path) {
+  git <- git_binary()
+  if (!nzchar(git)) {
+    cli::cli_alert_warning(
+      "Git isn't installed, so the project isn't a git repository."
+    )
+    return(invisible(FALSE))
+  }
+  processx::run(git, c("init", "--quiet"), wd = path)
+  cli::cli_alert_success("Made {.path {path}} a git repository.")
+  invisible(TRUE)
+}
+
+git_binary <- function() {
+  Sys.which("git")
 }
 
 # The packages in some text: R code that uses them, or names separated by
