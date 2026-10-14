@@ -57,6 +57,8 @@ jobs:
           pixi run -v Rscript -e "library($pkg); cat('LOADED\n')" > ../log.txt 2>&1
           status=$?
           set -e
-          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "LOADED|pixi-build-r[^ ]* +[0-9]|pixi-build-r.*0\.[12]\.[0-9]|\brust\b.*conda-forge|r-mass|Lib.R.library|ERROR|rror:|cargo|cmake|there is no package" | grep -v "Compiling\|Downloaded" | head -25
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' ../log.txt)
+          grep -iE "pixi-build-r@|^ *(cmake|rust|r-mass) |Lib.R.library|ERROR|there is no package" <<< "$clean" | grep -v "CMAKE_ARGS\|Compiling\|Downloaded" | head -15 || true
+          grep -q LOADED <<< "$clean" && echo "LOADED" || echo "NOT LOADED"
           echo "## ${{ matrix.package }} on ${{ matrix.os }}: exit $status" >> $GITHUB_STEP_SUMMARY
           exit $status
