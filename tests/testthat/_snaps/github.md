@@ -32,7 +32,7 @@
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
-      i On Windows, rpix adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i On Windows, rpix adds MSYS2's build tools, and MinGW's compilers in place of `pixi-build-r`'s, until `pixi-build-r` does this itself.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
@@ -51,7 +51,7 @@
       pixi_add("github::me/rusty", path = calls$dir)
     Message
       i The project's `exclude-newer = "2026-09-01"` applies to Pixi's build backend too, so rpix adds what `pixi-build-r` didn't before 2026-10-12.
-      i On Windows, rpix adds MSYS2's build tools, as `pixi-build-r` doesn't yet.
+      i On Windows, rpix adds MSYS2's build tools, and MinGW's compilers in place of `pixi-build-r`'s, until `pixi-build-r` does this itself.
       i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
