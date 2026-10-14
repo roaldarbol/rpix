@@ -50,12 +50,23 @@ build_tools <- data.frame(
   older_backend = c(TRUE, FALSE, FALSE, FALSE)
 )
 
-# Whether the project may get a pixi-build-r from before 2026-10-12, when it
+# Whether Pixi may build with a pixi-build-r from before 2026-10-12, when it
 # started adding Rust and R's recommended packages, and installing into R's
-# library on Windows. A project's exclude-newer applies to the build backend
-# too (https://github.com/prefix-dev/pixi/issues/7240): a date before then, or
-# a duration, which may reach back before then.
-older_backend <- function(date) {
+# library on Windows. Pixi before 0.82 does, and so does Pixi whose version
+# rpix can't read, to be safe. So may a project's date (see
+# older_backend_date()).
+older_backend <- function(date, pixi = pixi_version_number()) {
+  !pixi_at_least(backend_pixi, pixi) || older_backend_date(date)
+}
+
+# The first Pixi that uses a pixi-build-r from 2026-10-12 or later
+backend_pixi <- "0.82.0"
+
+# Whether the project's exclude-newer may give Pixi a pixi-build-r from before
+# 2026-10-12. It applies to the build backend too
+# (https://github.com/prefix-dev/pixi/issues/7240): a date before then, or a
+# duration, which may reach back before then.
+older_backend_date <- function(date) {
   !is.null(date) &&
     (!is_absolute_date(date) ||
       as.Date(substr(date, 1, 10)) < as.Date("2026-10-13"))

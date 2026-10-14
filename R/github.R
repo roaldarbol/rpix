@@ -121,9 +121,18 @@ add_github_packages <- function(
   original <- lines
   r_base <- manifest_r_base(lines, feature)
   date <- manifest_exclude_newer(lines)
-  older <- older_backend(date)
+  pixi <- pixi_version_number()
+  older <- older_backend(date, pixi)
   windows <- "win-64" %in% manifest_platforms(lines)
-  if (older) {
+  if (is.null(pixi)) {
+    cli::cli_alert_info(
+      "rpix can't tell which version of Pixi this is, so it adds what {.code pixi-build-r} didn't before Pixi {backend_pixi}."
+    )
+  } else if (!pixi_at_least(backend_pixi, pixi)) {
+    cli::cli_alert_info(
+      "Pixi {pixi} uses an older {.code pixi-build-r}, so rpix adds what that lacks. Update to Pixi {backend_pixi} or later, e.g. with {.code pixi self-update}, and it won't need to."
+    )
+  } else if (older) {
     cli::cli_alert_info(
       "The project's {.code exclude-newer = \"{date}\"} applies to Pixi's build backend too, so rpix adds what {.code pixi-build-r} didn't before 2026-10-12."
     )

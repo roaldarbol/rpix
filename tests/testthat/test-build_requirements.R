@@ -44,13 +44,21 @@ test_that("build_requirements() adds recommended packages for older pixi-build-r
 })
 
 test_that("older_backend() says when a project's date may give older pixi-build-r", {
-  expect_false(older_backend(NULL))
-  expect_false(older_backend("2026-10-13"))
-  expect_false(older_backend("2026-11-01T12:00:00Z"))
-  expect_true(older_backend("2026-10-12"))
-  expect_true(older_backend("2025-06-01T12:00:00Z"))
+  newer <- numeric_version("0.82.0")
+  expect_false(older_backend(NULL, newer))
+  expect_false(older_backend("2026-10-13", newer))
+  expect_false(older_backend("2026-11-01T12:00:00Z", newer))
+  expect_true(older_backend("2026-10-12", newer))
+  expect_true(older_backend("2025-06-01T12:00:00Z", newer))
   # A duration may reach back before then
-  expect_true(older_backend("7d"))
+  expect_true(older_backend("7d", newer))
+})
+
+test_that("older_backend() is TRUE for Pixi before 0.82, or an unknown one", {
+  expect_true(older_backend(NULL, numeric_version("0.81.0")))
+  expect_true(older_backend("2026-11-01", numeric_version("0.81.0")))
+  expect_true(older_backend(NULL, NULL))
+  expect_false(older_backend(NULL, numeric_version("0.83.0")))
 })
 
 test_that("description_packages() lists Depends, Imports and LinkingTo", {

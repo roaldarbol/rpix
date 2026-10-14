@@ -297,7 +297,7 @@ test_that("dependency_table() names the table for a feature and platform", {
   )
 })
 
-local_github_project <- function(env = parent.frame()) {
+local_github_project <- function(pixi = "0.82.0", env = parent.frame()) {
   dir <- withr::local_tempdir(.local_envir = env)
   writeLines(manifest, file.path(dir, "pixi.toml"))
   local_github(env = env)
@@ -312,6 +312,9 @@ local_github_project <- function(env = parent.frame()) {
       invisible(list(status = 0))
     },
     project_channels = function(...) "conda-forge",
+    pixi_version_number = function() {
+      if (!is.null(pixi)) numeric_version(pixi)
+    },
     .env = env
   )
   calls$dir <- dir
@@ -382,6 +385,29 @@ test_that("pixi_add() adds what older pixi-build-r doesn't, in a project with an
   expect_match(entry, 'r-mass = "*"', fixed = TRUE)
   expect_match(entry, "--library=%PREFIX%/Lib/R/library", fixed = TRUE)
   expect_match(entry, "rust-std-x86_64-pc-windows-gnu", fixed = TRUE)
+})
+
+test_that("pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82", {
+  calls <- local_github_project(pixi = "0.81.0")
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep(
+    "^r-rusty = ",
+    readLines(file.path(calls$dir, "pixi.toml")),
+    value = TRUE
+  )
+  expect_match(entry, 'build-dependencies = { rust = "*" }', fixed = TRUE)
+  expect_match(entry, 'r-mass = "*"', fixed = TRUE)
+})
+
+test_that("pixi_add() adds what older pixi-build-r doesn't, with an unknown Pixi", {
+  calls <- local_github_project(pixi = NULL)
+  expect_snapshot(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep(
+    "^r-rusty = ",
+    readLines(file.path(calls$dir, "pixi.toml")),
+    value = TRUE
+  )
+  expect_match(entry, 'build-dependencies = { rust = "*" }', fixed = TRUE)
 })
 
 test_that("pixi_add() explains a failed build in a project with a date", {

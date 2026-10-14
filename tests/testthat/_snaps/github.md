@@ -56,6 +56,26 @@
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
+# pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82
+
+    Code
+      pixi_add("github::me/rusty", path = calls$dir)
+    Message
+      i Pixi 0.81.0 uses an older `pixi-build-r`, so rpix adds what that lacks. Update to Pixi 0.82.0 or later, e.g. with `pixi self-update`, and it won't need to.
+      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
+# pixi_add() adds what older pixi-build-r doesn't, with an unknown Pixi
+
+    Code
+      pixi_add("github::me/rusty", path = calls$dir)
+    Message
+      i rpix can't tell which version of Pixi this is, so it adds what `pixi-build-r` didn't before Pixi 0.82.0.
+      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
+      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
+      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+
 # pixi_add() explains a failed build in a project with a date
 
     Code
