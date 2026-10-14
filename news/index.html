@@ -76,6 +76,10 @@
 <ul><li><p>On Windows, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> and <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> also give the commands that start VSCodium, Cursor and Windsurf from the environment, and the IDE guide says the VS Code setup works in them too.</p></li>
 <li><p>rpix finds the project of the running Pixi environment from <code>PIXI_WORKSPACE_ROOT</code>, as Pixi 0.82 names it, and otherwise from <code>PIXI_PROJECT_ROOT</code>, which Pixi keeps as an alias and older versions set.</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
+<ul><li>On Windows, packages from GitHub with a <code>configure</code> script build: rpix gives their builds MinGW’s compilers, which R uses there, in place of <code>pixi-build-r</code>’s, whose Fortran compiler broke the script’s checks (<a href="https://github.com/roaldarbol/rpix/issues/191" class="external-link">#191</a>).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="rpix-080-2026-10-13">rpix 0.8.0 (2026-10-13)<a class="anchor" aria-label="anchor" href="#rpix-080-2026-10-13"></a></h2>

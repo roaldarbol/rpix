@@ -53,6 +53,13 @@
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions
   set.
 
+### Fixed
+
+- On Windows, packages from GitHub with a `configure` script build: rpix
+  gives their builds MinGW’s compilers, which R uses there, in place of
+  `pixi-build-r`’s, whose Fortran compiler broke the script’s checks
+  ([\#191](https://github.com/roaldarbol/rpix/issues/191)).
+
 ## rpix 0.8.0 (2026-10-13)
 
 ### Added

@@ -31,9 +31,10 @@ a prefix to say where a package comes from:
   dependencies come from conda-forge. rpix also adds what `pixi-build-r`
   doesn't yet: the build tools its `SystemRequirements` names (Java,
   CMake, pkg-config), and in a project for Windows, MSYS2's `make`,
-  `sed` and `coreutils`. Pixi before 0.82 uses an older `pixi-build-r`,
-  and so may a project with a date of 2026-10-12 or earlier, or a
-  duration (see
+  `sed` and `coreutils`, and MinGW's compilers in place of
+  `pixi-build-r`'s. Pixi before 0.82 uses an older `pixi-build-r`, and
+  so may a project with a date of 2026-10-12 or earlier, or a duration
+  (see
   [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
   There, rpix also adds what that lacks: the recommended packages the
   package uses (such as Matrix and MASS), Rust, and on Windows, R's
