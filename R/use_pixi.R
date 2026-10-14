@@ -38,12 +38,15 @@
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
 #'   until it's on conda-forge.
 #' @param path The folder to set up. Defaults to the working directory.
+#' @param ... Passed on to the IDE setup, e.g. `console = "arf"` for
+#'   [use_pixi_vscode()], or `default_r = FALSE` for [use_pixi_positron()].
 #' @returns The path to the project's manifest, invisibly.
 #' @export
 #' @examples
 #' \dontrun{
 #' use_pixi()
 #' use_pixi(r_version = "4.5", ide = "positron")
+#' use_pixi(ide = "vscode", console = "arf")
 #' use_pixi(date = "2025-06-01")
 #' }
 use_pixi <- function(
@@ -52,10 +55,26 @@ use_pixi <- function(
   init_if_missing = TRUE,
   install_rpix = TRUE,
   date = NULL,
-  path = NULL
+  path = NULL,
+  ...
 ) {
+  setup_ide <- list(
+    rstudio = use_pixi_rstudio,
+    positron = use_pixi_positron,
+    vscode = use_pixi_vscode
+  )
   if (!is.null(ide)) {
-    ide <- match.arg(ide, c("rstudio", "positron", "vscode"), several.ok = TRUE)
+    ide <- match.arg(ide, names(setup_ide), several.ok = TRUE)
+  }
+  # The settings of the IDEs in `ide`, e.g. `console` for VS Code
+  ide_args <- list(...)
+  settings <- unlist(lapply(setup_ide[ide], function(f) names(formals(f))))
+  given <- names(ide_args) %||% rep("", length(ide_args))
+  if (!all(given %in% setdiff(settings, "path"))) {
+    cli::cli_abort(c(
+      "{.arg ...} takes named settings of the IDEs in {.arg ide}, such as {.code console = \"arf\"} for VS Code.",
+      "i" = "See {.help rpix::use_pixi_ide}."
+    ))
   }
   pixi_binary()
   dir <- normalizePath(path %||% getwd(), winslash = "/", mustWork = FALSE)
@@ -111,13 +130,9 @@ use_pixi <- function(
   warn_legacy_rprofile(file.path(home_dir(), ".Rprofile"))
   add_rprofile_block(file.path(path, ".Rprofile"))
 
-  setup_ide <- list(
-    rstudio = use_pixi_rstudio,
-    positron = use_pixi_positron,
-    vscode = use_pixi_vscode
-  )
   for (i in ide) {
-    setup_ide[[i]](path)
+    args <- ide_args[intersect(names(ide_args), names(formals(setup_ide[[i]])))]
+    do.call(setup_ide[[i]], c(list(path), args))
   }
 
   cli::cli_alert_success("Set up {.path {path}} for R.")

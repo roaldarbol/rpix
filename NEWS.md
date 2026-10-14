@@ -8,6 +8,9 @@
 * `use_pixi_vscode(console = )` sets up arf or radian as the R extension's
   console, starting the environment's R. `pixi_switch()` keeps the console
   (#132).
+* In an interactive session, `use_pixi_vscode()` asks which console to use.
+  `use_pixi(ide = )` passes the IDEs' settings on, e.g.
+  `use_pixi(ide = "vscode", console = "arf")` (#134).
 
 ## Changed
 

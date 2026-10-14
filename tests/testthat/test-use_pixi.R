@@ -154,15 +154,21 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
   withr::local_dir(dir)
   ides <- character()
   local_mocked_bindings(
-    use_pixi_positron = function(path) ides <<- c(ides, "positron"),
-    use_pixi_vscode = function(path) ides <<- c(ides, "vscode")
+    use_pixi_positron = function(path, default_r = NULL) {
+      ides <<- c(ides, positron = default_r %||% NA)
+    },
+    use_pixi_vscode = function(path, console = NULL) {
+      ides <<- c(ides, vscode = console %||% NA)
+    }
   )
 
   suppressMessages(use_pixi(
     ide = c("vscode", "positron"),
-    install_rpix = FALSE
+    install_rpix = FALSE,
+    console = "arf"
   ))
-  expect_equal(ides, c("vscode", "positron"))
+  # Each IDE gets its own settings
+  expect_equal(ides, c(vscode = "arf", positron = NA))
   # Added with R, so Pixi picks an R that languageserver is built for
   expect_equal(
     calls$args[[1]],
@@ -219,4 +225,12 @@ test_that("use_pixi() sets the date before adding anything", {
     'exclude-newer = "2025-06-01"' %in% readLines(file.path(dir, "pixi.toml"))
   )
   expect_error(use_pixi(date = "soon", path = dir), "must be a date")
+})
+
+test_that("use_pixi() only passes on settings of the IDEs it sets up", {
+  expect_error(use_pixi(console = "arf"), "settings of the IDEs")
+  expect_error(
+    use_pixi(ide = "positron", console = "arf"),
+    "settings of the IDEs"
+  )
 })
