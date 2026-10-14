@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { package: sundialr, variant: no-fortran-m2-perl }
+          - { package: sundialr, variant: m2w64-m2-perl-msys-makefiles }
     defaults:
       run:
         shell: bash
@@ -42,6 +42,10 @@ jobs:
           if [ "${{ matrix.variant }}" = no-fortran ]; then
             # pixi-build-r's compilers without Fortran, i.e. without flang
             config=', config = { compilers = ["c", "cxx"] }'
+          fi
+          if [ "${{ matrix.variant }}" = m2w64-m2-perl-msys-makefiles ]; then
+            config=', config = { compilers = [], env = { CMAKE_GENERATOR = "MSYS Makefiles" } }'
+            tools="$tools, m2-perl = \"*\", gcc_win-64 = \"15.*\", gxx_win-64 = \"15.*\", m2w64-sysroot_win-64 = \"12.*\""
           fi
           if [ "${{ matrix.variant }}" = no-fortran-m2-perl ]; then
             config=', config = { compilers = ["c", "cxx"] }'
@@ -124,6 +128,7 @@ jobs:
           echo --- R CMD INSTALL by hand, full log in install-full.log
           git clone -q --depth 1 https://github.com/cran/sundialr "%TEMP%\sundialr-src"
           mkdir "%TEMP%\rlib"
+          set "CMAKE_GENERATOR=MSYS Makefiles"
           call R.exe CMD INSTALL --no-lock --library="%TEMP%\rlib" "%TEMP%\sundialr-src" > "%GITHUB_WORKSPACE%\install-full.log" 2>&1
           echo --- exit %ERRORLEVEL%
           echo --- where perl
