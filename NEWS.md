@@ -15,6 +15,9 @@
   Pixi uses an older `pixi-build-r`, and so may a project with a date of
   2026-10-12 or earlier, or a duration, so rpix still adds them there, and
   says why (#148, #149, #150).
+* rpix finds the project of the running Pixi environment from
+  `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
+  `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
 
 # rpix 0.8.0 (2026-10-13)
 

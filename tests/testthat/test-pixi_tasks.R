@@ -173,7 +173,7 @@ test_that("pixi_remove_task() removes tasks from a feature or platform", {
 test_that("tasks can be added, listed, run and removed with Pixi", {
   skip_on_cran()
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
 

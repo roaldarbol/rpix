@@ -63,7 +63,7 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
         Sys.getenv("PIXI_ENVIRONMENT_NAME"),
         env$name
       ) &&
-        same_path(Sys.getenv("PIXI_PROJECT_ROOT"), root)
+        same_path(pixi_root_env(), root)
 
       if (!activated_by_pixi) {
         vars <- activation_variables(root, env$name)

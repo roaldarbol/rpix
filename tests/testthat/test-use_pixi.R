@@ -18,7 +18,11 @@ local_mock_setup <- function(env = parent.frame()) {
     },
     .env = env
   )
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA, .local_envir = env)
+  withr::local_envvar(
+    PIXI_WORKSPACE_ROOT = NA,
+    PIXI_PROJECT_ROOT = NA,
+    .local_envir = env
+  )
   calls$home <- home
   calls
 }

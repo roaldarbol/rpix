@@ -101,7 +101,7 @@ test_that("finds an environment's R library, or NULL", {
 
 test_that("works with a real Pixi project", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
 

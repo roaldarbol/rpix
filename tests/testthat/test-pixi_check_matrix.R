@@ -579,7 +579,7 @@ test_that("the tests run in the environment's R", {
 
 test_that("a task runs in the environment, and passes if it succeeds", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
   run_pixi(c("task", "add", "hello", "echo hello"), path = dir)

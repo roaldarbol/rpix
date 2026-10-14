@@ -120,7 +120,7 @@ test_that("install, update, upgrade and lock build the commands", {
 
 test_that("environments work with a real Pixi project", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
 
@@ -134,7 +134,7 @@ test_that("pixi_add_environment() keeps the personal library out without the def
   root <- local_pixi_project(
     content = c("[feature.r44.dependencies]", 'r-base = "4.4.*"')
   )
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   local_mocked_bindings(project_channels = function(...) "conda-forge")
 
   expect_message(

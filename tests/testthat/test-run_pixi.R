@@ -1,7 +1,7 @@
 # find_project_root() ---------------------------------------------------------
 
 test_that("finds pixi.toml in the given directory and its parents", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   root <- local_pixi_project()
   nested <- file.path(root, "a", "b")
   dir.create(nested, recursive = TRUE)
@@ -12,7 +12,7 @@ test_that("finds pixi.toml in the given directory and its parents", {
 })
 
 test_that("finds pyproject.toml only when it has a [tool.pixi] table", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   with_pixi <- local_pixi_project(
     "pyproject.toml",
     c("[project]", "name = 'x'", "[tool.pixi.workspace]")
@@ -33,19 +33,23 @@ test_that("prefers pixi.toml over pyproject.toml", {
 })
 
 test_that("returns NULL outside a project", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   expect_null(find_project_root(withr::local_tempdir()))
 })
 
-test_that("uses PIXI_PROJECT_ROOT, then the working directory, when no path is given", {
+test_that("uses PIXI_WORKSPACE_ROOT, then the working directory, when no path is given", {
   root <- local_pixi_project()
   other <- local_pixi_project()
 
-  withr::local_envvar(PIXI_PROJECT_ROOT = root)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = root, PIXI_PROJECT_ROOT = NA)
   withr::local_dir(other)
   expect_equal(find_project_root(), root)
 
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  # Pixi before 0.82 sets only PIXI_PROJECT_ROOT
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = root)
+  expect_equal(find_project_root(), root)
+
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   expect_equal(find_project_root(), other)
 })
 
@@ -142,7 +146,7 @@ test_that("dry_run returns the command without needing pixi", {
 })
 
 test_that("the displayed manifest path is relative to the working directory", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   root <- local_pixi_project()
   dir.create(file.path(root, "sub"))
 
@@ -181,7 +185,7 @@ test_that("project = 'none' never adds --manifest-path", {
 })
 
 test_that("project = 'optional' works outside a project", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   outside <- withr::local_tempdir()
   command <- suppressMessages(run_pixi(
     c("search", "r-dplyr"),
@@ -193,7 +197,7 @@ test_that("project = 'optional' works outside a project", {
 })
 
 test_that("project = 'required' errors outside a project", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   outside <- withr::local_tempdir()
   expect_error(
     run_pixi(c("add", "r-dplyr"), path = outside, dry_run = TRUE),
@@ -212,7 +216,7 @@ test_that("runs pixi and captures the output", {
 
 test_that("parses JSON output", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
 
@@ -299,7 +303,7 @@ test_that("the home directory is USERPROFILE on Windows", {
 })
 
 test_that("--manifest-path comes straight after `run`, before the command", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   root <- local_pixi_project()
   withr::local_dir(root)
 
