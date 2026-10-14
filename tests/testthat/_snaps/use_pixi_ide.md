@@ -14,3 +14,30 @@
       v Updated '.vscode/settings.json'.
       i In Positron, pick "R (Pixi: default)" in the interpreter picker. Positron remembers it for the project. If it isn't listed, run Interpreter: Discover All Interpreters from the Command Palette.
 
+# sets the editors up with languageserver and direnv
+
+    Code
+      file <- setup(p$root)
+    Message
+      v Set '.envrc' to activate the "default" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i In Emacs, install the envrc package and turn on `(envrc-global-mode)`. ESS and languageserver then use the project's R.
+
+---
+
+    Code
+      file <- setup(p$root)
+    Message
+      v Set '.envrc' to activate the "default" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i Start Neovim from a shell with direnv's hook, or load direnv with a plugin such as direnv.vim. R.nvim and languageserver then use the project's R.
+
+---
+
+    Code
+      file <- setup(p$root)
+    Message
+      v Set '.envrc' to activate the "default" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i Zed loads direnv itself. With its R extension, languageserver uses the project's R, and so does R in Zed's terminal.
+

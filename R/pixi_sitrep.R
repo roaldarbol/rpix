@@ -397,15 +397,29 @@ detect_ide <- function() {
     "positron"
   } else if (identical(Sys.getenv("RSTUDIO"), "1")) {
     "rstudio"
+  } else if (nzchar(Sys.getenv("INSIDE_EMACS"))) {
+    # Before the terminals below, as an editor can run in one of them
+    "emacs"
+  } else if (nzchar(Sys.getenv("NVIM"))) {
+    "neovim"
   } else if (identical(Sys.getenv("TERM_PROGRAM"), "vscode")) {
     "vscode"
+  } else if (identical(Sys.getenv("TERM_PROGRAM"), "zed")) {
+    "zed"
   } else {
     NA_character_
   }
 }
 
 ide_name <- function(ide) {
-  c(rstudio = "RStudio", positron = "Positron", vscode = "VS Code")[[ide]]
+  c(
+    rstudio = "RStudio",
+    positron = "Positron",
+    vscode = "VS Code",
+    emacs = "Emacs",
+    neovim = "Neovim",
+    zed = "Zed"
+  )[[ide]]
 }
 
 # Whether an IDE is set up the way use_pixi_<ide>() sets it up
@@ -417,9 +431,12 @@ ide_set_up <- function(ide, project) {
     }))
     return("rstudio" %in% names)
   }
-  if (ide == "vscode" && is_windows()) {
-    # use_pixi_vscode() leaves R to the PATH on Windows
+  if (ide %in% c("vscode", "emacs", "neovim", "zed") && is_windows()) {
+    # These leave R to the PATH on Windows
     return(!is.null(pixi_r_location(r_home())))
+  }
+  if (ide %in% c("emacs", "neovim", "zed")) {
+    return(direnv_set_up(project))
   }
   file <- file.path(project, ".vscode", "settings.json")
   settings <- if (file.exists(file)) {

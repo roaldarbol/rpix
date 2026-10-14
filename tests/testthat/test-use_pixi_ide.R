@@ -254,6 +254,30 @@ test_that("says which settings to remove from a file with comments", {
   expect_error(use_pixi_vscode(p$root, console = "R"), "Remove r.consolePath")
 })
 
+# use_pixi_emacs(), use_pixi_neovim() and use_pixi_zed() ---------------------
+
+test_that("sets the editors up with languageserver and direnv", {
+  for (editor in c("emacs", "neovim", "zed")) {
+    p <- local_ide_project()
+    local_mocked_bindings(
+      is_windows = function() FALSE,
+      direnv_binary = function() ""
+    )
+    setup <- get(paste0("use_pixi_", editor))
+    expect_snapshot(file <- setup(p$root))
+    expect_equal(p$args[[1]], c("add", "r-languageserver"))
+    expect_equal(file, file.path(p$root, ".envrc"))
+    expect_true(direnv_set_up(p$root))
+  }
+})
+
+test_that("tells Windows users to start the editor from the environment", {
+  p <- local_ide_project()
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_message(use_pixi_neovim(p$root), "pixi run nvim")
+  expect_false(file.exists(file.path(p$root, ".envrc")))
+})
+
 # Helpers ----------------------------------------------------------------------
 
 test_that("the IDE helpers need a Pixi project", {

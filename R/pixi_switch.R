@@ -13,13 +13,17 @@
 #'   environment's R, in the project's `.vscode/settings.json`, keeping its
 #'   console (R, arf or radian; see [use_pixi_vscode()]). Reload the window
 #'   to use it. On Windows, start the editor from the environment instead.
+#' * Emacs, Neovim and Zed: points the project's `.envrc` at the environment
+#'   (see [use_pixi_direnv()]). Reload direnv in the editor, and restart R.
+#'   On Windows, start the editor from the environment instead.
 #' * Elsewhere: shows the command that starts the environment's R.
 #'
 #' The environment is installed first, if it isn't yet.
 #'
 #' @param environment The environment. In an interactive session, leave it
 #'   out to pick one from a menu.
-#' @param ide Optional. The IDE: `"rstudio"`, `"positron"` or `"vscode"`.
+#' @param ide Optional. The IDE: `"rstudio"`, `"positron"`, `"vscode"`,
+#'   `"emacs"`, `"neovim"` or `"zed"`.
 #'   Defaults to the one you're in.
 #' @inheritParams pixi_environments
 #' @returns The environment's R, invisibly, or `NULL` if you cancel the menu.
@@ -54,6 +58,9 @@ pixi_switch <- function(environment = NULL, ide = NULL, path = NULL) {
     rstudio = switch_rstudio(root, environment),
     positron = switch_positron(environment),
     vscode = switch_vscode(root, environment),
+    emacs = ,
+    neovim = ,
+    zed = switch_direnv(root, environment, ide),
     none = cli::cli_alert_info(
       "Start its R with {.code pixi run --environment {environment} R}."
     )
@@ -162,6 +169,23 @@ switch_vscode <- function(root, environment) {
   cli::cli_alert_info(
     "Run {.strong Developer: Reload Window} from the Command Palette to use it."
   )
+}
+
+switch_direnv <- function(root, environment, ide) {
+  name <- ide_name(ide)
+  if (is_windows()) {
+    cli::cli_alert_info(
+      "Close {name}, and start it again from the environment with {.code pixi run --environment {environment} {editor_command(ide)}}."
+    )
+    return(invisible())
+  }
+  use_pixi_direnv(root, environment)
+  cli::cli_alert_info(switch(
+    ide,
+    emacs = "Run {.strong M-x envrc-reload} in Emacs, then restart R.",
+    neovim = "Restart Neovim from the project (or reload direnv in it), then restart R.",
+    zed = "Reopen the project in Zed, then restart R."
+  ))
 }
 
 # Where an environment's console is

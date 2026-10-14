@@ -5,6 +5,9 @@
 \alias{use_pixi_rstudio}
 \alias{use_pixi_positron}
 \alias{use_pixi_vscode}
+\alias{use_pixi_emacs}
+\alias{use_pixi_neovim}
+\alias{use_pixi_zed}
 \title{Set up an IDE for a Pixi project}
 \usage{
 use_pixi_rstudio(path = NULL)
@@ -12,6 +15,12 @@ use_pixi_rstudio(path = NULL)
 use_pixi_positron(path = NULL, default_r = TRUE)
 
 use_pixi_vscode(path = NULL, console = NULL)
+
+use_pixi_emacs(path = NULL)
+
+use_pixi_neovim(path = NULL)
+
+use_pixi_zed(path = NULL)
 }
 \arguments{
 \item{path}{The project. Defaults to the working directory.}
@@ -27,7 +36,7 @@ environment's R Positron's default for the project.}
 The file they changed, invisibly.
 }
 \description{
-Set an IDE up to use the R in the project's Pixi environment. \code{\link[=use_pixi]{use_pixi()}}
+Set an IDE or editor up to use the R in the project's Pixi environment. \code{\link[=use_pixi]{use_pixi()}}
 calls these with its \code{ide} argument.
 \itemize{
 \item \code{use_pixi_rstudio()} adds, or replaces, an \code{rstudio} task in \code{pixi.toml}, for each of
@@ -48,6 +57,14 @@ Windows, the environment's R only starts when the environment is
 activated, so it leaves R and the console to be found on the \code{PATH}
 instead: start VS Code with \verb{pixi run code .} (or \code{codium}, \code{cursor} or
 \code{windsurf} instead of \code{code}).
+\item \code{use_pixi_emacs()}, \code{use_pixi_neovim()} and \code{use_pixi_zed()} add
+languageserver to the environment, and a \code{.envrc} that activates the
+environment with direnv (see \code{\link[=use_pixi_direnv]{use_pixi_direnv()}}). The editor, or the
+shell it starts from, then finds the environment's R and languageserver
+on the \code{PATH}: Emacs with its envrc package, Neovim from a shell with
+direnv's hook or with a direnv plugin, and Zed by itself. On Windows,
+start the editor from the environment instead, e.g. with
+\verb{pixi run nvim}.
 }
 
 In an interactive session, \code{use_pixi_vscode()} asks which console to use,
@@ -62,5 +79,6 @@ Existing settings in \code{.vscode/settings.json} are kept. In a package,
 use_pixi_rstudio()
 use_pixi_positron()
 use_pixi_vscode(console = "arf")
+use_pixi_neovim()
 }
 }

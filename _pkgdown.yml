@@ -129,5 +129,6 @@ reference:
       - install_pixi
       - use_pixi
       - use_pixi_ide
+      - use_pixi_direnv
       - pixi_import_renv
       - pixi_activate

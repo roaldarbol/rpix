@@ -20,8 +20,8 @@ to the newest one that the packages \code{use_pixi()} adds are built for on
 conda-forge.}
 
 \item{ide}{Optional. IDEs to set the project up for: any of \code{"rstudio"},
-\code{"positron"} and \code{"vscode"}. See \code{\link[=use_pixi_rstudio]{use_pixi_rstudio()}},
-\code{\link[=use_pixi_positron]{use_pixi_positron()}} and \code{\link[=use_pixi_vscode]{use_pixi_vscode()}}.}
+\code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"}. See
+\link{use_pixi_ide}.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 

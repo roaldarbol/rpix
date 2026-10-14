@@ -1,7 +1,7 @@
 #' Set up an IDE for a Pixi project
 #'
 #' @description
-#' Set an IDE up to use the R in the project's Pixi environment. [use_pixi()]
+#' Set an IDE or editor up to use the R in the project's Pixi environment. [use_pixi()]
 #' calls these with its `ide` argument.
 #'
 #' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`, for each of
@@ -23,6 +23,15 @@
 #'   instead: start VS Code with `pixi run code .` (or `codium`, `cursor` or
 #'   `windsurf` instead of `code`).
 #'
+#' * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` add
+#'   languageserver to the environment, and a `.envrc` that activates the
+#'   environment with direnv (see [use_pixi_direnv()]). The editor, or the
+#'   shell it starts from, then finds the environment's R and languageserver
+#'   on the `PATH`: Emacs with its envrc package, Neovim from a shell with
+#'   direnv's hook or with a direnv plugin, and Zed by itself. On Windows,
+#'   start the editor from the environment instead, e.g. with
+#'   `pixi run nvim`.
+#'
 #' In an interactive session, `use_pixi_vscode()` asks which console to use,
 #' unless `console` is given. Otherwise it keeps the console already set up,
 #' or R.
@@ -43,6 +52,7 @@
 #' use_pixi_rstudio()
 #' use_pixi_positron()
 #' use_pixi_vscode(console = "arf")
+#' use_pixi_neovim()
 #' }
 NULL
 
@@ -206,6 +216,52 @@ vscode_console <- function(root) {
   }
   console <- sub("[.]exe$", "", basename(path %||% "R"))
   if (console %in% c("arf", "radian")) console else "R"
+}
+
+#' @rdname use_pixi_ide
+#' @export
+use_pixi_emacs <- function(path = NULL) {
+  use_pixi_editor(path, "emacs")
+}
+
+#' @rdname use_pixi_ide
+#' @export
+use_pixi_neovim <- function(path = NULL) {
+  use_pixi_editor(path, "neovim")
+}
+
+#' @rdname use_pixi_ide
+#' @export
+use_pixi_zed <- function(path = NULL) {
+  use_pixi_editor(path, "zed")
+}
+
+# Emacs, Neovim and Zed find R and languageserver on the PATH, which direnv
+# sets to the environment's
+use_pixi_editor <- function(path, editor, call = parent.frame()) {
+  root <- require_project(path, call = call)
+  run_pixi(c("add", "r-languageserver"), path = root, echo = TRUE)
+  name <- ide_name(editor)
+  if (is_windows()) {
+    command <- editor_command(editor)
+    cli::cli_alert_info(
+      "Start {name} from the project's environment, with {.code pixi run {command}}: on Windows, R only starts when the environment is activated, and direnv is rarely available."
+    )
+    return(invisible(file.path(root, "pixi.toml")))
+  }
+  file <- use_pixi_direnv(root)
+  cli::cli_alert_info(switch(
+    editor,
+    emacs = "In Emacs, install the {.pkg envrc} package and turn on {.code (envrc-global-mode)}. ESS and languageserver then use the project's R.",
+    neovim = "Start Neovim from a shell with direnv's hook, or load direnv with a plugin such as {.pkg direnv.vim}. R.nvim and languageserver then use the project's R.",
+    zed = "Zed loads direnv itself. With its R extension, languageserver uses the project's R, and so does R in Zed's terminal."
+  ))
+  invisible(file)
+}
+
+# The command that starts an editor in the project
+editor_command <- function(editor) {
+  c(emacs = "emacs", neovim = "nvim", zed = "zed .")[[editor]]
 }
 
 require_project <- function(path, call = parent.frame()) {

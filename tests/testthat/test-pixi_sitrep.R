@@ -221,10 +221,23 @@ test_that("tells whether the lock file is up to date", {
 })
 
 test_that("detects the IDE", {
-  withr::local_envvar(POSITRON = NA, RSTUDIO = NA, TERM_PROGRAM = NA)
+  withr::local_envvar(
+    POSITRON = NA,
+    RSTUDIO = NA,
+    TERM_PROGRAM = NA,
+    INSIDE_EMACS = NA,
+    NVIM = NA
+  )
   expect_true(is.na(detect_ide()))
+  withr::local_envvar(TERM_PROGRAM = "zed")
+  expect_equal(detect_ide(), "zed")
   withr::local_envvar(TERM_PROGRAM = "vscode")
   expect_equal(detect_ide(), "vscode")
+  # An editor in VS Code's terminal
+  withr::local_envvar(NVIM = "/tmp/nvim.sock")
+  expect_equal(detect_ide(), "neovim")
+  withr::local_envvar(INSIDE_EMACS = "31.1,comint")
+  expect_equal(detect_ide(), "emacs")
   withr::local_envvar(RSTUDIO = "1")
   expect_equal(detect_ide(), "rstudio")
   withr::local_envvar(POSITRON = "1")
@@ -288,6 +301,18 @@ test_that("tells whether a path is in a folder", {
 
 test_that("names IDEs", {
   expect_equal(ide_name("vscode"), "VS Code")
+  expect_equal(ide_name("neovim"), "Neovim")
+})
+
+test_that("tells whether an editor is set up with direnv", {
+  root <- withr::local_tempdir()
+  local_mocked_bindings(is_windows = function() FALSE)
+  expect_false(ide_set_up("zed", root))
+  writeLines(
+    set_envrc_environment(character(), "default"),
+    file.path(root, ".envrc")
+  )
+  expect_true(ide_set_up("zed", root))
 })
 
 test_that("finds packages in the environment that Pixi didn't install", {
