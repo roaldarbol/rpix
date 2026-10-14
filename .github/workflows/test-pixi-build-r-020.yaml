@@ -5,6 +5,8 @@
 name: test-pixi-build-r-020
 
 on:
+  push:
+    branches: [test/windows-source-builds]
   workflow_dispatch:
 
 permissions: read-all
