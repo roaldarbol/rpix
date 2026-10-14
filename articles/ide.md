@@ -131,6 +131,19 @@ works the same in VSCodium.
 When the R extension offers to install its sess package, accept: it
 installs into the environment.
 
+### Another console
+
+The R extension’s console can be [arf](https://github.com/eitsupi/arf)
+or [radian](https://github.com/randy3k/radian), instead of R:
+
+``` r
+
+rpix::use_pixi_vscode(console = "arf")
+```
+
+This adds arf to the environment, and points `r.consolePath` at it, with
+`r.consoleArgs` telling it to start the environment’s R.
+
 ### Every day
 
 Open the project folder in VS Code. The R extension uses the
@@ -149,15 +162,21 @@ pixi run code .
 
 Run `rpix::pixi_switch("r44")`. It changes `r.executablePath` and
 `r.consolePath` in `.vscode/settings.json` to the environment’s R,
-`${workspaceFolder}/.pixi/envs/r44/bin/R`. Then run **Developer: Reload
-Window** from the Command Palette. On Windows, start VS Code with
-`pixi run --environment r44 code .` instead.
+`${workspaceFolder}/.pixi/envs/r44/bin/R`. With arf or radian as the
+console, it keeps the default environment’s console, and points it at
+the environment’s R. Then run **Developer: Reload Window** from the
+Command Palette.
+
+On Windows, start VS Code with `pixi run --environment r44 code .`
+instead. The console then has to be in that environment too.
 
 ### If something’s off
 
 - **The R extension can’t find R.** Check that the environment is
   installed (`pixi install`), and that the paths in
   `.vscode/settings.json` exist.
+- **Positron and VS Code share `.vscode/settings.json`.** Each ignores
+  the other’s settings, so a project can be set up for both.
 
 ## The message at startup
 

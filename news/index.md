@@ -9,6 +9,11 @@
   so Positron (2026.10 or later) starts it when the project opens,
   without picking it first. `default_r = FALSE` leaves it out
   ([\#133](https://github.com/roaldarbol/rpix/issues/133)).
+- `use_pixi_vscode(console = )` sets up arf or radian as the R
+  extension’s console, starting the environment’s R.
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  keeps the console
+  ([\#132](https://github.com/roaldarbol/rpix/issues/132)).
 
 ### Changed
 
