@@ -1,5 +1,6 @@
 # Temporary: the branch that carries on prefix-dev/pixi#7062, with the review's
-# fixes: its tests, clippy and formatting, and real builds with its backend.
+# fixes, rebased on Pixi 0.82: its tests, clippy and formatting, and real
+# builds with its backend.
 name: test-bioconductor-branch
 
 on:
@@ -31,10 +32,40 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - case: bioconductor-dependency
+            channels: '"conda-forge", "bioconda"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: success
+            message: ""
+          - case: without-bioconda
+            channels: '"conda-forge"'
+            entry: 'r-bonev = { git = "https://github.com/cran/BonEV", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: BonEV
+            expect: failure
+            message: "bioconda isn't among the channels"
           - case: annotation-package
             channels: '"conda-forge", "bioconda"'
             entry: '"bioconductor-cocitestats" = { git = "https://github.com/bioc/CoCiteStats", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", bioconductor-annotationdbi = "1.72.*" } } }'
             load: CoCiteStats
+            expect: success
+            message: ""
+          - case: same-name-c-library
+            channels: '"conda-forge"'
+            entry: 'r-jose = { git = "https://github.com/cran/jose", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*", openssl = "*" } } }'
+            load: jose
+            expect: success
+            message: ""
+          - case: bioconductor-from-source
+            channels: '"conda-forge", "bioconda"'
+            entry: 'bioconductor-dnacopy = { git = "https://github.com/bioc/DNAcopy", branch = "RELEASE_3_22", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: DNAcopy
+            expect: success
+            message: ""
+          - case: cran-package-unchanged
+            channels: '"conda-forge"'
+            entry: 'r-sundialr = { git = "https://github.com/cran/sundialr", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }'
+            load: sundialr
             expect: success
             message: ""
     defaults:
@@ -56,7 +87,7 @@ jobs:
           echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$GITHUB_WORKSPACE/pixi-src/target/debug/pixi-build-r" >> "$GITHUB_ENV"
       - uses: prefix-dev/setup-pixi@v0.10.2
         with:
-          pixi-version: v0.81.0
+          pixi-version: v0.82.0
           run-install: false
       - name: Write the project
         env:
