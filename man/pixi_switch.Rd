@@ -4,10 +4,11 @@
 \alias{pixi_switch}
 \title{Switch to another environment's R}
 \usage{
-pixi_switch(environment, ide = NULL, path = NULL)
+pixi_switch(environment = NULL, ide = NULL, path = NULL)
 }
 \arguments{
-\item{environment}{The environment.}
+\item{environment}{The environment. In an interactive session, leave it
+out to pick one from a menu.}
 
 \item{ide}{Optional. The IDE: \code{"rstudio"}, \code{"positron"} or \code{"vscode"}.
 Defaults to the one you're in.}
@@ -16,7 +17,7 @@ Defaults to the one you're in.}
 environment, or the working directory.}
 }
 \value{
-The environment's R, invisibly.
+The environment's R, invisibly, or \code{NULL} if you cancel the menu.
 }
 \description{
 Move your work to the R of another of the project's environments, e.g. one
@@ -39,5 +40,7 @@ The environment is installed first, if it isn't yet.
 \examples{
 \dontrun{
 pixi_switch("r44")
+# Pick from a menu
+pixi_switch()
 }
 }

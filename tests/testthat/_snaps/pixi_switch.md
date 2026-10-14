@@ -7,6 +7,15 @@
       ! There's no "r43" environment in the project.
       i Its environments are "default" and "r44".
 
+# pixi_switch() asks which environment, or says which there are
+
+    Code
+      pixi_switch()
+    Condition
+      Error in `pixi_switch()`:
+      ! Which environment? Give `environment`.
+      i The project's environments are "default" and "r44".
+
 # pixi_switch() installs the environment, and shows how to start it
 
     Code
