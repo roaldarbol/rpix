@@ -51,3 +51,20 @@
     Message
       i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
 
+# pixi_switch() says if the console is missing
+
+    Code
+      pixi_switch("r44", ide = "vscode")
+    Message
+      ! The "default" environment doesn't have radian. Add it with `pixi_add("radian")`.
+      v Updated '.vscode/settings.json'.
+      i Run Developer: Reload Window from the Command Palette to use it.
+
+---
+
+    Code
+      pixi_switch("r44", ide = "vscode")
+    Message
+      ! The "r44" environment doesn't have radian. Add it to one of its features with `pixi_add("radian", feature = ...)`.
+      i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
+

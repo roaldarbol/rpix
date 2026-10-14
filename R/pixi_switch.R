@@ -10,7 +10,8 @@
 #' * Positron: looks for interpreters again, and opens the interpreter
 #'   picker, to pick the environment's R.
 #' * VS Code: points the R extension at the environment's R, in the project's
-#'   `.vscode/settings.json`. Reload the window to use it. On Windows, start VS
+#'   `.vscode/settings.json`, keeping its console (R, arf or radian; see
+#'   [use_pixi_vscode()]). Reload the window to use it. On Windows, start VS
 #'   Code from the environment instead.
 #' * Elsewhere: shows the command that starts the environment's R.
 #'
@@ -106,18 +107,44 @@ positron_command <- function() {
 }
 
 switch_vscode <- function(root, environment) {
+  console <- vscode_console(root)
+  # vscode_settings() takes the console from the default environment, but on
+  # Windows from the PATH, i.e. the environment VS Code starts in
+  home <- if (is_windows()) environment else "default"
+  if (
+    console != "R" && !file.exists(environment_console(root, home, console))
+  ) {
+    add <- if (home == "default") {
+      "Add it with {.code pixi_add(\"{console}\")}."
+    } else {
+      "Add it to one of its features with {.code pixi_add(\"{console}\", feature = ...)}."
+    }
+    cli::cli_alert_warning(c(
+      "The {.val {home}} environment doesn't have {console}. ",
+      add
+    ))
+  }
   if (is_windows()) {
     cli::cli_alert_info(
       "Close VS Code, and start it again from the environment with {.code pixi run --environment {environment} code .}."
     )
     return(invisible())
   }
-  r <- paste0("${workspaceFolder}/.pixi/envs/", environment, "/bin/R")
-  update_vscode_settings(
-    root,
-    list("r.executablePath" = r, "r.consolePath" = r)
-  )
+  update_vscode_settings(root, vscode_settings(environment, console))
   cli::cli_alert_info(
     "Run {.strong Developer: Reload Window} from the Command Palette to use it."
+  )
+}
+
+# Where an environment's console is
+environment_console <- function(root, environment, console) {
+  prefix <- file.path(root, ".pixi", "envs", environment)
+  if (!is_windows()) {
+    return(file.path(prefix, "bin", console))
+  }
+  switch(
+    console,
+    arf = file.path(prefix, "Library", "bin", "arf.exe"),
+    radian = file.path(prefix, "Scripts", "radian.exe")
   )
 }

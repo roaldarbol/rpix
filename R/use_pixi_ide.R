@@ -14,16 +14,20 @@
 #'   then starts that R when the project opens, until you pick another R
 #'   there. The path is for the operating system you run it on; on another
 #'   one, Positron ignores it.
-#' * `use_pixi_vscode()` adds languageserver to the environment, and points
-#'   the R extension for VS Code (and VSCodium) at the environment's R, in
+#' * `use_pixi_vscode()` adds languageserver, and the console if it isn't R,
+#'   to the environment. It points the R extension for VS Code (and VSCodium)
+#'   at the environment's R and the console, in
 #'   `.vscode/settings.json`. On Windows, the environment's R only starts
-#'   when the environment is activated, so it leaves R to be found on the
-#'   `PATH` instead: start VS Code with `pixi run code .`.
+#'   when the environment is activated, so it leaves R and the console to be
+#'   found on the `PATH` instead: start VS Code with `pixi run code .`.
 #'
 #' Existing settings in `.vscode/settings.json` are kept. In a package,
 #' `.vscode` is added to `.Rbuildignore`.
 #'
 #' @param path The project. Defaults to the working directory.
+#' @param console For `use_pixi_vscode()`: the R console, `"R"`,
+#'   [`"arf"`](https://github.com/eitsupi/arf) or
+#'   [`"radian"`](https://github.com/randy3k/radian).
 #' @param default_r For `use_pixi_positron()`: if `TRUE`, make the default
 #'   environment's R Positron's default for the project.
 #' @returns The file they changed, invisibly.
@@ -32,7 +36,7 @@
 #' \dontrun{
 #' use_pixi_rstudio()
 #' use_pixi_positron()
-#' use_pixi_vscode()
+#' use_pixi_vscode(console = "arf")
 #' }
 NULL
 
@@ -103,28 +107,79 @@ positron_default_r <- function() {
 
 #' @rdname use_pixi_ide
 #' @export
-use_pixi_vscode <- function(path = NULL) {
+use_pixi_vscode <- function(path = NULL, console = c("R", "arf", "radian")) {
   root <- require_project(path)
+  console <- match.arg(console)
   # sess and jgd, which the R extension also uses, aren't on conda-forge yet
   # (#56)
-  run_pixi(c("add", "r-languageserver"), path = root, echo = TRUE)
+  run_pixi(
+    c("add", "r-languageserver", if (console != "R") console),
+    path = root,
+    echo = TRUE
+  )
 
+  file <- update_vscode_settings(root, vscode_settings("default", console))
   if (is_windows()) {
-    file <- file.path(root, ".vscode", "settings.json")
     cli::cli_alert_info(
       "Start VS Code from the project's environment, with {.code pixi run code .}: on Windows, its R only starts when the environment is activated."
-    )
-  } else {
-    r <- "${workspaceFolder}/.pixi/envs/default/bin/R"
-    file <- update_vscode_settings(
-      root,
-      list("r.executablePath" = r, "r.consolePath" = r)
     )
   }
   cli::cli_alert_info(
     "When the R extension offers to install its {.pkg sess} package, accept."
   )
   invisible(file)
+}
+
+# The R extension's settings for an environment's R, and a console. The
+# console comes from the default environment, where use_pixi_vscode() adds
+# it: arf and radian don't depend on R, so they can start any environment's.
+# On Windows, R only starts in an activated environment, so they're left to
+# be found on the PATH. A NULL removes a setting.
+vscode_settings <- function(environment, console) {
+  if (is_windows()) {
+    return(list(
+      "r.consolePath" = if (console != "R") console,
+      "r.consoleArgs" = NULL,
+      "r.bracketedPaste" = if (console != "R") TRUE
+    ))
+  }
+  prefix <- paste0("${workspaceFolder}/.pixi/envs/", environment)
+  r <- paste0(prefix, "/bin/R")
+  args <- switch(
+    console,
+    R = NULL,
+    arf = list(
+      "--r-home",
+      paste0(prefix, "/lib/R"),
+      "--no-save",
+      "--no-restore"
+    ),
+    radian = list(paste0("--r-binary=", r))
+  )
+  list(
+    "r.executablePath" = r,
+    "r.consolePath" = if (console == "R") {
+      r
+    } else {
+      paste0("${workspaceFolder}/.pixi/envs/default/bin/", console)
+    },
+    "r.consoleArgs" = args,
+    "r.bracketedPaste" = if (console != "R") TRUE
+  )
+}
+
+# The console the R extension is set up with, from its settings
+vscode_console <- function(root) {
+  file <- file.path(root, ".vscode", "settings.json")
+  path <- NULL
+  if (file.exists(file)) {
+    path <- tryCatch(
+      jsonlite::read_json(file)[["r.consolePath"]],
+      error = function(e) NULL
+    )
+  }
+  console <- sub("[.]exe$", "", basename(path %||% "R"))
+  if (console %in% c("arf", "radian")) console else "R"
 }
 
 require_project <- function(path, call = parent.frame()) {
@@ -193,11 +248,16 @@ rstudio_project_file <- function(root) {
 
 #' Add settings to the project's `.vscode/settings.json`
 #'
-#' Keeps the settings already there. VS Code allows comments in the file,
-#' which jsonlite can't keep, so a file with comments isn't changed.
+#' Keeps the settings already there; a `NULL` value removes one. VS Code
+#' allows comments in the file, which jsonlite can't keep, so a file with
+#' comments isn't changed.
 #' @noRd
 update_vscode_settings <- function(root, values, call = parent.frame()) {
   file <- file.path(root, ".vscode", "settings.json")
+  remove <- vapply(values, is.null, logical(1))
+  if (all(remove) && !file.exists(file)) {
+    return(invisible(file))
+  }
   settings <- list()
   if (file.exists(file)) {
     settings <- tryCatch(
@@ -209,24 +269,32 @@ update_vscode_settings <- function(root, values, call = parent.frame()) {
         jsonlite::read_json(file)
       },
       error = function(e) {
-        lines <- paste0(
-          "\"",
-          names(values),
-          "\": ",
-          vapply(values, jsonlite::toJSON, character(1), auto_unbox = TRUE)
-        )
+        set <- values[!remove]
+        lines <- character()
+        if (length(set) > 0) {
+          lines <- paste0(
+            "\"",
+            names(set),
+            "\": ",
+            vapply(set, jsonlite::toJSON, character(1), auto_unbox = TRUE)
+          )
+        }
         cli::cli_abort(
           c(
             "Can't update {.path {file}}: it isn't plain JSON, e.g. because it has comments.",
-            "i" = "Add these settings yourself:",
-            stats::setNames(cli_escape(lines), rep(" ", length(lines)))
+            if (length(set) > 0) c("i" = "Add these settings yourself:"),
+            stats::setNames(cli_escape(lines), rep(" ", length(lines))),
+            if (any(remove)) {
+              c("i" = "Remove {.field {names(values)[remove]}}.")
+            }
           ),
           call = call
         )
       }
     )
   }
-  settings[names(values)] <- values
+  settings[names(values)[!remove]] <- values[!remove]
+  settings[names(values)[remove]] <- NULL
 
   dir.create(dirname(file), showWarnings = FALSE)
   jsonlite::write_json(settings, file, auto_unbox = TRUE, pretty = TRUE)
