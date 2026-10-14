@@ -6,8 +6,6 @@
 name: test-windows-cxx
 
 on:
-  push:
-    branches: [test/windows-source-builds]
   workflow_dispatch:
 
 permissions: read-all

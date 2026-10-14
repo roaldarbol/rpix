@@ -1,0 +1,76 @@
+# Temporary: the stopgap for #191 on Windows. pixi-build-r's compilers
+# (vs2022 and flang) left out with `compilers = []`, alone or with
+# conda-forge's MinGW compiler packages, as rpix would write the entry.
+name: test-windows-stopgap
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    name: ${{ matrix.package }}, ${{ matrix.variant }}
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [hellorust, ACSWR, quadprog, RcppRoll, minimal]
+        variant: [no-compilers, mingw-compilers]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.82.0
+          run-install: false
+      - name: Build and load
+        run: |
+          pkg=${{ matrix.package }}
+          lower=$(echo $pkg | tr A-Z a-z)
+          tools='m2-make = "*", m2-sed = "*", m2-coreutils = "*"'
+          if [ "${{ matrix.variant }}" = mingw-compilers ]; then
+            tools="$tools, gcc_win-64 = \"*\", gxx_win-64 = \"*\", gfortran_win-64 = \"*\""
+          fi
+          [ "$pkg" = hellorust ] && tools="$tools, rust-std-x86_64-pc-windows-gnu = \"*\""
+          if [ "$pkg" = minimal ]; then
+            mkdir -p minimal/src
+            printf 'Package: minimal\nVersion: 0.1\nTitle: Minimal\nDescription: Minimal.\nLicense: MIT\nAuthors@R: person("A", "B", role = c("aut", "cre"), email = "a@b.c")\nNeedsCompilation: yes\n' > minimal/DESCRIPTION
+            echo 'useDynLib(minimal)' > minimal/NAMESPACE
+            printf 'extern "C" void R_init_minimal(void *dll) {}\n' > minimal/src/minimal.cpp
+            cat > minimal/configure.win <<'SH'
+          #!/bin/sh
+          CXX=`"${R_HOME}/bin/R" CMD config CXX`
+          echo 'int main(void) { return 0; }' > conftest.cpp
+          $CXX $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.cpp -o conftest.exe || { echo "C++ compiler cannot create executables"; exit 1; }
+          rm -f conftest.cpp conftest.exe
+          SH
+            src='path = "../minimal"'
+          else
+            src="git = \"https://github.com/cran/$pkg\""
+          fi
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["win-64"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-$lower = { $src, package = { build.backend.name = "pixi-build-r", build.target.win-64.config.compilers = [], host-dependencies = { r-base = "4.5.*" }, target.win-64.build-dependencies = { $tools } } }
+          TOML
+          cat pixi.toml
+          set +e
+          pixi run Rscript -e "library($pkg); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' ../log.txt)
+          grep -E "error|ERROR|×" <<< "$clean" | grep -v "errorlevel\|RB_SECTION" | head -15 || true
+          grep -q LOADED <<< "$clean" && echo "LOADED" || echo "NOT LOADED"
+          echo "## ${{ matrix.package }}, ${{ matrix.variant }}: exit $status" >> $GITHUB_STEP_SUMMARY
+          exit $status
