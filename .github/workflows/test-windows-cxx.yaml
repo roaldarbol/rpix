@@ -14,13 +14,14 @@ permissions: read-all
 
 jobs:
   build:
-    name: sundialr, ${{ matrix.variant }}
+    name: ${{ matrix.package }}, ${{ matrix.variant }}
     runs-on: windows-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         variant: [backend-compilers, m2w64-compilers]
+        package: [sundialr, minimal]
     defaults:
       run:
         shell: bash
@@ -42,6 +43,26 @@ jobs:
             config=', config = { compilers = [] }'
             tools="$tools, gcc_win-64 = \"15.*\", gxx_win-64 = \"15.*\", m2w64-sysroot_win-64 = \"12.*\""
           fi
+          if [ "${{ matrix.package }}" = minimal ]; then
+            mkdir -p minimal/R minimal/src
+            printf 'Package: minimal\nVersion: 0.1\nTitle: Minimal\nDescription: Minimal.\nLicense: MIT\nAuthors@R: person("A", "B", role = c("aut", "cre"), email = "a@b.c")\nNeedsCompilation: yes\n' > minimal/DESCRIPTION
+            echo 'useDynLib(minimal)' > minimal/NAMESPACE
+            printf 'extern "C" void R_init_minimal(void *dll) {}\n' > minimal/src/minimal.cpp
+            cat > minimal/configure.win <<'SH'
+          #!/bin/sh
+          # What autoconf's AC_PROG_CXX does: R's compiler, with the environment's flags
+          CXX=`"${R_HOME}/bin/R" CMD config CXX`
+          echo "configure: LDFLAGS=$LDFLAGS"
+          echo 'int main(void) { return 0; }' > conftest.cpp
+          $CXX $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.cpp -o conftest.exe || { echo "C++ compiler cannot create executables"; exit 1; }
+          rm -f conftest.cpp conftest.exe
+          SH
+            src='path = "../minimal"'
+            name=minimal
+          else
+            src='git = "https://github.com/cran/sundialr"'
+            name=sundialr
+          fi
           mkdir p && cd p
           cat > pixi.toml <<TOML
           [workspace]
@@ -51,11 +72,11 @@ jobs:
           preview = ["pixi-build"]
           [dependencies]
           r-base = "4.5.*"
-          r-sundialr = { git = "https://github.com/cran/sundialr", package = { build = { backend = { $backend }$config }, host-dependencies = { r-base = "4.5.*" }, build-dependencies = { $tools } } }
+          r-$name = { $src, package = { build = { backend = { $backend }$config }, host-dependencies = { r-base = "4.5.*" }, build-dependencies = { $tools } } }
           TOML
           cat pixi.toml
           set +e
-          pixi run -v Rscript -e "library(sundialr); cat('LOADED\n')" > ../log.txt 2>&1
+          pixi run -v Rscript -e "library($name); cat('LOADED\n')" > ../log.txt 2>&1
           status=$?
           set -e
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -68,13 +89,17 @@ jobs:
       - name: Inside the build environment
         if: always()
         run: |
-          work=$(ls -d p/.pixi/bld/r-sundialr/*/work 2>/dev/null | head -1)
+          work=$(ls -d p/.pixi/bld/r-${{ matrix.package }}/*/work 2>/dev/null | head -1)
           if [ -z "$work" ]; then echo "no work directory left"; exit 0; fi
           cat > diag.bat <<BAT
           @echo off
           cd /d "$(cygpath -w "$work")"
           call build_env.bat > nul
           echo --- CC=%CC%  CXX=%CXX%
+          echo --- LDFLAGS=%LDFLAGS%
+          echo --- CFLAGS=%CFLAGS%
+          echo --- CXXFLAGS=%CXXFLAGS%
+          echo --- CPPFLAGS=%CPPFLAGS%
           echo --- R CMD config CC / CXX / CXX17
           call R.exe CMD config CC
           call R.exe CMD config CXX
@@ -86,9 +111,22 @@ jobs:
           where x86_64-w64-mingw32-g++
           BAT
           cmd //c diag.bat || true
+          bld=$(dirname "$work")/bld
+          echo "--- activation scripts that set the clang_rt flag"
+          grep -ril "defaultlib" "$bld/etc/conda/activate.d" 2>/dev/null || echo "(none)"
+          echo "--- build packages that depend on clang"
+          for f in "$bld"/conda-meta/*.json; do
+            if grep -qE '"(clang|clangxx|clangdev|lld|clang-tools)( [^"]*)?"' "$f"; then
+              name=$(basename "$f" .json)
+              deps=$(grep -oE '"(clang|clangxx|clangdev|lld|clang-tools)( [^"]*)?"' "$f" | tr '\n' ' ')
+              echo "$name: $deps"
+            fi
+          done
+          echo "--- the link error, in full"
+          grep -n -B30 "collect2.exe: error" ../log.txt 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-400 | head -45 || true
           log=$(find "$HOME/AppData/Local/rattler/cache/git-v0/checkouts" -name config.log 2>/dev/null | head -1)
           if [ -n "$log" ]; then echo "--- $log"; grep -n -B2 -A25 "checking whether the C++ compiler works" "$log" | head -60; fi
       - name: Result
         run: |
-          echo "## sundialr, ${{ matrix.variant }}: exit ${{ steps.run.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "## ${{ matrix.package }}, ${{ matrix.variant }}: exit ${{ steps.run.outputs.status }}" >> $GITHUB_STEP_SUMMARY
           exit ${{ steps.run.outputs.status }}
