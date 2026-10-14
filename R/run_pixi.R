@@ -14,7 +14,7 @@
 #'   * `"optional"`: pass `--manifest-path` if a project is found.
 #'   * `"none"`: never pass `--manifest-path`.
 #' @param path Where to look for the project. Defaults to the project of the
-#'   running pixi environment (`PIXI_PROJECT_ROOT`), and otherwise the working
+#'   running pixi environment (`PIXI_WORKSPACE_ROOT`), and otherwise the working
 #'   directory. See `find_project_root()`.
 #' @param json If `TRUE`, add `--json` and return the parsed output.
 #' @param echo If `TRUE`, stream Pixi's output to the console while it runs.
@@ -198,7 +198,7 @@ pixi_binary <- function(offer_install = TRUE, call = parent.frame()) {
 #' Find the root of a Pixi project
 #'
 #' If `path` is `NULL`, uses the project of the running Pixi environment
-#' (`PIXI_PROJECT_ROOT`) when set, and otherwise starts from the working
+#' (`PIXI_WORKSPACE_ROOT`) when set, and otherwise starts from the working
 #' directory. Walks up from there until it finds a `pixi.toml`, or a
 #' `pyproject.toml` with a `[tool.pixi]` table.
 #'
@@ -212,6 +212,17 @@ find_project_root <- function(path = NULL) {
   dirname(manifest)
 }
 
+# The root of the running Pixi environment's project, or "". Pixi 0.82 names
+# it PIXI_WORKSPACE_ROOT, and keeps PIXI_PROJECT_ROOT, which older versions
+# set, as an alias.
+pixi_root_env <- function() {
+  root <- Sys.getenv("PIXI_WORKSPACE_ROOT")
+  if (!nzchar(root)) {
+    root <- Sys.getenv("PIXI_PROJECT_ROOT")
+  }
+  root
+}
+
 #' Find the manifest of a Pixi project
 #'
 #' Same search as `find_project_root()`, but returns the manifest file.
@@ -219,7 +230,10 @@ find_project_root <- function(path = NULL) {
 #' @noRd
 find_manifest <- function(path = NULL) {
   if (is.null(path)) {
-    path <- Sys.getenv("PIXI_PROJECT_ROOT", getwd())
+    path <- pixi_root_env()
+    if (!nzchar(path)) {
+      path <- getwd()
+    }
   }
   dir <- normalizePath(path, winslash = "/", mustWork = FALSE)
 

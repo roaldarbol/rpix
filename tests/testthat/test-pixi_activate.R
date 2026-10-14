@@ -114,7 +114,11 @@ test_that("reads the variables from a real Pixi environment", {
   skip_on_cran()
   # shell-hook leaves out variables that already have the right value, as
   # they do when the tests run in rpix's own environment
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA, PIXI_ENVIRONMENT_NAME = NA)
+  withr::local_envvar(
+    PIXI_WORKSPACE_ROOT = NA,
+    PIXI_PROJECT_ROOT = NA,
+    PIXI_ENVIRONMENT_NAME = NA
+  )
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
   run_pixi("install", path = dir)
@@ -145,6 +149,7 @@ local_activation <- function(vars = NULL, env = parent.frame()) {
   withr::local_envvar(
     R_LIBS_USER = personal,
     PIXI_ENVIRONMENT_NAME = NA,
+    PIXI_WORKSPACE_ROOT = NA,
     PIXI_PROJECT_ROOT = NA,
     RPIX_TEST_VAR = NA,
     .local_envir = env
@@ -183,7 +188,7 @@ test_that("doesn't activate again what Pixi activated", {
   p <- local_activation()
   withr::local_envvar(
     PIXI_ENVIRONMENT_NAME = "default",
-    PIXI_PROJECT_ROOT = p$root,
+    PIXI_WORKSPACE_ROOT = p$root,
     R_LIBS_USER = p$project_lib
   )
   local_mocked_bindings(activation_variables = function(...) {
@@ -210,7 +215,7 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
 
 test_that("gives a hint in a folder without a Pixi project", {
   local_mocked_bindings(r_home = function() "/project/.pixi/envs/default/lib/R")
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   expect_message(
     pixi_activate(withr::local_tempdir(), quiet = FALSE),
     "isn't from"

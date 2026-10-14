@@ -1,7 +1,11 @@
 local_project_dir <- function(env = parent.frame()) {
   root <- local_pixi_project(env = env)
   withr::local_dir(root, .local_envir = env)
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA, .local_envir = env)
+  withr::local_envvar(
+    PIXI_WORKSPACE_ROOT = NA,
+    PIXI_PROJECT_ROOT = NA,
+    .local_envir = env
+  )
   root
 }
 
@@ -68,7 +72,7 @@ test_that("pixi_remove() translates names and rejects constraints", {
 })
 
 test_that("pixi_search() translates names", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   withr::local_dir(withr::local_tempdir())
 
   expect_equal(dry(pixi_search("Rcpp", dry_run = TRUE)), "pixi search r-rcpp")
@@ -85,7 +89,7 @@ test_that("pixi_search() translates names", {
 
 test_that("project_channels() reads the project's channels", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   withr::local_dir(withr::local_tempdir())
   run_pixi(
     c("init", ".", "--channel", "conda-forge", "--channel", "bioconda"),
@@ -151,7 +155,7 @@ test_that("pixi_add() passes on other pixi errors", {
 })
 
 test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `path`", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   root <- local_pixi_project()
   manifest <- file.path(root, "pixi.toml")
   in_other_dir <- function(command) grepl(manifest, command, fixed = TRUE)

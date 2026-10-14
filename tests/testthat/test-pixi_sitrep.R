@@ -149,6 +149,7 @@ test_that("collects the setup of a project's Pixi R", {
   writeLines("[workspace]", file.path(root, "pixi.toml"))
   writeLines(rprofile_block, file.path(root, ".Rprofile"))
   withr::local_envvar(
+    PIXI_WORKSPACE_ROOT = NA,
     PIXI_PROJECT_ROOT = NA,
     PIXI_ENVIRONMENT_NAME = "default",
     POSITRON = NA,
@@ -188,7 +189,7 @@ test_that("collects the setup of a project's Pixi R", {
 })
 
 test_that("collects nothing project-specific outside a project", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   local_mocked_bindings(pixi_binary = function(...) stop("no pixi"))
 
   report <- sitrep_data(withr::local_tempdir())

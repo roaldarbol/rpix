@@ -5,7 +5,11 @@ local_ide_project <- function(platforms = "osx-arm64", env = parent.frame()) {
     winslash = "/"
   )
   writeLines("[workspace]", file.path(root, "pixi.toml"))
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA, .local_envir = env)
+  withr::local_envvar(
+    PIXI_WORKSPACE_ROOT = NA,
+    PIXI_PROJECT_ROOT = NA,
+    .local_envir = env
+  )
   calls <- new.env()
   calls$args <- list()
   local_mocked_bindings(
@@ -155,13 +159,13 @@ test_that("leaves R to the PATH on Windows", {
 # Helpers ----------------------------------------------------------------------
 
 test_that("the IDE helpers need a Pixi project", {
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   expect_error(use_pixi_positron(withr::local_tempdir()), "no Pixi project")
 })
 
 test_that("project_platforms() reads the project's platforms", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(
     c("init", dir, "--platform", "linux-64", "--platform", "win-64"),
@@ -172,7 +176,7 @@ test_that("project_platforms() reads the project's platforms", {
 
 test_that("use_pixi_rstudio() can be run again", {
   skip_if_no_pixi()
-  withr::local_envvar(PIXI_PROJECT_ROOT = NA)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   dir <- withr::local_tempdir()
   run_pixi(c("init", dir), project = "none")
 

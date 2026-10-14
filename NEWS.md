@@ -6,6 +6,12 @@
   for the project, so Positron (2026.10 or later) starts it when the project
   opens, without picking it first. `default_r = FALSE` leaves it out (#133).
 
+## Changed
+
+* rpix finds the project of the running Pixi environment from
+  `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
+  `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
+
 # rpix 0.8.0 (2026-10-13)
 
 ## Added
