@@ -1,0 +1,60 @@
+# Temporary: does pixi-build-r 0.2.0 (prefix-dev/pixi#7271), from prefix.dev's
+# backend channel until it's on conda-forge, add what rpix adds as stopgaps
+# (#148-#150, #152): Rust, R's recommended packages, R's library folder on
+# Windows, and CMake? The entries have none of those extras.
+name: test-pixi-build-r-020
+
+on:
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    name: ${{ matrix.package }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [hellorust, ACSWR, sundialr]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.82.0
+          run-install: false
+      - name: Build and load
+        run: |
+          pkg=${{ matrix.package }}
+          lower=$(echo $pkg | tr A-Z a-z)
+          windows=""
+          platform=linux-64
+          [ "$RUNNER_OS" = macOS ] && platform=osx-arm64
+          if [ "$RUNNER_OS" = Windows ]; then
+            platform=win-64
+            # MSYS2's tools: rpix still adds these on Windows (prefix-dev/pixi#7232)
+            windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" }'
+          fi
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["$platform"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-$lower = { git = "https://github.com/cran/$pkg", package = { build.backend = { name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"] }, host-dependencies = { r-base = "4.5.*" }$windows } }
+          TOML
+          cat pixi.toml
+          set +e
+          pixi run -v Rscript -e "library($pkg); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          sed 's/\x1b\[[0-9;]*m//g' ../log.txt | grep -iE "LOADED|pixi-build-r[^ ]* +[0-9]|pixi-build-r.*0\.[12]\.[0-9]|\brust\b.*conda-forge|r-mass|Lib.R.library|ERROR|rror:|cargo|cmake|there is no package" | grep -v "Compiling\|Downloaded" | head -25
+          echo "## ${{ matrix.package }} on ${{ matrix.os }}: exit $status" >> $GITHUB_STEP_SUMMARY
+          exit $status
