@@ -7,7 +7,7 @@
 addin_add_packages <- function() {
   text <- rstudio_selection()
   if (!nzchar(trimws(text))) {
-    text <- ask_text(
+    text <- ask_dialog(
       "Add packages",
       "Packages to add to the project, e.g. dplyr, tidyr:"
     )
@@ -75,28 +75,12 @@ addin_run_task <- function() {
 }
 
 # RStudio's New Project template: a project set up with use_pixi() for
-# RStudio. RStudio then opens it in the R it's set up with; the .Rprofile
-# block says how to move to the environment's R.
-rstudio_new_project <- function(
-  path,
-  r_version = "",
-  packages = "",
-  date = "",
-  install_rpix = TRUE,
-  ...
-) {
+# RStudio, with the R version picked in the dialog. RStudio then opens it in
+# the R it's set up with; the .Rprofile block says how to move to the
+# environment's R.
+rstudio_new_project <- function(path, r_version = "4.5", ...) {
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
-  use_pixi(
-    r_version = if (nzchar(trimws(r_version))) trimws(r_version),
-    ide = "rstudio",
-    date = if (nzchar(trimws(date))) trimws(date),
-    install_rpix = isTRUE(as.logical(install_rpix)),
-    path = path
-  )
-  packages <- text_packages(packages)
-  if (length(packages) > 0) {
-    pixi_add(packages, path = path)
-  }
+  use_pixi(r_version = r_version, ide = "rstudio", path = path)
   invisible(path)
 }
 
@@ -142,7 +126,7 @@ rstudio_active_file <- function() {
 }
 
 # Ask for some text, in RStudio's dialog or the console. NULL if cancelled.
-ask_text <- function(title, message) {
+ask_dialog <- function(title, message) {
   prompt <- rstudio_api("showPrompt")
   if (!is.null(prompt)) {
     return(prompt(title, message, ""))
@@ -150,9 +134,5 @@ ask_text <- function(title, message) {
   if (!is_interactive()) {
     return(NULL)
   }
-  console_input(paste0(message, " "))
-}
-
-console_input <- function(prompt) {
-  readline(prompt)
+  ask_text(paste0(message, " "))
 }

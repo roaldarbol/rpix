@@ -34,14 +34,14 @@ test_that("Add packages adds the selection, or asks", {
 
   local_mocked_bindings(
     rstudio_selection = function() "",
-    ask_text = function(title, message) "ggplot2"
+    ask_dialog = function(title, message) "ggplot2"
   )
   addin_add_packages()
   expect_equal(added, "ggplot2")
 
   # Cancelled
   added <- NULL
-  local_mocked_bindings(ask_text = function(title, message) NULL)
+  local_mocked_bindings(ask_dialog = function(title, message) NULL)
   expect_message(addin_add_packages(), "No packages")
   expect_null(added)
 })
@@ -132,32 +132,14 @@ test_that("Run a task asks which, and runs it", {
 test_that("the New Project template sets the project up for RStudio", {
   path <- file.path(withr::local_tempdir(), "new")
   called <- NULL
-  added <- NULL
-  local_mocked_bindings(
-    use_pixi = function(...) called <<- list(...),
-    pixi_add = function(packages, path) added <<- packages
-  )
-  rstudio_new_project(
-    path,
-    r_version = " 4.5",
-    packages = "dplyr, ggplot2",
-    date = "",
-    install_rpix = TRUE
-  )
+  local_mocked_bindings(use_pixi = function(...) called <<- list(...))
+  rstudio_new_project(path, r_version = "4.4")
   expect_true(dir.exists(path))
-  expect_equal(called$r_version, "4.5")
-  expect_equal(called$ide, "rstudio")
-  expect_null(called$date)
-  expect_true(called$install_rpix)
-  expect_equal(called$path, path)
-  expect_equal(added, c("dplyr", "ggplot2"))
+  expect_equal(called, list(r_version = "4.4", ide = "rstudio", path = path))
 
-  # RStudio's defaults
-  added <- NULL
-  rstudio_new_project(path, install_rpix = FALSE)
-  expect_null(called$r_version)
-  expect_false(called$install_rpix)
-  expect_null(added)
+  # The dialog's default
+  rstudio_new_project(path)
+  expect_equal(called$r_version, "4.5")
 })
 
 test_that("reads RStudio's editor through its API, and asks in a dialog", {
@@ -175,7 +157,7 @@ test_that("reads RStudio's editor through its API, and asks in a dialog", {
   })
   expect_equal(rstudio_selection(), "dplyr")
   expect_equal(rstudio_active_file(), "/project/a.R")
-  expect_equal(ask_text("Add packages", "Packages:"), "tidyr")
+  expect_equal(ask_dialog("Add packages", "Packages:"), "tidyr")
 
   context$path <- ""
   expect_null(rstudio_active_file())
@@ -183,10 +165,10 @@ test_that("reads RStudio's editor through its API, and asks in a dialog", {
 
 test_that("asks in the console outside RStudio", {
   local_mocked_bindings(is_interactive = function() FALSE)
-  expect_null(ask_text("Add packages", "Packages:"))
+  expect_null(ask_dialog("Add packages", "Packages:"))
   local_mocked_bindings(
     is_interactive = function() TRUE,
-    console_input = function(prompt) "dplyr"
+    ask_text = function(prompt) "dplyr"
   )
-  expect_equal(ask_text("Add packages", "Packages:"), "dplyr")
+  expect_equal(ask_dialog("Add packages", "Packages:"), "dplyr")
 })
