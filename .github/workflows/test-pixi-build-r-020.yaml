@@ -13,14 +13,15 @@ permissions: read-all
 
 jobs:
   build:
-    name: ${{ matrix.package }} on ${{ matrix.os }}
+    name: ${{ matrix.package }} on ${{ matrix.os }} (backend ${{ matrix.backend }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        package: [hellorust, ACSWR, sundialr]
+        os: [windows-latest]
+        package: [sundialr]
+        backend: ["0.2.*", "released"]
     defaults:
       run:
         shell: bash
@@ -41,6 +42,13 @@ jobs:
             # MSYS2's tools: rpix still adds these on Windows (prefix-dev/pixi#7232)
             windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" }'
           fi
+          if [ "${{ matrix.backend }}" = released ]; then
+            # conda-forge's 0.1.8, with cmake added as rpix does today
+            backend='build.backend.name = "pixi-build-r"'
+            windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*", cmake = "*" }'
+          else
+            backend='build.backend = { name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"] }'
+          fi
           mkdir p && cd p
           cat > pixi.toml <<TOML
           [workspace]
@@ -50,7 +58,7 @@ jobs:
           preview = ["pixi-build"]
           [dependencies]
           r-base = "4.5.*"
-          r-$lower = { git = "https://github.com/cran/$pkg", package = { build.backend = { name = "pixi-build-r", version = "0.2.*", channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"] }, host-dependencies = { r-base = "4.5.*" }$windows } }
+          r-$lower = { git = "https://github.com/cran/$pkg", package = { $backend, host-dependencies = { r-base = "4.5.*" }$windows } }
           TOML
           cat pixi.toml
           set +e
