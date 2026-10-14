@@ -9,7 +9,7 @@
 \usage{
 use_pixi_rstudio(path = NULL)
 
-use_pixi_positron(path = NULL, default_r = NULL)
+use_pixi_positron(path = NULL, default_r = TRUE)
 
 use_pixi_vscode(path = NULL, console = NULL)
 }
@@ -17,7 +17,7 @@ use_pixi_vscode(path = NULL, console = NULL)
 \item{path}{The project. Defaults to the working directory.}
 
 \item{default_r}{For \code{use_pixi_positron()}: if \code{TRUE}, make the default
-environment's R Positron's default for the project. \code{NULL} asks.}
+environment's R Positron's default for the project.}
 
 \item{console}{For \code{use_pixi_vscode()}: the R console, \code{"R"},
 \href{https://github.com/eitsupi/arf}{\code{"arf"}} or
@@ -48,10 +48,9 @@ when the environment is activated, so it leaves R and the console to be
 found on the \code{PATH} instead: start VS Code with \verb{pixi run code .}.
 }
 
-In an interactive session, they ask about the optional settings left as
-\code{NULL}. Otherwise \code{use_pixi_positron()} makes the default environment's R
-the default, and \code{use_pixi_vscode()} keeps the console already set up, or
-R.
+In an interactive session, \code{use_pixi_vscode()} asks which console to use,
+unless \code{console} is given. Otherwise it keeps the console already set up,
+or R.
 
 Existing settings in \code{.vscode/settings.json} are kept. In a package,
 \code{.vscode} is added to \code{.Rbuildignore}.

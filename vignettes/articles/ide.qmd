@@ -30,7 +30,7 @@ Whichever IDE you use, `rpix::pixi_sitrep()` checks that it runs the project's R
 rpix::use_pixi_positron()
 ```
 
-This turns on Positron's discovery of R in Pixi environments, and makes the R from the project's default environment Positron's default for the project, in `.vscode/settings.json`. It asks about the default first; `default_r = FALSE` leaves it out.
+This turns on Positron's discovery of R in Pixi environments, and makes the R from the project's default environment Positron's default for the project, in `.vscode/settings.json`. `default_r = FALSE` leaves the default out.
 
 ### Every day
 

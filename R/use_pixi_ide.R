@@ -21,10 +21,9 @@
 #'   when the environment is activated, so it leaves R and the console to be
 #'   found on the `PATH` instead: start VS Code with `pixi run code .`.
 #'
-#' In an interactive session, they ask about the optional settings left as
-#' `NULL`. Otherwise `use_pixi_positron()` makes the default environment's R
-#' the default, and `use_pixi_vscode()` keeps the console already set up, or
-#' R.
+#' In an interactive session, `use_pixi_vscode()` asks which console to use,
+#' unless `console` is given. Otherwise it keeps the console already set up,
+#' or R.
 #'
 #' Existing settings in `.vscode/settings.json` are kept. In a package,
 #' `.vscode` is added to `.Rbuildignore`.
@@ -34,7 +33,7 @@
 #'   [`"arf"`](https://github.com/eitsupi/arf) or
 #'   [`"radian"`](https://github.com/randy3k/radian). `NULL` asks.
 #' @param default_r For `use_pixi_positron()`: if `TRUE`, make the default
-#'   environment's R Positron's default for the project. `NULL` asks.
+#'   environment's R Positron's default for the project.
 #' @returns The file they changed, invisibly.
 #' @name use_pixi_ide
 #' @examples
@@ -85,14 +84,8 @@ use_pixi_rstudio <- function(path = NULL) {
 
 #' @rdname use_pixi_ide
 #' @export
-use_pixi_positron <- function(path = NULL, default_r = NULL) {
+use_pixi_positron <- function(path = NULL, default_r = TRUE) {
   root <- require_project(path)
-  if (is.null(default_r)) {
-    default_r <- !is_interactive() ||
-      ask_yes_no(
-        "Should Positron start the default environment's R when the project opens?"
-      )
-  }
   settings <- list("positron.r.interpreters.pixiDiscovery" = TRUE)
   if (isTRUE(default_r)) {
     settings[["positron.r.interpreters.default"]] <- positron_default_r()
@@ -125,7 +118,7 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
     console <- vscode_console(root)
     if (is_interactive()) {
       choice <- ask_choice(
-        "Which R console should VS Code start? arf and radian are added to the environment.",
+        "Which R console should VS Code start? If it isn't R, it's added to the environment.",
         consoles
       )
       if (!is.na(choice)) console <- consoles[choice]

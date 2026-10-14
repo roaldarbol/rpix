@@ -116,17 +116,6 @@ test_that("makes the environment's R Positron's default, or leaves it out", {
   expect_null(read_settings(q$root)$positron.r.interpreters.default)
 })
 
-test_that("asks whether to make the environment's R Positron's default", {
-  p <- local_ide_project()
-  local_mocked_bindings(
-    is_windows = function() FALSE,
-    is_interactive = function() TRUE,
-    ask_yes_no = function(question) FALSE
-  )
-  suppressMessages(use_pixi_positron(p$root))
-  expect_null(read_settings(p$root)$positron.r.interpreters.default)
-})
-
 test_that("tells comments from URLs", {
   expect_true(has_json_comments(c("{", "  // a comment", "}")))
   expect_true(has_json_comments('{"a": 1} /* block */'))
