@@ -124,13 +124,17 @@ add_github_packages <- function(
   pixi <- pixi_version_number()
   older <- older_backend(date, pixi)
   windows <- "win-64" %in% manifest_platforms(lines)
-  if (is.null(pixi)) {
+  first <- backend_pixi()
+  if (is.na(first)) {
+    # No Pixi uses a pixi-build-r with these yet; the messages below say what
+    # rpix adds
+  } else if (is.null(pixi)) {
     cli::cli_alert_info(
-      "rpix can't tell which version of Pixi this is, so it adds what {.code pixi-build-r} didn't before Pixi {backend_pixi}."
+      "rpix can't tell which version of Pixi this is, so it adds what {.code pixi-build-r} didn't before Pixi {first}."
     )
-  } else if (!pixi_at_least(backend_pixi, pixi)) {
+  } else if (!pixi_at_least(first, pixi)) {
     cli::cli_alert_info(
-      "Pixi {pixi} uses an older {.code pixi-build-r}, so rpix adds what that lacks. Update to Pixi {backend_pixi} or later, e.g. with {.code pixi self-update}, and it won't need to."
+      "Pixi {pixi} uses an older {.code pixi-build-r}, so rpix adds what that lacks. Update to Pixi {first} or later, e.g. with {.code pixi self-update}, and it won't need to."
     )
   } else if (older) {
     cli::cli_alert_info(

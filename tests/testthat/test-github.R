@@ -315,6 +315,8 @@ local_github_project <- function(pixi = "0.82.0", env = parent.frame()) {
     pixi_version_number = function() {
       if (!is.null(pixi)) numeric_version(pixi)
     },
+    # As if a Pixi used a pixi-build-r with the fixes; none does yet
+    backend_pixi = function() "0.82.0",
     .env = env
   )
   calls$dir <- dir
@@ -385,6 +387,18 @@ test_that("pixi_add() adds what older pixi-build-r doesn't, in a project with an
   expect_match(entry, 'r-mass = "*"', fixed = TRUE)
   expect_match(entry, "--library=%PREFIX%/Lib/R/library", fixed = TRUE)
   expect_match(entry, "rust-std-x86_64-pc-windows-gnu", fixed = TRUE)
+})
+
+test_that("pixi_add() adds what pixi-build-r lacks with Pixi 0.82, as no Pixi uses a fixed one yet", {
+  calls <- local_github_project(pixi = "0.82.0")
+  local_mocked_bindings(backend_pixi = function() NA_character_)
+  suppressMessages(pixi_add("github::me/rusty", path = calls$dir))
+  entry <- grep(
+    "r-rusty",
+    readLines(file.path(calls$dir, "pixi.toml")),
+    value = TRUE
+  )
+  expect_match(entry, "rust = ", fixed = TRUE)
 })
 
 test_that("pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82", {
