@@ -21,11 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { package: sundialr, variant: m2w64-compilers }
           - { package: sundialr, variant: no-fortran }
-          - { package: minimal, variant: no-fortran }
-          - { package: sundialr, variant: ldflags-cleared }
-          - { package: minimal, variant: ldflags-cleared }
+          - { package: sundialr, variant: no-fortran-msys-makefiles }
+          - { package: sundialr, variant: no-fortran-unix-makefiles }
     defaults:
       run:
         shell: bash
@@ -46,6 +44,12 @@ jobs:
           if [ "${{ matrix.variant }}" = no-fortran ]; then
             # pixi-build-r's compilers without Fortran, i.e. without flang
             config=', config = { compilers = ["c", "cxx"] }'
+          fi
+          if [ "${{ matrix.variant }}" = no-fortran-msys-makefiles ]; then
+            config=', config = { compilers = ["c", "cxx"], env = { CMAKE_GENERATOR = "MSYS Makefiles" } }'
+          fi
+          if [ "${{ matrix.variant }}" = no-fortran-unix-makefiles ]; then
+            config=', config = { compilers = ["c", "cxx"], env = { CMAKE_GENERATOR = "Unix Makefiles" } }'
           fi
           if [ "${{ matrix.variant }}" = ldflags-cleared ]; then
             config=', config = { env = { LDFLAGS = "" } }'
@@ -133,6 +137,8 @@ jobs:
               echo "$name: $deps"
             fi
           done
+          echo "--- CMake's generator and errors"
+          sed 's/\x1b\[[0-9;]*m//g' log.txt | grep -E "Building for|CMAKE_GENERATOR|Generator|CMake Error|CMake Warning|make(\[[0-9]\])?: |No targets|Selecting Windows SDK|The C compiler identification|Make install failed|perl" | cut -c1-300 | head -30 || true
           echo "--- the link error, in full"
           grep -n -B40 "collect2.exe: error" log.txt 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | cut -c1-400 | head -45 || true
           log=$(find "$HOME/AppData/Local/rattler/cache/git-v0/checkouts" -name config.log 2>/dev/null | head -1)
