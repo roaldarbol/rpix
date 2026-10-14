@@ -17,6 +17,12 @@ or library, so this starts the other R the way your IDE needs:
   Reload the window to use it. On Windows, start the editor from the
   environment instead.
 
+- Emacs, Neovim and Zed: points the project's `.envrc` at the
+  environment (see
+  [`use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md)).
+  Reload direnv in the editor, and restart R. On Windows, start the
+  editor from the environment instead.
+
 - Elsewhere: shows the command that starts the environment's R.
 
 The environment is installed first, if it isn't yet.
@@ -36,8 +42,8 @@ pixi_switch(environment = NULL, ide = NULL, path = NULL)
 
 - ide:
 
-  Optional. The IDE: `"rstudio"`, `"positron"` or `"vscode"`. Defaults
-  to the one you're in.
+  Optional. The IDE: `"rstudio"`, `"positron"`, `"vscode"`, `"emacs"`,
+  `"neovim"` or `"zed"`. Defaults to the one you're in.
 
 - path:
 

@@ -10,6 +10,9 @@ VS Code, and editors based on it: points the R extension at the
 environment's R, in the project's .vscode/settings.json, keeping its
 console (R, arf or radian; see use_pixi_vscode()). Reload the window
 to use it. On Windows, start the editor from the environment instead.
+Emacs, Neovim and Zed: points the project's .envrc at the environment
+(see use_pixi_direnv()). Reload direnv in the editor, and restart R.
+On Windows, start the editor from the environment instead.
 Elsewhere: shows the command that starts the environment's R.
 
 
@@ -24,6 +27,9 @@ VS Code, and editors based on it: points the R extension at the
 environment's R, in the project's .vscode/settings.json, keeping its
 console (R, arf or radian; see use_pixi_vscode()). Reload the window
 to use it. On Windows, start the editor from the environment instead.
+Emacs, Neovim and Zed: points the project's .envrc at the environment
+(see use_pixi_direnv()). Reload direnv in the editor, and restart R.
+On Windows, start the editor from the environment instead.
 Elsewhere: shows the command that starts the environment's R.
 
 
@@ -98,6 +104,9 @@ picker, to pick the environment's R.</p></li>
 environment's R, in the project's <code>.vscode/settings.json</code>, keeping its
 console (R, arf or radian; see <code><a href="use_pixi_ide.html">use_pixi_vscode()</a></code>). Reload the window
 to use it. On Windows, start the editor from the environment instead.</p></li>
+<li><p>Emacs, Neovim and Zed: points the project's <code>.envrc</code> at the environment
+(see <code><a href="use_pixi_direnv.html">use_pixi_direnv()</a></code>). Reload direnv in the editor, and restart R.
+On Windows, start the editor from the environment instead.</p></li>
 <li><p>Elsewhere: shows the command that starts the environment's R.</p></li>
 </ul><p>The environment is installed first, if it isn't yet.</p>
     </div>
@@ -117,7 +126,8 @@ out to pick one from a menu.</p></dd>
 
 
 <dt id="arg-ide">ide<a class="anchor" aria-label="anchor" href="#arg-ide"></a></dt>
-<dd><p>Optional. The IDE: <code>"rstudio"</code>, <code>"positron"</code> or <code>"vscode"</code>.
+<dd><p>Optional. The IDE: <code>"rstudio"</code>, <code>"positron"</code>, <code>"vscode"</code>,
+<code>"emacs"</code>, <code>"neovim"</code> or <code>"zed"</code>.
 Defaults to the one you're in.</p></dd>
 
 

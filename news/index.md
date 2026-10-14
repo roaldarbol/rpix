@@ -4,6 +4,20 @@
 
 ### Added
 
+- [`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  [`use_pixi_neovim()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  and
+  [`use_pixi_zed()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  set up those editors, and `use_pixi(ide = )` takes them too. They add
+  languageserver, and a `.envrc` from the new
+  [`use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md),
+  which activates the project’s environment with direnv.
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  know them ([\#185](https://github.com/roaldarbol/rpix/issues/185),
+  [\#186](https://github.com/roaldarbol/rpix/issues/186),
+  [\#187](https://github.com/roaldarbol/rpix/issues/187)).
 - [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   makes the default environment’s R Positron’s default for the project,
   so Positron (2026.10 or later) starts it when the project opens,

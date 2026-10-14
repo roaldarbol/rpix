@@ -50,11 +50,8 @@ use_pixi(
 - ide:
 
   Optional. IDEs to set the project up for: any of `"rstudio"`,
-  `"positron"` and `"vscode"`. See
-  [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
-  [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
-  and
-  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
+  `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"`. See
+  [use_pixi_ide](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
 
 - init_if_missing:
 

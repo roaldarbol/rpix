@@ -94,10 +94,10 @@
 
 
 
-    <p>Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code. Install the IDE as usual; most IDEs aren’t available as conda packages, or not in recent versions. Then let rpix point it at the R in your project’s Pixi environment, when you set the project up:</p>
+    <p>Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code, or an editor such as Emacs, Neovim or Zed. Install the IDE as usual; most IDEs aren’t available as conda packages, or not in recent versions. Then let rpix point it at the R in your project’s Pixi environment, when you set the project up:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span></span></code></pre></div>
-<p>or later, for one IDE at a time, with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> or <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code>.</p>
+<p>or later, for one IDE at a time, with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_emacs()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_neovim()</a></code> or <code><a href="../reference/use_pixi_ide.html">use_pixi_zed()</a></code>.</p>
 <p>Some settings are a matter of taste, such as VS Code’s R console. rpix asks about them as it sets the IDE up. To answer in advance, e.g. in a script, give them as arguments, also to <code><a href="../reference/use_pixi.html">use_pixi()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"vscode"</span>, console <span class="op">=</span> <span class="st">"arf"</span><span class="op">)</span></span></code></pre></div>
@@ -179,7 +179,31 @@
 <strong>The R extension can’t find R.</strong> Check that the environment is installed (<code>pixi install</code>), and that the paths in <code>.vscode/settings.json</code> exist.</li>
 <li>
 <strong>Positron and VS Code share <code>.vscode/settings.json</code>.</strong> Each ignores the other’s settings, so a project can be set up for both.</li>
-</ul></section></section><section class="level2"><h2 id="the-message-at-startup">The message at startup<a class="anchor" aria-label="anchor" href="#the-message-at-startup"></a>
+</ul></section></section><section class="level2"><h2 id="emacs-neovim-and-zed">Emacs, Neovim and Zed<a class="anchor" aria-label="anchor" href="#emacs-neovim-and-zed"></a>
+</h2>
+<p>These editors start R, and languageserver, from the <code>PATH</code>. <a href="https://direnv.net" class="external-link">direnv</a> puts the environment’s on it whenever you’re in the project’s folder.</p>
+<section class="level3"><h3 id="set-up-3">Set up<a class="anchor" aria-label="anchor" href="#set-up-3"></a>
+</h3>
+<p>Install direnv once, with Pixi:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> global install direnv</span></code></pre></div>
+<p>Then, in the project:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_emacs</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># or use_pixi_neovim(), use_pixi_zed()</span></span></code></pre></div>
+<p>This adds the languageserver package to the environment, and a <code>.envrc</code> file that activates the environment (<code><a href="../reference/use_pixi_direnv.html">rpix::use_pixi_direnv()</a></code> writes just the file). direnv only loads a <code>.envrc</code> you’ve allowed, and again after it changes: rpix offers to allow it, or run <code>direnv allow</code> in the project.</p>
+<p>Each editor loads direnv in its own way:</p>
+<ul>
+<li>
+<strong>Emacs:</strong> install the <a href="https://github.com/purcell/envrc" class="external-link">envrc</a> package and turn on <code>(envrc-global-mode)</code>. ESS, and languageserver through eglot or lsp-mode, then use the project’s R.</li>
+<li>
+<strong>Neovim:</strong> start Neovim from a shell with <a href="https://direnv.net/docs/hook.html" class="external-link">direnv’s hook</a>, or use a direnv plugin such as <a href="https://github.com/direnv/direnv.vim" class="external-link">direnv.vim</a>. <a href="https://github.com/R-nvim/R.nvim" class="external-link">R.nvim</a> and languageserver then use the project’s R.</li>
+<li>
+<strong>Zed:</strong> Zed loads direnv by itself. Install its R extension: languageserver then uses the project’s R, and so does R in Zed’s terminal.</li>
+</ul>
+<p>On Windows, direnv is rarely available, and the environment’s R only starts when the environment is activated. Start the editor from the environment instead: <code>pixi run emacs</code>, <code>pixi run nvim</code> or <code>pixi run zed .</code>.</p>
+</section><section class="level3"><h3 id="another-environment-3">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-3"></a>
+</h3>
+<p>Run <code>rpix::pixi_switch("r44")</code>. It points <code>.envrc</code> at that environment. Reload direnv in the editor (in Emacs, <code>M-x envrc-reload</code>; in Neovim, start it again from the project; in Zed, reopen the project), then restart R.</p>
+</section></section><section class="level2"><h2 id="the-message-at-startup">The message at startup<a class="anchor" aria-label="anchor" href="#the-message-at-startup"></a>
 </h2>
 <p>If you start R in a Pixi project with an R that isn’t from the project’s environment, e.g. by double-clicking the <code>.Rproj</code> file, which opens your usual R, the project’s <code>.Rprofile</code> says so, as long as rpix is installed in that R:</p>
 <pre><code>! This R isn't from the project's Pixi environment, so it doesn't use the project's packages.
@@ -188,7 +212,7 @@
 </section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
 </h2>
 <p>In the IDE’s R console, <code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/path/to/project/.pixi/envs/default/lib/R"</span></span></code></pre></div>
 </section><script id="quarto-html-after-body" type="application/javascript">

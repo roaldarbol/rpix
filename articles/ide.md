@@ -1,9 +1,10 @@
 # Using rpix with an IDE
 
 Most R users work in an IDE rather than a terminal: RStudio, Positron or
-VS Code. Install the IDE as usual; most IDEs aren’t available as conda
-packages, or not in recent versions. Then let rpix point it at the R in
-your project’s Pixi environment, when you set the project up:
+VS Code, or an editor such as Emacs, Neovim or Zed. Install the IDE as
+usual; most IDEs aren’t available as conda packages, or not in recent
+versions. Then let rpix point it at the R in your project’s Pixi
+environment, when you set the project up:
 
 ``` r
 
@@ -12,9 +13,12 @@ rpix::use_pixi(ide = "positron")
 
 or later, for one IDE at a time, with
 [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
-[`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+[`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+[`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+[`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+[`use_pixi_neovim()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
 or
-[`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
+[`use_pixi_zed()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
 
 Some settings are a matter of taste, such as VS Code’s R console. rpix
 asks about them as it sets the IDE up. To answer in advance, e.g. in a
@@ -197,6 +201,60 @@ be in that environment too.
   `.vscode/settings.json` exist.
 - **Positron and VS Code share `.vscode/settings.json`.** Each ignores
   the other’s settings, so a project can be set up for both.
+
+## Emacs, Neovim and Zed
+
+These editors start R, and languageserver, from the `PATH`.
+[direnv](https://direnv.net) puts the environment’s on it whenever
+you’re in the project’s folder.
+
+### Set up
+
+Install direnv once, with Pixi:
+
+``` sh
+pixi global install direnv
+```
+
+Then, in the project:
+
+``` r
+
+rpix::use_pixi_emacs()   # or use_pixi_neovim(), use_pixi_zed()
+```
+
+This adds the languageserver package to the environment, and a `.envrc`
+file that activates the environment
+([`rpix::use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md)
+writes just the file). direnv only loads a `.envrc` you’ve allowed, and
+again after it changes: rpix offers to allow it, or run `direnv allow`
+in the project.
+
+Each editor loads direnv in its own way:
+
+- **Emacs:** install the [envrc](https://github.com/purcell/envrc)
+  package and turn on `(envrc-global-mode)`. ESS, and languageserver
+  through eglot or lsp-mode, then use the project’s R.
+- **Neovim:** start Neovim from a shell with [direnv’s
+  hook](https://direnv.net/docs/hook.html), or use a direnv plugin such
+  as [direnv.vim](https://github.com/direnv/direnv.vim).
+  [R.nvim](https://github.com/R-nvim/R.nvim) and languageserver then use
+  the project’s R.
+- **Zed:** Zed loads direnv by itself. Install its R extension:
+  languageserver then uses the project’s R, and so does R in Zed’s
+  terminal.
+
+On Windows, direnv is rarely available, and the environment’s R only
+starts when the environment is activated. Start the editor from the
+environment instead: `pixi run emacs`, `pixi run nvim` or
+`pixi run zed .`.
+
+### Another environment
+
+Run `rpix::pixi_switch("r44")`. It points `.envrc` at that environment.
+Reload direnv in the editor (in Emacs, `M-x envrc-reload`; in Neovim,
+start it again from the project; in Zed, reopen the project), then
+restart R.
 
 ## The message at startup
 

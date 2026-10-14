@@ -184,7 +184,12 @@ workflow.*
 - [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  [`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  [`use_pixi_neovim()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  [`use_pixi_zed()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   : Set up an IDE for a Pixi project
+- [`use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md)
+  : Activate the project's environment with direnv
 - [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   : Move a project from renv
 - [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)

@@ -1,6 +1,6 @@
 # Set up an IDE for a Pixi project
 
-Set an IDE up to use the R in the project's Pixi environment.
+Set an IDE or editor up to use the R in the project's Pixi environment.
 [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
 calls these with its `ide` argument.
 
@@ -26,6 +26,16 @@ calls these with its `ide` argument.
   instead: start VS Code with `pixi run code .` (or `codium`, `cursor`
   or `windsurf` instead of `code`).
 
+- `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` add
+  languageserver to the environment, and a `.envrc` that activates the
+  environment with direnv (see
+  [`use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md)).
+  The editor, or the shell it starts from, then finds the environment's
+  R and languageserver on the `PATH`: Emacs with its envrc package,
+  Neovim from a shell with direnv's hook or with a direnv plugin, and
+  Zed by itself. On Windows, start the editor from the environment
+  instead, e.g. with `pixi run nvim`.
+
 In an interactive session, `use_pixi_vscode()` asks which console to
 use, unless `console` is given. Otherwise it keeps the console already
 set up, or R.
@@ -41,6 +51,12 @@ use_pixi_rstudio(path = NULL)
 use_pixi_positron(path = NULL, default_r = TRUE)
 
 use_pixi_vscode(path = NULL, console = NULL)
+
+use_pixi_emacs(path = NULL)
+
+use_pixi_neovim(path = NULL)
+
+use_pixi_zed(path = NULL)
 ```
 
 ## Arguments
@@ -71,5 +87,6 @@ if (FALSE) { # \dontrun{
 use_pixi_rstudio()
 use_pixi_positron()
 use_pixi_vscode(console = "arf")
+use_pixi_neovim()
 } # }
 ```
