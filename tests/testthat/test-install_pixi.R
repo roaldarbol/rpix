@@ -125,3 +125,43 @@ test_that("pixi_version() asks a Pixi for its version", {
   skip_if_no_pixi()
   expect_match(pixi_version(pixi_binary()), "^pixi [0-9]")
 })
+
+test_that("parse_pixi_version() reads the version Pixi prints", {
+  expect_equal(parse_pixi_version("pixi 0.81.0"), numeric_version("0.81.0"))
+  expect_equal(
+    parse_pixi_version("pixi 0.82.0-dev"),
+    numeric_version("0.82.0")
+  )
+  expect_null(parse_pixi_version(""))
+  expect_null(parse_pixi_version("pixi unknown"))
+})
+
+test_that("pixi_version_number() is NULL without a Pixi, or its version", {
+  local_mocked_bindings(
+    pixi_binary = function(...) {
+      cli::cli_abort("none", class = "rpix_error_pixi_not_found")
+    }
+  )
+  expect_null(pixi_version_number())
+
+  local_mocked_bindings(
+    pixi_binary = function(...) "/bin/pixi",
+    pixi_version = function(pixi) stop("can't run it")
+  )
+  expect_null(pixi_version_number())
+
+  local_mocked_bindings(pixi_version = function(pixi) "pixi 0.82.0")
+  expect_equal(pixi_version_number(), numeric_version("0.82.0"))
+})
+
+test_that("pixi_version_number() reads the installed Pixi's version", {
+  skip_if_no_pixi()
+  expect_s3_class(pixi_version_number(), "numeric_version")
+})
+
+test_that("pixi_at_least() compares, and is FALSE for an unknown version", {
+  expect_true(pixi_at_least("0.82.0", numeric_version("0.82.0")))
+  expect_true(pixi_at_least("0.82.0", numeric_version("0.83.1")))
+  expect_false(pixi_at_least("0.82.0", numeric_version("0.81.0")))
+  expect_false(pixi_at_least("0.82.0", NULL))
+})
