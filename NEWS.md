@@ -14,6 +14,10 @@
 
 ## Changed
 
+* On Windows, `use_pixi_vscode()` and `pixi_switch()` also give the commands
+  that start VSCodium, Cursor and Windsurf from the environment, and the IDE
+  guide says the VS Code setup works in them too.
+
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
