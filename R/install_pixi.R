@@ -115,6 +115,32 @@ pixi_version <- function(pixi) {
   trimws(processx::run(pixi, "--version")$stdout)
 }
 
+# The version of the Pixi rpix runs, or NULL when there's no Pixi or its
+# version can't be read
+pixi_version_number <- function() {
+  pixi <- tryCatch(
+    pixi_binary(offer_install = FALSE),
+    rpix_error_pixi_not_found = function(e) NULL
+  )
+  if (is.null(pixi)) {
+    return(NULL)
+  }
+  version <- tryCatch(pixi_version(pixi), error = function(e) "")
+  parse_pixi_version(version)
+}
+
+# "pixi 0.81.0" as numeric_version("0.81.0"), or NULL
+parse_pixi_version <- function(text) {
+  version <- regmatches(text, regexpr("[0-9]+\\.[0-9]+\\.[0-9]+", text))
+  if (length(version) == 0) NULL else numeric_version(version)
+}
+
+# Whether the Pixi rpix runs is `version` or newer. FALSE when its version is
+# unknown, so what depends on it falls back to what older Pixi needs.
+pixi_at_least <- function(version, installed = pixi_version_number()) {
+  !is.null(installed) && installed >= version
+}
+
 download_installer <- function(url, destination) {
   utils::download.file(url, destination, quiet = TRUE, mode = "wb")
 }

@@ -8,6 +8,13 @@
 
 ## Changed
 
+* With Pixi 0.82 or later, packages built from source no longer get R's
+  recommended packages, Rust, and on Windows, R's library folder and Rust's
+  GNU target from rpix: `pixi-build-r` adds them itself since 2026-10-12
+  (prefix-dev/pixi#7233, prefix-dev/pixi#7234, prefix-dev/pixi#7235). Older
+  Pixi uses an older `pixi-build-r`, and so may a project with a date of
+  2026-10-12 or earlier, or a duration, so rpix still adds them there, and
+  says why (#148, #149, #150).
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.

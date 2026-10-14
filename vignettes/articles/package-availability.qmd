@@ -38,7 +38,7 @@ Of CRAN's `r num(cran$packages)` packages:
 
 conda-forge has fewer packages than CRAN, but the ones that matter most: `r num(cran$top_on_conda_forge)` of the `r num(cran$top)` packages other CRAN packages depend on most, and `r pct(cran$conda_forge_current)` of its R packages are at CRAN's current version.
 
-**Built from source** is what `pixi_add()` offers for a CRAN package that isn't on conda-forge: Pixi builds it from CRAN's source, with its dependencies from conda-forge (see [Finding packages](finding-packages.html)). A package counts when all its dependencies (`Depends`, `Imports` and `LinkingTo`) are on conda-forge or come with R, and its `SystemRequirements` need nothing beyond what conda-forge's R brings (such as curl, cairo, libxml2 or GSL) and the build tools rpix adds (Rust, CMake, pkg-config, Java). Building one takes a minute or two. A random sample of 25 of them all built and loaded, on macOS.
+**Built from source** is what `pixi_add()` offers for a CRAN package that isn't on conda-forge: Pixi builds it from CRAN's source, with its dependencies from conda-forge (see [Finding packages](finding-packages.html)). A package counts when all its dependencies (`Depends`, `Imports` and `LinkingTo`) are on conda-forge or come with R, and its `SystemRequirements` need nothing beyond what conda-forge's R brings (such as curl, cairo, libxml2 or GSL) and the build tools Pixi and rpix add (Rust, CMake, pkg-config, Java). Building one takes a minute or two. A random sample of 25 of them all built and loaded, on macOS.
 
 ### What's still missing
 
