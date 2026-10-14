@@ -24,6 +24,10 @@ calls these with its `ide` argument.
   when the environment is activated, so it leaves R and the console to
   be found on the `PATH` instead: start VS Code with `pixi run code .`.
 
+In an interactive session, `use_pixi_vscode()` asks which console to
+use, unless `console` is given. Otherwise it keeps the console already
+set up, or R.
+
 Existing settings in `.vscode/settings.json` are kept. In a package,
 `.vscode` is added to `.Rbuildignore`.
 
@@ -34,7 +38,7 @@ use_pixi_rstudio(path = NULL)
 
 use_pixi_positron(path = NULL, default_r = TRUE)
 
-use_pixi_vscode(path = NULL, console = c("R", "arf", "radian"))
+use_pixi_vscode(path = NULL, console = NULL)
 ```
 
 ## Arguments
@@ -52,7 +56,7 @@ use_pixi_vscode(path = NULL, console = c("R", "arf", "radian"))
 
   For `use_pixi_vscode()`: the R console, `"R"`,
   [`"arf"`](https://github.com/eitsupi/arf) or
-  [`"radian"`](https://github.com/randy3k/radian).
+  [`"radian"`](https://github.com/randy3k/radian). `NULL` asks.
 
 ## Value
 

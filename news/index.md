@@ -14,6 +14,11 @@
   [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
   keeps the console
   ([\#132](https://github.com/roaldarbol/rpix/issues/132)).
+- In an interactive session,
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  asks which console to use. `use_pixi(ide = )` passes the IDEs’
+  settings on, e.g. `use_pixi(ide = "vscode", console = "arf")`
+  ([\#134](https://github.com/roaldarbol/rpix/issues/134)).
 
 ### Changed
 

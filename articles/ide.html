@@ -98,14 +98,17 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span></span></code></pre></div>
 <p>or later, for one IDE at a time, with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> or <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code>.</p>
+<p>Some settings are a matter of taste, such as VS Code’s R console. rpix asks about them as it sets the IDE up. To answer in advance, e.g. in a script, give them as arguments, also to <code><a href="../reference/use_pixi.html">use_pixi()</a></code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"vscode"</span>, console <span class="op">=</span> <span class="st">"arf"</span><span class="op">)</span></span></code></pre></div>
 <p>Whichever IDE you use, <code><a href="../reference/pixi_sitrep.html">rpix::pixi_sitrep()</a></code> checks that it runs the project’s R, and suggests fixes if it doesn’t.</p>
 <section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
 </h2>
 <section class="level3"><h3 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_positron</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This turns on Positron’s discovery of R in Pixi environments, and makes the R from the project’s default environment Positron’s default for the project, in <code>.vscode/settings.json</code>.</p>
+<p>This turns on Positron’s discovery of R in Pixi environments, and makes the R from the project’s default environment Positron’s default for the project, in <code>.vscode/settings.json</code>. <code>default_r = FALSE</code> leaves the default out.</p>
 </section><section class="level3"><h3 id="every-day">Every day<a class="anchor" aria-label="anchor" href="#every-day"></a>
 </h3>
 <p>Open the project, and Positron (2026.10 or later) starts its R. With an older Positron, or <code>use_pixi_positron(default_r = FALSE)</code>, pick <strong>R (Pixi: default)</strong> in the interpreter picker once; Positron remembers it for the project. Either way, the environment is activated when R starts, on Windows too.</p>
@@ -124,19 +127,19 @@
 </h2>
 <section class="level3"><h3 id="set-up-1">Set up<a class="anchor" aria-label="anchor" href="#set-up-1"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_rstudio</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This adds an <code>rstudio</code> task to <code>pixi.toml</code>, and creates an <code>.Rproj</code> file if the project doesn’t have one.</p>
 </section><section class="level3"><h3 id="every-day-1">Every day<a class="anchor" aria-label="anchor" href="#every-day-1"></a>
 </h3>
 <p>Start RStudio with the task, in a terminal in the project folder:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run rstudio</span></code></pre></div>
 <p>RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.</p>
 <p>On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>. If it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
 </section><section class="level3"><h3 id="another-environment-1">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-1"></a>
 </h3>
 <p>From RStudio, run:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_switch.html">pixi_switch</a></span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></code></pre></div>
 <p>This starts a new RStudio with the environment’s R, in the project. The first time, it can take a while to open. Close the old one when you’re done with it.</p>
 <p>From a terminal, <code>pixi run --environment test rstudio</code> works too, for environments that include the default feature, which the task belongs to.</p>
@@ -149,21 +152,21 @@
 </h2>
 <section class="level3"><h3 id="set-up-2">Set up<a class="anchor" aria-label="anchor" href="#set-up-2"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_vscode</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This adds the languageserver package to the environment, and points the <a href="https://marketplace.visualstudio.com/items?itemName=REditorSupport.r" class="external-link">R extension</a> at the environment’s R, in the project’s <code>.vscode/settings.json</code>. It works the same in VSCodium.</p>
 <p>When the R extension offers to install its sess package, accept: it installs into the environment.</p>
 </section><section class="level3"><h3 id="another-console">Another console<a class="anchor" aria-label="anchor" href="#another-console"></a>
 </h3>
-<p>The R extension’s console can be <a href="https://github.com/eitsupi/arf" class="external-link">arf</a> or <a href="https://github.com/randy3k/radian" class="external-link">radian</a>, instead of R:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The R extension’s console can be <a href="https://github.com/eitsupi/arf" class="external-link">arf</a> or <a href="https://github.com/randy3k/radian" class="external-link">radian</a>, instead of R. <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> asks which, or takes it as an argument:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_vscode</a></span><span class="op">(</span>console <span class="op">=</span> <span class="st">"arf"</span><span class="op">)</span></span></code></pre></div>
 <p>This adds arf to the environment, and points <code>r.consolePath</code> at it, with <code>r.consoleArgs</code> telling it to start the environment’s R.</p>
 </section><section class="level3"><h3 id="every-day-2">Every day<a class="anchor" aria-label="anchor" href="#every-day-2"></a>
 </h3>
 <p>Open the project folder in VS Code. The R extension uses the environment’s R, and the project’s <code>.Rprofile</code> activates the environment.</p>
 <p>On Windows, the environment’s R only starts when the environment is activated, because it needs the environment’s <code>Library\bin</code> folder on the <code>PATH</code>. So start VS Code from the project’s environment:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run code .</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run code .</span></code></pre></div>
 </section><section class="level3"><h3 id="another-environment-2">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-2"></a>
 </h3>
 <p>Run <code>rpix::pixi_switch("r44")</code>. It changes <code>r.executablePath</code> and <code>r.consolePath</code> in <code>.vscode/settings.json</code> to the environment’s R, <code>${workspaceFolder}/.pixi/envs/r44/bin/R</code>. With arf or radian as the console, it keeps the default environment’s console, and points it at the environment’s R. Then run <strong>Developer: Reload Window</strong> from the Command Palette.</p>
@@ -184,7 +187,7 @@
 </section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
 </h2>
 <p>In the IDE’s R console, <code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/path/to/project/.pixi/envs/default/lib/R"</span></span></code></pre></div>
 </section><script id="quarto-html-after-body" type="application/javascript">

@@ -19,6 +19,9 @@ when the environment is activated, so it leaves R and the console to be
 found on the PATH instead: start VS Code with pixi run code ..
 
 
+In an interactive session, use_pixi_vscode() asks which console to use,
+unless console is given. Otherwise it keeps the console already set up,
+or R.
 Existing settings in .vscode/settings.json are kept. In a package,
 .vscode is added to .Rbuildignore."><meta property="og:description" content="Set an IDE up to use the R in the project's Pixi environment. use_pixi()
 calls these with its ide argument.
@@ -40,6 +43,9 @@ when the environment is activated, so it leaves R and the console to be
 found on the PATH instead: start VS Code with pixi run code ..
 
 
+In an interactive session, use_pixi_vscode() asks which console to use,
+unless console is given. Otherwise it keeps the console already set up,
+or R.
 Existing settings in .vscode/settings.json are kept. In a package,
 .vscode is added to .Rbuildignore."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -119,7 +125,10 @@ at the environment's R and the console, in
 <code>.vscode/settings.json</code>. On Windows, the environment's R only starts
 when the environment is activated, so it leaves R and the console to be
 found on the <code>PATH</code> instead: start VS Code with <code>pixi run code .</code>.</p></li>
-</ul><p>Existing settings in <code>.vscode/settings.json</code> are kept. In a package,
+</ul><p>In an interactive session, <code>use_pixi_vscode()</code> asks which console to use,
+unless <code>console</code> is given. Otherwise it keeps the console already set up,
+or R.</p>
+<p>Existing settings in <code>.vscode/settings.json</code> are kept. In a package,
 <code>.vscode</code> is added to <code>.Rbuildignore</code>.</p>
     </div>
 
@@ -129,7 +138,7 @@ found on the <code>PATH</code> instead: start VS Code with <code>pixi run code .
 <span></span>
 <span><span class="fu">use_pixi_positron</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, default_r <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">use_pixi_vscode</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, console <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"arf"</span>, <span class="st">"radian"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">use_pixi_vscode</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, console <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -148,7 +157,7 @@ environment's R Positron's default for the project.</p></dd>
 <dt id="arg-console">console<a class="anchor" aria-label="anchor" href="#arg-console"></a></dt>
 <dd><p>For <code>use_pixi_vscode()</code>: the R console, <code>"R"</code>,
 <a href="https://github.com/eitsupi/arf" class="external-link"><code>"arf"</code></a> or
-<a href="https://github.com/randy3k/radian" class="external-link"><code>"radian"</code></a>.</p></dd>
+<a href="https://github.com/randy3k/radian" class="external-link"><code>"radian"</code></a>. <code>NULL</code> asks.</p></dd>
 
 </dl></div>
     <div class="section level2">

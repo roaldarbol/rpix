@@ -34,7 +34,8 @@ use_pixi(
   init_if_missing = TRUE,
   install_rpix = TRUE,
   date = NULL,
-  path = NULL
+  path = NULL,
+  ...
 )
 ```
 
@@ -76,6 +77,13 @@ use_pixi(
 
   The folder to set up. Defaults to the working directory.
 
+- ...:
+
+  Passed on to the IDE setup, e.g. `console = "arf"` for
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  or `default_r = FALSE` for
+  [`use_pixi_positron()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
+
 ## Value
 
 The path to the project's manifest, invisibly.
@@ -86,6 +94,7 @@ The path to the project's manifest, invisibly.
 if (FALSE) { # \dontrun{
 use_pixi()
 use_pixi(r_version = "4.5", ide = "positron")
+use_pixi(ide = "vscode", console = "arf")
 use_pixi(date = "2025-06-01")
 } # }
 ```

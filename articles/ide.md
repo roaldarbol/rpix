@@ -16,6 +16,16 @@ or later, for one IDE at a time, with
 or
 [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md).
 
+Some settings are a matter of taste, such as VS Code’s R console. rpix
+asks about them as it sets the IDE up. To answer in advance, e.g. in a
+script, give them as arguments, also to
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md):
+
+``` r
+
+rpix::use_pixi(ide = "vscode", console = "arf")
+```
+
 Whichever IDE you use,
 [`rpix::pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
 checks that it runs the project’s R, and suggests fixes if it doesn’t.
@@ -31,7 +41,8 @@ rpix::use_pixi_positron()
 
 This turns on Positron’s discovery of R in Pixi environments, and makes
 the R from the project’s default environment Positron’s default for the
-project, in `.vscode/settings.json`.
+project, in `.vscode/settings.json`. `default_r = FALSE` leaves the
+default out.
 
 ### Every day
 
@@ -134,7 +145,9 @@ installs into the environment.
 ### Another console
 
 The R extension’s console can be [arf](https://github.com/eitsupi/arf)
-or [radian](https://github.com/randy3k/radian), instead of R:
+or [radian](https://github.com/randy3k/radian), instead of R.
+[`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+asks which, or takes it as an argument:
 
 ``` r
 
