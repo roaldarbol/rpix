@@ -71,3 +71,7 @@ test_that("direnv_set_up() needs a .envrc that activates an environment", {
   writeLines("layout pixi", file.path(root, ".envrc"))
   expect_true(direnv_set_up(root))
 })
+
+test_that("direnv_binary() looks for direnv on the PATH", {
+  expect_equal(direnv_binary(), Sys.which("direnv"))
+})
