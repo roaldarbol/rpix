@@ -67,7 +67,7 @@ Pixi's \code{pixi-build} preview, and pins the build to the project's R. Its
 dependencies come from conda-forge. rpix also adds what \code{pixi-build-r}
 doesn't yet: the build tools its \code{SystemRequirements} names (Java, CMake,
 pkg-config), and in a project for Windows, MSYS2's \code{make}, \code{sed} and
-\code{coreutils}. Pixi before 0.82 uses an older \code{pixi-build-r}, and so may
+\code{coreutils}, and MinGW's compilers in place of \code{pixi-build-r}'s. Pixi before 0.82 uses an older \code{pixi-build-r}, and so may
 a project with a date of 2026-10-12 or earlier, or a duration (see
 \code{\link[=pixi_set_date]{pixi_set_date()}}). There, rpix also adds what that lacks: the
 recommended packages the package uses (such as Matrix and MASS), Rust,

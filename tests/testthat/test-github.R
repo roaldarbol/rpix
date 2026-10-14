@@ -143,11 +143,13 @@ test_that("github_entry() adds what builds on Windows need", {
     paste0(
       'r-hellorust = { git = "https://github.com/cran/hellorust", package = { ',
       'build.backend.name = "pixi-build-r", ',
+      'build.target.win-64.config.compilers = [], ',
       'build.target.win-64.config.extra-args = ["--library=%PREFIX%/Lib/R/library"], ',
       'build-dependencies = { rust = "*" }, ',
       'host-dependencies = { r-base = "4.5.*" }, ',
       'target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", ',
-      'm2-coreutils = "*", rust-std-x86_64-pc-windows-gnu = "*" } } }'
+      'm2-coreutils = "*", gcc_win-64 = "*", gxx_win-64 = "*", ',
+      'gfortran_win-64 = "*", rust-std-x86_64-pc-windows-gnu = "*" } } }'
     )
   )
   # pixi-build-r adds these itself since 2026-10-12
@@ -157,9 +159,11 @@ test_that("github_entry() adds what builds on Windows need", {
     paste0(
       'r-hellorust = { git = "https://github.com/cran/hellorust", package = { ',
       'build.backend.name = "pixi-build-r", ',
+      'build.target.win-64.config.compilers = [], ',
       'host-dependencies = { r-base = "4.5.*" }, ',
       'target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", ',
-      'm2-coreutils = "*" } } }'
+      'm2-coreutils = "*", gcc_win-64 = "*", gxx_win-64 = "*", ',
+      'gfortran_win-64 = "*" } } }'
     )
   )
   # Rust's GNU target only for packages that need Rust

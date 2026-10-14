@@ -143,7 +143,7 @@ add_github_packages <- function(
   }
   if (windows) {
     cli::cli_alert_info(
-      "On Windows, rpix adds MSYS2's build tools, as {.code pixi-build-r} doesn't yet."
+      "On Windows, rpix adds MSYS2's build tools, and MinGW's compilers in place of {.code pixi-build-r}'s, until {.code pixi-build-r} does this itself."
     )
   }
 
@@ -238,6 +238,8 @@ github_entry <- function(
   package <- ', package = { build.backend.name = "pixi-build-r"'
   if (windows) {
     build <- windows_build(requirements, older_backend)
+    # pixi-build-r's own compilers left out, see windows_build()
+    package <- paste0(package, ", build.target.win-64.config.compilers = []")
     if (length(build$extra_args) > 0) {
       package <- paste0(
         package,
@@ -272,9 +274,15 @@ github_entry <- function(
   )
 }
 
-# What pixi-build-r doesn't add to builds on Windows yet: MSYS2's make, sed
-# and coreutils, which R's build rules need for compiled code
-# (https://github.com/prefix-dev/pixi/issues/7232). With `older_backend` (see
+# What pixi-build-r doesn't add to builds on Windows yet:
+# * MSYS2's make, sed and coreutils, which R's build rules need for compiled
+#   code (https://github.com/prefix-dev/pixi/issues/7232)
+# * MinGW's compilers, which R uses there, in place of pixi-build-r's (Visual
+#   Studio and flang). flang's activation puts an MSVC-style flag in LDFLAGS,
+#   which breaks configure scripts (#191,
+#   https://github.com/prefix-dev/pixi/issues/7276). The compiler packages
+#   set CC, CXX and FC for them.
+# With `older_backend` (see
 # older_backend()), also what it only does since 2026-10-12:
 # * R's library: it installed into Library\R\library, but conda-forge's R
 #   uses Lib\R\library (https://github.com/prefix-dev/pixi/issues/7231). A
@@ -288,6 +296,9 @@ windows_build <- function(requirements, older_backend = FALSE) {
       "m2-make",
       "m2-sed",
       "m2-coreutils",
+      "gcc_win-64",
+      "gxx_win-64",
+      "gfortran_win-64",
       if (older_backend && "rust" %in% requirements$build) {
         "rust-std-x86_64-pc-windows-gnu"
       }
