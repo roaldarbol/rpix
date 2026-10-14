@@ -15,7 +15,13 @@ R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
 R at the Pixi library. It's removed.
 In a package, it adds .pixi, pixi.toml and pixi.lock to
-.Rbuildignore, so they stay out of the package's builds."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
+.Rbuildignore, so they stay out of the package's builds.
+It turns on Pixi's activation cache for the project, in
+.pixi/config.toml. Pixi then reuses the environment's activation until the
+project changes, so R started through Pixi, e.g. by pixi run or Positron,
+starts in a fraction of a second rather than a few. The cache is
+experimental in Pixi, and doesn't notice changes outside the project, e.g.
+a newly installed Java."><meta property="og:description" content="Create a Pixi project in the working directory if there isn't one, add R to
 it, and install rpix into its environment.
 It also adds conda-forge's conda-ecosystem-user-package-isolation, which
 keeps your personal R library out of the environment's R. Otherwise
@@ -31,7 +37,13 @@ R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
 R at the Pixi library. It's removed.
 In a package, it adds .pixi, pixi.toml and pixi.lock to
-.Rbuildignore, so they stay out of the package's builds."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
+.Rbuildignore, so they stay out of the package's builds.
+It turns on Pixi's activation cache for the project, in
+.pixi/config.toml. Pixi then reuses the environment's activation until the
+project changes, so R started through Pixi, e.g. by pixi run or Positron,
+starts in a fraction of a second rather than a few. The cache is
+experimental in Pixi, and doesn't notice changes outside the project, e.g.
+a newly installed Java."><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -109,6 +121,12 @@ library setup" block in their <code>.Rprofile</code> instead, which pointed a ru
 R at the Pixi library. It's removed.</p>
 <p>In a package, it adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to
 <code>.Rbuildignore</code>, so they stay out of the package's builds.</p>
+<p>It turns on Pixi's activation cache for the project, in
+<code>.pixi/config.toml</code>. Pixi then reuses the environment's activation until the
+project changes, so R started through Pixi, e.g. by <code>pixi run</code> or Positron,
+starts in a fraction of a second rather than a few. The cache is
+experimental in Pixi, and doesn't notice changes outside the project, e.g.
+a newly installed Java.</p>
     </div>
 
     <div class="section level2">
@@ -120,6 +138,7 @@ R at the Pixi library. It's removed.</p>
 <span>  install_rpix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  activation_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -159,6 +178,11 @@ added, so R and the packages are all as of that date. See
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>The folder to set up. Defaults to the working directory.</p></dd>
+
+
+<dt id="arg-activation-cache">activation_cache<a class="anchor" aria-label="anchor" href="#arg-activation-cache"></a></dt>
+<dd><p>If <code>TRUE</code>, turn on Pixi's activation cache for the
+project.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

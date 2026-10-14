@@ -25,6 +25,13 @@ Pixi library. It's removed.
 In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 `.Rbuildignore`, so they stay out of the package's builds.
 
+It turns on Pixi's activation cache for the project, in
+`.pixi/config.toml`. Pixi then reuses the environment's activation until
+the project changes, so R started through Pixi, e.g. by `pixi run` or
+Positron, starts in a fraction of a second rather than a few. The cache
+is experimental in Pixi, and doesn't notice changes outside the project,
+e.g. a newly installed Java.
+
 ## Usage
 
 ``` r
@@ -35,6 +42,7 @@ use_pixi(
   install_rpix = TRUE,
   date = NULL,
   path = NULL,
+  activation_cache = TRUE,
   ...
 )
 ```
@@ -73,6 +81,10 @@ use_pixi(
 - path:
 
   The folder to set up. Defaults to the working directory.
+
+- activation_cache:
+
+  If `TRUE`, turn on Pixi's activation cache for the project.
 
 - ...:
 

@@ -70,6 +70,8 @@
 <code>use_pixi_vscode(console = )</code> sets up arf or radian as the R extension’s console, starting the environment’s R. <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> keeps the console (<a href="https://github.com/roaldarbol/rpix/issues/132" class="external-link">#132</a>).</li>
 <li>In an interactive session, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> asks which console to use. <code>use_pixi(ide = )</code> passes the IDEs’ settings on, e.g. <code>use_pixi(ide = "vscode", console = "arf")</code> (<a href="https://github.com/roaldarbol/rpix/issues/134" class="external-link">#134</a>).</li>
 <li>In an interactive session, <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> without an environment asks which, from a menu of the project’s environments (<a href="https://github.com/roaldarbol/rpix/issues/189" class="external-link">#189</a>).</li>
+<li>
+<code><a href="../reference/use_pixi.html">use_pixi()</a></code> turns on Pixi’s activation cache for the project, so R started through Pixi, e.g. by <code>pixi run R</code> or Positron, starts in a fraction of a second rather than a few. <code>activation_cache = FALSE</code> leaves it off (<a href="https://github.com/roaldarbol/rpix/issues/195" class="external-link">#195</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>

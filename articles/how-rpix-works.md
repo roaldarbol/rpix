@@ -18,6 +18,18 @@ use different versions of R, side by side.
 *activates* the environment: it sets up environment variables that some
 packages need, such as where GDAL finds its data.
 
+Activating takes a few seconds in an environment with R, mostly because
+conda-forge’s R reconfigures Java each time. So
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+turns on Pixi’s activation cache for the project, in
+`.pixi/config.toml`: Pixi reuses the activation until the project
+changes, and R starts in a fraction of a second. The cache is
+experimental in Pixi. To turn it on in a project set up another way:
+
+``` sh
+pixi config set --local experimental.use-environment-activation-cache true
+```
+
 IDEs need to be pointed at the environment’s R; see [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
 

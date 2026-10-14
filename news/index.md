@@ -37,6 +37,11 @@
   [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
   without an environment asks which, from a menu of the project’s
   environments ([\#189](https://github.com/roaldarbol/rpix/issues/189)).
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  turns on Pixi’s activation cache for the project, so R started through
+  Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
+  second rather than a few. `activation_cache = FALSE` leaves it off
+  ([\#195](https://github.com/roaldarbol/rpix/issues/195)).
 
 ### Changed
 

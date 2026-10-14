@@ -101,6 +101,8 @@
 </section><section class="level2"><h2 id="start-r-through-pixi">Start R through Pixi<a class="anchor" aria-label="anchor" href="#start-r-through-pixi"></a>
 </h2>
 <p><code>pixi run R</code> starts the environment’s R. Before it does, Pixi <em>activates</em> the environment: it sets up environment variables that some packages need, such as where GDAL finds its data.</p>
+<p>Activating takes a few seconds in an environment with R, mostly because conda-forge’s R reconfigures Java each time. So <code><a href="../reference/use_pixi.html">use_pixi()</a></code> turns on Pixi’s activation cache for the project, in <code>.pixi/config.toml</code>: Pixi reuses the activation until the project changes, and R starts in a fraction of a second. The cache is experimental in Pixi. To turn it on in a project set up another way:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> config set <span class="at">--local</span> experimental.use-environment-activation-cache true</span></code></pre></div>
 <p>IDEs need to be pointed at the environment’s R; see <a href="ide.html">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="when-an-ide-starts-r-directly">When an IDE starts R directly<a class="anchor" aria-label="anchor" href="#when-an-ide-starts-r-directly"></a>
 </h2>
@@ -120,15 +122,15 @@
 </h2>
 <p>conda-forge’s R also looks in your personal package library, and even looks there first. That’s the one your usual R installs into, such as <code>~/Library/R/x86_64/4.5/library</code> on macOS, or <code>%LOCALAPPDATA%/R/win-library/4.5</code> on Windows. So packages built for your usual R can be loaded into the environment’s R. This is a <a href="https://github.com/conda-forge/r-base-feedstock/issues/37" class="external-link">long-standing issue in conda-forge’s R</a>.</p>
 <p><code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds conda-forge’s <a href="https://github.com/conda-forge/conda-ecosystem-user-package-isolation-feedstock" class="external-link">conda-ecosystem-user-package-isolation</a> to the project, which fixes this. When Pixi activates the environment, it points <code>R_LIBS_USER</code> at a folder that doesn’t exist, so R leaves the personal library out. It does the same for Python’s user packages. To add it to a project yourself:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"conda::conda-ecosystem-user-package-isolation"</span><span class="op">)</span></span></code></pre></div>
 <p>Pixi applies this when it starts R, as <code>pixi run R</code> does, and the project’s <code>.Rprofile</code> takes care of it when an IDE starts R directly. Check with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </section><section class="level2"><h2 id="what-rpix-runs">What rpix runs<a class="anchor" aria-label="anchor" href="#what-rpix-runs"></a>
 </h2>
 <p>Each rpix function runs a Pixi command, and shows it:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Running `pixi add r-dplyr --manifest-path pixi.toml`</span></span></code></pre></div>
 <p>So you can always do the same in a terminal, and learn Pixi along the way. With <code>dry_run = TRUE</code>, rpix shows the command without running it.</p>
