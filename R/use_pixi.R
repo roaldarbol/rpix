@@ -129,7 +129,8 @@ use_pixi <- function(
       "r-languageserver"
     }
   )
-  run_pixi(c("add", packages), path = path, echo = TRUE)
+  # Only the ones it doesn't have, e.g. when use_pixi() runs again
+  add_missing(packages, path)
 
   if (install_rpix) {
     # From inside the environment's R, so rpix is installed for that R. Its
@@ -168,6 +169,18 @@ rpix_dependencies <- function(imports = rpix_imports()) {
   imports <- trimws(strsplit(imports, ",", fixed = TRUE)[[1]])
   imports <- sub("[[:space:]]*\\(.*$", "", imports)
   parse_packages(imports)$name
+}
+
+# Which of the packages the project's default feature has already
+has_dependency <- function(packages, path) {
+  manifest <- find_manifest(path)
+  lines <- if (!is.null(manifest)) readLines(manifest, warn = FALSE)
+  rows <- c(
+    table_lines(lines, "dependencies"),
+    table_lines(lines, "tool.pixi.dependencies")
+  )
+  names <- sub('^\\s*"?([^"=[:space:]]+)"?\\s*=.*$', "\\1", lines[rows])
+  packages %in% names
 }
 
 # Turn on Pixi's activation cache in the project's .pixi/config.toml. Without
