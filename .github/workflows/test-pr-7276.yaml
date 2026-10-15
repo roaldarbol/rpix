@@ -1,0 +1,145 @@
+# Temporary: prefix-dev/pixi#7276 (MinGW compilers for pixi-build-r on Windows)
+# on roaldarbol/pixi's branch: its tests, clippy and formatting, then real
+# builds with its backend, with none of rpix's stopgaps for this (#191) in the
+# entries.
+name: test-pr-7276
+
+on:
+  push:
+    branches: [test/windows-source-builds]
+  workflow_dispatch:
+
+permissions: read-all
+
+env:
+  BRANCH: fix/pixi-build-r-windows-mingw
+
+jobs:
+  checks:
+    name: tests, clippy, fmt
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: ${{ env.BRANCH }}
+      - run: rustup component add rustfmt clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt -p pixi-build-r --check
+      - run: cargo clippy -p pixi-build-r --all-targets -- -D warnings
+      - run: cargo test -p pixi-build-r
+
+  backend:
+    name: build the backend on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: roaldarbol/pixi
+          ref: ${{ env.BRANCH }}
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build -p pixi-build-r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pixi-build-r-${{ matrix.os }}
+          path: target/debug/pixi-build-r*
+          if-no-files-found: error
+
+  build:
+    name: ${{ matrix.package }} on ${{ matrix.os }}
+    needs: backend
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        package: [minimal, quadprog, RcppRoll, hellorust, ACSWR]
+        include:
+          - { os: ubuntu-latest, package: minimal }
+          - { os: ubuntu-latest, package: quadprog }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pixi-build-r-${{ matrix.os }}
+          path: backend
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.82.0
+          run-install: false
+      - name: Use the branch's backend
+        run: |
+          exe=$(ls backend/pixi-build-r* | grep -v '\.d$' | grep -v '\.pdb$' | head -1)
+          chmod +x "$exe"
+          echo "PIXI_BUILD_BACKEND_OVERRIDE=pixi-build-r=$PWD/$exe" >> "$GITHUB_ENV"
+      - name: Build and load, without rpix's stopgap
+        id: run
+        run: |
+          pkg=${{ matrix.package }}
+          lower=$(echo $pkg | tr A-Z a-z)
+          platform=linux-64
+          windows=""
+          if [ "$RUNNER_OS" = Windows ]; then
+            platform=win-64
+            # MSYS2's tools: still a separate stopgap (prefix-dev/pixi#7232)
+            windows=', target.win-64.build-dependencies = { m2-make = "*", m2-sed = "*", m2-coreutils = "*" }'
+          fi
+          if [ "$pkg" = minimal ]; then
+            mkdir -p minimal/src
+            printf 'Package: minimal\nVersion: 0.1\nTitle: Minimal\nDescription: Minimal.\nLicense: MIT\nAuthors@R: person("A", "B", role = c("aut", "cre"), email = "a@b.c")\nNeedsCompilation: yes\n' > minimal/DESCRIPTION
+            echo 'useDynLib(minimal)' > minimal/NAMESPACE
+            printf 'extern "C" void R_init_minimal(void *dll) {}\n' > minimal/src/minimal.cpp
+            # What autoconf's compiler checks do: R's compiler, with the environment's flags
+            cat > minimal/configure <<'SH'
+          #!/bin/sh
+          CXX=`"${R_HOME}/bin/R" CMD config CXX`
+          echo "configure: LDFLAGS=$LDFLAGS"
+          echo 'int main(void) { return 0; }' > conftest.cpp
+          $CXX $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.cpp -o conftest.exe || { echo "C++ compiler cannot create executables"; exit 1; }
+          rm -f conftest.cpp conftest.exe
+          SH
+            cp minimal/configure minimal/configure.win
+            chmod +x minimal/configure
+            src='path = "../minimal"'
+          else
+            src="git = \"https://github.com/cran/$pkg\""
+          fi
+          mkdir p && cd p
+          cat > pixi.toml <<TOML
+          [workspace]
+          name = "t"
+          channels = ["conda-forge"]
+          platforms = ["$platform"]
+          preview = ["pixi-build"]
+          [dependencies]
+          r-base = "4.5.*"
+          r-$lower = { $src, package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" }$windows } }
+          TOML
+          cat pixi.toml
+          set +e
+          pixi run -v Rscript -e "library($pkg); cat('LOADED\n')" > ../log.txt 2>&1
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          clean=$(sed 's/\x1b\[[0-9;]*m//g' ../log.txt)
+          echo "--- the backend"
+          grep -oE "Instantiated backend pixi-build-r@[^ ,]*" <<< "$clean" | sort -u || true
+          echo "--- compilers in the build environment"
+          grep -E "^\s*│?\s*│?\s*│?\s*(vs20[0-9]+_win-64|flang[a-z_-]*|gcc_win-64|gxx_win-64|gfortran_win-64|gcc_linux-64|gxx_linux-64|gfortran_linux-64|clang) " <<< "$clean" | sed 's/  */ /g' | sort -u | head -12 || true
+          echo "--- configure"
+          grep -E "configure: LDFLAGS|cannot create executables" <<< "$clean" | head -5 || true
+          echo "--- errors"
+          grep -E "ERROR|error:" <<< "$clean" | grep -v "errorlevel\|RB_SECTION" | head -10 || true
+          grep -q LOADED <<< "$clean" && echo "LOADED" || echo "NOT LOADED"
+      - name: Result
+        run: |
+          echo "## ${{ matrix.package }} on ${{ matrix.os }}: exit ${{ steps.run.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          exit ${{ steps.run.outputs.status }}
