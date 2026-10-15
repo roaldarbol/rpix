@@ -1,6 +1,9 @@
 test_that("pixi_add() and pixi_remove() add to a feature or platform", {
   calls <- local_recorded_pixi()
-  local_mocked_bindings(project_channels = function(...) "conda-forge")
+  local_mocked_bindings(
+    project_channels = function(...) "conda-forge",
+    install_changed_environment = function(...) NULL
+  )
 
   pixi_add("testthat", feature = "test", platform = "linux-64")
   pixi_remove("testthat", feature = "test")

@@ -105,3 +105,42 @@ package_names <- function(packages) {
   }
   parse_packages(packages)$name
 }
+
+# After pixi add and pixi remove, Pixi only installs when the project has one
+# environment (https://github.com/roaldarbol/rpix/issues/202). Otherwise,
+# install the environment this R runs in, or else the default one, if the
+# change applies to it, so what was added can be loaded straight away.
+install_changed_environment <- function(feature = NULL, path = NULL) {
+  if (tolower(Sys.getenv("PIXI_NO_INSTALL")) %in% c("1", "true")) {
+    return(NULL)
+  }
+  # The change is made by now, so not knowing the environments doesn't fail it
+  environments <- tryCatch(pixi_environments(path), error = function(e) NULL)
+  if (is.null(environments) || nrow(environments) <= 1) {
+    return(NULL)
+  }
+  running <- pixi_r_location(r_home())
+  root <- find_project_root(path %||% getwd())
+  environment <- if (
+    !is.null(running) &&
+      !is.null(root) &&
+      same_path(running$root, root) &&
+      running$name %in% environments$name
+  ) {
+    running$name
+  } else {
+    "default"
+  }
+  features <- environments$features[[match(environment, environments$name)]]
+  if (!(feature %||% "default") %in% features) {
+    return(NULL)
+  }
+  cli::cli_alert_info(
+    "Installing the {.val {environment}} environment, as Pixi doesn't by itself in a project with several environments."
+  )
+  run_pixi(
+    c("install", "--environment", environment),
+    path = path,
+    echo = TRUE
+  )
+}

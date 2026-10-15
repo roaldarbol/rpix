@@ -316,6 +316,7 @@ local_github_project <- function(pixi = "0.82.0", env = parent.frame()) {
       invisible(list(status = 0))
     },
     project_channels = function(...) "conda-forge",
+    install_changed_environment = function(...) NULL,
     pixi_version_number = function() {
       if (!is.null(pixi)) numeric_version(pixi)
     },

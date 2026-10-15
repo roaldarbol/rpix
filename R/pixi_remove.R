@@ -37,10 +37,14 @@ pixi_remove <- function(
       "{.fn pixi_remove} takes package names without version constraints."
     )
   }
-  run_pixi(
+  result <- run_pixi(
     c("remove", parsed$name, unname(names), scope_args(feature, platform)),
     path = path,
     echo = TRUE,
     dry_run = dry_run
   )
+  if (!isTRUE(dry_run)) {
+    install_changed_environment(feature, path = path)
+  }
+  invisible(result)
 }
