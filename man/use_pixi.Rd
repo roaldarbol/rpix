@@ -17,8 +17,8 @@ use_pixi(
 }
 \arguments{
 \item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
-to the newest one that the packages \code{use_pixi()} adds are built for on
-conda-forge.}
+to the newest one that conda-forge has R packages for; it has a new R
+before its packages are built for it.}
 
 \item{ide}{Optional. IDEs to set the project up for: any of \code{"rstudio"},
 \code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"}. See
