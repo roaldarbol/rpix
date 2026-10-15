@@ -72,3 +72,30 @@ test_that("pixi_add() checks the install for skipped install scripts too", {
   expect_length(checked, 2)
   expect_equal(checked[[2]], list(stderr = "installed"))
 })
+
+test_that("install_environment() shows Pixi's output the first time", {
+  root <- withr::local_tempdir()
+  calls <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, path, echo = FALSE, announce = echo) {
+      calls <<- c(calls, list(list(args, path, echo, announce)))
+    }
+  )
+
+  expect_snapshot(install_environment("r44", root))
+  expect_equal(
+    calls[[1]],
+    list(c("install", "--environment", "r44"), root, TRUE, FALSE)
+  )
+
+  # Installed already: Pixi only updates it, if need be, quietly
+  dir.create(
+    file.path(root, ".pixi", "envs", "r44", "conda-meta"),
+    recursive = TRUE
+  )
+  expect_silent(install_environment("r44", root))
+  expect_equal(
+    calls[[2]],
+    list(c("install", "--environment", "r44"), root, FALSE, FALSE)
+  )
+})
