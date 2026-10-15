@@ -71,11 +71,13 @@ test_that("reports a missing Pixi, project or Pixi R", {
     environment = NULL,
     in_project = FALSE,
     activated = FALSE,
-    ide = NA_character_
+    ide = NA_character_,
+    ide_set_up = NULL
   ))
   expect_match(out, "can't find it")
   expect_match(out, "no Pixi project")
   expect_match(out, "isn't from a Pixi environment")
+  expect_match(out, "set your IDE up")
   expect_match(out, "Not in RStudio, Positron, VS Code, Emacs, Neovim or Zed")
 
   out <- sitrep_output(good_report(
