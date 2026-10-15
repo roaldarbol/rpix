@@ -65,6 +65,37 @@ test_that("use_pixi() creates a project and adds R and rpix", {
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
 })
 
+test_that("use_pixi() installs rpix quietly, unless it's there already", {
+  dir <- withr::local_tempdir()
+  steps <- list()
+  local_mocked_bindings(
+    run_pixi_step = function(args, step, done, path) {
+      steps <<- c(steps, list(args))
+    }
+  )
+  # Not there
+  expect_true(install_rpix_into(dir))
+  expect_equal(steps[[1]][1:3], c("run", "Rscript", "-e"))
+  # A failed install fails Rscript
+  expect_match(steps[[1]][4], "^options\\(warn = 2\\); utils::install")
+
+  library <- file.path(dir, ".pixi", "envs", "default", "lib", "R", "library")
+  dir.create(file.path(library, "rpix"), recursive = TRUE)
+  description <- file.path(library, "rpix", "DESCRIPTION")
+  # Older than this rpix
+  writeLines("Version: 0.0.1", description)
+  expect_true(install_rpix_into(dir))
+  expect_length(steps, 2)
+
+  # This version, or newer
+  writeLines(paste("Version:", utils::packageVersion("rpix")), description)
+  expect_message(
+    expect_false(install_rpix_into(dir)),
+    "has rpix .* already"
+  )
+  expect_length(steps, 2)
+})
+
 test_that("use_pixi() uses an existing project and can skip rpix", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
@@ -246,9 +277,12 @@ test_that("use_pixi() leaves Pixi's files out of a package's builds", {
   writeLines("Package: demo", file.path(dir, "DESCRIPTION"))
   writeLines("^demo\\.Rproj$", file.path(dir, ".Rbuildignore"))
 
-  expect_snapshot(use_pixi(path = dir), transform = function(x) {
-    gsub(dir, "<dir>", x, fixed = TRUE)
-  })
+  expect_snapshot(
+    use_pixi(path = dir, install_rpix = FALSE),
+    transform = function(x) {
+      gsub(dir, "<dir>", x, fixed = TRUE)
+    }
+  )
   expect_equal(
     readLines(file.path(dir, ".Rbuildignore")),
     c("^demo\\.Rproj$", "^\\.pixi$", "^pixi\\.toml$", "^pixi\\.lock$")

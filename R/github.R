@@ -161,17 +161,18 @@ add_github_packages <- function(
   lines <- enable_preview(lines, "pixi-build")
   writeLines(lines, manifest)
 
-  cli::cli_inform(
-    c(
-      "i" = "Pixi builds {cli::qty(length(packages))}{?it/them} from source with {.code pixi-build-r}, which can take a minute.",
-      "i" = "Packages from GitHub are experimental: see {.url https://github.com/roaldarbol/rpix/issues/96}."
-    )
+  cli::cli_alert_info(
+    "Packages from GitHub are experimental: see {.url https://github.com/roaldarbol/rpix/issues/96}."
   )
+  repos <- sub("^github::", "", packages, ignore.case = TRUE)
   tryCatch(
-    run_pixi(
+    run_pixi_step(
       if (is.null(feature)) "install" else "lock",
-      path = dirname(manifest),
-      echo = TRUE
+      step = cli::format_inline(
+        "Building {.pkg {repos}} with {.code pixi-build-r}, which can take a minute"
+      ),
+      done = cli::format_inline("Built {.pkg {repos}} from source"),
+      path = dirname(manifest)
     ),
     error = function(e) {
       writeLines(original, manifest)

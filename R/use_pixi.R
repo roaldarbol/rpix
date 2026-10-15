@@ -41,9 +41,9 @@
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
 #'   added, so R and the packages are all as of that date. See
 #'   [pixi_set_date()].
-#' @param install_rpix If `TRUE`, install rpix into the project's environment.
-#'   Its dependencies come from conda-forge, and rpix itself from R-universe
-#'   until it's on conda-forge.
+#' @param install_rpix If `TRUE`, install rpix into the project's environment,
+#'   unless it has this version or a newer one. Its dependencies come from
+#'   conda-forge, and rpix itself from R-universe until it's on conda-forge.
 #' @param path The folder to set up. Defaults to the working directory.
 #' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
 #'   project.
@@ -132,13 +132,7 @@ use_pixi <- function(
   run_pixi(c("add", packages), path = path, echo = TRUE)
 
   if (install_rpix) {
-    # From inside the environment's R, so rpix is installed for that R. Its
-    # dependencies are already there, from conda-forge.
-    install <- paste0(
-      "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
-      "lib = .Library, dependencies = FALSE, type = 'source')"
-    )
-    run_pixi(c("run", "Rscript", "-e", install), path = path, echo = TRUE)
+    install_rpix_into(path)
   }
 
   remove_legacy_rprofile(file.path(path, ".Rprofile"))
@@ -160,6 +154,44 @@ use_pixi <- function(
     )
   }
   invisible(manifest)
+}
+
+# Install rpix into the default environment, unless it has this version or a
+# newer one. From inside the environment's R, so rpix is installed for that R.
+# Its dependencies are already there, from conda-forge.
+install_rpix_into <- function(path) {
+  installed <- file.path(
+    path,
+    ".pixi",
+    "envs",
+    "default",
+    "lib",
+    "R",
+    "library",
+    "rpix",
+    "DESCRIPTION"
+  )
+  version <- utils::packageVersion("rpix")
+  if (
+    file.exists(installed) &&
+      package_version(read.dcf(installed, "Version")[1, 1]) >= version
+  ) {
+    cli::cli_alert_success("The environment has rpix {version} already.")
+    return(invisible(FALSE))
+  }
+  # A failed install is only a warning, which would let Rscript succeed
+  install <- paste0(
+    "options(warn = 2); ",
+    "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
+    "lib = .Library, dependencies = FALSE, type = 'source')"
+  )
+  run_pixi_step(
+    c("run", "Rscript", "-e", install),
+    step = "Installing rpix into the environment from R-universe",
+    done = "Installed rpix into the environment from R-universe",
+    path = path
+  )
+  invisible(TRUE)
 }
 
 # rpix's own dependencies, as conda packages. Reads rpix's DESCRIPTION through
