@@ -85,6 +85,16 @@ test_that("Open with the project's Pixi R picks the only environment, or asks", 
   )
   addin_open_with_pixi_r()
   expect_null(switched)
+
+  # Already in the project's Pixi R, with one environment: nothing to do
+  switched <- "unset"
+  local_mocked_bindings(
+    pixi_environments = function(path) data.frame(name = "default"),
+    r_home = function() "/project/.pixi/envs/default/lib/R",
+    same_path = function(x, y) TRUE
+  )
+  expect_message(addin_open_with_pixi_r(), "already runs the project's Pixi R")
+  expect_equal(switched, "unset")
 })
 
 test_that("the other addins run rpix's functions", {

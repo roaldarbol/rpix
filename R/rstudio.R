@@ -40,7 +40,20 @@ addin_add_file_packages <- function() {
 
 # Start RStudio with an environment's R: the only one, or one picked
 addin_open_with_pixi_r <- function() {
-  environments <- pixi_environments(require_project(NULL))$name
+  root <- require_project(NULL)
+  environments <- pixi_environments(root)$name
+  # Already there, with nothing else to switch to
+  running <- pixi_r_location(r_home())
+  if (
+    length(environments) == 1 &&
+      !is.null(running) &&
+      same_path(running$root, root)
+  ) {
+    cli::cli_alert_success(
+      "This RStudio already runs the project's Pixi R ({.val {running$name}})."
+    )
+    return(invisible())
+  }
   environment <- if (length(environments) == 1) environments
   pixi_switch(environment, ide = "rstudio")
 }
