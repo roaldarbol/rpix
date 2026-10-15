@@ -238,13 +238,9 @@ find_manifest <- function(path = NULL) {
   dir <- normalizePath(path, winslash = "/", mustWork = FALSE)
 
   repeat {
-    pixi_toml <- file.path(dir, "pixi.toml")
-    if (file.exists(pixi_toml)) {
-      return(pixi_toml)
-    }
-    pyproject <- file.path(dir, "pyproject.toml")
-    if (file.exists(pyproject) && has_pixi_table(pyproject)) {
-      return(pyproject)
+    manifest <- manifest_in(dir)
+    if (!is.null(manifest)) {
+      return(manifest)
     }
     parent <- dirname(dir)
     if (identical(parent, dir)) {
@@ -252,6 +248,19 @@ find_manifest <- function(path = NULL) {
     }
     dir <- parent
   }
+}
+
+# The manifest in the folder itself, not in a parent folder, or NULL
+manifest_in <- function(dir) {
+  pixi_toml <- file.path(dir, "pixi.toml")
+  if (file.exists(pixi_toml)) {
+    return(pixi_toml)
+  }
+  pyproject <- file.path(dir, "pyproject.toml")
+  if (file.exists(pyproject) && has_pixi_table(pyproject)) {
+    return(pyproject)
+  }
+  NULL
 }
 
 has_pixi_table <- function(pyproject) {
