@@ -48,6 +48,10 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* In a project with packages as of a date before 2026-10-15, `pixi_add()`
+  and `pixi_import_renv()` no longer offer to build CRAN packages that
+  aren't on conda-forge from source, which then failed: they say that the
+  date hides Pixi's build backend instead (#221).
 
 # rpix 0.8.0 (2026-10-13)
 
