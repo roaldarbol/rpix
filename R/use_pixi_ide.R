@@ -261,7 +261,13 @@ use_pixi_editor <- function(path, editor, call = parent.frame()) {
 
 # The command that starts an editor in the project
 editor_command <- function(editor) {
-  c(emacs = "emacs", neovim = "nvim", zed = "zed .")[[editor]]
+  commands <- c(
+    vscode = "code .",
+    emacs = "emacs",
+    neovim = "nvim",
+    zed = "zed ."
+  )
+  commands[[editor]]
 }
 
 require_project <- function(path, call = parent.frame()) {
