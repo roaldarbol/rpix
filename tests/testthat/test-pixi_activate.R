@@ -245,7 +245,8 @@ test_that("says when the project also has renv", {
   dir.create(file.path(p$root, "renv"))
   file.create(file.path(p$root, "renv", "activate.R"))
   expect_true(has_renv(p$root))
-  expect_message(pixi_activate(p$root, quiet = FALSE), "also has renv")
+  messages <- capture_messages(pixi_activate(p$root, quiet = FALSE))
+  expect_match(paste(messages, collapse = ""), "also has renv")
 })
 
 test_that("offers to reopen the project with its Pixi R, and closes this RStudio", {
