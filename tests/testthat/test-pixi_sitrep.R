@@ -227,7 +227,8 @@ test_that("collects a moved or copied project, and removes its stale cache", {
   report <- sitrep_data(root)
   expect_true(report$stale_cache)
   expect_false(file.exists(cache))
-  expect_equal(report$moved_environments, c(default = "/old/project"))
+  old <- normalizePath("/old/project", winslash = "/", mustWork = FALSE)
+  expect_equal(report$moved_environments, c(default = old))
 })
 
 test_that("collects nothing project-specific outside a project", {

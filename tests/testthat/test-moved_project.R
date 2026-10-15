@@ -113,10 +113,9 @@ test_that("finds environments installed in another location", {
   dir.create(file.path(root, ".pixi", "envs", "odd", "bin"), recursive = TRUE)
   writeLines("exec R", file.path(root, ".pixi", "envs", "odd", "bin", "R"))
 
-  expect_equal(
-    moved_environments(root),
-    c(default = "/old/project", test = "/old/project")
-  )
+  # On Windows, with the drive
+  old <- normalizePath("/old/project", winslash = "/", mustWork = FALSE)
+  expect_equal(moved_environments(root), c(default = old, test = old))
 })
 
 test_that("says to reinstall moved environments", {
