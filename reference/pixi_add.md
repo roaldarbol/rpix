@@ -41,6 +41,12 @@ a prefix to say where a package comes from:
   may change, e.g. to use `pixi add` once it can set a build backend;
   see <https://github.com/roaldarbol/rpix/issues/96>.
 
+In a project with several environments, Pixi doesn't install after
+adding or removing, so `pixi_add()` and
+[`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+install the environment R runs in (or else the default one), when the
+change applies to it.
+
 When it adds R (`r-base`) to the default feature, it also adds
 `conda-ecosystem-user-package-isolation`, unless it's there, to keep
 your personal R library out of the environment's R, as

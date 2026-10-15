@@ -71,6 +71,14 @@
 
 ### Fixed
 
+- In a project with several environments,
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
+  and
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  install the environment R runs in, as Pixi doesn’t by itself there; a
+  package added was missing until the next `pixi install`
+  ([\#202](https://github.com/roaldarbol/rpix/issues/202)).
 - On Windows, packages from GitHub with a `configure` script build: rpix
   gives their builds MinGW’s compilers, which R uses there, in place of
   `pixi-build-r`’s, whose Fortran compiler broke the script’s checks

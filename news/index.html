@@ -81,7 +81,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
-<ul><li>On Windows, packages from GitHub with a <code>configure</code> script build: rpix gives their builds MinGW’s compilers, which R uses there, in place of <code>pixi-build-r</code>’s, whose Fortran compiler broke the script’s checks (<a href="https://github.com/roaldarbol/rpix/issues/191" class="external-link">#191</a>).</li>
+<ul><li>In a project with several environments, <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code> and <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> install the environment R runs in, as Pixi doesn’t by itself there; a package added was missing until the next <code>pixi install</code> (<a href="https://github.com/roaldarbol/rpix/issues/202" class="external-link">#202</a>).</li>
+<li>On Windows, packages from GitHub with a <code>configure</code> script build: rpix gives their builds MinGW’s compilers, which R uses there, in place of <code>pixi-build-r</code>’s, whose Fortran compiler broke the script’s checks (<a href="https://github.com/roaldarbol/rpix/issues/191" class="external-link">#191</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
