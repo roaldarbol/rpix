@@ -176,24 +176,95 @@ test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `pa
   ))))
 })
 
-test_that("pixi_add() explains packages that aren't built for the project's R", {
-  stderr <- paste(
-    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
+read_fixture <- function(name) {
+  paste(
+    readLines(test_path("fixtures", name), encoding = "UTF-8"),
     collapse = "\n"
   )
-  local_mock_pixi(error = pixi_error(stderr))
+}
+
+test_that("pixi_add() explains packages that aren't built for the project's R", {
+  local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-error.txt")))
   expect_snapshot(pixi_add(c("languageserver", "praise")), error = TRUE)
   expect_error(pixi_add("praise"), class = "rpix_error_r_version")
+  # A package Pixi names that wasn't asked for, e.g. a dependency
+  expect_error(
+    pixi_add("languageserver"),
+    "r-praise isn't built",
+    class = "rpix_error_r_version"
+  )
+})
+
+test_that("pixi_add() suggests R in place of the project's, as valid R", {
+  # Pixi's error for r-withr>=3.0.3 in a project with R 4.6
+  local_mock_pixi(
+    error = pixi_error(read_fixture("pixi-r-version-constraint.txt"))
+  )
+  packages <- c(
+    "r-base>=4.6",
+    "withr>=3.0.3",
+    "cli>=3.6.6",
+    "bioc::limma",
+    "conda::gdal",
+    "RColorBrewer>=1.1_3",
+    "viridisLite>=0.4.3",
+    "github::me/mypkg@main"
+  )
+  err <- expect_error(pixi_add(packages), class = "rpix_error_r_version")
+  expect_snapshot(pixi_add(packages), error = TRUE)
+  command <- regmatches(
+    conditionMessage(err),
+    regexpr("pixi_add\\(c\\(.*\\)\\)", conditionMessage(err))
+  )
+  expect_equal(
+    eval(parse(text = sub("^pixi_add", "c", command))[[1]][[2]]),
+    c(
+      "r-base=4.5",
+      "withr>=3.0.3",
+      "cli>=3.6.6",
+      "bioc::limma",
+      "conda::gdal",
+      "RColorBrewer>=1.1_3",
+      "viridisLite>=0.4.3",
+      "github::me/mypkg@main"
+    )
+  )
+})
+
+test_that("pixi_add() explains that an old version isn't built for a newer R", {
+  # Pixi's error for r-ggplot2==3.4.4 in a project with R 4.5
+  local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-pinned.txt")))
+  expect_snapshot(pixi_add(c("dplyr", "ggplot2==3.4.4")), error = TRUE)
+  # A version series isn't a tag to build from source
+  expect_snapshot(pixi_add("ggplot2", versions = "3.4.4"), error = TRUE)
+})
+
+test_that("pixi_add() only offers a build from source for CRAN packages", {
+  pinned <- gsub(
+    "r-ggplot2",
+    "bioconductor-limma",
+    read_fixture("pixi-r-version-pinned.txt"),
+    fixed = TRUE
+  )
+  local_mock_pixi(
+    channels = c("conda-forge", "bioconda"),
+    error = pixi_error(pinned)
+  )
+  expect_snapshot(pixi_add("bioc::limma==3.4.4"), error = TRUE)
 })
 
 test_that("not_built_for_r() reads Pixi's error", {
-  stderr <- paste(
-    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
-    collapse = "\n"
+  expect_equal(
+    not_built_for_r(read_fixture("pixi-r-version-error.txt")),
+    list(package = "r-praise", r_version = "4.5")
   )
   expect_equal(
-    not_built_for_r(stderr),
-    list(package = "r-praise", r_version = "4.5")
+    not_built_for_r(read_fixture("pixi-r-version-constraint.txt")),
+    list(package = "r-withr", r_version = "4.5")
+  )
+  expect_equal(
+    not_built_for_r(read_fixture("pixi-r-version-pinned.txt")),
+    list(package = "r-ggplot2", r_version = "4.3")
   )
   expect_null(not_built_for_r("No candidates were found for r-gdal *."))
 })

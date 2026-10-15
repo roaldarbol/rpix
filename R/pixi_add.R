@@ -121,6 +121,7 @@ pixi_add <- function(
   if (!is.null(channel)) {
     parsed$channel <- channel
   }
+  requested <- parsed
   parsed <- with_isolation(parsed, feature, path)
 
   # pixi only installs from channels listed in the project
@@ -152,16 +153,7 @@ pixi_add <- function(
     rpix_error_pixi = function(e) {
       unbuilt <- not_built_for_r(e$stderr)
       if (!is.null(unbuilt)) {
-        suggestion <- deparse(c(paste0("r-base=", unbuilt$r_version), packages))
-        cli::cli_abort(
-          c(
-            "{.pkg {unbuilt$package}} isn't built for the project's version of R yet.",
-            "i" = "conda-forge builds packages for a new version of R some time after it's out.",
-            "i" = "Use R {unbuilt$r_version}, the newest it's built for: {.code pixi_add({suggestion})}."
-          ),
-          class = "rpix_error_r_version",
-          parent = e
-        )
+        abort_not_built(unbuilt, requested, github, parent = e, call = caller)
       }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
         missing <- if (is.null(channel) || identical(channel, "bioconda")) {
@@ -273,12 +265,77 @@ not_built_for_r <- function(stderr) {
   if (length(versions) == 0) {
     return(NULL)
   }
+  # The package, with the constraint Pixi was asked for, e.g.
+  # "r-withr >=3.0.3 cannot be installed" or "r-praise * cannot be installed"
   package <- regmatches(
     text,
-    regexpr("[A-Za-z0-9._-]+(?= \\* cannot be installed)", text, perl = TRUE)
+    regexpr(
+      "[A-Za-z0-9._-]+(?= (?:[^ ]+ )?cannot be installed)",
+      text,
+      perl = TRUE
+    )
   )
   newest <- as.character(max(package_version(versions)))
   list(package = package, r_version = newest)
+}
+
+# Fail when a package isn't built for the project's R. A version pinned with
+# `==` or `=` won't be built for a newer R, so it offers a newer version, a
+# build from source (for an exact CRAN version) or that R; otherwise, it
+# hasn't been built yet. The suggested commands redo the request with that
+# changed.
+abort_not_built <- function(unbuilt, requested, github, parent, call) {
+  r <- unbuilt$r_version
+  row <- match(unbuilt$package, requested$name)
+  name <- if (is.na(row)) unbuilt$package else package_r_names(requested)[row]
+  references <- sub("^cran::", "", package_references(requested))
+  with_r <- pixi_add_call(c(
+    paste0("r-base=", r),
+    references[requested$name != "r-base"],
+    github
+  ))
+  constraint <- if (is.na(row)) "" else requested$constraint[row]
+  pinned <- grepl("^==?[0-9]", constraint)
+  message <- if (!pinned) {
+    c(
+      "{.pkg {name}} isn't built for the project's version of R yet.",
+      "i" = "conda-forge builds packages for a new version of R some time after it's out.",
+      "i" = "Use R {r}, the newest it's built for: {.code {with_r}}."
+    )
+  } else {
+    version <- sub("^==?", "", constraint)
+    newer <- references
+    newer[row] <- sub("=.*$", "", newer[row])
+    newer <- pixi_add_call(c(newer, github))
+    # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3
+    tag <- gsub("_", "-", version, fixed = TRUE)
+    source <- references
+    source[row] <- paste0("github::cran/", name, "@", tag)
+    source <- pixi_add_call(c(source, github))
+    c(
+      "{.pkg {name}} {tag} is only built for R {r} and older.",
+      "i" = "Old versions of packages aren't built for a newer R. Instead:",
+      "*" = "Use a newer {.pkg {name}}: {.code {newer}}.",
+      "*" = if (
+        requested$source[row] == "cran" && startsWith(constraint, "==")
+      ) {
+        "Build {.pkg {name}} {tag} from source: {.code {source}}."
+      },
+      "*" = "Use R {r} for the whole project: {.code {with_r}}."
+    )
+  }
+  cli::cli_abort(
+    message,
+    class = "rpix_error_r_version",
+    parent = parent,
+    call = call
+  )
+}
+
+# The pixi_add() call that adds `packages`, as valid R: deparse() splits long
+# vectors over several lines
+pixi_add_call <- function(packages) {
+  paste0("pixi_add(", paste(deparse(packages), collapse = ""), ")")
 }
 
 scope_args <- function(feature = NULL, platform = NULL) {
