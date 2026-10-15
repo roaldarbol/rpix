@@ -59,6 +59,22 @@
       parse_github("github::hadley/emo@v2")
     Condition
       Error:
+      ! GitHub answered 429 when asked for the R package in <https://github.com/hadley/emo>.
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! GitHub answered 429 when asked for the R package in <https://github.com/hadley/emo>.
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
       ! Couldn't read the R package in <https://github.com/hadley/emo> at v2.
       i It needs a 'DESCRIPTION' file at the top of the repository.
 

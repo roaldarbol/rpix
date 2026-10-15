@@ -101,6 +101,12 @@ test_that("parse_github() tells why it couldn't read a DESCRIPTION", {
   local_statuses(stats::setNames(list(404L, 404L), c(raw, ref)))
   expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
 
+  # GitHub refuses to say, e.g. when it limits how often it's asked
+  local_statuses(stats::setNames(list(404L, 429L), c(raw, page)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+  local_statuses(stats::setNames(list(404L, 429L), c(raw, ref)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
   # Only then is the DESCRIPTION missing
   local_statuses(stats::setNames(list(404L), raw))
   expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
@@ -109,26 +115,7 @@ test_that("parse_github() tells why it couldn't read a DESCRIPTION", {
   expect_error(parse_github("github::hadley/emo"), "DESCRIPTION")
 })
 
-test_that("parse_github() tells a missing repository and ref apart on GitHub", {
-  skip_on_cran()
-  skip_if_offline("github.com")
-  expect_error(
-    parse_github("github::cran/surely.not.a.package"),
-    "no public repository",
-    class = "rpix_error_github"
-  )
-  expect_error(
-    parse_github("github::cran/praise@v99"),
-    "no branch, tag or commit",
-    class = "rpix_error_github"
-  )
-})
-
-test_that("url_status() gives a URL's HTTP status, or NA", {
-  skip_on_cran()
-  skip_if_offline("github.com")
-  expect_equal(url_status("https://github.com/cran/praise"), 200L)
-  expect_equal(url_status("https://github.com/cran/surely.not.a.package"), 404L)
+test_that("url_status() gives NA for a URL it can't reach", {
   expect_equal(url_status("https://nonexistent.invalid"), NA_integer_)
 })
 

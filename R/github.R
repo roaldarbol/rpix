@@ -70,7 +70,36 @@ github_description <- function(user, repo, ref = NULL, call = parent.frame()) {
 # DESCRIPTION
 abort_unreadable_github <- function(url, user, repo, ref, call) {
   page <- paste0("https://github.com/", user, "/", repo)
-  status <- url_status(url)
+  check_github_status(url_status(url), page, call)
+  status <- url_status(page)
+  if (status %in% 404) {
+    cli::cli_abort(
+      c(
+        "There's no public repository {.val {user}/{repo}} on GitHub.",
+        "i" = "Check the name. rpix reads the package's {.file DESCRIPTION} from GitHub, so the repository has to be public."
+      ),
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  check_github_status(status, page, call)
+  if (is.null(ref)) {
+    return(invisible())
+  }
+  status <- url_status(paste0(page, "/tree/", ref))
+  if (status %in% 404) {
+    cli::cli_abort(
+      "{.url {page}} has no branch, tag or commit {.val {ref}}.",
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  check_github_status(status, page, call)
+}
+
+# Fail if GitHub couldn't be reached, or answered with an error other than 404,
+# e.g. 429 when it limits how often it's asked
+check_github_status <- function(status, page, call) {
   if (is.na(status)) {
     cli::cli_abort(
       c(
@@ -84,23 +113,6 @@ abort_unreadable_github <- function(url, user, repo, ref, call) {
   if (status >= 400 && status != 404) {
     cli::cli_abort(
       "GitHub answered {status} when asked for the R package in {.url {page}}.",
-      class = "rpix_error_github",
-      call = call
-    )
-  }
-  if (url_status(page) %in% 404) {
-    cli::cli_abort(
-      c(
-        "There's no public repository {.val {user}/{repo}} on GitHub.",
-        "i" = "Check the name. rpix reads the package's {.file DESCRIPTION} from GitHub, so the repository has to be public."
-      ),
-      class = "rpix_error_github",
-      call = call
-    )
-  }
-  if (!is.null(ref) && url_status(paste0(page, "/tree/", ref)) %in% 404) {
-    cli::cli_abort(
-      "{.url {page}} has no branch, tag or commit {.val {ref}}.",
       class = "rpix_error_github",
       call = call
     )
