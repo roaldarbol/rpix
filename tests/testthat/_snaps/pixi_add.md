@@ -40,6 +40,24 @@
       ! Didn't add fortunes and cowsay.
       i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
 
+# pixi_add() doesn't offer it for packages that aren't on CRAN
+
+    Code
+      pixi_add("dplyrr")
+    Condition
+      Error in `pixi_add()`:
+      ! dplyrr isn't on conda-forge or CRAN.
+      i Did you mean dplyr?
+
+---
+
+    Code
+      pixi_add(c("dplyrr", "zzqqxx", "praise"))
+    Condition
+      Error in `pixi_add()`:
+      ! dplyrr and zzqqxx aren't on conda-forge or CRAN.
+      i dplyrr: did you mean dplyr?
+
 # ask_yes_no() asks, then offers Yes and No
 
     Code

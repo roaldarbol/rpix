@@ -48,6 +48,10 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* `pixi_add()` and `install.packages()` only offer to build a package from
+  CRAN's source when it's on CRAN. A mistyped name, such as `"dplyrr"`, says
+  it's on neither conda-forge nor CRAN, and suggests close names: "Did you
+  mean dplyr?" (#212).
 
 # rpix 0.8.0 (2026-10-13)
 
