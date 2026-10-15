@@ -45,50 +45,27 @@
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
 
-# pixi_add() adds what older pixi-build-r doesn't, in a project with an earlier date
+# pixi_add() refuses a GitHub package when the project's date hides pixi-build-r 0.2
 
     Code
       pixi_add("github::me/rusty", path = calls$dir)
-    Message
-      i The project's `exclude-newer = "2026-09-01"` applies to Pixi's build backend too, so rpix adds what `pixi-build-r` didn't before 2026-10-12.
-      i On Windows, rpix adds MSYS2's build tools, and MinGW's compilers in place of `pixi-build-r`'s, until `pixi-build-r` does this itself.
-      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
-      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
-
-# pixi_add() adds what older pixi-build-r doesn't, with Pixi before 0.82
-
-    Code
-      pixi_add("github::me/rusty", path = calls$dir)
-    Message
-      i Pixi 0.81.0 uses an older `pixi-build-r`, so rpix adds what that lacks. Update to Pixi 0.82.0 or later, e.g. with `pixi self-update`, and it won't need to.
-      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
-      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
-
-# pixi_add() adds what older pixi-build-r doesn't, with an unknown Pixi
-
-    Code
-      pixi_add("github::me/rusty", path = calls$dir)
-    Message
-      i rpix can't tell which version of Pixi this is, so it adds what `pixi-build-r` didn't before Pixi 0.82.0.
-      i Adding rust and r-mass to the build of r-rusty, as `pixi-build-r` doesn't yet.
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
-      i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+    Condition
+      Error in `pixi_add()`:
+      ! The project uses packages as of "2026-09-01", which hides the `pixi-build-r` that builds packages from GitHub.
+      i `exclude-newer` applies to Pixi's build backend too, and `pixi-build-r` 0.2.0 came out on 2026-10-14. Use a later date, e.g. with `pixi_set_date()`.
 
 # pixi_add() explains a failed build in a project with a date
 
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
-      i The project's `exclude-newer = "2025-06-01"` applies to Pixi's build backend too, so rpix adds what `pixi-build-r` didn't before 2026-10-12.
       i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
     Condition
       Error in `pixi_add()`:
       ! Pixi couldn't build github::hadley/emo, so 'pixi.toml' is as it was.
       i See Pixi's output above.
-      i The project uses packages as of "2025-06-01", which applies to Pixi's build backend too; it may not have existed then. See `?rpix::pixi_set_date()`.
+      i The project's `exclude-newer = "7d"` applies to Pixi's build backend too, and may hide `pixi-build-r` 0.2.0, from 2026-10-14. See `?rpix::pixi_set_date()`.
       Caused by error in `run_pixi()`:
       ! build failed
 
@@ -111,7 +88,7 @@
     Code
       pixi_add("github::hadley/emo", path = calls$dir, dry_run = TRUE)
     Message
-      i Would add to 'pixi.toml': `r-emo = { git = "https://github.com/hadley/emo", package = { build.backend.name = "pixi-build-r", host-dependencies = { r-base = "4.5.*" } } }`
+      i Would add to 'pixi.toml': `r-emo = { git = "https://github.com/hadley/emo", package = { build.backend.name = "pixi-build-r", build.backend.version = ">=0.2", host-dependencies = { r-base = "4.5.*" } } }`
 
 # versions gives a GitHub package's branch, tag or commit
 
