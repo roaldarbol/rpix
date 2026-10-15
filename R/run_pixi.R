@@ -14,8 +14,8 @@
 #'   * `"optional"`: pass `--manifest-path` if a project is found.
 #'   * `"none"`: never pass `--manifest-path`.
 #' @param path Where to look for the project. Defaults to the project of the
-#'   running pixi environment (`PIXI_WORKSPACE_ROOT`), and otherwise the working
-#'   directory. See `find_project_root()`.
+#'   running pixi environment (`PIXI_WORKSPACE_ROOT`), unless the working
+#'   directory is in another project. See `find_project_root()`.
 #' @param json If `TRUE`, add `--json` and return the parsed output.
 #' @param echo If `TRUE`, stream Pixi's output to the console while it runs.
 #' @param announce If `TRUE`, say which command runs before streaming its
@@ -198,9 +198,10 @@ pixi_binary <- function(offer_install = TRUE, call = parent.frame()) {
 #' Find the root of a Pixi project
 #'
 #' If `path` is `NULL`, uses the project of the running Pixi environment
-#' (`PIXI_WORKSPACE_ROOT`) when set, and otherwise starts from the working
-#' directory. Walks up from there until it finds a `pixi.toml`, or a
-#' `pyproject.toml` with a `[tool.pixi]` table.
+#' (`PIXI_WORKSPACE_ROOT`) when the working directory is in it, or in no
+#' project, and otherwise starts from the working directory. Walks up from
+#' there until it finds a `pixi.toml`, or a `pyproject.toml` with a
+#' `[tool.pixi]` table.
 #'
 #' @returns The project root, or `NULL` if there is none.
 #' @noRd
@@ -230,11 +231,41 @@ pixi_root_env <- function() {
 #' @noRd
 find_manifest <- function(path = NULL) {
   if (is.null(path)) {
-    path <- pixi_root_env()
-    if (!nzchar(path)) {
-      path <- getwd()
-    }
+    return(running_manifest())
   }
+  search_manifest(path)
+}
+
+# The manifest of the running Pixi environment's project, unless the working
+# directory is in another project: in a copied or moved project, Pixi's
+# activation cache can point PIXI_WORKSPACE_ROOT to the original (#217)
+running_manifest <- function() {
+  here <- search_manifest(getwd())
+  root <- pixi_root_env()
+  if (!nzchar(root)) {
+    return(here)
+  }
+  running <- search_manifest(root)
+  if (is.null(here) || identical(running, here)) {
+    return(running)
+  }
+  var <- if (nzchar(Sys.getenv("PIXI_WORKSPACE_ROOT"))) {
+    "PIXI_WORKSPACE_ROOT"
+  } else {
+    "PIXI_PROJECT_ROOT"
+  }
+  cli::cli_inform(
+    c(
+      "!" = "{.envvar {var}} points to {.path {root}}, so using the working directory's project, {.path {dirname(here)}}.",
+      "i" = "If the project was copied or moved, check it with {.code pixi_sitrep()}."
+    ),
+    .frequency = "once",
+    .frequency_id = "rpix_other_workspace_root"
+  )
+  here
+}
+
+search_manifest <- function(path) {
   dir <- normalizePath(path, winslash = "/", mustWork = FALSE)
 
   repeat {
