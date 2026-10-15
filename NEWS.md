@@ -40,6 +40,8 @@
 
 ## Fixed
 
+* In a package, `pixi_sitrep()` no longer says the package itself was
+  installed without Pixi, e.g. after `devtools::install()` (#220).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
