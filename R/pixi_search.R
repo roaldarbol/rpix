@@ -5,7 +5,8 @@
 #'
 #' The package name is translated like in [pixi_add()]: `"dplyr"` searches for
 #' `r-dplyr`, `"bioc::DESeq2"` for `bioconductor-deseq2` on bioconda, and
-#' `"conda::gdal"` for `gdal`.
+#' `"conda::gdal"` for `gdal`. A package that isn't on conda-forge is looked
+#' for on bioconda too, so `"DESeq2"` works as well.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/search/>.
 #'
@@ -36,6 +37,20 @@ pixi_search <- function(
   }
 
   parsed <- parse_packages(package)
+  # As in pixi_add(), a package that isn't on conda-forge may be a
+  # Bioconductor package, on bioconda
+  if (
+    is.null(channel) &&
+      !isTRUE(dry_run) &&
+      length(missing_from_conda_forge(parsed)) > 0 &&
+      on_bioconda(parsed, 1)
+  ) {
+    name <- package_r_names(parsed)
+    cli::cli_alert_info(
+      "{.pkg {name}} isn't on conda-forge, but it's a Bioconductor package, so rpix searches bioconda."
+    )
+    parsed <- parse_packages(paste0("bioc::", name))
+  }
   channel <- channel %||% stats::na.omit(parsed$channel)
 
   args <- c("search", parsed$name)
