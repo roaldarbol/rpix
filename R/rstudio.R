@@ -84,7 +84,7 @@ rstudio_new_project <- function(path, r_version = "4.5", git = FALSE, ...) {
   # "Use renv with this project" was last ticked, without showing it
   if (isTRUE(rstudio_preference("new_proj_use_renv"))) {
     cli::cli_alert_warning(
-      "RStudio will also set up renv in this project, which clashes with Pixi. Untick {.strong Use renv with this project} once in RStudio's New Project dialog; rpix says how to remove renv when the project opens."
+      "RStudio will also set up renv in this project ({.strong Use renv with this project} in its New Project dialog), which clashes with Pixi. For next time, turn it off with {.code rstudioapi::writeRStudioPreference(\"new_proj_use_renv\", FALSE)}, or create one project with it unticked: RStudio only saves it when a project is created. rpix says how to remove renv when the project opens."
     )
   }
   dir.create(path, recursive = TRUE, showWarnings = FALSE)

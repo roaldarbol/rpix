@@ -241,6 +241,6 @@ renv_clash_message <- function() {
   c(
     "!" = "This project also has renv, which clashes with Pixi: both manage the project's packages.",
     "i" = "Remove renv: delete the {.file renv} folder and {.file renv.lock}, and the line in {.file .Rprofile} that runs {.file renv/activate.R}.",
-    "i" = "If RStudio's New Project added it, untick {.strong Use renv with this project} there once; RStudio applies it to all new projects, templates too."
+    "i" = "If RStudio's New Project added it ({.strong Use renv with this project}, which it applies to templates too), turn it off with {.code rstudioapi::writeRStudioPreference(\"new_proj_use_renv\", FALSE)}, or create one project with it unticked: RStudio only saves it when a project is created."
   )
 }
