@@ -71,6 +71,33 @@ test_that("pixi_remove() translates names and rejects constraints", {
   expect_error(pixi_remove("dplyr>=1"), "without version constraints")
 })
 
+test_that("pixi_remove() removes a Bioconductor package by its name", {
+  local_project_dir()
+  writeLines(
+    c(
+      "[dependencies]",
+      'r-cli = "*"',
+      'bioconductor-limma = "*"',
+      "",
+      "[feature.test.dependencies]",
+      '"bioconductor-deseq2" = "*"',
+      'bioconductor-cli = "*"'
+    ),
+    "pixi.toml"
+  )
+  expect_equal(
+    dry(pixi_remove(c("limma", "DESeq2", "cli", "dplyr"), dry_run = TRUE)),
+    "pixi remove bioconductor-limma bioconductor-deseq2 r-cli r-dplyr --manifest-path pixi.toml"
+  )
+})
+
+test_that("pixi_remove() leaves the names as they are without a manifest", {
+  expect_equal(
+    with_bioconductor_names(parse_packages("limma"), withr::local_tempdir()),
+    "r-limma"
+  )
+})
+
 test_that("pixi_search() translates names", {
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   withr::local_dir(withr::local_tempdir())
@@ -85,6 +112,36 @@ test_that("pixi_search() translates names", {
     "pixi search gdal --channel my-channel"
   )
   expect_error(pixi_search(c("a1", "b1")), "single package")
+})
+
+test_that("pixi_search() looks for a Bioconductor package on bioconda", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  calls <- local_recorded_pixi()
+  local_mocked_bindings(
+    on_channel = function(name, channel) {
+      name %in% c("r-cli", "bioconductor-limma")
+    }
+  )
+  expect_snapshot(pixi_search("limma"))
+  expect_equal(
+    calls$args[[1]],
+    c("search", "bioconductor-limma", "--channel", "bioconda")
+  )
+
+  # On conda-forge, or on neither
+  pixi_search("cli")
+  pixi_search("nope")
+  # A channel given is searched as is
+  pixi_search("limma", channel = "conda-forge")
+  expect_equal(
+    calls$args[-1],
+    list(
+      c("search", "r-cli"),
+      c("search", "r-nope"),
+      c("search", "r-limma", "--channel", "conda-forge")
+    )
+  )
 })
 
 test_that("project_channels() reads the project's channels", {

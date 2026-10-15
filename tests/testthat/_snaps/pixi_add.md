@@ -1,3 +1,10 @@
+# pixi_search() looks for a Bioconductor package on bioconda
+
+    Code
+      pixi_search("limma")
+    Message
+      i limma isn't on conda-forge, but it's a Bioconductor package, so rpix searches bioconda.
+
 # pixi_add() explains packages that aren't built for the project's R
 
     Code
