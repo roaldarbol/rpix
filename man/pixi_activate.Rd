@@ -34,7 +34,12 @@ conda-forge, \code{pixi_add()} offers to build it from source. Arguments Pixi
 can't use, such as \code{lib} or \code{repos}, and package files give an error.
 Turn this off with \code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
-in an interactive session you get a hint instead.
+in an interactive session you get a hint instead. In RStudio, it also
+offers to reopen the project in a new RStudio with the environment's R,
+and to close this one. Turn that off with \code{RPIX_OFFER_SWITCH=false} in
+your \code{.Renviron}.
+\item If the project also has renv, e.g. because RStudio's New Project set it
+up, it says so: renv and Pixi both manage the project's packages.
 }
 
 It never fails: problems are reported as messages.
