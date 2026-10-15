@@ -75,7 +75,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
-<ul><li><p>On Windows, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> and <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> also give the commands that start VSCodium, Cursor and Windsurf from the environment, and the IDE guide says the VS Code setup works in them too.</p></li>
+<ul><li><p>Packages from GitHub build with <code>pixi-build-r</code> 0.2.0 or later, which rpix now asks for. It adds Rust, CMake, pkg-config and R’s recommended packages, and installs into R’s library on Windows, so rpix no longer does (<a href="https://github.com/roaldarbol/rpix/issues/148" class="external-link">#148</a>, <a href="https://github.com/roaldarbol/rpix/issues/149" class="external-link">#149</a>, <a href="https://github.com/roaldarbol/rpix/issues/150" class="external-link">#150</a>, <a href="https://github.com/roaldarbol/rpix/issues/152" class="external-link">#152</a>). rpix still adds Java, and on Windows, MSYS2’s tools and MinGW’s compilers. A project with packages as of a date before 2026-10-15 can’t get that <code>pixi-build-r</code>, so rpix stops and says so.</p></li>
+<li><p>On Windows, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code> and <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> also give the commands that start VSCodium, Cursor and Windsurf from the environment, and the IDE guide says the VS Code setup works in them too.</p></li>
 <li><p>rpix finds the project of the running Pixi environment from <code>PIXI_WORKSPACE_ROOT</code>, as Pixi 0.82 names it, and otherwise from <code>PIXI_PROJECT_ROOT</code>, which Pixi keeps as an alias and older versions set.</p></li>
 </ul></div>
 <div class="section level3">

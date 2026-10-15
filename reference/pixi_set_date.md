@@ -48,8 +48,8 @@ as it was. Setting the date when you create the project, with
 `use_pixi(date = )`, avoids that.
 
 The date applies to Pixi's build backend too, so packages built from
-source (`pixi_add("github::...")`) need a date after the backend's
-release, or a duration.
+source (`pixi_add("github::...")`) need a date of 2026-10-15 or later,
+when `pixi-build-r` 0.2.0 was out, or a duration.
 
 See
 <https://pixi.prefix.dev/latest/reference/pixi_manifest/#exclude-newer-optional>.
