@@ -40,6 +40,10 @@
 
 ## Fixed
 
+* In a Pixi environment, `install.packages()` accepts `repos`, and adds the
+  packages with Pixi as usual. Package files and folders (`repos = NULL`) go
+  to `utils::install.packages()`, which `pixi.toml` doesn't record. VS Code's
+  R extension can now install its sess package (#209).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
