@@ -49,6 +49,19 @@ install_with_pixi <- function(pkgs, ..., root) {
     )
   }
 
+  # Pixi only says it's already a dependency, which doesn't update it
+  listed <- listed_packages(pkgs, root)
+  if (length(listed) > 0) {
+    update <- paste0("pixi_update(", deparse1(unname(listed)), ")")
+    cli::cli_alert_info(
+      "{.pkg {names(listed)}} {?is/are} already in {.file pixi.toml}. To update {?it/them}, run {.code {update}}."
+    )
+    pkgs <- setdiff(pkgs, names(listed))
+    if (length(pkgs) == 0) {
+      return(invisible())
+    }
+  }
+
   found <- find_r_packages(pkgs)
   cli::cli_alert_info(
     "Adding {.pkg {names(found)}} with Pixi, so {?it's/they're} recorded in {.file pixi.toml}."
@@ -64,6 +77,25 @@ install_with_pixi <- function(pkgs, ..., root) {
     path = root
   )
   invisible()
+}
+
+# The packages pixi.toml lists for the environment R runs in, as references
+# for pixi_update(), named by package
+listed_packages <- function(pkgs, root) {
+  dependencies <- tryCatch(environment_dependencies(root), error = function(e) {
+    NULL
+  })
+  environment <- pixi_r_location(r_home())$name %||% "default"
+  dependencies <- as.character(unlist(dependencies[[environment]]))
+  dependencies <- dependencies[grepl("^(r|bioconductor)-", dependencies)]
+  conda <- dependencies[match(tolower(pkgs), r_names(dependencies))]
+  listed <- !is.na(conda)
+  references <- ifelse(
+    startsWith(conda[listed], "bioconductor-"),
+    paste0("bioc::", pkgs[listed]),
+    pkgs[listed]
+  )
+  stats::setNames(references, pkgs[listed])
 }
 
 utils_install_packages <- function(...) {
