@@ -24,6 +24,9 @@
 
 ## Changed
 
+* In a Pixi environment, `install.packages()` of a package already in
+  `pixi.toml` says so, and how to update it with `pixi_update()`, rather than
+  passing on Pixi's "already a dependency" (#210).
 * Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which rpix
   now asks for. It adds Rust, CMake, pkg-config and R's recommended packages,
   and installs into R's library on Windows, so rpix no longer does (#148,
