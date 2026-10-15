@@ -205,3 +205,13 @@ test_that("asks in the console outside RStudio", {
   )
   expect_equal(ask_dialog("Add packages", "Packages:"), "dplyr")
 })
+
+test_that("finds RStudio's API functions in RStudio's environment", {
+  rstudio <- new.env()
+  rstudio$.rs.api.showPrompt <- function(...) "answer"
+  attach(rstudio, name = "tools:rstudio")
+  withr::defer(detach("tools:rstudio", character.only = TRUE))
+
+  expect_equal(rstudio_api("showPrompt")(), "answer")
+  expect_null(rstudio_api("noSuchFunction"))
+})
