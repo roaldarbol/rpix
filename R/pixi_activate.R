@@ -50,16 +50,21 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
       }
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
         in_rstudio <- identical(detect_ide(), "rstudio") && !is.null(root)
+        # In RStudio, the question once it's ready says what to do
+        offer <- !quiet && in_rstudio && offer_switch_enabled()
         inform(c(
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
-          "i" = if (in_rstudio) {
-            "Move to its R with {.strong Addins > Open with the project's Pixi R}, or {.code rpix::pixi_switch()}."
-          } else {
-            "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
+          if (!offer) {
+            c(
+              "i" = if (in_rstudio) {
+                "Move to its R with {.strong Addins > Open with the project's Pixi R}, or {.code rpix::pixi_switch()}."
+              } else {
+                "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
+              }
+            )
           }
         ))
-        # Once RStudio is ready, offer to reopen the project with its R
-        if (!quiet && in_rstudio && offer_switch_enabled()) {
+        if (offer) {
           when_rstudio_ready(function() offer_pixi_r(root))
         }
         return(invisible(result))

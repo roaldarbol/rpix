@@ -149,9 +149,9 @@ test_that("the New Project template sets the project up for RStudio", {
   # With git
   initialised <- NULL
   local_mocked_bindings(git_init = function(path) initialised <<- path)
-  rstudio_new_project(path, git = FALSE)
+  suppressMessages(rstudio_new_project(path, git = FALSE))
   expect_null(initialised)
-  rstudio_new_project(path, git = TRUE)
+  suppressMessages(rstudio_new_project(path, git = TRUE))
   expect_equal(initialised, path)
 })
 

@@ -213,23 +213,25 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_equal(.libPaths(), paths)
   expect_silent(pixi_activate(p$root, quiet = TRUE))
 
-  # In RStudio, the addin, and once RStudio is ready, the offer to reopen
+  # In RStudio, the question to reopen once RStudio is ready, without a hint
   offered <- NULL
   local_mocked_bindings(
     detect_ide = function() "rstudio",
     when_rstudio_ready = function(fun) offered <<- fun
   )
+  messages <- capture_messages(pixi_activate(p$root, quiet = FALSE))
+  expect_match(paste(messages, collapse = ""), "isn't from the project's Pixi")
+  expect_no_match(paste(messages, collapse = ""), "Addins")
+  expect_true(is.function(offered))
+
+  # Not when quiet; turned off, the hint to the addin instead
+  offered <- NULL
+  pixi_activate(p$root, quiet = TRUE)
+  withr::local_envvar(RPIX_OFFER_SWITCH = "false")
   expect_message(
     pixi_activate(p$root, quiet = FALSE),
     "Open with the project's Pixi R"
   )
-  expect_true(is.function(offered))
-
-  # Not when quiet, or turned off
-  offered <- NULL
-  pixi_activate(p$root, quiet = TRUE)
-  withr::local_envvar(RPIX_OFFER_SWITCH = "false")
-  suppressMessages(pixi_activate(p$root, quiet = FALSE))
   expect_null(offered)
 })
 
