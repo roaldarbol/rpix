@@ -23,6 +23,7 @@ local_renv_project <- function(
       found <- c(
         cli = "cran::cli",
         dplyr = "cran::dplyr",
+        ggplot2 = "cran::ggplot2",
         Matrix = "cran::Matrix",
         DESeq2 = "bioc::DESeq2",
         notonconda = NA,
@@ -74,6 +75,21 @@ test_that("pixi_import_renv() adds the packages the project uses, and turns renv
   expect_equal(
     readLines(file.path(calls$dir, ".Rprofile")),
     "options(digits = 4)"
+  )
+})
+
+test_that("pixi_import_renv() finds what packages need in renv 1.1+ lock files", {
+  # Written by renv 1.2.4 for a script using dplyr and ggplot2, which need
+  # the rest. Depends, Imports and LinkingTo count, and Suggests don't.
+  calls <- local_renv_project()
+
+  suppressMessages(pixi_import_renv(
+    test_path("fixtures", "renv-1.2.lock"),
+    deactivate = FALSE
+  ))
+  expect_equal(
+    calls$add,
+    list(c("r-base>=4.6", "cran::dplyr>=1.2.1", "cran::ggplot2>=4.0.3"))
   )
 })
 
