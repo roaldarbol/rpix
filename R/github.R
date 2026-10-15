@@ -10,11 +10,7 @@ is_github <- function(packages) {
 # "github::user/repo@ref" as a list with the repository, the ref (or NULL),
 # and from the package's DESCRIPTION, its conda name and what pixi-build-r
 # doesn't add to its build yet (see build_requirements())
-parse_github <- function(
-  package,
-  older_backend = FALSE,
-  call = parent.frame()
-) {
+parse_github <- function(package, call = parent.frame()) {
   pattern <- "^github::([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)(@(.+))?$"
   if (!grepl(pattern, package, ignore.case = TRUE)) {
     cli::cli_abort(
@@ -35,7 +31,7 @@ parse_github <- function(
     ref = ref,
     # The package's name can differ from the repository's
     name = paste0("r-", tolower(description$Package)),
-    requirements = build_requirements(description, older_backend)
+    requirements = build_requirements(description)
   )
 }
 
@@ -121,24 +117,14 @@ add_github_packages <- function(
   original <- lines
   r_base <- manifest_r_base(lines, feature)
   date <- manifest_exclude_newer(lines)
-  pixi <- pixi_version_number()
-  older <- older_backend(date, pixi)
   windows <- "win-64" %in% manifest_platforms(lines)
-  first <- backend_pixi()
-  if (is.na(first)) {
-    # No Pixi uses a pixi-build-r with these yet; the messages below say what
-    # rpix adds
-  } else if (is.null(pixi)) {
-    cli::cli_alert_info(
-      "rpix can't tell which version of Pixi this is, so it adds what {.code pixi-build-r} didn't before Pixi {first}."
-    )
-  } else if (!pixi_at_least(first, pixi)) {
-    cli::cli_alert_info(
-      "Pixi {pixi} uses an older {.code pixi-build-r}, so rpix adds what that lacks. Update to Pixi {first} or later, e.g. with {.code pixi self-update}, and it won't need to."
-    )
-  } else if (older) {
-    cli::cli_alert_info(
-      "The project's {.code exclude-newer = \"{date}\"} applies to Pixi's build backend too, so rpix adds what {.code pixi-build-r} didn't before 2026-10-12."
+  if (date_hides_backend(date)) {
+    cli::cli_abort(
+      c(
+        "The project uses packages as of {.val {date}}, which hides the {.code pixi-build-r} that builds packages from GitHub.",
+        "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14. Use a later date, e.g. with {.code pixi_set_date()}."
+      ),
+      call = call
     )
   }
   if (windows) {
@@ -148,13 +134,8 @@ add_github_packages <- function(
   }
 
   for (package in packages) {
-    github <- parse_github(package, older_backend = older, call = call)
-    entry <- github_entry(
-      github,
-      r_base,
-      windows = windows,
-      older_backend = older
-    )
+    github <- parse_github(package, call = call)
+    entry <- github_entry(github, r_base, windows = windows)
     added <- unique(unlist(github$requirements))
     if (length(added) > 0) {
       cli::cli_alert_info(
@@ -198,9 +179,9 @@ add_github_packages <- function(
         c(
           "Pixi couldn't build {.pkg {packages}}, so {.file pixi.toml} is as it was.",
           "i" = "See Pixi's output above.",
-          if (is_absolute_date(date)) {
+          if (!is.null(date) && !is_absolute_date(date)) {
             c(
-              "i" = "The project uses packages as of {.val {date}}, which applies to Pixi's build backend too; it may not have existed then. See {.help rpix::pixi_set_date}."
+              "i" = "The project's {.code exclude-newer = \"{date}\"} applies to Pixi's build backend too, and may hide {.code pixi-build-r} 0.2.0, from 2026-10-14. See {.help rpix::pixi_set_date}."
             )
           }
         ),
@@ -215,13 +196,8 @@ add_github_packages <- function(
 # The inline package for a GitHub package, built with pixi-build-r. R is
 # pinned for the build, as it otherwise builds for the newest R
 # (https://github.com/prefix-dev/pixi/issues/7214). With `windows`, it also
-# gets what builds on Windows need (see windows_build()).
-github_entry <- function(
-  github,
-  r_base = NULL,
-  windows = FALSE,
-  older_backend = FALSE
-) {
+# gets what builds on Windows need (see windows_tools).
+github_entry <- function(github, r_base = NULL, windows = FALSE) {
   requirements <- github$requirements
   any_version <- function(packages) {
     stats::setNames(rep("*", length(packages)), packages)
@@ -235,20 +211,15 @@ github_entry <- function(
     "run-dependencies" = any_version(requirements$run)
   )
   tables <- tables[lengths(tables) > 0]
-  package <- ', package = { build.backend.name = "pixi-build-r"'
+  package <- paste0(
+    ', package = { build.backend.name = "pixi-build-r", build.backend.version = "',
+    backend_version,
+    '"'
+  )
   if (windows) {
-    build <- windows_build(requirements, older_backend)
-    # pixi-build-r's own compilers left out, see windows_build()
+    # pixi-build-r's own compilers left out, see windows_tools
     package <- paste0(package, ", build.target.win-64.config.compilers = []")
-    if (length(build$extra_args) > 0) {
-      package <- paste0(
-        package,
-        ", build.target.win-64.config.extra-args = [",
-        paste0('"', build$extra_args, '"', collapse = ", "),
-        "]"
-      )
-    }
-    tables[["target.win-64.build-dependencies"]] <- any_version(build$tools)
+    tables[["target.win-64.build-dependencies"]] <- any_version(windows_tools)
   }
   if (length(tables) > 0) {
     package <- paste0(
@@ -282,29 +253,14 @@ github_entry <- function(
 #   which breaks configure scripts (#191,
 #   https://github.com/prefix-dev/pixi/issues/7276). The compiler packages
 #   set CC, CXX and FC for them.
-# With `older_backend` (see
-# older_backend()), also what it only does since 2026-10-12:
-# * R's library: it installed into Library\R\library, but conda-forge's R
-#   uses Lib\R\library (https://github.com/prefix-dev/pixi/issues/7231). A
-#   second --library wins.
-# * for Rust, the standard library for the GNU target R builds for
-#   (https://github.com/prefix-dev/pixi/issues/7228)
-windows_build <- function(requirements, older_backend = FALSE) {
-  list(
-    extra_args = if (older_backend) "--library=%PREFIX%/Lib/R/library",
-    tools = c(
-      "m2-make",
-      "m2-sed",
-      "m2-coreutils",
-      "gcc_win-64",
-      "gxx_win-64",
-      "gfortran_win-64",
-      if (older_backend && "rust" %in% requirements$build) {
-        "rust-std-x86_64-pc-windows-gnu"
-      }
-    )
-  )
-}
+windows_tools <- c(
+  "m2-make",
+  "m2-sed",
+  "m2-coreutils",
+  "gcc_win-64",
+  "gxx_win-64",
+  "gfortran_win-64"
+)
 
 # The project's platforms, from [workspace] (or [project]). The list can span
 # several lines.

@@ -40,8 +40,8 @@ be newer than an earlier date. Pixi then can't solve the project, and
 project, with \code{use_pixi(date = )}, avoids that.
 
 The date applies to Pixi's build backend too, so packages built from source
-(\code{pixi_add("github::...")}) need a date after the backend's release, or a
-duration.
+(\code{pixi_add("github::...")}) need a date of 2026-10-15 or later, when
+\code{pixi-build-r} 0.2.0 was out, or a duration.
 
 See \url{https://pixi.prefix.dev/latest/reference/pixi_manifest/#exclude-newer-optional}.
 }
