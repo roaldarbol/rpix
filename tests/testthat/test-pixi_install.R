@@ -57,3 +57,18 @@ test_that("pixi_add() and pixi_remove() install the changed environment", {
   pixi_add("dplyr", dry_run = TRUE) |> suppressMessages()
   expect_equal(installed, list("r44", "default"))
 })
+
+test_that("pixi_add() checks the install for skipped install scripts too", {
+  local_recorded_pixi()
+  checked <- list()
+  local_mocked_bindings(
+    project_channels = function(...) "conda-forge",
+    install_changed_environment = function(...) list(stderr = "installed"),
+    check_post_link = function(result, ...) {
+      checked <<- c(checked, list(result))
+    }
+  )
+  pixi_add("dplyr")
+  expect_length(checked, 2)
+  expect_equal(checked[[2]], list(stderr = "installed"))
+})
