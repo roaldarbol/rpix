@@ -47,8 +47,23 @@ test_that("use_pixi() creates a project and adds R and rpix", {
   manifest <- suppressMessages(use_pixi())
 
   expect_equal(manifest, file.path(dir, "pixi.toml"))
-  expect_length(calls$args, 4)
+  expect_length(calls$args, 5)
   expect_equal(calls$args[[1]], c("init", dir))
+  # The common platforms, besides this computer's, which `pixi init` adds
+  expect_equal(
+    calls$args[[2]],
+    c(
+      "workspace",
+      "platform",
+      "add",
+      "linux-64",
+      "osx-64",
+      "osx-arm64",
+      "win-64",
+      "--no-install"
+    )
+  )
+  calls$args <- calls$args[-2]
   expect_equal(calls$args[[2]][1:2], c("add", "r-base"))
   expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
   expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[2]])
@@ -232,6 +247,29 @@ test_that("use_pixi() sets up the folder in `path`", {
   manifest <- suppressMessages(use_pixi(path = dir, install_rpix = FALSE))
   expect_equal(manifest, file.path(dir, "pixi.toml"))
   expect_equal(calls$args[[1]], c("init", dir))
+})
+
+test_that("use_pixi() adds the platforms it's given to a new project", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+
+  suppressMessages(use_pixi(
+    path = dir,
+    install_rpix = FALSE,
+    platforms = c("linux-64", "linux-aarch64")
+  ))
+  expect_equal(
+    calls$args[[2]],
+    c(
+      "workspace",
+      "platform",
+      "add",
+      "linux-64",
+      "linux-aarch64",
+      "--no-install"
+    )
+  )
+  expect_equal(calls$paths[[2]], dir)
 })
 
 test_that("rpix's dependencies include rlang, which cli needs for errors", {

@@ -188,6 +188,27 @@ pixi_add <- function(
             class = "rpix_retry"
           ))
         }
+        unavailable <- missing_on_platform(e$stderr)
+        if (!is.null(unavailable)) {
+          row <- match(unavailable$package, parsed$name)
+          name <- if (is.na(row)) unavailable$package else parsed$input[row]
+          other <- setdiff(common_platforms, unavailable$platform)[1]
+          command <- paste0(
+            "pixi_add(",
+            deparse(name),
+            ", platform = ",
+            deparse(other),
+            ")"
+          )
+          cli::cli_abort(
+            c(
+              "{.pkg {unavailable$package}} isn't on conda-forge for {.val {unavailable$platform}}, one of the project's platforms.",
+              "i" = "Add it only for the platforms that have it, one at a time, e.g. {.code {command}}, or remove the platform with {.code pixi workspace platform remove {unavailable$platform}}."
+            ),
+            class = "rpix_error_package_not_found",
+            parent = e
+          )
+        }
         cli::cli_abort(
           c(
             "Some packages couldn't be found.",
@@ -279,6 +300,19 @@ not_built_for_r <- function(stderr) {
   )
   newest <- as.character(max(package_version(versions)))
   list(package = package, r_version = newest)
+}
+
+# When Pixi couldn't add a package because it isn't there for one of the
+# project's platforms, the platform and the package. NULL for other errors.
+missing_on_platform <- function(stderr) {
+  text <- plain_pixi_output(stderr)
+  pattern <- "for platform '([^']+)'.*No candidates were found for ([^*]+)\\*"
+  match <- regmatches(text, regexec(pattern, text))[[1]]
+  if (length(match) == 0) {
+    return(NULL)
+  }
+  # Pixi wraps long lines, also inside names such as win-64
+  list(platform = gsub(" ", "", match[2]), package = gsub(" ", "", match[3]))
 }
 
 scope_args <- function(feature = NULL, platform = NULL) {

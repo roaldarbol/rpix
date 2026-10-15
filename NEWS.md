@@ -24,6 +24,12 @@
 
 ## Changed
 
+* `use_pixi()` creates a project for Linux, macOS (Intel and Apple Silicon)
+  and Windows, and your computer's platform if it's another one, so
+  collaborators on any of them can install it; `platforms` chooses others.
+  Before, a project only had the platform it was created on (#215).
+* `use_pixi_rstudio()` adds the `rstudio` task for all four of those
+  platforms, whichever the project has; Pixi adds any it doesn't (#215).
 * Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which rpix
   now asks for. It adds Rust, CMake, pkg-config and R's recommended packages,
   and installs into R's library on Windows, so rpix no longer does (#148,
@@ -40,6 +46,9 @@
 
 ## Fixed
 
+* When a package isn't on conda-forge for one of the project's platforms,
+  `pixi_add()` says so, and for which, rather than that it couldn't be found
+  (#215).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
