@@ -48,6 +48,10 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* A package from GitHub that rpix can't read says why: there's no public
+  repository by that name, it has no such branch, tag or commit, or GitHub
+  couldn't be reached, rather than always that it needs a `DESCRIPTION`
+  (#213).
 
 # rpix 0.8.0 (2026-10-13)
 

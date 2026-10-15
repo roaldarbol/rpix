@@ -47,6 +47,9 @@ github_description <- function(user, repo, ref = NULL, call = parent.frame()) {
     "/DESCRIPTION"
   )
   lines <- tryCatch(read_url(url), error = function(e) NULL)
+  if (is.null(lines)) {
+    abort_unreadable_github(url, user, repo, ref, call = call)
+  }
   description <- if (!is.null(lines)) {
     as.list(read.dcf(textConnection(lines))[1, ])
   }
@@ -60,6 +63,67 @@ github_description <- function(user, repo, ref = NULL, call = parent.frame()) {
     )
   }
   description
+}
+
+# When the DESCRIPTION at `url` couldn't be read, fail if that's because
+# GitHub is out of reach, or there's no such repository or ref, rather than no
+# DESCRIPTION
+abort_unreadable_github <- function(url, user, repo, ref, call) {
+  page <- paste0("https://github.com/", user, "/", repo)
+  check_github_status(url_status(url), page, call)
+  status <- url_status(page)
+  if (status %in% 404) {
+    cli::cli_abort(
+      c(
+        "There's no public repository {.val {user}/{repo}} on GitHub.",
+        "i" = "Check the name. rpix reads the package's {.file DESCRIPTION} from GitHub, so the repository has to be public."
+      ),
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  check_github_status(status, page, call)
+  if (is.null(ref)) {
+    return(invisible())
+  }
+  status <- url_status(paste0(page, "/tree/", ref))
+  if (status %in% 404) {
+    cli::cli_abort(
+      "{.url {page}} has no branch, tag or commit {.val {ref}}.",
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  check_github_status(status, page, call)
+}
+
+# Fail if GitHub couldn't be reached, or answered with an error other than 404,
+# e.g. 429 when it limits how often it's asked
+check_github_status <- function(status, page, call) {
+  if (is.na(status)) {
+    cli::cli_abort(
+      c(
+        "Couldn't reach GitHub to read the R package in {.url {page}}.",
+        "i" = "Check your internet connection."
+      ),
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  if (status >= 400 && status != 404) {
+    cli::cli_abort(
+      "GitHub answered {status} when asked for the R package in {.url {page}}.",
+      class = "rpix_error_github",
+      call = call
+    )
+  }
+  invisible()
+}
+
+# A URL's HTTP status, or NA if it can't be reached
+url_status <- function(url) {
+  headers <- tryCatch(curlGetHeaders(url), error = function(e) NULL)
+  attr(headers, "status") %||% NA_integer_
 }
 
 read_url <- function(url) {
