@@ -76,6 +76,10 @@ This may change, e.g. to use \verb{pixi add} once it can set a build backend;
 see \url{https://github.com/roaldarbol/rpix/issues/96}.
 }
 
+In a project with several environments, Pixi doesn't install after adding
+or removing, so \code{pixi_add()} and \code{\link[=pixi_remove]{pixi_remove()}} install the environment R
+runs in (or else the default one), when the change applies to it.
+
 When it adds R (\code{r-base}) to the default feature, it also adds
 \code{conda-ecosystem-user-package-isolation}, unless it's there, to keep your
 personal R library out of the environment's R, as \code{\link[=use_pixi]{use_pixi()}} does.

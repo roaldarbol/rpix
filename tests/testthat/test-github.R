@@ -301,6 +301,7 @@ local_github_project <- function(env = parent.frame()) {
       invisible(list(status = 0))
     },
     project_channels = function(...) "conda-forge",
+    install_changed_environment = function(...) NULL,
     .env = env
   )
   calls$dir <- dir

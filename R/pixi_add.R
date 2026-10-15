@@ -34,6 +34,10 @@
 #'   This may change, e.g. to use `pixi add` once it can set a build backend;
 #'   see <https://github.com/roaldarbol/rpix/issues/96>.
 #'
+#' In a project with several environments, Pixi doesn't install after adding
+#' or removing, so `pixi_add()` and [pixi_remove()] install the environment R
+#' runs in (or else the default one), when the change applies to it.
+#'
 #' When it adds R (`r-base`) to the default feature, it also adds
 #' `conda-ecosystem-user-package-isolation`, unless it's there, to keep your
 #' personal R library out of the environment's R, as [use_pixi()] does.
@@ -219,6 +223,10 @@ pixi_add <- function(
     return(invisible(c(commands, result)))
   }
   check_post_link(result, path = path)
+  installed <- install_changed_environment(feature, path = path)
+  if (!is.null(installed)) {
+    check_post_link(installed, path = path)
+  }
   invisible(result)
 }
 

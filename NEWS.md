@@ -40,6 +40,10 @@
 
 ## Fixed
 
+* In a project with several environments, `pixi_add()`, `pixi_remove()` and
+  `install.packages()` install the environment R runs in, as Pixi doesn't by
+  itself there; a package added was missing until the next `pixi install`
+  (#202).
 * On Windows, packages from GitHub with a `configure` script build: rpix
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
