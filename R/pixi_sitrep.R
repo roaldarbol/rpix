@@ -21,13 +21,14 @@
 #' * Whether the running R is the R of the project's environment, and whether
 #'   the environment is activated.
 #' * Libraries and loaded packages from outside the project, such as your
-#'   personal library.
+#'   personal library. R's base packages come with every R, so aren't listed.
 #' * Packages in the environment that Pixi didn't install, e.g. with
 #'   `utils::install.packages()`, so `pixi.toml` doesn't record them.
 #' * Whether the project's `.Rprofile` activates the environment when an IDE
 #'   starts R directly.
 #' * Whether the IDE you're in is set up for the project: it runs the
-#'   project's R, or is set up by [use_pixi()].
+#'   project's R, or is set up by [use_pixi()]. If it's set up but runs
+#'   another R, how to start the project's R in it.
 #'
 #' @param path The project. Defaults to the project of the running Pixi
 #'   environment, or the working directory.
@@ -151,9 +152,13 @@ pixi_sitrep <- function(path = NULL) {
   cli::cli_alert_info("R {report$r_version} at {.path {report$r_home}}")
   if (is.null(report$environment)) {
     cli::cli_alert_danger("This R isn't from a Pixi environment.")
-    hint(
-      "Start R with {.code pixi run R}, or set your IDE up with {.code use_pixi(ide = ...)}."
-    )
+    if (isTRUE(report$ide_set_up)) {
+      hint("Start R with {.code pixi run R}, or in the IDE as below.")
+    } else {
+      hint(
+        "Start R with {.code pixi run R}, or set your IDE up with {.code use_pixi(ide = ...)}."
+      )
+    }
   } else if (!report$in_project) {
     cli::cli_alert_danger(
       "This R is from another project's Pixi environment, in {.path {report$environment$root}}."
@@ -213,7 +218,14 @@ pixi_sitrep <- function(path = NULL) {
 
   cli::cli_h2("IDE")
   if (is.na(report$ide)) {
-    cli::cli_alert_info("Not in RStudio, Positron or VS Code.")
+    cli::cli_alert_info(
+      "Not in RStudio, Positron, VS Code, Emacs, Neovim or Zed."
+    )
+  } else if (!is.null(report$ide_step)) {
+    cli::cli_alert_warning(
+      "{ide_name(report$ide)} is set up for the project, but runs another R."
+    )
+    hint(report$ide_step)
   } else if (isTRUE(report$ide_set_up)) {
     cli::cli_alert_success("{ide_name(report$ide)} is set up for the project.")
   } else {
@@ -254,7 +266,8 @@ sitrep_data <- function(path = NULL) {
     libraries[!vapply(libraries, inside, logical(1))]
   }
 
-  packages <- loadedNamespaces()
+  # Base packages come with R, wherever it is
+  packages <- setdiff(loadedNamespaces(), base_packages())
   package_paths <- vapply(
     packages,
     function(p) find.package(p, quiet = TRUE)[1],
@@ -267,6 +280,11 @@ sitrep_data <- function(path = NULL) {
   }
 
   ide <- detect_ide()
+  # Running the project's activated R is what setting the IDE up is for,
+  # whether by the project's settings or by the user's
+  ide_ready <- if (!is.na(ide) && !is.null(project)) {
+    in_project || ide_set_up(ide, project)
+  }
   unignored <- if (!is.null(project)) {
     files <- pixi_files(project)
     if (dir.exists(file.path(project, ".vscode"))) {
@@ -307,11 +325,8 @@ sitrep_data <- function(path = NULL) {
     rprofile = !is.null(project) &&
       has_rprofile_block(file.path(project, ".Rprofile")),
     ide = ide,
-    # Running the project's activated R is what setting the IDE up is for,
-    # whether by the project's settings or by the user's
-    ide_set_up = if (!is.na(ide) && !is.null(project)) {
-      in_project || ide_set_up(ide, project)
-    }
+    ide_set_up = ide_ready,
+    ide_step = if (isTRUE(ide_ready) && !in_project) ide_step(ide, project)
   )
 }
 
@@ -449,6 +464,57 @@ ide_set_up <- function(ide, project) {
   } else {
     grepl(".pixi", settings[["r.executablePath"]] %||% "", fixed = TRUE)
   }
+}
+
+# How to start the project's R in an IDE that's set up for it, but runs
+# another R
+ide_step <- function(ide, project) {
+  if (ide == "rstudio") {
+    step <- "Start RStudio with {.code pixi run rstudio} in the project"
+    addin <- rstudio_addin("addin_open_with_pixi_r")
+    if (is.null(addin)) {
+      return(paste0(step, "."))
+    }
+    return(paste0(step, ", or with {.val ", addin, "} in rpix's Addins."))
+  }
+  if (ide == "positron") {
+    return("Pick {.val R (Pixi: default)} in Positron's interpreter picker.")
+  }
+  if (is_windows()) {
+    # These leave R to the PATH on Windows
+    return(paste0(
+      "Start ",
+      ide_name(ide),
+      " from the project's environment, with {.code pixi run ",
+      editor_command(ide),
+      "}."
+    ))
+  }
+  if (ide == "vscode") {
+    if (!file.exists(environment_r(project, "default"))) {
+      return(
+        "Run {.code pixi_install()}, then {.strong Developer: Reload Window} from the Command Palette."
+      )
+    }
+    return(
+      "Start R with {.strong R: Create R Terminal} from the Command Palette."
+    )
+  }
+  "Run {.code direnv allow} in the project, then restart R."
+}
+
+# The name of one of rpix's RStudio addins, or NULL if this rpix doesn't have
+# it
+rstudio_addin <- function(
+  binding,
+  file = system.file("rstudio", "addins.dcf", package = "rpix")
+) {
+  if (!nzchar(file)) {
+    return(NULL)
+  }
+  addins <- read.dcf(file, fields = c("Name", "Binding"))
+  name <- addins[addins[, "Binding"] %in% binding, "Name"]
+  if (length(name) == 0) NULL else name[[1]]
 }
 
 # The project's exclude-newer, or NULL

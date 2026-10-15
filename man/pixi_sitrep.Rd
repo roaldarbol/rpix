@@ -34,13 +34,14 @@ ones that leave out the default feature.
 \item Whether the running R is the R of the project's environment, and whether
 the environment is activated.
 \item Libraries and loaded packages from outside the project, such as your
-personal library.
+personal library. R's base packages come with every R, so aren't listed.
 \item Packages in the environment that Pixi didn't install, e.g. with
 \code{utils::install.packages()}, so \code{pixi.toml} doesn't record them.
 \item Whether the project's \code{.Rprofile} activates the environment when an IDE
 starts R directly.
 \item Whether the IDE you're in is set up for the project: it runs the
-project's R, or is set up by \code{\link[=use_pixi]{use_pixi()}}.
+project's R, or is set up by \code{\link[=use_pixi]{use_pixi()}}. If it's set up but runs
+another R, how to start the project's R in it.
 }
 }
 \examples{
