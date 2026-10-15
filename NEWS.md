@@ -40,6 +40,9 @@
 
 ## Fixed
 
+* `pixi_import_renv()` adds only the packages the project uses from lock
+  files written by renv 1.1 or later too, which record what each package
+  needs differently; it added every package in them (#206).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
