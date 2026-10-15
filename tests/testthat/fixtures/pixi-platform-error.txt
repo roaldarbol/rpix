@@ -1,0 +1,8 @@
+Error:   × failed to solve requirements of environment 'default' for platform 'win-
+  │ 64'
+  ├─▶   × failed to solve the environment
+  │   
+  ╰─▶ Cannot solve the request because of: No candidates were found for r-
+      rmpi *.
+      
+

@@ -20,6 +20,12 @@
 #' library setup" block in their `.Rprofile` instead, which pointed a running
 #' R at the Pixi library. It's removed.
 #'
+#' A new project supports Linux, macOS (Intel and Apple Silicon) and Windows,
+#' as well as this computer's platform, so collaborators on any of them can
+#' install it. `pixi.lock` then covers each of them, so a package can only be
+#' added if it's on conda-forge for all of them; for one that isn't, see
+#' `platform` in [pixi_add()].
+#'
 #' In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 #' `.Rbuildignore`, so they stay out of the package's builds.
 #'
@@ -47,6 +53,10 @@
 #' @param path The folder to set up. Defaults to the working directory.
 #' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
 #'   project.
+#' @param platforms The platforms a new project supports, besides this
+#'   computer's. Defaults to `"linux-64"`, `"osx-64"`, `"osx-arm64"` and
+#'   `"win-64"`. To add platforms to an existing project, use
+#'   [pixi_add_platform()].
 #' @param ... Passed on to the IDE setup, e.g. `console = "arf"` for
 #'   [use_pixi_vscode()], or `default_r = FALSE` for [use_pixi_positron()].
 #' @returns The path to the project's manifest, invisibly.
@@ -66,6 +76,7 @@ use_pixi <- function(
   date = NULL,
   path = NULL,
   activation_cache = TRUE,
+  platforms = NULL,
   ...
 ) {
   setup_ide <- list(
@@ -102,6 +113,18 @@ use_pixi <- function(
     }
     run_pixi(c("init", dir), project = "none", echo = TRUE)
     manifest <- find_manifest(dir)
+    # Added after `pixi init`, which adds this computer's platform
+    run_pixi(
+      c(
+        "workspace",
+        "platform",
+        "add",
+        platforms %||% common_platforms,
+        "--no-install"
+      ),
+      path = dir,
+      echo = TRUE
+    )
   }
   path <- dirname(manifest)
   build_ignore(path, pixi_files(path))
@@ -305,6 +328,10 @@ warn_legacy_rprofile <- function(file) {
 count_char <- function(x, char) {
   lengths(regmatches(x, gregexpr(char, x, fixed = TRUE)))
 }
+
+# The platforms of a new project, and of the rstudio task: those most people
+# work on
+common_platforms <- c("linux-64", "osx-64", "osx-arm64", "win-64")
 
 # conda-forge's package that keeps the personal R library out of an
 # environment's R (https://github.com/conda-forge/r-base-feedstock/issues/37)

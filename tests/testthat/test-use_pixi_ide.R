@@ -31,50 +31,58 @@ read_settings <- function(root) {
 
 # use_pixi_rstudio() -----------------------------------------------------------
 
-test_that("adds an rstudio task for each platform, and a .Rproj file", {
-  p <- local_ide_project(platforms = c("osx-arm64", "linux-64", "win-64"))
+test_that("adds an rstudio task for each common platform, and a .Rproj file", {
+  p <- local_ide_project(
+    platforms = c("linux-64", "osx-64", "osx-arm64", "win-64")
+  )
   rproj <- paste0(basename(p$root), ".Rproj")
 
-  suppressMessages(use_pixi_rstudio(p$root))
+  messages <- capture_messages(use_pixi_rstudio(p$root))
 
   expect_true(file.exists(file.path(p$root, rproj)))
+  expect_false(any(grepl("Pixi added", messages)))
   # Each platform's task is removed, then added
-  expect_length(p$args, 6)
+  expect_length(p$args, 8)
   expect_equal(
     p$args[[1]],
-    c("task", "remove", "rstudio", "--platform", "osx-arm64")
+    c("task", "remove", "rstudio", "--platform", "linux-64")
   )
-  p$args <- p$args[c(2, 4, 6)]
+  p$args <- p$args[c(2, 4, 6, 8)]
+  expect_equal(p$args[[1]][4], paste("rstudio", rproj))
   expect_equal(
-    p$args[[1]][1:6],
+    p$args[[2]][1:6],
     c(
       "task",
       "add",
       "rstudio",
       paste("open -n -a RStudio", rproj),
       "--platform",
-      "osx-arm64"
+      "osx-64"
     )
   )
-  expect_equal(p$args[[2]][4], paste("rstudio", rproj))
+  expect_equal(p$args[[3]][6], "osx-arm64")
   expect_equal(
-    p$args[[3]][4],
+    p$args[[4]][4],
     paste('"C:/Program Files/RStudio/rstudio.exe"', rproj)
   )
   expect_true(
-    "RSTUDIO_WHICH_R=$CONDA_PREFIX/lib/R/bin/x64/R.exe" %in% p$args[[3]]
+    "RSTUDIO_WHICH_R=$CONDA_PREFIX/lib/R/bin/x64/R.exe" %in% p$args[[4]]
   )
 })
 
-test_that("uses an existing .Rproj file, and skips unknown platforms", {
-  p <- local_ide_project(platforms = c("osx-64", "emscripten-wasm32"))
+test_that("uses an existing .Rproj file, and says which platforms Pixi adds", {
+  p <- local_ide_project(platforms = "osx-64")
   writeLines("Version: 1.0", file.path(p$root, "mine.Rproj"))
 
-  suppressMessages(use_pixi_rstudio(p$root))
+  messages <- capture_messages(use_pixi_rstudio(p$root))
 
   expect_equal(list.files(p$root, pattern = "\\.Rproj$"), "mine.Rproj")
-  expect_length(p$args, 2)
-  expect_equal(p$args[[2]][4], "open -n -a RStudio mine.Rproj")
+  expect_equal(p$args[[4]][4], "open -n -a RStudio mine.Rproj")
+  expect_true(any(grepl(
+    "Pixi added \"linux-64\", \"osx-arm64\", and \"win-64\"",
+    messages,
+    fixed = TRUE
+  )))
 })
 
 # use_pixi_positron() ----------------------------------------------------------
@@ -310,7 +318,7 @@ test_that("use_pixi_rstudio() can be run again", {
   suppressMessages(capture.output(use_pixi_rstudio(dir)))
 
   tasks <- pixi_tasks(path = dir)
-  expect_equal(tasks$name, "rstudio")
+  expect_equal(unique(tasks$name), "rstudio")
   expect_match(tasks$command, "renamed.Rproj")
 })
 

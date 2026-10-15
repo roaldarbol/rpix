@@ -1,3 +1,14 @@
+# pixi_add() explains a package missing on one of the platforms
+
+    Code
+      pixi_add("Rmpi")
+    Condition
+      Error in `pixi_add()`:
+      ! r-rmpi isn't on conda-forge for "win-64", one of the project's platforms.
+      i Add it only for the platforms that have it, one at a time, e.g. `pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `pixi workspace platform remove win-64`.
+      Caused by error:
+      ! pixi failed
+
 # pixi_add() explains packages that aren't built for the project's R
 
     Code
