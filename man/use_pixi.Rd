@@ -26,9 +26,9 @@ conda-forge.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
-\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
-Its dependencies come from conda-forge, and rpix itself from R-universe
-until it's on conda-forge.}
+\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment,
+unless it has this version or a newer one. Its dependencies come from
+conda-forge, and rpix itself from R-universe until it's on conda-forge.}
 
 \item{date}{Optional. Use packages as they were on this date, such as
 \code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is
