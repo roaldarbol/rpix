@@ -204,6 +204,7 @@ local_not_on_conda_forge <- function(
   missing,
   answer = NULL,
   bioc = character(),
+  on_cran = c("cowsay", "dplyr", "fortunes", "praise"),
   env = parent.frame()
 ) {
   calls <- new.env()
@@ -239,6 +240,7 @@ local_not_on_conda_forge <- function(
       answer
     },
     add_github_packages = function(packages, ...) calls$github <- packages,
+    cran_packages = function() on_cran,
     .env = env
   )
   calls
@@ -265,6 +267,33 @@ test_that("pixi_add() says how to build them when it can't ask, or the answer is
     error = TRUE
   )
   expect_null(calls$github)
+})
+
+test_that("pixi_add() doesn't offer it for packages that aren't on CRAN", {
+  calls <- local_not_on_conda_forge(c("dplyrr", "zzqqxx"), answer = TRUE)
+  expect_snapshot(pixi_add("dplyrr"), error = TRUE)
+  expect_snapshot(pixi_add(c("dplyrr", "zzqqxx", "praise")), error = TRUE)
+  expect_length(calls$asked, 0)
+
+  # When CRAN can't be reached, it offers it anyway
+  local_not_on_conda_forge("dplyrr", on_cran = NULL)
+  expect_error(pixi_add("dplyrr"), "github::cran/dplyrr", fixed = TRUE)
+})
+
+test_that("cran_packages() lists CRAN's packages, from the CRAN repository", {
+  skip_on_cran()
+  skip_if_offline("cloud.r-project.org")
+  withr::local_options(repos = c(CRAN = "@CRAN@"))
+  expect_true(all(c("dplyr", "praise") %in% cran_packages()))
+  withr::local_options(repos = c(CRAN = "http://127.0.0.1:9"))
+  expect_null(cran_packages())
+})
+
+test_that("close_names() finds the closest names, ignoring case", {
+  names <- c("dplyr", "dbplyr", "plyr", "Rcpp", "praise")
+  expect_equal(close_names("dplyrr", names), "dplyr")
+  expect_equal(close_names("rcpp", names), "Rcpp")
+  expect_equal(close_names("zzqqxx", names), character())
 })
 
 test_that("pixi_add() doesn't offer it for packages that aren't from CRAN", {
