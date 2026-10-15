@@ -79,6 +79,11 @@ run_pixi <- function(
     return(invisible(command))
   }
 
+  # Pixi would activate the project's old location from its cache
+  if (!is.null(manifest) && args[1] %in% c("run", "shell", "shell-hook")) {
+    remove_stale_activation_cache(dirname(manifest))
+  }
+
   if (echo && announce) {
     cli::cli_alert_info("Running {.code {command}}")
   }
