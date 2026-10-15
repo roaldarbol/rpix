@@ -27,9 +27,18 @@
   `use_pixi(ide = "vscode", console = "arf")` (#134).
 * In an interactive session, `pixi_switch()` without an environment asks
   which, from a menu of the project's environments (#189).
+* `use_pixi()` turns on Pixi's activation cache for the project, so R started
+  through Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
+  second rather than a few. `activation_cache = FALSE` leaves it off (#195).
 
 ## Changed
 
+* Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which rpix
+  now asks for. It adds Rust, CMake, pkg-config and R's recommended packages,
+  and installs into R's library on Windows, so rpix no longer does (#148,
+  #149, #150, #152). rpix still adds Java, and on Windows, MSYS2's tools and
+  MinGW's compilers. A project with packages as of a date before 2026-10-15
+  can't get that `pixi-build-r`, so rpix stops and says so.
 * On Windows, `use_pixi_vscode()` and `pixi_switch()` also give the commands
   that start VSCodium, Cursor and Windsurf from the environment, and the IDE
   guide says the VS Code setup works in them too.
@@ -40,6 +49,10 @@
 
 ## Fixed
 
+* In a project with several environments, `pixi_add()`, `pixi_remove()` and
+  `install.packages()` install the environment R runs in, as Pixi doesn't by
+  itself there; a package added was missing until the next `pixi install`
+  (#202).
 * On Windows, packages from GitHub with a `configure` script build: rpix
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks

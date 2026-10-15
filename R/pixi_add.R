@@ -23,17 +23,20 @@
 #'   tag or commit, as in `"github::cran/praise@1.0.0"`; `pixi.lock` records
 #'   the exact commit either way. rpix writes it into `pixi.toml`, turns on
 #'   Pixi's `pixi-build` preview, and pins the build to the project's R. Its
-#'   dependencies come from conda-forge. rpix also adds what `pixi-build-r`
-#'   doesn't yet: the build tools its `SystemRequirements` names (Java, CMake,
-#'   pkg-config), and in a project for Windows, MSYS2's `make`, `sed` and
-#'   `coreutils`, and MinGW's compilers in place of `pixi-build-r`'s. Pixi before 0.82 uses an older `pixi-build-r`, and so may
-#'   a project with a date of 2026-10-12 or earlier, or a duration (see
-#'   [pixi_set_date()]). There, rpix also adds what that lacks: the
-#'   recommended packages the package uses (such as Matrix and MASS), Rust,
-#'   and on Windows, R's library folder. See
+#'   dependencies come from conda-forge. It asks for `pixi-build-r` 0.2.0 or
+#'   later, which adds the Rust, CMake, pkg-config and R's recommended
+#'   packages a package needs; a project with packages as of a date before
+#'   2026-10-15 can't get it (see [pixi_set_date()]). rpix also adds what
+#'   `pixi-build-r` doesn't: Java when `SystemRequirements` names it, and in
+#'   a project for Windows, MSYS2's `make`, `sed` and `coreutils`, and MinGW's
+#'   compilers in place of `pixi-build-r`'s. See
 #'   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>.
 #'   This may change, e.g. to use `pixi add` once it can set a build backend;
 #'   see <https://github.com/roaldarbol/rpix/issues/96>.
+#'
+#' In a project with several environments, Pixi doesn't install after adding
+#' or removing, so `pixi_add()` and [pixi_remove()] install the environment R
+#' runs in (or else the default one), when the change applies to it.
 #'
 #' When it adds R (`r-base`) to the default feature, it also adds
 #' `conda-ecosystem-user-package-isolation`, unless it's there, to keep your
@@ -220,6 +223,10 @@ pixi_add <- function(
     return(invisible(c(commands, result)))
   }
   check_post_link(result, path = path)
+  installed <- install_changed_environment(feature, path = path)
+  if (!is.null(installed)) {
+    check_post_link(installed, path = path)
+  }
   invisible(result)
 }
 

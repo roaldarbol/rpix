@@ -23,6 +23,13 @@
 #' In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 #' `.Rbuildignore`, so they stay out of the package's builds.
 #'
+#' It turns on Pixi's activation cache for the project, in
+#' `.pixi/config.toml`. Pixi then reuses the environment's activation until the
+#' project changes, so R started through Pixi, e.g. by `pixi run` or Positron,
+#' starts in a fraction of a second rather than a few. The cache is
+#' experimental in Pixi, and doesn't notice changes outside the project, e.g.
+#' a newly installed Java.
+#'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
 #'   to the newest one that the packages `use_pixi()` adds are built for on
 #'   conda-forge.
@@ -38,6 +45,8 @@
 #'   Its dependencies come from conda-forge, and rpix itself from R-universe
 #'   until it's on conda-forge.
 #' @param path The folder to set up. Defaults to the working directory.
+#' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
+#'   project.
 #' @param ... Passed on to the IDE setup, e.g. `console = "arf"` for
 #'   [use_pixi_vscode()], or `default_r = FALSE` for [use_pixi_positron()].
 #' @returns The path to the project's manifest, invisibly.
@@ -56,6 +65,7 @@ use_pixi <- function(
   install_rpix = TRUE,
   date = NULL,
   path = NULL,
+  activation_cache = TRUE,
   ...
 ) {
   setup_ide <- list(
@@ -134,6 +144,9 @@ use_pixi <- function(
   remove_legacy_rprofile(file.path(path, ".Rprofile"))
   warn_legacy_rprofile(file.path(home_dir(), ".Rprofile"))
   add_rprofile_block(file.path(path, ".Rprofile"))
+  if (activation_cache) {
+    use_activation_cache(path)
+  }
 
   for (i in ide) {
     args <- ide_args[intersect(names(ide_args), names(formals(setup_ide[[i]])))]
@@ -155,6 +168,37 @@ rpix_dependencies <- function(imports = rpix_imports()) {
   imports <- trimws(strsplit(imports, ",", fixed = TRUE)[[1]])
   imports <- sub("[[:space:]]*\\(.*$", "", imports)
   parse_packages(imports)$name
+}
+
+# Turn on Pixi's activation cache in the project's .pixi/config.toml. Without
+# it, every start of R through Pixi runs the activation scripts, and
+# conda-forge's r-base one takes seconds (`R CMD javareconf`). Pixi versions
+# that don't know the setting fail, which only costs the speed-up.
+use_activation_cache <- function(path) {
+  set <- c(
+    "config",
+    "set",
+    "--local",
+    "experimental.use-environment-activation-cache",
+    "true"
+  )
+  done <- tryCatch(
+    {
+      run_pixi(set, path = path)
+      TRUE
+    },
+    rpix_error_pixi = function(e) FALSE
+  )
+  if (done) {
+    cli::cli_alert_success(
+      "Turned on Pixi's activation cache in {.file .pixi/config.toml}, so R starts faster through Pixi."
+    )
+  } else {
+    cli::cli_alert_info(
+      "Couldn't turn on Pixi's activation cache, so R can take a few seconds to start through Pixi. A newer Pixi has it."
+    )
+  }
+  invisible(done)
 }
 
 rpix_imports <- function() {

@@ -4,6 +4,7 @@
       use_pixi(path = dir)
     Message
       v Added `^\.pixi$`, `^pixi\.toml$`, and `^pixi\.lock$` to '.Rbuildignore'.
+      v Turned on Pixi's activation cache in '.pixi/config.toml', so R starts faster through Pixi.
       v Set up '<dir>' for R.
       i Start R from the project's environment, e.g. with `pixi run R`, or set up your IDE with `use_pixi(ide = ...)`.
 

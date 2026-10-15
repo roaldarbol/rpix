@@ -116,6 +116,8 @@ local_mock_pixi <- function(
       }
       invisible(list(status = 0))
     },
+    # A project with one environment, which Pixi installs by itself
+    install_changed_environment = function(...) NULL,
     .env = env
   )
   calls
