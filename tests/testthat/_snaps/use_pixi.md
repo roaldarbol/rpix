@@ -1,3 +1,14 @@
+# use_pixi() says when conda-forge has no R packages for the R asked for
+
+    Code
+      use_pixi(r_version = "4.6", path = dir)
+    Condition
+      Error in `use_pixi()`:
+      ! conda-forge has no R packages for R 4.6 yet; R 4.5 is the newest you can use.
+      i Use it with `use_pixi(r_version = "4.5")`.
+      Caused by error:
+      ! pixi failed
+
 # use_pixi() leaves Pixi's files out of a package's builds
 
     Code

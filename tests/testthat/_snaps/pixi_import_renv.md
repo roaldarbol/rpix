@@ -40,6 +40,19 @@
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
       ! Not on conda-forge or bioconda, so not added: unipkg and biocmissing.
 
+# pixi_import_renv() uses the newest R with packages, if the lock file's has none
+
+    Code
+      result <- pixi_import_renv(deactivate = FALSE)
+    Message
+      ! Not on conda-forge, so not added: notonconda.
+      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      ! conda-forge doesn't have the packages for R 4.6, the lock file's R, so rpix adds the newest R that has them.
+      i Built mypkg and ghdep from source, which is experimental.
+      ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
+      ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
+      ! Not on conda-forge or bioconda, so not added: unipkg and biocmissing.
+
 # pixi_import_renv() can leave versions, R and renv alone
 
     Code

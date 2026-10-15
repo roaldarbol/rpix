@@ -74,14 +74,74 @@ test_that("use_pixi() uses an existing project and can skip rpix", {
 
   suppressMessages(use_pixi(r_version = "4.5", install_rpix = FALSE))
 
+  # r-cli comes with R, so Pixi picks an R that has packages, and goes again
   expect_equal(
     calls$args,
     list(
-      c("add", "r-base=4.5", "conda-ecosystem-user-package-isolation"),
+      c(
+        "add",
+        "--no-install",
+        "r-base=4.5",
+        "conda-ecosystem-user-package-isolation",
+        "r-cli"
+      ),
+      c("remove", "r-cli"),
       activation_cache_args
     )
   )
   expect_equal(calls$paths[[1]], dir)
+})
+
+test_that("use_pixi() leaves a project's r-cli alone", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines(
+    c("[workspace]", "", "[dependencies]", 'r-cli = ">=3.6"'),
+    file.path(dir, "pixi.toml")
+  )
+
+  suppressMessages(use_pixi(path = dir, install_rpix = FALSE))
+  expect_equal(
+    calls$args[[1]],
+    c("add", "r-base", "conda-ecosystem-user-package-isolation")
+  )
+  expect_false(list(c("remove", "r-cli")) %in% calls$args)
+})
+
+test_that("use_pixi() says when conda-forge has no R packages for the R asked for", {
+  local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  # Pixi's error for R 4.6 with rpix's dependencies, when conda-forge had
+  # r-base 4.6.1 but no R packages for it
+  stderr <- paste(
+    readLines(
+      test_path("fixtures", "pixi-r-version-new-r.txt"),
+      encoding = "UTF-8"
+    ),
+    collapse = "\n"
+  )
+  error <- structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(message = "pixi failed", call = NULL, stderr = stderr)
+  )
+  local_mocked_bindings(run_pixi = function(args, ...) stop(error))
+
+  expect_snapshot(
+    use_pixi(r_version = "4.6", path = dir),
+    error = TRUE
+  )
+  # Not for an R it does have packages for, or for other errors
+  expect_error(
+    use_pixi(r_version = "4.5", path = dir),
+    class = "rpix_error_pixi"
+  )
+  expect_error(use_pixi(path = dir), class = "rpix_error_pixi")
+  error$stderr <- "Some other failure"
+  expect_error(
+    use_pixi(r_version = "4.6", path = dir),
+    class = "rpix_error_pixi"
+  )
 })
 
 test_that("use_pixi() can leave the activation cache off", {
