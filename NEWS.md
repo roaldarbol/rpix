@@ -37,6 +37,10 @@
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
+* `pixi_switch()` and `pixi_check_matrix()` say when they install an
+  environment for the first time, which can take a while, and show Pixi's
+  output, rather than waiting in silence. `pixi_check_matrix()` now installs
+  before the run, so its time doesn't include the install (#223).
 
 ## Fixed
 

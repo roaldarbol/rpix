@@ -21,6 +21,8 @@
     Code
       matrix <- pixi_check_matrix(c("r44", "r45"), what = "check", parallel = TRUE)
     Message
+      i Installing the "r44" environment (first time only)...
+      i Installing the "r45" environment (first time only)...
       i Running in 2 environments at once.
 
 ---
