@@ -48,6 +48,12 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* A moved or copied project no longer runs the R of its old location. Pixi's
+  activation cache, which `use_pixi()` turns on, keeps the old paths, so rpix
+  removes it when it has another location, before Pixi uses it, and says the
+  project was moved or copied. `pixi_activate()` and `pixi_sitrep()` also
+  name environments that were installed in the old location, which can't be
+  moved, and say how to reinstall them (#217).
 
 # rpix 0.8.0 (2026-10-13)
 

@@ -313,6 +313,29 @@ test_that("--manifest-path comes straight after `run`, before the command", {
   expect_equal(command, "pixi run --manifest-path pixi.toml Rscript -e 1")
 })
 
+test_that("removes a stale activation cache before Pixi activates", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  root <- local_pixi_project()
+  checked <- new.env()
+  checked$roots <- character()
+  local_mocked_bindings(
+    pixi_binary = function(...) "pixi",
+    remove_stale_activation_cache = function(root) {
+      checked$roots <- c(checked$roots, root)
+    }
+  )
+  local_mocked_bindings(
+    run = function(...) list(status = 0, stdout = "", stderr = ""),
+    .package = "processx"
+  )
+
+  run_pixi(c("run", "R"), path = root)
+  run_pixi(c("shell-hook", "--environment", "default"), path = root)
+  run_pixi(c("add", "r-cli"), path = root)
+  expect_message(run_pixi(c("run", "R"), path = root, dry_run = TRUE))
+  expect_equal(checked$roots, c(root, root))
+})
+
 test_that("Pixi doesn't get the variables R sets for itself", {
   withr::local_envvar(R_LIBS_SITE = "/this/r/site-library", RPIX_TEST = "yes")
   env <- pixi_env("never")

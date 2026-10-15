@@ -213,6 +213,33 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_silent(pixi_activate(p$root, quiet = TRUE))
 })
 
+test_that("says when the project was moved or copied", {
+  p <- local_activation()
+  cache <- file.path(p$root, ".pixi", "activation-env-v0")
+  dir.create(cache, recursive = TRUE)
+  stale <- '{"environment_variables": {"PIXI_WORKSPACE_ROOT": "/old/project"}}'
+  writeLines(stale, file.path(cache, "activation_default.json"))
+
+  expect_message(pixi_activate(p$root, quiet = FALSE), "moved or copied")
+  expect_false(file.exists(file.path(cache, "activation_default.json")))
+
+  # In R from the old location, with the hint
+  local_mocked_bindings(r_home = function() {
+    "/old/project/.pixi/envs/default/lib/R"
+  })
+  writeLines(stale, file.path(cache, "activation_default.json"))
+  messages <- character()
+  withCallingHandlers(
+    pixi_activate(p$root, quiet = FALSE),
+    message = function(m) {
+      messages <<- c(messages, conditionMessage(m))
+      invokeRestart("muffleMessage")
+    }
+  )
+  expect_match(messages, "moved or copied")
+  expect_match(messages, "pixi run R")
+})
+
 test_that("gives a hint in a folder without a Pixi project", {
   local_mocked_bindings(r_home = function() "/project/.pixi/envs/default/lib/R")
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)

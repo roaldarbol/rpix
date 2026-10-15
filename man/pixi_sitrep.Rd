@@ -19,6 +19,9 @@ and suggest fixes for what doesn't. It reports:
 \itemize{
 \item Pixi: where it is, and its version.
 \item The project, and whether \code{pixi.lock} is up to date with \code{pixi.toml}.
+\item Whether the project was moved or copied: Pixi's activation cache then
+has the old location, so it's removed, and environments installed in the
+old location need reinstalling.
 \item The date the project's packages are as of, if it has one (see
 \code{\link[=pixi_set_date]{pixi_set_date()}}).
 \item In a package, whether \code{pixi.toml} has what its \code{DESCRIPTION} needs: the
