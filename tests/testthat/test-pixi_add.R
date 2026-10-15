@@ -197,9 +197,14 @@ test_that("pixi_add() explains packages that aren't built for the project's R", 
 
 test_that("pixi_add() suggests R in place of the project's, as valid R", {
   # Pixi's error for r-withr>=3.0.3 in a project with R 4.6
-  local_mock_pixi(
-    error = pixi_error(read_fixture("pixi-r-version-constraint.txt"))
+  error <- pixi_error(read_fixture("pixi-r-version-constraint.txt"))
+  local_mock_pixi(error = error)
+  # A project with the isolation already, so pixi_add() doesn't add it with R
+  root <- local_pixi_project(
+    content = c("[dependencies]", paste0(isolation_package, ' = "*"'))
   )
+  withr::local_dir(root)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   packages <- c(
     "r-base>=4.6",
     "withr>=3.0.3",
