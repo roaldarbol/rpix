@@ -48,6 +48,11 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* rpix only counts a package as on conda-forge or bioconda when one has its
+  exact name, as Pixi's search also finds names that contain it. So
+  `pixi_add()` offers to build a CRAN package such as faux from source, rather
+  than failing because Pixi found r-fauxpas, and `pixi_search("faux")` no
+  longer shows r-fauxpas (#205).
 
 # rpix 0.8.0 (2026-10-13)
 

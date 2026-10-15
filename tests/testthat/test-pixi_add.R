@@ -87,6 +87,62 @@ test_that("pixi_search() translates names", {
   expect_error(pixi_search(c("a1", "b1")), "single package")
 })
 
+test_that("pixi_search() only shows an R package by its exact name", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  found <- list(noarch = data.frame(name = c("r-fauxpas", "r-fauxpas")))
+  calls <- new.env()
+  calls$args <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, json = FALSE, ...) {
+      calls$args <- c(calls$args, list(args))
+      if (json) found else invisible(list(status = 0))
+    }
+  )
+  expect_snapshot(pixi_search("faux"), error = TRUE)
+  expect_equal(calls$args, list(c("search", "r-faux")))
+
+  found <- list()
+  expect_snapshot(pixi_search("faux"), error = TRUE)
+
+  found <- list(noarch = data.frame(name = c("r-fauxpas", "r-faux")))
+  calls$args <- list()
+  pixi_search("faux")
+  expect_equal(calls$args, rep(list(c("search", "r-faux")), 2))
+
+  # Conda names are left to Pixi
+  calls$args <- list()
+  pixi_search("conda::faux")
+  expect_equal(calls$args, list(c("search", "faux")))
+})
+
+test_that("pixi_search() passes on Pixi's other errors", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  local_mocked_bindings(
+    run_pixi = function(...) {
+      stop(structure(
+        list(message = "offline", call = NULL, stderr = "network error"),
+        class = c("rpix_error_pixi", "error", "condition")
+      ))
+    }
+  )
+  expect_error(pixi_search("faux"), "offline", class = "rpix_error_pixi")
+})
+
+test_that("pixi_search() doesn't show a package that contains the name", {
+  skip_if_no_pixi()
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  expect_error(
+    pixi_search("faux"),
+    "r-fauxpas",
+    class = "rpix_error_package_not_found"
+  )
+  output <- capture.output(pixi_search("cli"), type = "output")
+  expect_true(any(grepl("r-cli", output)))
+})
+
 test_that("project_channels() reads the project's channels", {
   skip_if_no_pixi()
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
@@ -113,6 +169,10 @@ local_mock_pixi <- function(
       calls$args <- c(calls$args, list(args))
       if (!is.null(error) && args[1] == "add") {
         stop(error)
+      }
+      # pixi search --json finds every package
+      if (args[1] == "search") {
+        return(list(noarch = data.frame(name = args[length(args)])))
       }
       invisible(list(status = 0))
     },
