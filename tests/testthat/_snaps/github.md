@@ -10,13 +10,56 @@
       parse_github("github::hadley/nope")
     Condition
       Error:
-      ! Couldn't read the R package in <https://github.com/hadley/nope>.
-      i It needs a 'DESCRIPTION' file at the top of the repository.
+      ! There's no public repository "hadley/nope" on GitHub.
+      i Check the name. rpix reads the package's 'DESCRIPTION' from GitHub, so the repository has to be public.
     Code
       parse_github("github::hadley/nope@dev")
     Condition
       Error:
-      ! Couldn't read the R package in <https://github.com/hadley/nope> at dev.
+      ! There's no public repository "hadley/nope" on GitHub.
+      i Check the name. rpix reads the package's 'DESCRIPTION' from GitHub, so the repository has to be public.
+
+# parse_github() tells why it couldn't read a DESCRIPTION
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! Couldn't reach GitHub to read the R package in <https://github.com/hadley/emo>.
+      i Check your internet connection.
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! GitHub answered 503 when asked for the R package in <https://github.com/hadley/emo>.
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! There's no public repository "hadley/emo" on GitHub.
+      i Check the name. rpix reads the package's 'DESCRIPTION' from GitHub, so the repository has to be public.
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! <https://github.com/hadley/emo> has no branch, tag or commit "v2".
+
+---
+
+    Code
+      parse_github("github::hadley/emo@v2")
+    Condition
+      Error:
+      ! Couldn't read the R package in <https://github.com/hadley/emo> at v2.
       i It needs a 'DESCRIPTION' file at the top of the repository.
 
 # pixi_add() adds GitHub packages to pixi.toml, and Pixi installs them
