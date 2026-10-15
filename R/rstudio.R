@@ -80,6 +80,13 @@ addin_run_task <- function() {
 # opens it in the R it's set up with; the .Rprofile block says how to move to
 # the environment's R.
 rstudio_new_project <- function(path, r_version = "4.5", git = FALSE, ...) {
+  # RStudio runs renv::init() after the template if its New Project dialog's
+  # "Use renv with this project" was last ticked, without showing it
+  if (isTRUE(rstudio_preference("new_proj_use_renv"))) {
+    cli::cli_alert_warning(
+      "RStudio will also set up renv in this project, which clashes with Pixi. Untick {.strong Use renv with this project} once in RStudio's New Project dialog; rpix says how to remove renv when the project opens."
+    )
+  }
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   use_pixi(r_version = r_version, ide = "rstudio", path = path)
   if (isTRUE(as.logical(git))) {
@@ -130,6 +137,12 @@ rstudio_api <- function(name) {
     mode = "function",
     inherits = FALSE
   )
+}
+
+# One of RStudio's preferences, or NULL outside RStudio
+rstudio_preference <- function(name) {
+  read <- rstudio_api("readRStudioPreference")
+  if (is.null(read)) NULL else read(name, NULL)
 }
 
 # The text selected in RStudio's editor, or ""

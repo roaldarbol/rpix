@@ -141,6 +141,11 @@ test_that("the New Project template sets the project up for RStudio", {
   rstudio_new_project(path)
   expect_equal(called$r_version, "4.5")
 
+  # RStudio's hidden renv setting
+  expect_silent(rstudio_new_project(path))
+  local_mocked_bindings(rstudio_preference = function(name) TRUE)
+  expect_message(rstudio_new_project(path), "also set up renv")
+
   # With git
   initialised <- NULL
   local_mocked_bindings(git_init = function(path) initialised <<- path)
@@ -165,6 +170,7 @@ test_that("git_init() makes a git repository, or says it can't", {
 
 test_that("reads RStudio's editor through its API, and asks in a dialog", {
   expect_null(rstudio_api("getSourceEditorContext"))
+  expect_null(rstudio_preference("new_proj_use_renv"))
   expect_equal(rstudio_selection(), "")
   expect_null(rstudio_active_file())
 
@@ -182,6 +188,12 @@ test_that("reads RStudio's editor through its API, and asks in a dialog", {
 
   context$path <- ""
   expect_null(rstudio_active_file())
+
+  local_mocked_bindings(rstudio_api = function(name) {
+    function(name, default) if (name == "new_proj_use_renv") TRUE else default
+  })
+  expect_true(rstudio_preference("new_proj_use_renv"))
+  expect_null(rstudio_preference("other"))
 })
 
 test_that("asks in the console outside RStudio", {
