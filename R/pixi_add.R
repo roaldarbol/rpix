@@ -182,7 +182,12 @@ pixi_add <- function(
               class = "rpix_retry"
             ))
           }
-          retry <- offer_cran_source(parsed, missing, call = caller)
+          retry <- offer_cran_source(
+            parsed,
+            missing,
+            path = path,
+            call = caller
+          )
           return(structure(
             list(packages = c(retry, github)),
             class = "rpix_retry"
@@ -312,15 +317,38 @@ missing_from_conda_forge <- function(parsed) {
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
 # mirror, which has a tag for every version. Returns the packages to add
 # instead, or fails. With `abort = FALSE`, it says how to build them instead of
-# failing, and returns NULL.
+# failing, and returns NULL. A project whose date hides pixi-build-r can't
+# build them, so it says so instead of offering.
 offer_cran_source <- function(
   parsed,
   missing,
   abort = TRUE,
+  path = NULL,
   call = parent.frame()
 ) {
   specs <- package_references(parsed)
   names <- package_r_names(parsed)[missing]
+  date <- project_exclude_newer(path)
+  if (date_hides_backend(date)) {
+    header <- if (abort) {
+      "{.pkg {names}} {?isn't/aren't} on conda-forge."
+    } else {
+      "Not on conda-forge, so not added: {.pkg {names}}."
+    }
+    why <- c(
+      "i" = "Pixi can't build {cli::qty(length(names))}{?it/them} from source in this project: its date, {.val {date}}, hides the {.code pixi-build-r} that builds packages.",
+      "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14."
+    )
+    if (!abort) {
+      cli::cli_inform(c("!" = header, why))
+      return(NULL)
+    }
+    cli::cli_abort(
+      c(header, why),
+      class = "rpix_error_package_not_found",
+      call = call
+    )
+  }
   constraints <- parsed$constraint[missing]
   exact <- grepl("^==", constraints)
   # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3

@@ -40,6 +40,16 @@
       ! Didn't add fortunes and cowsay.
       i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
 
+# pixi_add() explains, rather than offers, a build from source in a project with a date
+
+    Code
+      pixi_add(c("praise", "fortunes"), path = root)
+    Condition
+      Error in `pixi_add()`:
+      ! fortunes isn't on conda-forge.
+      i Pixi can't build it from source in this project: its date, "2025-06-01", hides the `pixi-build-r` that builds packages.
+      i `exclude-newer` applies to Pixi's build backend too, and `pixi-build-r` 0.2.0 came out on 2026-10-14.
+
 # ask_yes_no() asks, then offers Yes and No
 
     Code
