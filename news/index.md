@@ -54,6 +54,13 @@
 
 ### Changed
 
+- In a Pixi environment,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  of a package already in `pixi.toml` says so, and how to update it with
+  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
+  rather than passing on Pixi’s “already a dependency”
+  ([\#210](https://github.com/roaldarbol/rpix/issues/210)).
+
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   creates a project for Linux, macOS (Intel and Apple Silicon) and
   Windows, and your computer’s platform if it’s another one, so

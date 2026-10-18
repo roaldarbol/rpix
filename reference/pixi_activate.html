@@ -10,9 +10,10 @@ own library added if it exists. Other libraries, such as temporary ones
 that devtools adds, are kept.
 install.packages() adds packages with pixi_add() instead, so they're
 recorded in pixi.toml and pixi.lock. For a CRAN package that isn't on
-conda-forge, pixi_add() offers to build it from source. repos is
-ignored, and other arguments Pixi can't use, such as lib, give an
-error. Package files and folders are installed with
+conda-forge, pixi_add() offers to build it from source. For a package
+already in pixi.toml, it says to update it with pixi_update()
+instead. repos is ignored, and other arguments Pixi can't use, such as
+lib, give an error. Package files and folders are installed with
 utils::install.packages(), so pixi.toml doesn't record them. Turn
 this off with options(rpix.install_packages = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
@@ -33,9 +34,10 @@ own library added if it exists. Other libraries, such as temporary ones
 that devtools adds, are kept.
 install.packages() adds packages with pixi_add() instead, so they're
 recorded in pixi.toml and pixi.lock. For a CRAN package that isn't on
-conda-forge, pixi_add() offers to build it from source. repos is
-ignored, and other arguments Pixi can't use, such as lib, give an
-error. Package files and folders are installed with
+conda-forge, pixi_add() offers to build it from source. For a package
+already in pixi.toml, it says to update it with pixi_update()
+instead. repos is ignored, and other arguments Pixi can't use, such as
+lib, give an error. Package files and folders are installed with
 utils::install.packages(), so pixi.toml doesn't record them. Turn
 this off with options(rpix.install_packages = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
@@ -116,9 +118,10 @@ own library added if it exists. Other libraries, such as temporary ones
 that devtools adds, are kept.</p></li>
 <li><p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> adds packages with <code><a href="pixi_add.html">pixi_add()</a></code> instead, so they're
 recorded in <code>pixi.toml</code> and <code>pixi.lock</code>. For a CRAN package that isn't on
-conda-forge, <code><a href="pixi_add.html">pixi_add()</a></code> offers to build it from source. <code>repos</code> is
-ignored, and other arguments Pixi can't use, such as <code>lib</code>, give an
-error. Package files and folders are installed with
+conda-forge, <code><a href="pixi_add.html">pixi_add()</a></code> offers to build it from source. For a package
+already in <code>pixi.toml</code>, it says to update it with <code><a href="pixi_install.html">pixi_update()</a></code>
+instead. <code>repos</code> is ignored, and other arguments Pixi can't use, such as
+<code>lib</code>, give an error. Package files and folders are installed with
 <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so <code>pixi.toml</code> doesn't record them. Turn
 this off with <code>options(rpix.install_packages = FALSE)</code>.</p></li>
 <li><p>If R isn't the R of a Pixi environment in this project, nothing changes;
