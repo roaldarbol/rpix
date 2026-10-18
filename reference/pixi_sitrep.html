@@ -21,13 +21,14 @@ Private channels that refuse access, and the hosts Pixi has logins for
 Whether the running R is the R of the project's environment, and whether
 the environment is activated.
 Libraries and loaded packages from outside the project, such as your
-personal library.
+personal library. R's base packages come with every R, so aren't listed.
 Packages in the environment that Pixi didn't install, e.g. with
 utils::install.packages(), so pixi.toml doesn't record them.
 Whether the project's .Rprofile activates the environment when an IDE
 starts R directly.
 Whether the IDE you're in is set up for the project: it runs the
-project's R, or is set up by use_pixi().
+project's R, or is set up by use_pixi(). If it's set up but runs
+another R, how to start the project's R in it.
 
 "><meta property="og:description" content="Check that R, its packages and the IDE use the project's Pixi environment,
 and suggest fixes for what doesn't. It reports:
@@ -51,13 +52,14 @@ Private channels that refuse access, and the hosts Pixi has logins for
 Whether the running R is the R of the project's environment, and whether
 the environment is activated.
 Libraries and loaded packages from outside the project, such as your
-personal library.
+personal library. R's base packages come with every R, so aren't listed.
 Packages in the environment that Pixi didn't install, e.g. with
 utils::install.packages(), so pixi.toml doesn't record them.
 Whether the project's .Rprofile activates the environment when an IDE
 starts R directly.
 Whether the IDE you're in is set up for the project: it runs the
-project's R, or is set up by use_pixi().
+project's R, or is set up by use_pixi(). If it's set up but runs
+another R, how to start the project's R in it.
 
 "><meta property="og:image" content="https://roald-arboel.com/rpix/logo.svg"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -141,13 +143,14 @@ ones that leave out the default feature.</p></li>
 <li><p>Whether the running R is the R of the project's environment, and whether
 the environment is activated.</p></li>
 <li><p>Libraries and loaded packages from outside the project, such as your
-personal library.</p></li>
+personal library. R's base packages come with every R, so aren't listed.</p></li>
 <li><p>Packages in the environment that Pixi didn't install, e.g. with
 <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so <code>pixi.toml</code> doesn't record them.</p></li>
 <li><p>Whether the project's <code>.Rprofile</code> activates the environment when an IDE
 starts R directly.</p></li>
 <li><p>Whether the IDE you're in is set up for the project: it runs the
-project's R, or is set up by <code><a href="use_pixi.html">use_pixi()</a></code>.</p></li>
+project's R, or is set up by <code><a href="use_pixi.html">use_pixi()</a></code>. If it's set up but runs
+another R, how to start the project's R in it.</p></li>
 </ul></div>
 
     <div class="section level2">

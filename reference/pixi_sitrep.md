@@ -33,7 +33,8 @@ environment, and suggest fixes for what doesn't. It reports:
   whether the environment is activated.
 
 - Libraries and loaded packages from outside the project, such as your
-  personal library.
+  personal library. R's base packages come with every R, so aren't
+  listed.
 
 - Packages in the environment that Pixi didn't install, e.g. with
   [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
@@ -45,6 +46,7 @@ environment, and suggest fixes for what doesn't. It reports:
 - Whether the IDE you're in is set up for the project: it runs the
   project's R, or is set up by
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md).
+  If it's set up but runs another R, how to start the project's R in it.
 
 ## Usage
 
