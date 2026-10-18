@@ -3,7 +3,8 @@
 #' @description
 #' Remove packages from the Pixi manifest. Package names are translated like in
 #' [pixi_add()]: `"dplyr"` removes `r-dplyr` and `"bioc::DESeq2"` removes
-#' `bioconductor-deseq2`.
+#' `bioconductor-deseq2`. `"DESeq2"` removes `bioconductor-deseq2` too, when
+#' that's what the manifest has, as [pixi_add()] adds it.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/remove/>.
 #'
@@ -37,6 +38,7 @@ pixi_remove <- function(
       "{.fn pixi_remove} takes package names without version constraints."
     )
   }
+  parsed$name <- with_bioconductor_names(parsed, path)
   result <- run_pixi(
     c("remove", parsed$name, unname(names), scope_args(feature, platform)),
     path = path,
@@ -47,4 +49,35 @@ pixi_remove <- function(
     install_changed_environment(feature, path = path)
   }
   invisible(result)
+}
+
+# The conda names of the packages, with bioconductor-<name> in place of
+# r-<name> when the manifest has the former but not the latter, as pixi_add()
+# adds a Bioconductor package without `bioc::`
+with_bioconductor_names <- function(parsed, path = NULL) {
+  manifest <- find_manifest(path)
+  if (is.null(manifest)) {
+    return(parsed$name)
+  }
+  lines <- readLines(manifest, warn = FALSE)
+  has <- function(names) {
+    vapply(
+      names,
+      function(name) {
+        key <- paste0(
+          '^\\s*"?',
+          gsub(".", "\\.", name, fixed = TRUE),
+          '"?\\s*='
+        )
+        any(grepl(key, lines))
+      },
+      logical(1),
+      USE.NAMES = FALSE
+    )
+  }
+  bioc <- sub("^r-", "bioconductor-", parsed$name)
+  swap <- parsed$source == "cran" & !has(parsed$name) & has(bioc)
+  names <- parsed$name
+  names[swap] <- bioc[swap]
+  names
 }

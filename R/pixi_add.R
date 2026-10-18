@@ -174,7 +174,13 @@ pixi_add <- function(
               class = "rpix_retry"
             ))
           }
-          retry <- offer_cran_source(parsed, missing, call = caller)
+          abort_not_on_cran(parsed, missing, call = caller)
+          retry <- offer_cran_source(
+            parsed,
+            missing,
+            path = path,
+            call = caller
+          )
           return(structure(
             list(packages = c(retry, github)),
             class = "rpix_retry"
@@ -366,18 +372,100 @@ missing_from_conda_forge <- function(parsed) {
   cran[!vapply(parsed$name[cran], on_channel, logical(1), "conda-forge")]
 }
 
+# Fail for the packages in `rows` that aren't on CRAN either, such as typos,
+# and suggest close names. If CRAN can't be reached, assume they're on it.
+abort_not_on_cran <- function(parsed, rows, call = parent.frame()) {
+  on_cran <- cran_packages()
+  names <- package_r_names(parsed)[rows]
+  unknown <- names[!names %in% on_cran]
+  if (length(on_cran) == 0 || length(unknown) == 0) {
+    return(invisible())
+  }
+  hints <- vapply(
+    unknown,
+    function(name) {
+      close <- close_names(name, on_cran)
+      if (length(close) == 0) {
+        return(NA_character_)
+      }
+      prefix <- if (length(unknown) > 1) "{.pkg {name}}: did" else "Did"
+      cli::format_inline(prefix, " you mean {.or {.pkg {close}}}?")
+    },
+    character(1)
+  )
+  hints <- hints[!is.na(hints)]
+  cli::cli_abort(
+    c(
+      "{.pkg {unknown}} {?isn't/aren't} on conda-forge or CRAN.",
+      stats::setNames(hints, rep("i", length(hints)))
+    ),
+    class = "rpix_error_package_not_found",
+    call = call
+  )
+}
+
+# The names of the packages on CRAN, or NULL if it can't be reached. R keeps
+# the list for an hour.
+cran_packages <- function() {
+  repos <- getOption("repos")
+  repo <- if ("CRAN" %in% names(repos) && repos[["CRAN"]] != "@CRAN@") {
+    repos[["CRAN"]]
+  } else {
+    "https://cloud.r-project.org"
+  }
+  available <- suppressWarnings(tryCatch(
+    utils::available.packages(
+      repos = repo,
+      type = "source",
+      filters = "duplicates"
+    ),
+    error = function(e) NULL
+  ))
+  rownames(available)
+}
+
+# Up to three of `names` closest to `name`, ignoring case
+close_names <- function(name, names) {
+  distance <- utils::adist(tolower(name), tolower(names))[1, ]
+  close <- distance <= max(1, nchar(name) %/% 4)
+  utils::head(names[close][order(distance[close])], 3)
+}
+
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
 # mirror, which has a tag for every version. Returns the packages to add
 # instead, or fails. With `abort = FALSE`, it says how to build them instead of
-# failing, and returns NULL.
+# failing, and returns NULL. A project whose date hides pixi-build-r can't
+# build them, so it says so instead of offering.
 offer_cran_source <- function(
   parsed,
   missing,
   abort = TRUE,
+  path = NULL,
   call = parent.frame()
 ) {
   specs <- package_references(parsed)
   names <- package_r_names(parsed)[missing]
+  date <- project_exclude_newer(path)
+  if (date_hides_backend(date)) {
+    header <- if (abort) {
+      "{.pkg {names}} {?isn't/aren't} on conda-forge."
+    } else {
+      "Not on conda-forge, so not added: {.pkg {names}}."
+    }
+    why <- c(
+      "i" = "Pixi can't build {cli::qty(length(names))}{?it/them} from source in this project: its date, {.val {date}}, hides the {.code pixi-build-r} that builds packages.",
+      "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14."
+    )
+    if (!abort) {
+      cli::cli_inform(c("!" = header, why))
+      return(NULL)
+    }
+    cli::cli_abort(
+      c(header, why),
+      class = "rpix_error_package_not_found",
+      call = call
+    )
+  }
   constraints <- parsed$constraint[missing]
   exact <- grepl("^==", constraints)
   # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3
