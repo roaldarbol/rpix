@@ -69,8 +69,7 @@ test_that("use_pixi() uses an existing project and can skip rpix", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
   writeLines("[workspace]", file.path(dir, "pixi.toml"))
-  dir.create(file.path(dir, "sub"))
-  withr::local_dir(file.path(dir, "sub"))
+  withr::local_dir(dir)
 
   suppressMessages(use_pixi(r_version = "4.5", install_rpix = FALSE))
 
@@ -82,6 +81,51 @@ test_that("use_pixi() uses an existing project and can skip rpix", {
     )
   )
   expect_equal(calls$paths[[1]], dir)
+})
+
+test_that("use_pixi() sets up a subfolder of a project, and points at the project", {
+  calls <- local_mock_setup()
+  local_mocked_bindings(is_interactive = function() FALSE)
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  sub <- file.path(dir, "analysis")
+  dir.create(sub)
+  withr::local_dir(sub)
+
+  messages <- capture_messages(use_pixi(install_rpix = FALSE))
+
+  expect_equal(calls$args[[1]], c("init", sub))
+  expect_true(all(vapply(calls$paths[-1], identical, logical(1), sub)))
+  expect_true(file.exists(file.path(sub, ".Rprofile")))
+  expect_false(file.exists(file.path(dir, ".Rprofile")))
+  expect_true(any(grepl(
+    paste0("use_pixi(path = \"", dir, "\")"),
+    messages,
+    fixed = TRUE
+  )))
+})
+
+test_that("use_pixi() asks whether to set up the parent project instead", {
+  calls <- local_mock_setup()
+  answer <- TRUE
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) answer
+  )
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  sub <- file.path(dir, "analysis")
+  dir.create(sub)
+
+  manifest <- suppressMessages(use_pixi(path = sub, install_rpix = FALSE))
+  expect_equal(manifest, file.path(dir, "pixi.toml"))
+  expect_equal(calls$args[[1]][1], "add")
+  expect_equal(calls$paths[[1]], dir)
+  expect_false(file.exists(file.path(sub, "pixi.toml")))
+
+  answer <- FALSE
+  manifest <- suppressMessages(use_pixi(path = sub, install_rpix = FALSE))
+  expect_equal(manifest, file.path(sub, "pixi.toml"))
 })
 
 test_that("use_pixi() can leave the activation cache off", {

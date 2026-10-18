@@ -33,7 +33,8 @@ the Pixi call (invisibly).
 \description{
 Remove packages from the Pixi manifest. Package names are translated like in
 \code{\link[=pixi_add]{pixi_add()}}: \code{"dplyr"} removes \code{r-dplyr} and \code{"bioc::DESeq2"} removes
-\code{bioconductor-deseq2}.
+\code{bioconductor-deseq2}. \code{"DESeq2"} removes \code{bioconductor-deseq2} too, when
+that's what the manifest has, as \code{\link[=pixi_add]{pixi_add()}} adds it.
 
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/remove/}.
 }
