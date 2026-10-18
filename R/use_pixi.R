@@ -133,26 +133,30 @@ use_pixi <- function(
   )
   # Without any, r-cli stands in for them, and is removed afterwards, unless
   # the project has it
-  probe <- if (length(r_packages) == 0 && !has_dependency(manifest, "r-cli")) {
+  probe <- if (length(r_packages) == 0 && !has_dependency("r-cli", path)) {
     "r-cli"
   }
   packages <- c(r_base, isolation, r_packages, probe)
+  # Only the ones it doesn't have, e.g. when use_pixi() runs again
+  packages <- packages[!has_dependency(packages, path)]
   if (length(probe) > 0) {
     cli::cli_alert_info(
       "Adding {.pkg r-cli} with R, so Pixi picks an R that conda-forge has R packages for, then removing it."
     )
   }
   caller <- environment()
-  tryCatch(
-    run_pixi(
-      c("add", if (length(probe) > 0) "--no-install", packages),
-      path = path,
-      echo = TRUE
-    ),
-    rpix_error_pixi = function(e) {
-      abort_r_without_packages(e, r_version, call = caller)
-    }
-  )
+  if (length(packages) > 0) {
+    tryCatch(
+      run_pixi(
+        c("add", if (length(probe) > 0) "--no-install", packages),
+        path = path,
+        echo = TRUE
+      ),
+      rpix_error_pixi = function(e) {
+        abort_r_without_packages(e, r_version, call = caller)
+      }
+    )
+  }
   if (length(probe) > 0) {
     run_pixi(c("remove", probe), path = path, echo = TRUE)
   }
@@ -180,14 +184,6 @@ use_pixi <- function(
     )
   }
   invisible(manifest)
-}
-
-# Whether the manifest's default feature has a dependency
-has_dependency <- function(manifest, name) {
-  lines <- readLines(manifest, warn = FALSE)
-  rows <- table_lines(lines, dependency_table())
-  pattern <- paste0('^\\s*"?', gsub(".", "\\.", name, fixed = TRUE), '"?\\s*=')
-  any(grepl(pattern, lines[rows]))
 }
 
 # When Pixi can't add R packages for the R asked for, as it's newer than
@@ -282,6 +278,18 @@ rpix_dependencies <- function(imports = rpix_imports()) {
   imports <- trimws(strsplit(imports, ",", fixed = TRUE)[[1]])
   imports <- sub("[[:space:]]*\\(.*$", "", imports)
   parse_packages(imports)$name
+}
+
+# Which of the packages the project's default feature has already
+has_dependency <- function(packages, path) {
+  manifest <- find_manifest(path)
+  lines <- if (!is.null(manifest)) readLines(manifest, warn = FALSE)
+  rows <- c(
+    table_lines(lines, "dependencies"),
+    table_lines(lines, "tool.pixi.dependencies")
+  )
+  names <- sub('^\\s*"?([^"=[:space:]]+)"?\\s*=.*$', "\\1", lines[rows])
+  packages %in% names
 }
 
 # Turn on Pixi's activation cache in the project's .pixi/config.toml. Without

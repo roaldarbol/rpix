@@ -43,6 +43,10 @@
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
+* `use_pixi()` and the IDE setups only add the packages the project doesn't
+  have yet, rather than having Pixi say of each of the others that it's
+  there, and `use_pixi(ide = )` sets direnv up once for several editors, so
+  running them again, or for several IDEs, says each thing once (#222).
 * `pixi_add()`, and `install.packages()` in a Pixi environment, show Pixi's
   output once the packages are added. When Pixi can't add them but rpix can,
   e.g. from bioconda or by building from source, Pixi's error isn't shown;

@@ -41,3 +41,16 @@
       i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
       i Zed loads direnv itself. With its R extension, languageserver uses the project's R, and so does R in Zed's terminal.
 
+# adds only what's missing, and sets direnv up once
+
+    Code
+      use_pixi_emacs(p$root)
+    Message
+      v Set '.envrc' to activate the "default" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i In Emacs, install the envrc package and turn on `(envrc-global-mode)`. ESS and languageserver then use the project's R.
+    Code
+      use_pixi_neovim(p$root)
+    Message
+      i Start Neovim from a shell with direnv's hook, or load direnv with a plugin such as direnv.vim. R.nvim and languageserver then use the project's R.
+

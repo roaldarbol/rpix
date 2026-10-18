@@ -65,6 +65,48 @@ test_that("use_pixi() creates a project and adds R and rpix", {
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
 })
 
+test_that("use_pixi() only adds what the project doesn't have", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  deps <- c("r-base", isolation_package, rpix_dependencies())
+  writeLines(
+    c("[workspace]", "", "[dependencies]", paste0(deps, ' = "*"')),
+    file.path(dir, "pixi.toml")
+  )
+
+  suppressMessages(use_pixi(path = dir, install_rpix = FALSE))
+  expect_false("add" %in% vapply(calls$args, `[`, character(1), 1))
+
+  suppressMessages(use_pixi(path = dir, ide = "zed", install_rpix = FALSE))
+  expect_equal(calls$args[[2]], c("add", "r-languageserver"))
+})
+
+test_that("has_dependency() reads the default feature's dependencies", {
+  dir <- withr::local_tempdir()
+  expect_false(has_dependency("r-base", dir))
+  writeLines(
+    c(
+      "[dependencies]",
+      'r-base = "4.5.*"',
+      '"r-data.table" = "*"',
+      "[feature.dev.dependencies]",
+      'r-testthat = "*"'
+    ),
+    file.path(dir, "pixi.toml")
+  )
+  expect_equal(
+    has_dependency(c("r-base", "r-data.table", "r-testthat", "r-cli"), dir),
+    c(TRUE, TRUE, FALSE, FALSE)
+  )
+
+  unlink(file.path(dir, "pixi.toml"))
+  writeLines(
+    c("[tool.pixi.workspace]", "[tool.pixi.dependencies]", "r-cli = '*'"),
+    file.path(dir, "pyproject.toml")
+  )
+  expect_true(has_dependency("r-cli", dir))
+})
+
 test_that("use_pixi() installs rpix quietly, unless it's there already", {
   dir <- withr::local_tempdir()
   steps <- list()
