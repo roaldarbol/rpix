@@ -129,6 +129,18 @@
   gives their builds MinGW’s compilers, which R uses there, in place of
   `pixi-build-r`’s, whose Fortran compiler broke the script’s checks
   ([\#191](https://github.com/roaldarbol/rpix/issues/191)).
+- A moved or copied project no longer runs the R of its old location.
+  Pixi’s activation cache, which
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  turns on, keeps the old paths, so rpix removes it when it has another
+  location, before Pixi uses it, and says the project was moved or
+  copied.
+  [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)
+  and
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  also name environments that were installed in the old location, which
+  can’t be moved, and say how to reinstall them
+  ([\#217](https://github.com/roaldarbol/rpix/issues/217)).
 - When conda-forge has a new R but no R packages for it yet, as with R
   4.6: `use_pixi(install_rpix = FALSE)` picks the newest R it has
   packages for, rather than one no package can be added to;

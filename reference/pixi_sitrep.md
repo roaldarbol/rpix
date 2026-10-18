@@ -7,6 +7,10 @@ environment, and suggest fixes for what doesn't. It reports:
 
 - The project, and whether `pixi.lock` is up to date with `pixi.toml`.
 
+- Whether the project was moved or copied: Pixi's activation cache then
+  has the old location, so it's removed, and environments installed in
+  the old location need reinstalling.
+
 - The date the project's packages are as of, if it has one (see
   [`pixi_set_date()`](https://roald-arboel.com/rpix/reference/pixi_set_date.md)).
 

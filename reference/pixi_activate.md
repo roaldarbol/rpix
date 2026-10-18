@@ -28,6 +28,10 @@ up.
 - If R isn't the R of a Pixi environment in this project, nothing
   changes; in an interactive session you get a hint instead.
 
+- If the project was moved or copied, Pixi's activation cache, which has
+  the old location, is removed, and environments that need reinstalling
+  are named.
+
 It never fails: problems are reported as messages.
 
 ## Usage
