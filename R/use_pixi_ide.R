@@ -4,10 +4,12 @@
 #' Set an IDE or editor up to use the R in the project's Pixi environment. [use_pixi()]
 #' calls these with its `ide` argument.
 #'
-#' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`, for each of
-#'   the project's platforms, that starts a new RStudio with the
-#'   environment's R and the project's `.Rproj` file. It creates the `.Rproj`
-#'   file if there isn't one. Start RStudio with `pixi run rstudio`.
+#' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`
+#'   that starts a new RStudio with the environment's R and the project's
+#'   `.Rproj` file, on Linux, macOS and Windows (`linux-64`, `osx-64`,
+#'   `osx-arm64` and `win-64`). Pixi adds any of those platforms the project
+#'   doesn't have. It creates the `.Rproj` file if there isn't one. Start
+#'   RStudio with `pixi run rstudio`.
 #' * `use_pixi_positron()` turns on Positron's discovery of R in Pixi
 #'   environments, and makes the default environment's R Positron's default
 #'   for the project, in `.vscode/settings.json`. Positron (2026.10 or later)
@@ -61,12 +63,13 @@ NULL
 use_pixi_rstudio <- function(path = NULL) {
   root <- require_project(path)
   rproj <- rstudio_project_file(root)
+  existing <- project_platforms(root)
 
-  for (platform in project_platforms(root)) {
+  # For each common platform, so collaborators on any of them can start
+  # RStudio. `pixi task add` adds the platform if the project doesn't have
+  # it: Pixi warns about tasks for platforms a project doesn't have.
+  for (platform in common_platforms) {
     task <- rstudio_task(platform, basename(rproj))
-    if (is.null(task)) {
-      next
-    }
     # Replace the task if it's there, e.g. from an earlier run. Pixi says if
     # it isn't, without failing.
     run_pixi(
@@ -90,6 +93,12 @@ use_pixi_rstudio <- function(path = NULL) {
     )
   }
 
+  added <- setdiff(common_platforms, existing)
+  if (length(added) > 0) {
+    cli::cli_alert_info(
+      "Pixi added {.val {added}} to the project's platforms, for the task."
+    )
+  }
   cli::cli_alert_info("Start RStudio with {.code pixi run rstudio}.")
   invisible(file.path(root, "pixi.toml"))
 }

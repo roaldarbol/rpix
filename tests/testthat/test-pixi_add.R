@@ -275,6 +275,36 @@ test_that("pixi_add() hints at prefixes when a package isn't found", {
   )
 })
 
+test_that("pixi_add() explains a package missing on one of the platforms", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-platform-error.txt")),
+    collapse = "\n"
+  )
+  local_mock_pixi(error = pixi_error(stderr))
+  expect_snapshot(invisible(capture.output(pixi_add("Rmpi"))), error = TRUE)
+  # A dependency of the package
+  expect_output(
+    expect_error(
+      pixi_add("dplyr"),
+      'pixi_add("r-rmpi", platform = "linux-64")',
+      fixed = TRUE,
+      class = "rpix_error_package_not_found"
+    )
+  )
+})
+
+test_that("missing_on_platform() reads Pixi's error", {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-platform-error.txt")),
+    collapse = "\n"
+  )
+  expect_equal(
+    missing_on_platform(stderr),
+    list(platform = "win-64", package = "r-rmpi")
+  )
+  expect_null(missing_on_platform("No candidates were found for r-gdal *."))
+})
+
 test_that("pixi_add() passes on other pixi errors, with Pixi's output", {
   local_mock_pixi(error = pixi_failure("Some other failure"))
   expect_output(

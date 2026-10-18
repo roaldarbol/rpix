@@ -22,6 +22,18 @@
       Error in `pixi_search()`:
       ! There's no package r-faux.
 
+# pixi_add() explains a package missing on one of the platforms
+
+    Code
+      invisible(capture.output(pixi_add("Rmpi")))
+    Condition
+      Error in `pixi_add()`:
+      ! r-rmpi isn't on conda-forge for "win-64", one of the project's platforms.
+      i Add it only for the platforms that have it, one at a time, e.g. `pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `pixi workspace platform remove win-64`.
+      Caused by error:
+      ! `pixi add r-x` failed with exit status 1.
+      i See Pixi's output above.
+
 # pixi_add() explains packages that aren't built for the project's R
 
     Code
