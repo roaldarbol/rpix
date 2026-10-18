@@ -27,7 +27,9 @@ Show the available versions of a conda package and their dependencies.
 The package name is translated like in \code{\link[=pixi_add]{pixi_add()}}: \code{"dplyr"} searches for
 \code{r-dplyr}, \code{"bioc::DESeq2"} for \code{bioconductor-deseq2} on bioconda, and
 \code{"conda::gdal"} for \code{gdal}. A package that isn't on conda-forge is looked
-for on bioconda too, so \code{"DESeq2"} works as well.
+for on bioconda too, so \code{"DESeq2"} works as well. An R package's name has to
+match exactly, while Pixi also finds conda packages whose names contain the
+one searched for.
 
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/search/}.
 }
