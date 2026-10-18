@@ -28,9 +28,61 @@
       pixi_add(c("languageserver", "praise"))
     Condition
       Error in `pixi_add()`:
-      ! r-praise isn't built for the project's version of R yet.
+      ! praise isn't built for the project's version of R yet.
       i conda-forge builds packages for a new version of R some time after it's out.
       i Use R 4.5, the newest it's built for: `pixi_add(c("r-base=4.5", "languageserver", "praise"))`.
+      Caused by error:
+      ! pixi failed
+
+# pixi_add() suggests R in place of the project's, as valid R
+
+    Code
+      pixi_add(packages)
+    Condition
+      Error in `pixi_add()`:
+      ! withr isn't built for the project's version of R yet.
+      i conda-forge builds packages for a new version of R some time after it's out.
+      i Use R 4.5, the newest it's built for: `pixi_add(c("r-base=4.5", "withr>=3.0.3", "cli>=3.6.6", "bioc::limma", "conda::gdal", "RColorBrewer>=1.1_3", "viridisLite>=0.4.3", "github::me/mypkg@main"))`.
+      Caused by error:
+      ! pixi failed
+
+# pixi_add() explains that an old version isn't built for a newer R
+
+    Code
+      pixi_add(c("dplyr", "ggplot2==3.4.4"))
+    Condition
+      Error in `pixi_add()`:
+      ! ggplot2 3.4.4 is only built for R 4.3 and older.
+      i Old versions of packages aren't built for a newer R. Instead:
+      * Use a newer ggplot2: `pixi_add(c("dplyr", "ggplot2"))`.
+      * Build ggplot2 3.4.4 from source: `pixi_add(c("dplyr", "github::cran/ggplot2@3.4.4"))`.
+      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "dplyr", "ggplot2==3.4.4"))`.
+      Caused by error:
+      ! pixi failed
+
+---
+
+    Code
+      pixi_add("ggplot2", versions = "3.4.4")
+    Condition
+      Error in `pixi_add()`:
+      ! ggplot2 3.4.4 is only built for R 4.3 and older.
+      i Old versions of packages aren't built for a newer R. Instead:
+      * Use a newer ggplot2: `pixi_add("ggplot2")`.
+      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "ggplot2=3.4.4"))`.
+      Caused by error:
+      ! pixi failed
+
+# pixi_add() only offers a build from source for CRAN packages
+
+    Code
+      pixi_add("bioc::limma==3.4.4")
+    Condition
+      Error in `pixi_add()`:
+      ! limma 3.4.4 is only built for R 4.3 and older.
+      i Old versions of packages aren't built for a newer R. Instead:
+      * Use a newer limma: `pixi_add("bioc::limma")`.
+      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "bioc::limma==3.4.4"))`.
       Caused by error:
       ! pixi failed
 

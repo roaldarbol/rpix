@@ -58,6 +58,12 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* When a package isn't built for the project's R, `pixi_add()` names it,
+  also when it has a version constraint, and suggests a command that's valid
+  R and replaces the project's R rather than adding a second one. For an old
+  version pinned with `==` or `=`, which conda-forge won't build for a newer
+  R, it offers a newer version, a build of that version from source, or the
+  older R for the whole project (#208).
 * `pixi_add()` and `install.packages()` only offer to build a package from
   CRAN's source when it's on CRAN. A mistyped name, such as `"dplyrr"`, says
   it's on neither conda-forge nor CRAN, and suggests close names: "Did you
