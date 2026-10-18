@@ -58,6 +58,11 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* `pixi_remove()` and `pixi_search()` take a Bioconductor package's name
+  without `bioc::`, as `pixi_add()` does: `pixi_remove("limma")` removes
+  bioconductor-limma when that's what `pixi.toml` has, and
+  `pixi_search("limma")` looks on bioconda when it isn't on conda-forge
+  (#211).
 * rpix only counts a package as on conda-forge or bioconda when one has its
   exact name, as Pixi's search also finds names that contain it. So
   `pixi_add()` offers to build a CRAN package such as faux from source, rather
