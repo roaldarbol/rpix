@@ -5,10 +5,11 @@ Set an IDE or editor up to use the R in the project's Pixi environment.
 calls these with its `ide` argument.
 
 - `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in
-  `pixi.toml`, for each of the project's platforms, that starts a new
-  RStudio with the environment's R and the project's `.Rproj` file. It
-  creates the `.Rproj` file if there isn't one. Start RStudio with
-  `pixi run rstudio`.
+  `pixi.toml` that starts a new RStudio with the environment's R and the
+  project's `.Rproj` file, on Linux, macOS and Windows (`linux-64`,
+  `osx-64`, `osx-arm64` and `win-64`). Pixi adds any of those platforms
+  the project doesn't have. It creates the `.Rproj` file if there isn't
+  one. Start RStudio with `pixi run rstudio`.
 
 - `use_pixi_positron()` turns on Positron's discovery of R in Pixi
   environments, and makes the default environment's R Positron's default

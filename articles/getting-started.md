@@ -55,8 +55,8 @@ This adds to your project:
 
 - `pixi.toml`: the project’s dependencies, which you edit with rpix or
   Pixi.
-- `pixi.lock`: the exact version of every package, for every platform.
-  Pixi writes it; you don’t edit it.
+- `pixi.lock`: the exact version of every package, for Linux, macOS and
+  Windows. Pixi writes it; you don’t edit it.
 - `.pixi/`: the environment itself, with R and all its packages. Git
   ignores it.
 

@@ -17,6 +17,11 @@ pixi_activate(), so the environment is activated when an IDE starts its
 R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
 R at the Pixi library. It's removed.
+A new project supports Linux, macOS (Intel and Apple Silicon) and Windows,
+as well as this computer's platform, so collaborators on any of them can
+install it. pixi.lock then covers each of them, so a package can only be
+added if it's on conda-forge for all of them; for one that isn't, see
+platform in pixi_add().
 In a package, it adds .pixi, pixi.toml and pixi.lock to
 .Rbuildignore, so they stay out of the package's builds.
 It turns on Pixi's activation cache for the project, in
@@ -42,6 +47,11 @@ pixi_activate(), so the environment is activated when an IDE starts its
 R directly. Projects set up with rpix 0.3.0 or earlier have a &quot;Pixi R
 library setup&quot; block in their .Rprofile instead, which pointed a running
 R at the Pixi library. It's removed.
+A new project supports Linux, macOS (Intel and Apple Silicon) and Windows,
+as well as this computer's platform, so collaborators on any of them can
+install it. pixi.lock then covers each of them, so a package can only be
+added if it's on conda-forge for all of them; for one that isn't, see
+platform in pixi_add().
 In a package, it adds .pixi, pixi.toml and pixi.lock to
 .Rbuildignore, so they stay out of the package's builds.
 It turns on Pixi's activation cache for the project, in
@@ -128,6 +138,11 @@ Pixi library: packages built for a different R can crash it.</p>
 R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
 library setup" block in their <code>.Rprofile</code> instead, which pointed a running
 R at the Pixi library. It's removed.</p>
+<p>A new project supports Linux, macOS (Intel and Apple Silicon) and Windows,
+as well as this computer's platform, so collaborators on any of them can
+install it. <code>pixi.lock</code> then covers each of them, so a package can only be
+added if it's on conda-forge for all of them; for one that isn't, see
+<code>platform</code> in <code><a href="pixi_add.html">pixi_add()</a></code>.</p>
 <p>In a package, it adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to
 <code>.Rbuildignore</code>, so they stay out of the package's builds.</p>
 <p>It turns on Pixi's activation cache for the project, in
@@ -148,6 +163,7 @@ a newly installed Java.</p>
 <span>  date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  activation_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  platforms <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -192,6 +208,13 @@ added, so R and the packages are all as of that date. See
 <dt id="arg-activation-cache">activation_cache<a class="anchor" aria-label="anchor" href="#arg-activation-cache"></a></dt>
 <dd><p>If <code>TRUE</code>, turn on Pixi's activation cache for the
 project.</p></dd>
+
+
+<dt id="arg-platforms">platforms<a class="anchor" aria-label="anchor" href="#arg-platforms"></a></dt>
+<dd><p>The platforms a new project supports, besides this
+computer's. Defaults to <code>"linux-64"</code>, <code>"osx-64"</code>, <code>"osx-arm64"</code> and
+<code>"win-64"</code>. To add platforms to an existing project, use
+<code><a href="pixi_add_channel.html">pixi_add_platform()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

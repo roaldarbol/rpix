@@ -54,6 +54,18 @@
 
 ### Changed
 
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  creates a project for Linux, macOS (Intel and Apple Silicon) and
+  Windows, and your computer’s platform if it’s another one, so
+  collaborators on any of them can install it; `platforms` chooses
+  others. Before, a project only had the platform it was created on
+  ([\#215](https://github.com/roaldarbol/rpix/issues/215)).
+
+- [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  adds the `rstudio` task for all four of those platforms, whichever the
+  project has; Pixi adds any it doesn’t
+  ([\#215](https://github.com/roaldarbol/rpix/issues/215)).
+
 - Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which
   rpix now asks for. It adds Rust, CMake, pkg-config and R’s recommended
   packages, and installs into R’s library on Windows, so rpix no longer
@@ -105,6 +117,11 @@
 
 ### Fixed
 
+- When a package isn’t on conda-forge for one of the project’s
+  platforms,
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
+  says so, and for which, rather than that it couldn’t be found
+  ([\#215](https://github.com/roaldarbol/rpix/issues/215)).
 - [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   adds only the packages the project uses from lock files written by
   renv 1.1 or later too, which record what each package needs

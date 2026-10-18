@@ -26,6 +26,13 @@ Projects set up with rpix 0.3.0 or earlier have a "Pixi R library setup"
 block in their `.Rprofile` instead, which pointed a running R at the
 Pixi library. It's removed.
 
+A new project supports Linux, macOS (Intel and Apple Silicon) and
+Windows, as well as this computer's platform, so collaborators on any of
+them can install it. `pixi.lock` then covers each of them, so a package
+can only be added if it's on conda-forge for all of them; for one that
+isn't, see `platform` in
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md).
+
 In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 `.Rbuildignore`, so they stay out of the package's builds.
 
@@ -47,6 +54,7 @@ use_pixi(
   date = NULL,
   path = NULL,
   activation_cache = TRUE,
+  platforms = NULL,
   ...
 )
 ```
@@ -89,6 +97,13 @@ use_pixi(
 - activation_cache:
 
   If `TRUE`, turn on Pixi's activation cache for the project.
+
+- platforms:
+
+  The platforms a new project supports, besides this computer's.
+  Defaults to `"linux-64"`, `"osx-64"`, `"osx-arm64"` and `"win-64"`. To
+  add platforms to an existing project, use
+  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md).
 
 - ...:
 
