@@ -110,6 +110,10 @@ test_that("parse_github() tells why it couldn't read a DESCRIPTION", {
   # Only then is the DESCRIPTION missing
   local_statuses(stats::setNames(list(404L), raw))
   expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+  # Also without a ref
+  head <- "https://raw.githubusercontent.com/hadley/emo/HEAD/DESCRIPTION"
+  local_statuses(stats::setNames(list(404L), head))
+  expect_error(parse_github("github::hadley/emo"), "DESCRIPTION")
   # Or unreadable
   local_mocked_bindings(read_url = function(url) "Title: Not a package")
   expect_error(parse_github("github::hadley/emo"), "DESCRIPTION")
