@@ -33,6 +33,9 @@ local_github <- function(
         fields[[repo]]
       )
     },
+    # Asked only when a DESCRIPTION couldn't be read: its repository is
+    # missing
+    url_status = function(url) 404L,
     .env = env
   )
 }
@@ -69,6 +72,55 @@ test_that("parse_github() explains bad references and missing packages", {
     parse_github("github::hadley/nope")
     parse_github("github::hadley/nope@dev")
   })
+})
+
+test_that("parse_github() tells why it couldn't read a DESCRIPTION", {
+  # The HTTP status of each URL rpix asks for
+  local_statuses <- function(statuses, env = parent.frame()) {
+    local_mocked_bindings(
+      read_url = function(url) stop("Couldn't read it"),
+      url_status = function(url) {
+        statuses[[url]] %||% 200L
+      },
+      .env = env
+    )
+  }
+  raw <- "https://raw.githubusercontent.com/hadley/emo/v2/DESCRIPTION"
+  page <- "https://github.com/hadley/emo"
+
+  local_statuses(stats::setNames(list(NA_integer_), raw))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
+  local_statuses(stats::setNames(list(503L), raw))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
+  local_statuses(stats::setNames(list(404L, 404L), c(raw, page)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
+  ref <- paste0(page, "/tree/v2")
+  local_statuses(stats::setNames(list(404L, 404L), c(raw, ref)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
+  # GitHub refuses to say, e.g. when it limits how often it's asked
+  local_statuses(stats::setNames(list(404L, 429L), c(raw, page)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+  local_statuses(stats::setNames(list(404L, 429L), c(raw, ref)))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+
+  # Only then is the DESCRIPTION missing
+  local_statuses(stats::setNames(list(404L), raw))
+  expect_snapshot(parse_github("github::hadley/emo@v2"), error = TRUE)
+  # Also without a ref
+  head <- "https://raw.githubusercontent.com/hadley/emo/HEAD/DESCRIPTION"
+  local_statuses(stats::setNames(list(404L), head))
+  expect_error(parse_github("github::hadley/emo"), "DESCRIPTION")
+  # Or unreadable
+  local_mocked_bindings(read_url = function(url) "Title: Not a package")
+  expect_error(parse_github("github::hadley/emo"), "DESCRIPTION")
+})
+
+test_that("url_status() gives NA for a URL it can't reach", {
+  expect_equal(url_status("https://nonexistent.invalid"), NA_integer_)
 })
 
 test_that("github_entry() builds with pixi-build-r, pinned to the project's R", {

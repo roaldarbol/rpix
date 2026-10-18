@@ -71,6 +71,33 @@ test_that("pixi_remove() translates names and rejects constraints", {
   expect_error(pixi_remove("dplyr>=1"), "without version constraints")
 })
 
+test_that("pixi_remove() removes a Bioconductor package by its name", {
+  local_project_dir()
+  writeLines(
+    c(
+      "[dependencies]",
+      'r-cli = "*"',
+      'bioconductor-limma = "*"',
+      "",
+      "[feature.test.dependencies]",
+      '"bioconductor-deseq2" = "*"',
+      'bioconductor-cli = "*"'
+    ),
+    "pixi.toml"
+  )
+  expect_equal(
+    dry(pixi_remove(c("limma", "DESeq2", "cli", "dplyr"), dry_run = TRUE)),
+    "pixi remove bioconductor-limma bioconductor-deseq2 r-cli r-dplyr --manifest-path pixi.toml"
+  )
+})
+
+test_that("pixi_remove() leaves the names as they are without a manifest", {
+  expect_equal(
+    with_bioconductor_names(parse_packages("limma"), withr::local_tempdir()),
+    "r-limma"
+  )
+})
+
 test_that("pixi_search() translates names", {
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   withr::local_dir(withr::local_tempdir())
@@ -85,6 +112,96 @@ test_that("pixi_search() translates names", {
     "pixi search gdal --channel my-channel"
   )
   expect_error(pixi_search(c("a1", "b1")), "single package")
+})
+
+test_that("pixi_search() looks for a Bioconductor package on bioconda", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  calls <- local_recorded_pixi()
+  local_mocked_bindings(
+    on_channel = function(name, channel) {
+      name %in% c("r-cli", "bioconductor-limma")
+    },
+    # Pixi finds the package by its exact name
+    search_names = function(args, ...) args[2]
+  )
+  expect_snapshot(pixi_search("limma"))
+  expect_equal(
+    calls$args[[1]],
+    c("search", "bioconductor-limma", "--channel", "bioconda")
+  )
+
+  # On conda-forge, or on neither
+  pixi_search("cli")
+  pixi_search("nope")
+  # A channel given is searched as is
+  pixi_search("limma", channel = "conda-forge")
+  expect_equal(
+    calls$args[-1],
+    list(
+      c("search", "r-cli"),
+      c("search", "r-nope"),
+      c("search", "r-limma", "--channel", "conda-forge")
+    )
+  )
+})
+
+test_that("pixi_search() only shows an R package by its exact name", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  found <- list(noarch = data.frame(name = c("r-fauxpas", "r-fauxpas")))
+  calls <- new.env()
+  calls$args <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, json = FALSE, ...) {
+      calls$args <- c(calls$args, list(args))
+      if (json) found else invisible(list(status = 0))
+    },
+    # Not a Bioconductor package either
+    on_channel = function(name, channel) FALSE
+  )
+  expect_snapshot(pixi_search("faux"), error = TRUE)
+  expect_equal(calls$args, list(c("search", "r-faux")))
+
+  found <- list()
+  expect_snapshot(pixi_search("faux"), error = TRUE)
+
+  found <- list(noarch = data.frame(name = c("r-fauxpas", "r-faux")))
+  calls$args <- list()
+  pixi_search("faux")
+  expect_equal(calls$args, rep(list(c("search", "r-faux")), 2))
+
+  # Conda names are left to Pixi
+  calls$args <- list()
+  pixi_search("conda::faux")
+  expect_equal(calls$args, list(c("search", "faux")))
+})
+
+test_that("pixi_search() passes on Pixi's other errors", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  local_mocked_bindings(
+    run_pixi = function(...) {
+      stop(structure(
+        list(message = "offline", call = NULL, stderr = "network error"),
+        class = c("rpix_error_pixi", "error", "condition")
+      ))
+    }
+  )
+  expect_error(pixi_search("faux"), "offline", class = "rpix_error_pixi")
+})
+
+test_that("pixi_search() doesn't show a package that contains the name", {
+  skip_if_no_pixi()
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(withr::local_tempdir())
+  expect_error(
+    pixi_search("faux"),
+    "r-fauxpas",
+    class = "rpix_error_package_not_found"
+  )
+  output <- capture.output(pixi_search("cli"), type = "output")
+  expect_true(any(grepl("r-cli", output)))
 })
 
 test_that("project_channels() reads the project's channels", {
@@ -113,6 +230,10 @@ local_mock_pixi <- function(
       calls$args <- c(calls$args, list(args))
       if (!is.null(error) && args[1] == "add") {
         stop(error)
+      }
+      # pixi search --json finds every package
+      if (args[1] == "search") {
+        return(list(noarch = data.frame(name = args[length(args)])))
       }
       invisible(list(status = 0))
     },
@@ -203,12 +324,15 @@ test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `pa
   ))))
 })
 
-test_that("pixi_add() explains packages that aren't built for the project's R", {
-  stderr <- paste(
-    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
+read_fixture <- function(name) {
+  paste(
+    readLines(test_path("fixtures", name), encoding = "UTF-8"),
     collapse = "\n"
   )
-  local_mock_pixi(error = pixi_failure(stderr))
+}
+
+test_that("pixi_add() explains packages that aren't built for the project's R", {
+  local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-error.txt")))
   # Pixi's output, which comes first, is in the fixture
   expect_snapshot(
     invisible(capture.output(pixi_add(c("languageserver", "praise")))),
@@ -217,16 +341,102 @@ test_that("pixi_add() explains packages that aren't built for the project's R", 
   expect_output(
     expect_error(pixi_add("praise"), class = "rpix_error_r_version")
   )
+  # A package Pixi names that wasn't asked for, e.g. a dependency
+  expect_output(
+    expect_error(
+      pixi_add("languageserver"),
+      "r-praise isn't built",
+      class = "rpix_error_r_version"
+    )
+  )
+})
+
+test_that("pixi_add() suggests R in place of the project's, as valid R", {
+  # Pixi's error for r-withr>=3.0.3 in a project with R 4.6
+  error <- pixi_error(read_fixture("pixi-r-version-constraint.txt"))
+  local_mock_pixi(error = error)
+  # A project with the isolation already, so pixi_add() doesn't add it with R
+  root <- local_pixi_project(
+    content = c("[dependencies]", paste0(isolation_package, ' = "*"'))
+  )
+  withr::local_dir(root)
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  packages <- c(
+    "r-base>=4.6",
+    "withr>=3.0.3",
+    "cli>=3.6.6",
+    "bioc::limma",
+    "conda::gdal",
+    "RColorBrewer>=1.1_3",
+    "viridisLite>=0.4.3",
+    "github::me/mypkg@main"
+  )
+  expect_output(
+    err <- expect_error(pixi_add(packages), class = "rpix_error_r_version")
+  )
+  expect_snapshot(invisible(capture.output(pixi_add(packages))), error = TRUE)
+  command <- regmatches(
+    conditionMessage(err),
+    regexpr("pixi_add\\(c\\(.*\\)\\)", conditionMessage(err))
+  )
+  expect_equal(
+    eval(parse(text = sub("^pixi_add", "c", command))[[1]][[2]]),
+    c(
+      "r-base=4.5",
+      "withr>=3.0.3",
+      "cli>=3.6.6",
+      "bioc::limma",
+      "conda::gdal",
+      "RColorBrewer>=1.1_3",
+      "viridisLite>=0.4.3",
+      "github::me/mypkg@main"
+    )
+  )
+})
+
+test_that("pixi_add() explains that an old version isn't built for a newer R", {
+  # Pixi's error for r-ggplot2==3.4.4 in a project with R 4.5
+  local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-pinned.txt")))
+  expect_snapshot(
+    invisible(capture.output(pixi_add(c("dplyr", "ggplot2==3.4.4")))),
+    error = TRUE
+  )
+  # A version series isn't a tag to build from source
+  expect_snapshot(
+    invisible(capture.output(pixi_add("ggplot2", versions = "3.4.4"))),
+    error = TRUE
+  )
+})
+
+test_that("pixi_add() only offers a build from source for CRAN packages", {
+  pinned <- gsub(
+    "r-ggplot2",
+    "bioconductor-limma",
+    read_fixture("pixi-r-version-pinned.txt"),
+    fixed = TRUE
+  )
+  local_mock_pixi(
+    channels = c("conda-forge", "bioconda"),
+    error = pixi_error(pinned)
+  )
+  expect_snapshot(
+    invisible(capture.output(pixi_add("bioc::limma==3.4.4"))),
+    error = TRUE
+  )
 })
 
 test_that("not_built_for_r() reads Pixi's error", {
-  stderr <- paste(
-    readLines(test_path("fixtures", "pixi-r-version-error.txt")),
-    collapse = "\n"
+  expect_equal(
+    not_built_for_r(read_fixture("pixi-r-version-error.txt")),
+    list(package = "r-praise", r_version = "4.5")
   )
   expect_equal(
-    not_built_for_r(stderr),
-    list(package = "r-praise", r_version = "4.5")
+    not_built_for_r(read_fixture("pixi-r-version-constraint.txt")),
+    list(package = "r-withr", r_version = "4.5")
+  )
+  expect_equal(
+    not_built_for_r(read_fixture("pixi-r-version-pinned.txt")),
+    list(package = "r-ggplot2", r_version = "4.3")
   )
   expect_null(not_built_for_r("No candidates were found for r-gdal *."))
 })
@@ -237,6 +447,7 @@ local_not_on_conda_forge <- function(
   missing,
   answer = NULL,
   bioc = character(),
+  on_cran = c("cowsay", "dplyr", "fortunes", "praise"),
   env = parent.frame()
 ) {
   calls <- new.env()
@@ -272,6 +483,7 @@ local_not_on_conda_forge <- function(
       answer
     },
     add_github_packages = function(packages, ...) calls$github <- packages,
+    cran_packages = function() on_cran,
     .env = env
   )
   calls
@@ -297,6 +509,47 @@ test_that("pixi_add() says how to build them when it can't ask, or the answer is
     pixi_add(c("fortunes", "cowsay>=1")),
     error = TRUE
   )
+  expect_null(calls$github)
+})
+
+test_that("pixi_add() doesn't offer it for packages that aren't on CRAN", {
+  calls <- local_not_on_conda_forge(c("dplyrr", "zzqqxx"), answer = TRUE)
+  expect_snapshot(pixi_add("dplyrr"), error = TRUE)
+  expect_snapshot(pixi_add(c("dplyrr", "zzqqxx", "praise")), error = TRUE)
+  expect_length(calls$asked, 0)
+
+  # When CRAN can't be reached, it offers it anyway
+  local_not_on_conda_forge("dplyrr", on_cran = NULL)
+  expect_error(pixi_add("dplyrr"), "github::cran/dplyrr", fixed = TRUE)
+})
+
+test_that("cran_packages() lists CRAN's packages, from the CRAN repository", {
+  skip_on_cran()
+  skip_if_offline("cloud.r-project.org")
+  withr::local_options(repos = c(CRAN = "@CRAN@"))
+  expect_true(all(c("dplyr", "praise") %in% cran_packages()))
+  withr::local_options(repos = c(CRAN = "http://127.0.0.1:9"))
+  expect_null(cran_packages())
+})
+
+test_that("close_names() finds the closest names, ignoring case", {
+  names <- c("dplyr", "dbplyr", "plyr", "Rcpp", "praise")
+  expect_equal(close_names("dplyrr", names), "dplyr")
+  expect_equal(close_names("rcpp", names), "Rcpp")
+  expect_equal(close_names("zzqqxx", names), character())
+})
+
+test_that("pixi_add() explains, rather than offers, a build from source in a project with a date", {
+  calls <- local_not_on_conda_forge("fortunes", answer = TRUE)
+  root <- local_pixi_project(
+    content = c("[workspace]", 'exclude-newer = "2025-06-01"')
+  )
+
+  expect_snapshot(
+    pixi_add(c("praise", "fortunes"), path = root),
+    error = TRUE
+  )
+  expect_length(calls$asked, 0)
   expect_null(calls$github)
 })
 

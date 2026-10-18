@@ -127,6 +127,7 @@ pixi_add <- function(
   if (!is.null(channel)) {
     parsed$channel <- channel
   }
+  requested <- parsed
   parsed <- with_isolation(parsed, feature, path)
 
   # pixi only installs from channels listed in the project
@@ -161,15 +162,12 @@ pixi_add <- function(
     rpix_error_pixi = function(e) {
       unbuilt <- not_built_for_r(e$stderr)
       if (!is.null(unbuilt)) {
-        suggestion <- deparse(c(paste0("r-base=", unbuilt$r_version), packages))
-        cli::cli_abort(
-          c(
-            "{.pkg {unbuilt$package}} isn't built for the project's version of R yet.",
-            "i" = "conda-forge builds packages for a new version of R some time after it's out.",
-            "i" = "Use R {unbuilt$r_version}, the newest it's built for: {.code pixi_add({suggestion})}."
-          ),
-          class = "rpix_error_r_version",
-          parent = reveal_pixi_failure(e)
+        abort_not_built(
+          unbuilt,
+          requested,
+          github,
+          parent = reveal_pixi_failure(e),
+          call = caller
         )
       }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
@@ -191,7 +189,13 @@ pixi_add <- function(
               class = "rpix_retry"
             ))
           }
-          retry <- offer_cran_source(parsed, missing, call = caller)
+          abort_not_on_cran(parsed, missing, call = caller)
+          retry <- offer_cran_source(
+            parsed,
+            missing,
+            path = path,
+            call = caller
+          )
           return(structure(
             list(packages = c(retry, github)),
             class = "rpix_retry"
@@ -285,12 +289,77 @@ not_built_for_r <- function(stderr) {
   if (length(versions) == 0) {
     return(NULL)
   }
+  # The package, with the constraint Pixi was asked for, e.g.
+  # "r-withr >=3.0.3 cannot be installed" or "r-praise * cannot be installed"
   package <- regmatches(
     text,
-    regexpr("[A-Za-z0-9._-]+(?= \\* cannot be installed)", text, perl = TRUE)
+    regexpr(
+      "[A-Za-z0-9._-]+(?= (?:[^ ]+ )?cannot be installed)",
+      text,
+      perl = TRUE
+    )
   )
   newest <- as.character(max(package_version(versions)))
   list(package = package, r_version = newest)
+}
+
+# Fail when a package isn't built for the project's R. A version pinned with
+# `==` or `=` won't be built for a newer R, so it offers a newer version, a
+# build from source (for an exact CRAN version) or that R; otherwise, it
+# hasn't been built yet. The suggested commands redo the request with that
+# changed.
+abort_not_built <- function(unbuilt, requested, github, parent, call) {
+  r <- unbuilt$r_version
+  row <- match(unbuilt$package, requested$name)
+  name <- if (is.na(row)) unbuilt$package else package_r_names(requested)[row]
+  references <- sub("^cran::", "", package_references(requested))
+  with_r <- pixi_add_call(c(
+    paste0("r-base=", r),
+    references[requested$name != "r-base"],
+    github
+  ))
+  constraint <- if (is.na(row)) "" else requested$constraint[row]
+  pinned <- grepl("^==?[0-9]", constraint)
+  message <- if (!pinned) {
+    c(
+      "{.pkg {name}} isn't built for the project's version of R yet.",
+      "i" = "conda-forge builds packages for a new version of R some time after it's out.",
+      "i" = "Use R {r}, the newest it's built for: {.code {with_r}}."
+    )
+  } else {
+    version <- sub("^==?", "", constraint)
+    newer <- references
+    newer[row] <- sub("=.*$", "", newer[row])
+    newer <- pixi_add_call(c(newer, github))
+    # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3
+    tag <- gsub("_", "-", version, fixed = TRUE)
+    source <- references
+    source[row] <- paste0("github::cran/", name, "@", tag)
+    source <- pixi_add_call(c(source, github))
+    c(
+      "{.pkg {name}} {tag} is only built for R {r} and older.",
+      "i" = "Old versions of packages aren't built for a newer R. Instead:",
+      "*" = "Use a newer {.pkg {name}}: {.code {newer}}.",
+      "*" = if (
+        requested$source[row] == "cran" && startsWith(constraint, "==")
+      ) {
+        "Build {.pkg {name}} {tag} from source: {.code {source}}."
+      },
+      "*" = "Use R {r} for the whole project: {.code {with_r}}."
+    )
+  }
+  cli::cli_abort(
+    message,
+    class = "rpix_error_r_version",
+    parent = parent,
+    call = call
+  )
+}
+
+# The pixi_add() call that adds `packages`, as valid R: deparse() splits long
+# vectors over several lines
+pixi_add_call <- function(packages) {
+  paste0("pixi_add(", paste(deparse(packages), collapse = ""), ")")
 }
 
 scope_args <- function(feature = NULL, platform = NULL) {
@@ -321,18 +390,100 @@ missing_from_conda_forge <- function(parsed) {
   cran[!vapply(parsed$name[cran], on_channel, logical(1), "conda-forge")]
 }
 
+# Fail for the packages in `rows` that aren't on CRAN either, such as typos,
+# and suggest close names. If CRAN can't be reached, assume they're on it.
+abort_not_on_cran <- function(parsed, rows, call = parent.frame()) {
+  on_cran <- cran_packages()
+  names <- package_r_names(parsed)[rows]
+  unknown <- names[!names %in% on_cran]
+  if (length(on_cran) == 0 || length(unknown) == 0) {
+    return(invisible())
+  }
+  hints <- vapply(
+    unknown,
+    function(name) {
+      close <- close_names(name, on_cran)
+      if (length(close) == 0) {
+        return(NA_character_)
+      }
+      prefix <- if (length(unknown) > 1) "{.pkg {name}}: did" else "Did"
+      cli::format_inline(prefix, " you mean {.or {.pkg {close}}}?")
+    },
+    character(1)
+  )
+  hints <- hints[!is.na(hints)]
+  cli::cli_abort(
+    c(
+      "{.pkg {unknown}} {?isn't/aren't} on conda-forge or CRAN.",
+      stats::setNames(hints, rep("i", length(hints)))
+    ),
+    class = "rpix_error_package_not_found",
+    call = call
+  )
+}
+
+# The names of the packages on CRAN, or NULL if it can't be reached. R keeps
+# the list for an hour.
+cran_packages <- function() {
+  repos <- getOption("repos")
+  repo <- if ("CRAN" %in% names(repos) && repos[["CRAN"]] != "@CRAN@") {
+    repos[["CRAN"]]
+  } else {
+    "https://cloud.r-project.org"
+  }
+  available <- suppressWarnings(tryCatch(
+    utils::available.packages(
+      repos = repo,
+      type = "source",
+      filters = "duplicates"
+    ),
+    error = function(e) NULL
+  ))
+  rownames(available)
+}
+
+# Up to three of `names` closest to `name`, ignoring case
+close_names <- function(name, names) {
+  distance <- utils::adist(tolower(name), tolower(names))[1, ]
+  close <- distance <= max(1, nchar(name) %/% 4)
+  utils::head(names[close][order(distance[close])], 3)
+}
+
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
 # mirror, which has a tag for every version. Returns the packages to add
 # instead, or fails. With `abort = FALSE`, it says how to build them instead of
-# failing, and returns NULL.
+# failing, and returns NULL. A project whose date hides pixi-build-r can't
+# build them, so it says so instead of offering.
 offer_cran_source <- function(
   parsed,
   missing,
   abort = TRUE,
+  path = NULL,
   call = parent.frame()
 ) {
   specs <- package_references(parsed)
   names <- package_r_names(parsed)[missing]
+  date <- project_exclude_newer(path)
+  if (date_hides_backend(date)) {
+    header <- if (abort) {
+      "{.pkg {names}} {?isn't/aren't} on conda-forge."
+    } else {
+      "Not on conda-forge, so not added: {.pkg {names}}."
+    }
+    why <- c(
+      "i" = "Pixi can't build {cli::qty(length(names))}{?it/them} from source in this project: its date, {.val {date}}, hides the {.code pixi-build-r} that builds packages.",
+      "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14."
+    )
+    if (!abort) {
+      cli::cli_inform(c("!" = header, why))
+      return(NULL)
+    }
+    cli::cli_abort(
+      c(header, why),
+      class = "rpix_error_package_not_found",
+      call = call
+    )
+  }
   constraints <- parsed$constraint[missing]
   exact <- grepl("^==", constraints)
   # A version tag uses R's spelling, 1.2-3 rather than conda's 1.2_3
