@@ -58,6 +58,10 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* A package from GitHub that rpix can't read says why: there's no public
+  repository by that name, it has no such branch, tag or commit, or GitHub
+  couldn't be reached, rather than always that it needs a `DESCRIPTION`
+  (#213).
 * `pixi_remove()` and `pixi_search()` take a Bioconductor package's name
   without `bioc::`, as `pixi_add()` does: `pixi_remove("limma")` removes
   bioconductor-limma when that's what `pixi.toml` has, and
