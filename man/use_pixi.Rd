@@ -47,8 +47,12 @@ project.}
 The path to the project's manifest, invisibly.
 }
 \description{
-Create a Pixi project in the working directory if there isn't one, add R to
-it, and install rpix into its environment.
+Create a Pixi project in the working directory, or \code{path}, if there isn't
+one there, add R to it, and install rpix into its environment.
+
+It sets up that folder even inside another Pixi project. If a parent folder
+is a Pixi project, it says so, and in an interactive session asks whether to
+set that one up instead.
 
 It also adds conda-forge's \code{conda-ecosystem-user-package-isolation}, which
 keeps your personal R library out of the environment's R. Otherwise
