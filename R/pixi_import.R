@@ -65,21 +65,49 @@ pixi_import_description <- function(test = TRUE, path = NULL, dry_run = FALSE) {
   invisible(c(added, list(missing = missing)))
 }
 
-# Add imported packages, R, and test packages with a test environment
+# Add imported packages, R, and test packages with a test environment. With
+# `newest_r`, R that's too new for the packages, as a lock file's can be,
+# becomes the newest R they're built for.
 add_imported <- function(
   packages,
   test_packages = character(),
   r_constraint,
   root,
-  dry_run
+  dry_run,
+  newest_r = FALSE
 ) {
   # R goes in with the packages, so Pixi picks an R they're all built for. A
   # project that has R already keeps its version.
-  if (!"r-base" %in% project_dependencies(root)) {
+  adds_r <- !"r-base" %in% project_dependencies(root)
+  if (adds_r) {
     packages <- c(paste0("r-base", r_constraint), packages)
   }
   if (length(packages) > 0) {
-    pixi_add(packages, path = root, dry_run = dry_run)
+    packages <- tryCatch(
+      {
+        pixi_add(packages, path = root, dry_run = dry_run)
+        packages
+      },
+      rpix_error_r_version = function(e) {
+        # conda-forge has a new R before its packages are built for it
+        unbuilt <- not_built_for_r(e$parent$stderr)
+        r <- regmatches(r_constraint, regexpr("[0-9]+\\.[0-9]+", r_constraint))
+        if (
+          !newest_r ||
+            !adds_r ||
+            length(r) == 0 ||
+            package_version(r) <= package_version(unbuilt$r_version)
+        ) {
+          stop(e)
+        }
+        cli::cli_alert_warning(
+          "conda-forge doesn't have the packages for R {r}, the lock file's R, so rpix adds the newest R that has them."
+        )
+        packages[1] <- "r-base"
+        pixi_add(packages, path = root, dry_run = dry_run)
+        packages
+      }
+    )
   }
   if (length(test_packages) > 0) {
     pixi_add(test_packages, feature = "test", path = root, dry_run = dry_run)
@@ -195,7 +223,9 @@ find_r_packages <- function(packages) {
 #'   everything those packages need too. Packages from GitHub are added either
 #'   way, as conda-forge doesn't have them.
 #' * The lock file's version of R becomes a constraint on R, if the project
-#'   doesn't have R yet.
+#'   doesn't have R yet. If conda-forge doesn't have the packages for that R,
+#'   e.g. a new R it hasn't built packages for yet, it says so and uses the
+#'   newest R that has them.
 #'
 #' It says which packages Pixi builds from source, as building them is
 #' experimental; see [pixi_add()].
@@ -319,7 +349,8 @@ pixi_import_renv <- function(
     unname(c(specs, built, github_specs)),
     r_constraint = r_constraint,
     root = root,
-    dry_run = dry_run
+    dry_run = dry_run,
+    newest_r = TRUE
   )
 
   from_source <- c(cran, names(github))

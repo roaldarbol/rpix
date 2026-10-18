@@ -68,6 +68,12 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* When conda-forge has a new R but no R packages for it yet, as with R 4.6:
+  `use_pixi(install_rpix = FALSE)` picks the newest R it has packages for,
+  rather than one no package can be added to; `use_pixi(r_version = )` with
+  that R says so, and which R is the newest you can use; and
+  `pixi_import_renv()` with a lock file from that R uses the newest R the
+  packages are built for, and says so (#207).
 * When a package isn't built for the project's R, `pixi_add()` names it,
   also when it has a version constraint, and suggests a command that's valid
   R and replaces the project's R rather than adding a second one. For an old

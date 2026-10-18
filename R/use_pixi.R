@@ -35,8 +35,8 @@
 #' a newly installed Java.
 #'
 #' @param r_version Optional. The R version to add, such as `"4.5"`. Defaults
-#'   to the newest one that the packages `use_pixi()` adds are built for on
-#'   conda-forge.
+#'   to the newest one that conda-forge has R packages for; it has a new R
+#'   before its packages are built for it.
 #' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
 #'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"`. See
 #'   [use_pixi_ide].
@@ -125,15 +125,37 @@ use_pixi <- function(
   isolation <- isolation_package
   # Added together with R, so Pixi picks the newest R they're all built for.
   # A new R comes out on conda-forge before its packages are rebuilt for it.
-  packages <- c(
-    r_base,
-    isolation,
+  r_packages <- c(
     if (install_rpix) rpix_dependencies(),
     if (any(c("vscode", "emacs", "neovim", "zed") %in% ide)) {
       "r-languageserver"
     }
   )
-  run_pixi(c("add", packages), path = path, echo = TRUE)
+  # Without any, r-cli stands in for them, and is removed afterwards, unless
+  # the project has it
+  probe <- if (length(r_packages) == 0 && !has_dependency(manifest, "r-cli")) {
+    "r-cli"
+  }
+  packages <- c(r_base, isolation, r_packages, probe)
+  if (length(probe) > 0) {
+    cli::cli_alert_info(
+      "Adding {.pkg r-cli} with R, so Pixi picks an R that conda-forge has R packages for, then removing it."
+    )
+  }
+  caller <- environment()
+  tryCatch(
+    run_pixi(
+      c("add", if (length(probe) > 0) "--no-install", packages),
+      path = path,
+      echo = TRUE
+    ),
+    rpix_error_pixi = function(e) {
+      abort_r_without_packages(e, r_version, call = caller)
+    }
+  )
+  if (length(probe) > 0) {
+    run_pixi(c("remove", probe), path = path, echo = TRUE)
+  }
 
   if (install_rpix) {
     install_rpix_into(path)
@@ -158,6 +180,38 @@ use_pixi <- function(
     )
   }
   invisible(manifest)
+}
+
+# Whether the manifest's default feature has a dependency
+has_dependency <- function(manifest, name) {
+  lines <- readLines(manifest, warn = FALSE)
+  rows <- table_lines(lines, dependency_table())
+  pattern <- paste0('^\\s*"?', gsub(".", "\\.", name, fixed = TRUE), '"?\\s*=')
+  any(grepl(pattern, lines[rows]))
+}
+
+# When Pixi can't add R packages for the R asked for, as it's newer than
+# conda-forge has them for, say so plainly. Other errors go on as they are.
+abort_r_without_packages <- function(e, r_version, call) {
+  unbuilt <- not_built_for_r(e$stderr)
+  r_version <- r_version %||% ""
+  asked <- regmatches(r_version, regexpr("^[0-9]+\\.[0-9]+", r_version))
+  if (
+    is.null(unbuilt) ||
+      length(asked) == 0 ||
+      package_version(asked) <= package_version(unbuilt$r_version)
+  ) {
+    stop(e)
+  }
+  cli::cli_abort(
+    c(
+      "conda-forge has no R packages for R {asked} yet; R {unbuilt$r_version} is the newest you can use.",
+      "i" = "Use it with {.code use_pixi(r_version = \"{unbuilt$r_version}\")}."
+    ),
+    class = "rpix_error_r_version",
+    parent = e,
+    call = call
+  )
 }
 
 # Install rpix into the default environment, unless it has this version or a
