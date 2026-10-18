@@ -15,11 +15,15 @@
 #'   recorded in `pixi.toml` and `pixi.lock`. For a CRAN package that isn't on
 #'   conda-forge, `pixi_add()` offers to build it from source. For a package
 #'   already in `pixi.toml`, it says to update it with [pixi_update()]
-#'   instead. Arguments Pixi can't use, such as `lib` or `repos`, and
-#'   package files give an error. Turn this off with
-#'   `options(rpix.install_packages = FALSE)`.
+#'   instead. `repos` is ignored, and other arguments Pixi can't use, such as
+#'   `lib`, give an error. Package files and folders are installed with
+#'   `utils::install.packages()`, so `pixi.toml` doesn't record them. Turn
+#'   this off with `options(rpix.install_packages = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
 #'   in an interactive session you get a hint instead.
+#' * If the project was moved or copied, Pixi's activation cache, which has
+#'   the old location, is removed, and environments that need reinstalling
+#'   are named.
 #'
 #' It never fails: problems are reported as messages.
 #'
@@ -42,12 +46,17 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
     {
       env <- pixi_r_location(r_home())
       root <- find_project_root(path)
+      moved <- if (!is.null(root)) moved_project(root)
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
         inform(c(
+          moved,
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
           "i" = "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
         ))
         return(invisible(result))
+      }
+      if (length(moved) > 0) {
+        inform(moved)
       }
 
       personal <- Sys.getenv("R_LIBS_USER")

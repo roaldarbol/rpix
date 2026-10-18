@@ -32,11 +32,15 @@ that devtools adds, are kept.
 recorded in \code{pixi.toml} and \code{pixi.lock}. For a CRAN package that isn't on
 conda-forge, \code{pixi_add()} offers to build it from source. For a package
 already in \code{pixi.toml}, it says to update it with \code{\link[=pixi_update]{pixi_update()}}
-instead. Arguments Pixi can't use, such as \code{lib} or \code{repos}, and
-package files give an error. Turn this off with
-\code{options(rpix.install_packages = FALSE)}.
+instead. \code{repos} is ignored, and other arguments Pixi can't use, such as
+\code{lib}, give an error. Package files and folders are installed with
+\code{utils::install.packages()}, so \code{pixi.toml} doesn't record them. Turn
+this off with \code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
+\item If the project was moved or copied, Pixi's activation cache, which has
+the old location, is removed, and environments that need reinstalling
+are named.
 }
 
 It never fails: problems are reported as messages.

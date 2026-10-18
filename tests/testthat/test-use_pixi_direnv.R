@@ -72,6 +72,17 @@ test_that("direnv_set_up() needs a .envrc that activates an environment", {
   expect_true(direnv_set_up(root))
 })
 
+test_that("envrc_activates() checks .envrc is as rpix would write it", {
+  root <- withr::local_tempdir()
+  expect_false(envrc_activates(root, "default"))
+  writeLines(
+    set_envrc_environment(character(), "r44"),
+    file.path(root, ".envrc")
+  )
+  expect_true(envrc_activates(root, "r44"))
+  expect_false(envrc_activates(root, "default"))
+})
+
 test_that("direnv_binary() looks for direnv on the PATH", {
   expect_equal(direnv_binary(), Sys.which("direnv"))
 })

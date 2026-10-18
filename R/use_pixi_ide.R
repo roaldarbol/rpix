@@ -4,10 +4,12 @@
 #' Set an IDE or editor up to use the R in the project's Pixi environment. [use_pixi()]
 #' calls these with its `ide` argument.
 #'
-#' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`, for each of
-#'   the project's platforms, that starts a new RStudio with the
-#'   environment's R and the project's `.Rproj` file. It creates the `.Rproj`
-#'   file if there isn't one. Start RStudio with `pixi run rstudio`.
+#' * `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in `pixi.toml`
+#'   that starts a new RStudio with the environment's R and the project's
+#'   `.Rproj` file, on Linux, macOS and Windows (`linux-64`, `osx-64`,
+#'   `osx-arm64` and `win-64`). Pixi adds any of those platforms the project
+#'   doesn't have. It creates the `.Rproj` file if there isn't one. Start
+#'   RStudio with `pixi run rstudio`.
 #' * `use_pixi_positron()` turns on Positron's discovery of R in Pixi
 #'   environments, and makes the default environment's R Positron's default
 #'   for the project, in `.vscode/settings.json`. Positron (2026.10 or later)
@@ -61,12 +63,13 @@ NULL
 use_pixi_rstudio <- function(path = NULL) {
   root <- require_project(path)
   rproj <- rstudio_project_file(root)
+  existing <- project_platforms(root)
 
-  for (platform in project_platforms(root)) {
+  # For each common platform, so collaborators on any of them can start
+  # RStudio. `pixi task add` adds the platform if the project doesn't have
+  # it: Pixi warns about tasks for platforms a project doesn't have.
+  for (platform in common_platforms) {
     task <- rstudio_task(platform, basename(rproj))
-    if (is.null(task)) {
-      next
-    }
     # Replace the task if it's there, e.g. from an earlier run. Pixi says if
     # it isn't, without failing.
     run_pixi(
@@ -90,6 +93,12 @@ use_pixi_rstudio <- function(path = NULL) {
     )
   }
 
+  added <- setdiff(common_platforms, existing)
+  if (length(added) > 0) {
+    cli::cli_alert_info(
+      "Pixi added {.val {added}} to the project's platforms, for the task."
+    )
+  }
   cli::cli_alert_info("Start RStudio with {.code pixi run rstudio}.")
   invisible(file.path(root, "pixi.toml"))
 }
@@ -139,11 +148,7 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
   console <- match.arg(console, consoles)
   # sess and jgd, which the R extension also uses, aren't on conda-forge yet
   # (#56)
-  run_pixi(
-    c("add", "r-languageserver", if (console != "R") console),
-    path = root,
-    echo = TRUE
-  )
+  add_missing(c("r-languageserver", if (console != "R") console), root)
 
   file <- update_vscode_settings(root, vscode_settings("default", console))
   if (is_windows()) {
@@ -240,7 +245,7 @@ use_pixi_zed <- function(path = NULL) {
 # sets to the environment's
 use_pixi_editor <- function(path, editor, call = parent.frame()) {
   root <- require_project(path, call = call)
-  run_pixi(c("add", "r-languageserver"), path = root, echo = TRUE)
+  add_missing("r-languageserver", root)
   name <- ide_name(editor)
   if (is_windows()) {
     command <- editor_command(editor)
@@ -249,7 +254,11 @@ use_pixi_editor <- function(path, editor, call = parent.frame()) {
     )
     return(invisible(file.path(root, "pixi.toml")))
   }
-  file <- use_pixi_direnv(root)
+  # Once is enough, e.g. when use_pixi() sets up several editors
+  file <- file.path(root, ".envrc")
+  if (!envrc_activates(root, "default")) {
+    use_pixi_direnv(root)
+  }
   cli::cli_alert_info(switch(
     editor,
     emacs = "In Emacs, install the {.pkg envrc} package and turn on {.code (envrc-global-mode)}. ESS and languageserver then use the project's R.",
@@ -259,9 +268,24 @@ use_pixi_editor <- function(path, editor, call = parent.frame()) {
   invisible(file)
 }
 
+# Add the packages the project doesn't have yet. Pixi would say of the others
+# that they're there, e.g. when several IDEs are set up.
+add_missing <- function(packages, root) {
+  packages <- packages[!has_dependency(packages, root)]
+  if (length(packages) > 0) {
+    run_pixi(c("add", packages), path = root, echo = TRUE)
+  }
+}
+
 # The command that starts an editor in the project
 editor_command <- function(editor) {
-  c(emacs = "emacs", neovim = "nvim", zed = "zed .")[[editor]]
+  commands <- c(
+    vscode = "code .",
+    emacs = "emacs",
+    neovim = "nvim",
+    zed = "zed ."
+  )
+  commands[[editor]]
 }
 
 require_project <- function(path, call = parent.frame()) {
