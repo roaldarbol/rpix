@@ -182,6 +182,7 @@ pixi_add <- function(
               class = "rpix_retry"
             ))
           }
+          abort_not_on_cran(parsed, missing, call = caller)
           retry <- offer_cran_source(
             parsed,
             missing,
@@ -312,6 +313,65 @@ on_bioconda <- function(parsed, rows) {
 missing_from_conda_forge <- function(parsed) {
   cran <- which(parsed$source == "cran")
   cran[!vapply(parsed$name[cran], on_channel, logical(1), "conda-forge")]
+}
+
+# Fail for the packages in `rows` that aren't on CRAN either, such as typos,
+# and suggest close names. If CRAN can't be reached, assume they're on it.
+abort_not_on_cran <- function(parsed, rows, call = parent.frame()) {
+  on_cran <- cran_packages()
+  names <- package_r_names(parsed)[rows]
+  unknown <- names[!names %in% on_cran]
+  if (length(on_cran) == 0 || length(unknown) == 0) {
+    return(invisible())
+  }
+  hints <- vapply(
+    unknown,
+    function(name) {
+      close <- close_names(name, on_cran)
+      if (length(close) == 0) {
+        return(NA_character_)
+      }
+      prefix <- if (length(unknown) > 1) "{.pkg {name}}: did" else "Did"
+      cli::format_inline(prefix, " you mean {.or {.pkg {close}}}?")
+    },
+    character(1)
+  )
+  hints <- hints[!is.na(hints)]
+  cli::cli_abort(
+    c(
+      "{.pkg {unknown}} {?isn't/aren't} on conda-forge or CRAN.",
+      stats::setNames(hints, rep("i", length(hints)))
+    ),
+    class = "rpix_error_package_not_found",
+    call = call
+  )
+}
+
+# The names of the packages on CRAN, or NULL if it can't be reached. R keeps
+# the list for an hour.
+cran_packages <- function() {
+  repos <- getOption("repos")
+  repo <- if ("CRAN" %in% names(repos) && repos[["CRAN"]] != "@CRAN@") {
+    repos[["CRAN"]]
+  } else {
+    "https://cloud.r-project.org"
+  }
+  available <- suppressWarnings(tryCatch(
+    utils::available.packages(
+      repos = repo,
+      type = "source",
+      filters = "duplicates"
+    ),
+    error = function(e) NULL
+  ))
+  rownames(available)
+}
+
+# Up to three of `names` closest to `name`, ignoring case
+close_names <- function(name, names) {
+  distance <- utils::adist(tolower(name), tolower(names))[1, ]
+  close <- distance <= max(1, nchar(name) %/% 4)
+  utils::head(names[close][order(distance[close])], 3)
 }
 
 # Offer to build CRAN packages that aren't on conda-forge from CRAN's GitHub
