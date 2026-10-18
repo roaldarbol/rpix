@@ -20,6 +20,9 @@
 #'   this off with `options(rpix.install_packages = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
 #'   in an interactive session you get a hint instead.
+#' * If the project was moved or copied, Pixi's activation cache, which has
+#'   the old location, is removed, and environments that need reinstalling
+#'   are named.
 #'
 #' It never fails: problems are reported as messages.
 #'
@@ -42,12 +45,17 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
     {
       env <- pixi_r_location(r_home())
       root <- find_project_root(path)
+      moved <- if (!is.null(root)) moved_project(root)
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
         inform(c(
+          moved,
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
           "i" = "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
         ))
         return(invisible(result))
+      }
+      if (length(moved) > 0) {
+        inform(moved)
       }
 
       personal <- Sys.getenv("R_LIBS_USER")

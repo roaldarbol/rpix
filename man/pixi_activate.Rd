@@ -37,6 +37,9 @@ error. Package files and folders are installed with
 this off with \code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
+\item If the project was moved or copied, Pixi's activation cache, which has
+the old location, is removed, and environments that need reinstalling
+are named.
 }
 
 It never fails: problems are reported as messages.

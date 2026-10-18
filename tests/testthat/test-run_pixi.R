@@ -40,9 +40,15 @@ test_that("returns NULL outside a project", {
 test_that("uses PIXI_WORKSPACE_ROOT, then the working directory, when no path is given", {
   root <- local_pixi_project()
   other <- local_pixi_project()
+  nested <- file.path(root, "a")
+  dir.create(nested)
 
   withr::local_envvar(PIXI_WORKSPACE_ROOT = root, PIXI_PROJECT_ROOT = NA)
-  withr::local_dir(other)
+  withr::local_dir(nested)
+  expect_equal(find_project_root(), root)
+
+  # Outside any project, e.g. after setwd()
+  withr::local_dir(withr::local_tempdir())
   expect_equal(find_project_root(), root)
 
   # Pixi before 0.82 sets only PIXI_PROJECT_ROOT
@@ -50,7 +56,43 @@ test_that("uses PIXI_WORKSPACE_ROOT, then the working directory, when no path is
   expect_equal(find_project_root(), root)
 
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(other)
   expect_equal(find_project_root(), other)
+})
+
+test_that("uses the working directory's project when PIXI_WORKSPACE_ROOT is another", {
+  # As in a copy of a project, whose activation cache points to the original
+  withr::local_options(rlib_message_verbosity = "verbose")
+  original <- local_pixi_project()
+  copy <- local_pixi_project()
+  withr::local_dir(copy)
+
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = original, PIXI_PROJECT_ROOT = NA)
+  expect_message(
+    expect_equal(find_manifest(), file.path(copy, "pixi.toml")),
+    "PIXI_WORKSPACE_ROOT"
+  )
+
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = original)
+  expect_message(
+    expect_equal(find_project_root(), copy),
+    "PIXI_PROJECT_ROOT"
+  )
+})
+
+test_that("says once that PIXI_WORKSPACE_ROOT points elsewhere", {
+  withr::local_options(rlib_message_verbosity = "default")
+  rlang::reset_message_verbosity("rpix_other_workspace_root")
+  withr::defer(rlang::reset_message_verbosity("rpix_other_workspace_root"))
+  original <- local_pixi_project()
+  copy <- local_pixi_project()
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = original, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(copy)
+
+  expect_snapshot(invisible(find_manifest()), transform = function(x) {
+    gsub(copy, "<copy>", gsub(original, "<original>", x, fixed = TRUE))
+  })
+  expect_no_message(find_manifest())
 })
 
 # pixi_binary() ---------------------------------------------------------------
@@ -274,6 +316,84 @@ test_that("streams output with or without saying which command runs", {
   expect_match(output, "pixi", all = FALSE)
 })
 
+test_that("output can be kept back, while saying which command runs", {
+  skip_if_no_pixi()
+  pieces <- character()
+  expect_message(
+    output <- capture.output(
+      result <- run_pixi(
+        "--version",
+        project = "none",
+        announce = TRUE,
+        on_output = function(x) pieces <<- c(pieces, x)
+      )
+    ),
+    "Running"
+  )
+  expect_equal(output, character())
+  expect_match(result$output, "pixi")
+  expect_equal(paste(pieces, collapse = ""), result$output)
+  expect_output(show_pixi_output(result), "pixi")
+})
+
+test_that("a failure whose output was kept back can show it after all", {
+  err <- pixi_failure("No candidates were found for r-x *.\n")
+  expect_match(conditionMessage(err), "No candidates")
+  expect_false(err$echoed)
+
+  expect_output(revealed <- reveal_pixi_failure(err), "No candidates")
+  expect_s3_class(revealed, "rpix_error_pixi")
+  expect_true(revealed$echoed)
+  expect_match(conditionMessage(revealed), "output above")
+  expect_no_match(conditionMessage(revealed), "No candidates")
+  expect_equal(revealed$stderr, err$stderr)
+
+  # Shown already
+  expect_silent(expect_identical(reveal_pixi_failure(revealed), revealed))
+})
+
+test_that("a long step says what it does, and shows the output if it fails", {
+  outcome <- "success"
+  calls <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, path = NULL, echo = FALSE, on_output = NULL) {
+      calls <<- c(calls, list(list(args = args, echo = echo)))
+      if (!is.null(on_output)) {
+        on_output("a line of the build log\n")
+      }
+      if (outcome == "failure") {
+        stop(pixi_failure(
+          "a line of the build log\nthe build failed\n",
+          "pixi install"
+        ))
+      }
+      invisible(list(status = 0, output = "a line of the build log\n"))
+    }
+  )
+  expect_snapshot(
+    run_pixi_step("install", step = "Building it", done = "Built it"),
+    transform = scrub_progress
+  )
+
+  outcome <- "failure"
+  expect_snapshot(
+    run_pixi_step("install", step = "Building it", done = "Built it"),
+    error = TRUE,
+    transform = scrub_progress
+  )
+
+  # A spinner that turns as Pixi writes, where the console can redraw it
+  outcome <- "success"
+  withr::local_options(cli.dynamic = TRUE)
+  suppressMessages(run_pixi_step("install", step = "Building it"))
+  expect_length(calls, 3)
+
+  # Or the output as it runs
+  withr::local_options(rpix.verbose = TRUE)
+  expect_silent(run_pixi_step("install", step = "Building it"))
+  expect_true(calls[[4]]$echo)
+})
+
 # Error output -----------------------------------------------------------------
 
 test_that("error details fall back to stdout when stderr is empty", {
@@ -311,6 +431,29 @@ test_that("--manifest-path comes straight after `run`, before the command", {
     run_pixi(c("run", "Rscript", "-e", "1"), dry_run = TRUE)
   )
   expect_equal(command, "pixi run --manifest-path pixi.toml Rscript -e 1")
+})
+
+test_that("removes a stale activation cache before Pixi activates", {
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  root <- local_pixi_project()
+  checked <- new.env()
+  checked$roots <- character()
+  local_mocked_bindings(
+    pixi_binary = function(...) "pixi",
+    remove_stale_activation_cache = function(root) {
+      checked$roots <- c(checked$roots, root)
+    }
+  )
+  local_mocked_bindings(
+    run = function(...) list(status = 0, stdout = "", stderr = ""),
+    .package = "processx"
+  )
+
+  run_pixi(c("run", "R"), path = root)
+  run_pixi(c("shell-hook", "--environment", "default"), path = root)
+  run_pixi(c("add", "r-cli"), path = root)
+  expect_message(run_pixi(c("run", "R"), path = root, dry_run = TRUE))
+  expect_equal(checked$roots, c(root, root))
 })
 
 test_that("Pixi doesn't get the variables R sets for itself", {
