@@ -71,6 +71,12 @@
 
 ### Fixed
 
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  sets up the folder it’s given, or the working directory, rather than a
+  Pixi project in a parent folder. It says when a parent folder is a
+  Pixi project, and in an interactive session asks whether to set that
+  one up instead
+  ([\#214](https://github.com/roaldarbol/rpix/issues/214)).
 - In a package,
   [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
   no longer says the package itself was installed without Pixi,
