@@ -1,8 +1,12 @@
 #' Set up a Pixi project for R
 #'
 #' @description
-#' Create a Pixi project in the working directory if there isn't one, add R to
-#' it, and install rpix into its environment.
+#' Create a Pixi project in the working directory, or `path`, if there isn't
+#' one there, add R to it, and install rpix into its environment.
+#'
+#' It sets up that folder even inside another Pixi project. If a parent folder
+#' is a Pixi project, it says so, and in an interactive session asks whether to
+#' set that one up instead.
 #'
 #' It also adds conda-forge's `conda-ecosystem-user-package-isolation`, which
 #' keeps your personal R library out of the environment's R. Otherwise
@@ -41,9 +45,9 @@
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
 #'   added, so R and the packages are all as of that date. See
 #'   [pixi_set_date()].
-#' @param install_rpix If `TRUE`, install rpix into the project's environment.
-#'   Its dependencies come from conda-forge, and rpix itself from R-universe
-#'   until it's on conda-forge.
+#' @param install_rpix If `TRUE`, install rpix into the project's environment,
+#'   unless it has this version or a newer one. Its dependencies come from
+#'   conda-forge, and rpix itself from R-universe until it's on conda-forge.
 #' @param path The folder to set up. Defaults to the working directory.
 #' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
 #'   project.
@@ -92,7 +96,7 @@ use_pixi <- function(
   pixi_binary()
   dir <- normalizePath(path %||% getwd(), winslash = "/", mustWork = FALSE)
 
-  manifest <- find_manifest(dir)
+  manifest <- manifest_in(dir) %||% parent_project(dir)
   if (is.null(manifest)) {
     if (!init_if_missing) {
       cli::cli_abort(c(
@@ -101,7 +105,7 @@ use_pixi <- function(
       ))
     }
     run_pixi(c("init", dir), project = "none", echo = TRUE)
-    manifest <- find_manifest(dir)
+    manifest <- manifest_in(dir)
   }
   path <- dirname(manifest)
   build_ignore(path, pixi_files(path))
@@ -154,13 +158,7 @@ use_pixi <- function(
   }
 
   if (install_rpix) {
-    # From inside the environment's R, so rpix is installed for that R. Its
-    # dependencies are already there, from conda-forge.
-    install <- paste0(
-      "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
-      "lib = .Library, dependencies = FALSE, type = 'source')"
-    )
-    run_pixi(c("run", "Rscript", "-e", install), path = path, echo = TRUE)
+    install_rpix_into(path)
   }
 
   remove_legacy_rprofile(file.path(path, ".Rprofile"))
@@ -216,6 +214,68 @@ abort_r_without_packages <- function(e, r_version, call) {
   )
 }
 
+# Install rpix into the default environment, unless it has this version or a
+# newer one. From inside the environment's R, so rpix is installed for that R.
+# Its dependencies are already there, from conda-forge.
+install_rpix_into <- function(path) {
+  installed <- file.path(
+    path,
+    ".pixi",
+    "envs",
+    "default",
+    "lib",
+    "R",
+    "library",
+    "rpix",
+    "DESCRIPTION"
+  )
+  version <- utils::packageVersion("rpix")
+  if (
+    file.exists(installed) &&
+      package_version(read.dcf(installed, "Version")[1, 1]) >= version
+  ) {
+    cli::cli_alert_success("The environment has rpix {version} already.")
+    return(invisible(FALSE))
+  }
+  # A failed install is only a warning, which would let Rscript succeed
+  install <- paste0(
+    "options(warn = 2); ",
+    "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
+    "lib = .Library, dependencies = FALSE, type = 'source')"
+  )
+  run_pixi_step(
+    c("run", "Rscript", "-e", install),
+    step = "Installing rpix into the environment from R-universe",
+    done = "Installed rpix into the environment from R-universe",
+    path = path
+  )
+  invisible(TRUE)
+}
+
+# The manifest of a Pixi project in a parent folder of `dir`, if the user
+# would rather set that one up. use_pixi() sets up `dir` otherwise.
+parent_project <- function(dir) {
+  manifest <- find_manifest(dirname(dir))
+  if (is.null(manifest)) {
+    return(NULL)
+  }
+  root <- dirname(manifest)
+  if (is_interactive()) {
+    question <- cli::format_inline(
+      "{.path {root}} is a Pixi project. Set that one up, rather than {.path {dir}}?"
+    )
+    if (isTRUE(ask_yes_no(question))) {
+      return(manifest)
+    }
+  } else {
+    command <- paste0("use_pixi(path = ", deparse(root), ")")
+    cli::cli_alert_info(
+      "{.path {root}} is a Pixi project too. To set that one up instead, run {.code {command}}."
+    )
+  }
+  NULL
+}
+
 # rpix's own dependencies, as conda packages. Reads rpix's DESCRIPTION through
 # its namespace path, which also works under devtools::load_all().
 rpix_dependencies <- function(imports = rpix_imports()) {
@@ -269,15 +329,24 @@ rprofile_block <- c(
   "  # In the environment's R, drop the personal library before any package",
   "  # loads: it has packages built for another R, which can crash this one",
   "  home <- normalizePath(R.home(), winslash = \"/\")",
-  "  if (grepl(\"/[.]pixi/envs/[^/]+/lib/R$\", home)) {",
+  "  pixi <- grepl(\"/[.]pixi/envs/[^/]+/lib/R$\", home)",
+  "  if (pixi) {",
   "    personal <- strsplit(Sys.getenv(\"R_LIBS_USER\"), .Platform$path.sep)[[1]]",
   "    personal <- normalizePath(personal, winslash = \"/\", mustWork = FALSE)",
   "    personal <- personal[!grepl(\"/[.]pixi/\", personal)]",
   "    .libPaths(setdiff(.libPaths(), personal))",
   "  }",
-  "  if (requireNamespace(\"rpix\", quietly = TRUE) &&",
-  "      \"pixi_activate\" %in% getNamespaceExports(\"rpix\")) {",
-  "    rpix::pixi_activate()",
+  "  if (requireNamespace(\"rpix\", quietly = TRUE)) {",
+  "    if (\"pixi_activate\" %in% getNamespaceExports(\"rpix\")) {",
+  "      rpix::pixi_activate()",
+  "    }",
+  "  } else if (pixi && interactive()) {",
+  "    # rpix isn't in pixi.lock, e.g. for a collaborator, or in other environments",
+  "    message(",
+  "      \"This Pixi environment's R doesn't have rpix. To install it, run:\\n\",",
+  "      \"install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', \",",
+  "      \"lib = .Library, dependencies = FALSE, type = 'source')\"",
+  "    )",
   "  }",
   "})",
   "# <<< rpix <<<"

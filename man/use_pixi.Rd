@@ -26,9 +26,9 @@ before its packages are built for it.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
-\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
-Its dependencies come from conda-forge, and rpix itself from R-universe
-until it's on conda-forge.}
+\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment,
+unless it has this version or a newer one. Its dependencies come from
+conda-forge, and rpix itself from R-universe until it's on conda-forge.}
 
 \item{date}{Optional. Use packages as they were on this date, such as
 \code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is
@@ -47,8 +47,12 @@ project.}
 The path to the project's manifest, invisibly.
 }
 \description{
-Create a Pixi project in the working directory if there isn't one, add R to
-it, and install rpix into its environment.
+Create a Pixi project in the working directory, or \code{path}, if there isn't
+one there, add R to it, and install rpix into its environment.
+
+It sets up that folder even inside another Pixi project. If a parent folder
+is a Pixi project, it says so, and in an interactive session asks whether to
+set that one up instead.
 
 It also adds conda-forge's \code{conda-ecosystem-user-package-isolation}, which
 keeps your personal R library out of the environment's R. Otherwise

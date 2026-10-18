@@ -32,3 +32,22 @@ local_recorded_pixi <- function(
   )
   calls
 }
+
+# For snapshots of progress steps, whose spinner and timing vary
+scrub_progress <- function(lines) {
+  lines <- sub("^[-|/\\\\] ", "~ ", lines)
+  sub(" \\[[0-9.]+m?s\\]$", " [time]", lines)
+}
+
+# A Pixi failure, as run_pixi() gives it when it keeps the output back
+pixi_failure <- function(output, command = "pixi add r-x") {
+  tryCatch(
+    abort_pixi_failure(
+      command,
+      list(status = 1, stdout = "", stderr = output, output = output),
+      echoed = FALSE,
+      call = NULL
+    ),
+    rpix_error_pixi = identity
+  )
+}

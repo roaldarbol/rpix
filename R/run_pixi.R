@@ -18,8 +18,9 @@
 #'   directory. See `find_project_root()`.
 #' @param json If `TRUE`, add `--json` and return the parsed output.
 #' @param echo If `TRUE`, stream Pixi's output to the console while it runs.
-#' @param announce If `TRUE`, say which command runs before streaming its
-#'   output.
+#' @param announce If `TRUE`, say which command runs.
+#' @param on_output Optional. A function called with each piece of Pixi's
+#'   output as it comes, e.g. to show progress while the output is kept back.
 #' @param dry_run If `TRUE`, show the command without running it.
 #' @param secrets Values, such as tokens, that are never shown: they're
 #'   replaced with `<hidden>` in the command rpix shows, in Pixi's output and
@@ -29,8 +30,9 @@
 #' @returns
 #' * With `dry_run = TRUE`: the command as a string, invisibly.
 #' * With `json = TRUE`: the parsed JSON output.
-#' * Otherwise: a list with `command`, `status`, `stdout` and `stderr`,
-#'   invisibly.
+#' * Otherwise: a list with `command`, `status`, `stdout`, `stderr` and
+#'   `output` (both streams, in the order Pixi wrote them), invisibly. A
+#'   failure's error has the same fields, and `echoed`.
 #' @importFrom rlang abort
 #' @noRd
 run_pixi <- function(
@@ -42,6 +44,7 @@ run_pixi <- function(
   announce = echo,
   dry_run = FALSE,
   secrets = NULL,
+  on_output = NULL,
   call = parent.frame()
 ) {
   project <- match.arg(project)
@@ -79,14 +82,24 @@ run_pixi <- function(
     return(invisible(command))
   }
 
-  if (echo && announce) {
+  if (announce) {
     cli::cli_alert_info("Running {.code {command}}")
   }
 
   use_color <- echo && cli::num_ansi_colors() > 1
   # Pixi reports progress on stderr, which processx's echo turns red, so show
-  # both streams as they are, and keep them apart in the result
-  show <- if (echo) function(x, process) cat(hide_secrets(x, secrets))
+  # both streams as they are, and keep them apart in the result. Both are
+  # also kept together, in order, to show later if they were kept back.
+  output <- character()
+  show <- function(x, process) {
+    output <<- c(output, x)
+    if (echo) {
+      cat(hide_secrets(x, secrets))
+    }
+    if (!is.null(on_output)) {
+      on_output(x)
+    }
+  }
   result <- processx::run(
     pixi_binary(call = call),
     args,
@@ -98,6 +111,7 @@ run_pixi <- function(
 
   result$stdout <- hide_secrets(result$stdout, secrets)
   result$stderr <- hide_secrets(result$stderr, secrets)
+  result$output <- hide_secrets(paste(output, collapse = ""), secrets)
 
   if (result$status != 0) {
     abort_pixi_failure(command, result, echoed = echo, call = call)
@@ -111,8 +125,63 @@ run_pixi <- function(
     command = command,
     status = result$status,
     stdout = result$stdout,
-    stderr = result$stderr
+    stderr = result$stderr,
+    output = result$output
   ))
+}
+
+# Whether to show Pixi's output that rpix otherwise keeps back, such as build
+# logs
+rpix_verbose <- function() {
+  isTRUE(getOption("rpix.verbose"))
+}
+
+# Show Pixi's output that was kept back while it ran
+show_pixi_output <- function(result) {
+  cat(result$output)
+}
+
+# For a failure whose output was kept back, e.g. to try something else first,
+# and that rpix can't handle: show the output in full, and return the error
+# as if it had been shown
+reveal_pixi_failure <- function(e) {
+  if (isTRUE(e$echoed)) {
+    return(e)
+  }
+  show_pixi_output(e)
+  tryCatch(
+    abort_pixi_failure(e$command, e, echoed = TRUE, call = e$call),
+    rpix_error_pixi = identity
+  )
+}
+
+# Run a long Pixi step with its output kept back, e.g. a build log: say `step`
+# while it runs, and show the output only if it fails. In a console that can
+# redraw the line, a spinner turns as Pixi writes; elsewhere each turn would
+# be a line of its own. With `options(rpix.verbose = TRUE)`, show the output
+# as it runs.
+run_pixi_step <- function(args, step, done = step, path = NULL) {
+  if (rpix_verbose()) {
+    return(run_pixi(args, path = path, echo = TRUE))
+  }
+  id <- cli::cli_progress_step(
+    "{step}{cli::symbol$ellipsis}",
+    msg_done = "{done}",
+    spinner = TRUE
+  )
+  tryCatch(
+    run_pixi(
+      args,
+      path = path,
+      on_output = if (cli::is_dynamic_tty()) {
+        function(x) cli::cli_progress_update(id = id)
+      }
+    ),
+    rpix_error_pixi = function(e) {
+      cli::cli_progress_done(id = id, result = "failed")
+      stop(reveal_pixi_failure(e))
+    }
+  )
 }
 
 # Pixi's output as plain text: without colours, the error tree's
@@ -238,13 +307,9 @@ find_manifest <- function(path = NULL) {
   dir <- normalizePath(path, winslash = "/", mustWork = FALSE)
 
   repeat {
-    pixi_toml <- file.path(dir, "pixi.toml")
-    if (file.exists(pixi_toml)) {
-      return(pixi_toml)
-    }
-    pyproject <- file.path(dir, "pyproject.toml")
-    if (file.exists(pyproject) && has_pixi_table(pyproject)) {
-      return(pyproject)
+    manifest <- manifest_in(dir)
+    if (!is.null(manifest)) {
+      return(manifest)
     }
     parent <- dirname(dir)
     if (identical(parent, dir)) {
@@ -252,6 +317,19 @@ find_manifest <- function(path = NULL) {
     }
     dir <- parent
   }
+}
+
+# The manifest in the folder itself, not in a parent folder, or NULL
+manifest_in <- function(dir) {
+  pixi_toml <- file.path(dir, "pixi.toml")
+  if (file.exists(pixi_toml)) {
+    return(pixi_toml)
+  }
+  pyproject <- file.path(dir, "pyproject.toml")
+  if (file.exists(pyproject) && has_pixi_table(pyproject)) {
+    return(pyproject)
+  }
+  NULL
 }
 
 has_pixi_table <- function(pyproject) {
@@ -330,9 +408,12 @@ abort_pixi_failure <- function(command, result, echoed, call) {
       details
     ),
     class = c(if (!is.null(denied)) "rpix_error_access", "rpix_error_pixi"),
+    command = command,
     status = result$status,
     stdout = result$stdout,
     stderr = result$stderr,
+    output = result$output,
+    echoed = echoed,
     call = call
   )
 }

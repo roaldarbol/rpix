@@ -325,7 +325,12 @@ pixi_import_renv <- function(
       character(1)
     )
     parsed <- parse_packages(paste0("cran::", cran, constraints))
-    built <- offer_cran_source(parsed, seq_along(cran), abort = FALSE)
+    built <- offer_cran_source(
+      parsed,
+      seq_along(cran),
+      abort = FALSE,
+      path = root
+    )
     if (is.null(built)) {
       declined <- cran
       cran <- character()
@@ -497,18 +502,34 @@ remove_renv_activation <- function(file, dry_run = FALSE) {
   invisible(TRUE)
 }
 
+# Whether a package, possibly with a version, such as "r-cli==3.6.1", is on a
+# channel
 on_channel <- function(name, channel) {
   channels <- unique(c("conda-forge", channel))
   tryCatch(
-    {
-      run_pixi(
+    sub("[[:space:]=<>!~].*$", "", name) %in%
+      search_names(
         c("search", as.vector(rbind("--channel", channels)), name),
         project = "none"
-      )
-      TRUE
-    },
+      ),
     rpix_error_pixi = function(e) FALSE
   )
+}
+
+# The names of the packages `pixi search` finds. Without an exact match, Pixi
+# finds the names that contain the one searched for, e.g. r-fauxpas for
+# r-faux, so check the name is among them.
+search_names <- function(args, ...) {
+  found <- tryCatch(
+    run_pixi(args, json = TRUE, ...),
+    rpix_error_pixi = function(e) {
+      if (!grepl("No packages found", e$stderr, fixed = TRUE)) {
+        stop(e)
+      }
+      list()
+    }
+  )
+  unique(unlist(lapply(found, function(records) records$name)))
 }
 
 # The packages in the default feature

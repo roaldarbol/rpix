@@ -1,0 +1,12 @@
+Error:   [31m×[0m failed to solve requirements of environment '[35mdefault[0m' for platform 'osx-
+  [31m│[0m 64'
+[31m  ├─▶ [0m  [31m×[0m failed to solve the environment
+[31m  │   [0m
+[31m  ╰─▶ [0mCannot solve the request because of: r-ggplot2 ==3.4.4 cannot be
+[31m      [0minstalled because there are no viable options:
+[31m      [0m├─ r-ggplot2 3.4.4 would require
+[31m      [0m│  └─ r-base >=4.3,<4.4.0a0, for which no candidates were found.
+[31m      [0m└─ r-ggplot2 3.4.4 would require
+[31m      [0m   └─ r-base >=4.2,<4.3.0a0, for which no candidates were found.
+[31m      [0m
+
