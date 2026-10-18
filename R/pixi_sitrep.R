@@ -6,6 +6,9 @@
 #'
 #' * Pixi: where it is, and its version.
 #' * The project, and whether `pixi.lock` is up to date with `pixi.toml`.
+#' * Whether the project was moved or copied: Pixi's activation cache then
+#'   has the old location, so it's removed, and environments installed in the
+#'   old location need reinstalling.
 #' * The date the project's packages are as of, if it has one (see
 #'   [pixi_set_date()]).
 #' * In a package, whether `pixi.toml` has what its `DESCRIPTION` needs: the
@@ -63,6 +66,12 @@ pixi_sitrep <- function(path = NULL) {
       hint("Run {.code pixi install}.")
     } else if (isTRUE(report$lock_up_to_date)) {
       cli::cli_alert_success("{.file pixi.lock} is up to date.")
+    }
+    if (isTRUE(report$stale_cache)) {
+      cli::cli_bullets(stale_cache_bullet)
+    }
+    if (length(report$moved_environments) > 0) {
+      cli::cli_bullets(moved_environments_bullets(report$moved_environments))
     }
     denied <- report$access_denied
     if (!is.null(denied)) {
@@ -238,6 +247,8 @@ sitrep_data <- function(path = NULL) {
   }
 
   project <- find_project_root(path)
+  stale_cache <- !is.null(project) &&
+    remove_stale_activation_cache(project, quiet = TRUE)
   lock <- if (!is.null(project) && !is.null(pixi)) {
     lock_up_to_date(project)
   }
@@ -280,6 +291,8 @@ sitrep_data <- function(path = NULL) {
     pixi_version = pixi_version,
     project = project,
     lock_up_to_date = lock,
+    stale_cache = stale_cache,
+    moved_environments = if (!is.null(project)) moved_environments(project),
     access_denied = attr(lock, "denied") %||%
       if (!is.null(project) && !is.null(pixi)) channel_access(project),
     logins = if (!is.null(pixi)) logins(),
