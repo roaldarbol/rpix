@@ -21,6 +21,10 @@
 * `use_pixi()` turns on Pixi's activation cache for the project, so R started
   through Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
   second rather than a few. `activation_cache = FALSE` leaves it off (#195).
+* When R starts in a Pixi environment without rpix, e.g. a collaborator's or
+  another environment of the project, the project's `.Rprofile` says so, with
+  the command that installs it. `use_pixi()` updates the `.Rprofile` of a
+  project set up earlier (#216).
 
 ## Changed
 

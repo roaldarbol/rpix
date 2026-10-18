@@ -262,6 +262,32 @@ test_that("updates the block in place instead of adding it again", {
   expect_equal(readLines(file), c("before", rprofile_block, "after"))
 })
 
+# Run the block, with stand-ins for what it asks R
+run_rprofile_block <- function(home, rpix = FALSE, interactive = TRUE) {
+  env <- new.env()
+  env$R.home <- function() home
+  env$normalizePath <- function(path, ...) path
+  env$.libPaths <- function(new) invisible(base::.libPaths())
+  env$requireNamespace <- function(...) rpix
+  env$getNamespaceExports <- function(ns) "something_else"
+  env$interactive <- function() interactive
+  eval(parse(text = rprofile_block), envir = env)
+}
+
+test_that("the block says how to install rpix in an environment without it", {
+  home <- "/project/.pixi/envs/r44/lib/R"
+  message <- expect_message(run_rprofile_block(home), "doesn't have rpix")
+  command <- strsplit(conditionMessage(message), "\n")[[1]][2]
+  expect_match(command, "lib = .Library", fixed = TRUE)
+  # A command that runs as it's shown
+  expect_equal(as.character(str2lang(command)[[1]]), "install.packages")
+
+  # Not when it isn't interactive, outside Pixi, or with rpix there
+  expect_silent(run_rprofile_block(home, interactive = FALSE))
+  expect_silent(run_rprofile_block("/opt/R/4.5/lib/R"))
+  expect_silent(run_rprofile_block(home, rpix = TRUE))
+})
+
 test_that("r_home() is R.home()", {
   expect_equal(r_home(), R.home())
 })
