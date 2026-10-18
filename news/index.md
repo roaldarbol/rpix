@@ -78,6 +78,13 @@
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions
   set.
 
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  and the IDE setups only add the packages the project doesn’t have yet,
+  rather than having Pixi say of each of the others that it’s there, and
+  `use_pixi(ide = )` sets direnv up once for several editors, so running
+  them again, or for several IDEs, says each thing once
+  ([\#222](https://github.com/roaldarbol/rpix/issues/222)).
+
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   and
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
