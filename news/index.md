@@ -97,6 +97,15 @@
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions
   set.
 
+- [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  and
+  [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  say when they install an environment for the first time, which can
+  take a while, and show Pixi’s output, rather than waiting in silence.
+  [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
+  now installs before the run, so its time doesn’t include the install
+  ([\#223](https://github.com/roaldarbol/rpix/issues/223)).
+
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   and the IDE setups only add the packages the project doesn’t have yet,
   rather than having Pixi say of each of the others that it’s there, and
