@@ -144,3 +144,16 @@ install_changed_environment <- function(feature = NULL, path = NULL) {
     echo = TRUE
   )
 }
+
+# Install an environment, saying so the first time, when it takes a while.
+# Pixi only shows progress bars in a terminal, so show what it prints.
+install_environment <- function(environment, root) {
+  args <- c("install", "--environment", environment)
+  if (dir.exists(file.path(root, ".pixi", "envs", environment, "conda-meta"))) {
+    return(run_pixi(args, path = root))
+  }
+  cli::cli_alert_info(
+    "Installing the {.val {environment}} environment (first time only){cli::symbol$ellipsis}"
+  )
+  run_pixi(args, path = root, echo = TRUE, announce = FALSE)
+}

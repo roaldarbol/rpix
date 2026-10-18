@@ -75,7 +75,7 @@ pixi_check_matrix <- function(
   if (parallel) {
     # Install first, so the runs don't all install at once
     for (environment in environments) {
-      run_pixi(c("install", "--environment", environment), path = root)
+      install_environment(environment, root)
     }
     cli::cli_alert_info(
       "Running in {length(environments)} environment{?s} at once."
@@ -84,6 +84,8 @@ pixi_check_matrix <- function(
     results <- lapply(runs, finish_run)
   } else {
     results <- lapply(environments, function(environment) {
+      # Install it before the run, whose output goes to its log
+      install_environment(environment, root)
       cli::cli_alert_info("Running in {.val {environment}}.")
       finish_run(start_run(environment, what, task, root))
     })

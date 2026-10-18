@@ -8,8 +8,12 @@ fake_result <- function(environment, ok, ...) {
 }
 
 test_that("pixi_check_matrix() runs in each environment, one at a time", {
+  installed <- character()
   local_mocked_bindings(
     require_project = function(path) "/project",
+    install_environment = function(environment, root) {
+      installed <<- c(installed, environment)
+    },
     pixi_environments = function(path) data.frame(name = c("r44", "r45")),
     start_run = function(environment, what, task, root) {
       list(environment = environment, what = what, root = root)
@@ -31,6 +35,7 @@ test_that("pixi_check_matrix() runs in each environment, one at a time", {
   )
 
   expect_snapshot(matrix <- pixi_check_matrix())
+  expect_equal(installed, c("r44", "r45"))
   expect_equal(matrix$environment, c("r44", "r45"))
   expect_equal(matrix$r_version, c("4.4.3", NA))
   expect_equal(matrix$ok, c(TRUE, FALSE))
@@ -76,6 +81,7 @@ test_that("pixi_check_matrix() can run everywhere at once, after installing", {
 test_that("pixi_check_matrix() can run a task", {
   local_mocked_bindings(
     require_project = function(path) "/project",
+    install_environment = function(environment, root) NULL,
     start_run = function(environment, what, task, root) {
       list(environment = environment, what = what, task = task)
     },

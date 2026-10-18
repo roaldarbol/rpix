@@ -50,7 +50,7 @@ pixi_switch <- function(environment = NULL, ide = NULL, path = NULL) {
       "i" = "Its environments are {.val {environments}}."
     ))
   }
-  run_pixi(c("install", "--environment", environment), path = root)
+  install_environment(environment, root)
   r <- environment_r(root, environment)
 
   switch(
