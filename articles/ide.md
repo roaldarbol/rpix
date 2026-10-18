@@ -146,8 +146,9 @@ and Windsurf: they read the same settings, and get the R extension from
 [Open VSX](https://open-vsx.org/extension/REditorSupport/r). A project
 set up once works in all of them.
 
-When the R extension offers to install its sess package, accept: it
-installs into the environment.
+When the R extension offers to install its sess package, accept: Pixi
+adds the packages sess needs, and sess, which isn’t on conda-forge yet,
+installs into the environment without being recorded in `pixi.toml`.
 
 ### Another console
 

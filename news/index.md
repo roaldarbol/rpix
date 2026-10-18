@@ -105,6 +105,14 @@
 
 ### Fixed
 
+- In a Pixi environment,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  accepts `repos`, and adds the packages with Pixi as usual. Package
+  files and folders (`repos = NULL`) go to
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  which `pixi.toml` doesn’t record. VS Code’s R extension can now
+  install its sess package
+  ([\#209](https://github.com/roaldarbol/rpix/issues/209)).
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   sets up the folder it’s given, or the working directory, rather than a
   Pixi project in a parent folder. It says when a parent folder is a

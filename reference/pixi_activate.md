@@ -21,8 +21,11 @@ up.
   instead, so they're recorded in `pixi.toml` and `pixi.lock`. For a
   CRAN package that isn't on conda-forge,
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
-  offers to build it from source. Arguments Pixi can't use, such as
-  `lib` or `repos`, and package files give an error. Turn this off with
+  offers to build it from source. `repos` is ignored, and other
+  arguments Pixi can't use, such as `lib`, give an error. Package files
+  and folders are installed with
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  so `pixi.toml` doesn't record them. Turn this off with
   `options(rpix.install_packages = FALSE)`.
 
 - If R isn't the R of a Pixi environment in this project, nothing
