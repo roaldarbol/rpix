@@ -4,7 +4,10 @@ Remove packages from the Pixi manifest. Package names are translated
 like in
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md):
 `"dplyr"` removes `r-dplyr` and `"bioc::DESeq2"` removes
-`bioconductor-deseq2`.
+`bioconductor-deseq2`. `"DESeq2"` removes `bioconductor-deseq2` too,
+when that's what the manifest has, as
+[`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md) adds
+it.
 
 For more information, see
 <https://pixi.prefix.dev/latest/reference/cli/pixi/remove/>.
