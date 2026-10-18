@@ -371,6 +371,10 @@ test_that("finds packages in the environment that Pixi didn't install", {
   )
   expect_equal(unrecorded_packages("default", "/p"), extra[1])
 
+  root <- withr::local_tempdir()
+  writeLines(paste("Package:", extra[1]), file.path(root, "DESCRIPTION"))
+  expect_equal(unrecorded_packages("default", root), character())
+
   local_mocked_bindings(pixi_list = function(...) stop("no Pixi"))
   expect_equal(unrecorded_packages("default", "/p"), character())
 })

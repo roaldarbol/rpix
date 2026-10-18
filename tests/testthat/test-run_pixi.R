@@ -274,6 +274,84 @@ test_that("streams output with or without saying which command runs", {
   expect_match(output, "pixi", all = FALSE)
 })
 
+test_that("output can be kept back, while saying which command runs", {
+  skip_if_no_pixi()
+  pieces <- character()
+  expect_message(
+    output <- capture.output(
+      result <- run_pixi(
+        "--version",
+        project = "none",
+        announce = TRUE,
+        on_output = function(x) pieces <<- c(pieces, x)
+      )
+    ),
+    "Running"
+  )
+  expect_equal(output, character())
+  expect_match(result$output, "pixi")
+  expect_equal(paste(pieces, collapse = ""), result$output)
+  expect_output(show_pixi_output(result), "pixi")
+})
+
+test_that("a failure whose output was kept back can show it after all", {
+  err <- pixi_failure("No candidates were found for r-x *.\n")
+  expect_match(conditionMessage(err), "No candidates")
+  expect_false(err$echoed)
+
+  expect_output(revealed <- reveal_pixi_failure(err), "No candidates")
+  expect_s3_class(revealed, "rpix_error_pixi")
+  expect_true(revealed$echoed)
+  expect_match(conditionMessage(revealed), "output above")
+  expect_no_match(conditionMessage(revealed), "No candidates")
+  expect_equal(revealed$stderr, err$stderr)
+
+  # Shown already
+  expect_silent(expect_identical(reveal_pixi_failure(revealed), revealed))
+})
+
+test_that("a long step says what it does, and shows the output if it fails", {
+  outcome <- "success"
+  calls <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, path = NULL, echo = FALSE, on_output = NULL) {
+      calls <<- c(calls, list(list(args = args, echo = echo)))
+      if (!is.null(on_output)) {
+        on_output("a line of the build log\n")
+      }
+      if (outcome == "failure") {
+        stop(pixi_failure(
+          "a line of the build log\nthe build failed\n",
+          "pixi install"
+        ))
+      }
+      invisible(list(status = 0, output = "a line of the build log\n"))
+    }
+  )
+  expect_snapshot(
+    run_pixi_step("install", step = "Building it", done = "Built it"),
+    transform = scrub_progress
+  )
+
+  outcome <- "failure"
+  expect_snapshot(
+    run_pixi_step("install", step = "Building it", done = "Built it"),
+    error = TRUE,
+    transform = scrub_progress
+  )
+
+  # A spinner that turns as Pixi writes, where the console can redraw it
+  outcome <- "success"
+  withr::local_options(cli.dynamic = TRUE)
+  suppressMessages(run_pixi_step("install", step = "Building it"))
+  expect_length(calls, 3)
+
+  # Or the output as it runs
+  withr::local_options(rpix.verbose = TRUE)
+  expect_silent(run_pixi_step("install", step = "Building it"))
+  expect_true(calls[[4]]$echo)
+})
+
 # Error output -----------------------------------------------------------------
 
 test_that("error details fall back to stdout when stderr is empty", {

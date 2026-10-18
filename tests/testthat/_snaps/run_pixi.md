@@ -5,6 +5,31 @@
     Message
       ! rpix needs Pixi, which isn't installed.
 
+# a long step says what it does, and shows the output if it fails
+
+    Code
+      run_pixi_step("install", step = "Building it", done = "Built it")
+    Message
+      ~ Building it...
+      v Built it [time]
+      
+
+---
+
+    Code
+      run_pixi_step("install", step = "Building it", done = "Built it")
+    Message
+      ~ Building it...
+      x Building it... [time]
+      
+    Output
+      a line of the build log
+      the build failed
+    Condition
+      Error:
+      ! `pixi install` failed with exit status 1.
+      i See Pixi's output above.
+
 # secrets are hidden in commands, output and errors
 
     Code
