@@ -56,8 +56,8 @@ use_pixi(
 - r_version:
 
   Optional. The R version to add, such as `"4.5"`. Defaults to the
-  newest one that the packages `use_pixi()` adds are built for on
-  conda-forge.
+  newest one that conda-forge has R packages for; it has a new R before
+  its packages are built for it.
 
 - ide:
 

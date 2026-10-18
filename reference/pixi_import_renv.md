@@ -22,7 +22,9 @@ turn renv off.
   added either way, as conda-forge doesn't have them.
 
 - The lock file's version of R becomes a constraint on R, if the project
-  doesn't have R yet.
+  doesn't have R yet. If conda-forge doesn't have the packages for that
+  R, e.g. a new R it hasn't built packages for yet, it says so and uses
+  the newest R that has them.
 
 It says which packages Pixi builds from source, as building them is
 experimental; see
