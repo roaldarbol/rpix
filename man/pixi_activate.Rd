@@ -30,11 +30,16 @@ own library added if it exists. Other libraries, such as temporary ones
 that devtools adds, are kept.
 \item \code{install.packages()} adds packages with \code{\link[=pixi_add]{pixi_add()}} instead, so they're
 recorded in \code{pixi.toml} and \code{pixi.lock}. For a CRAN package that isn't on
-conda-forge, \code{pixi_add()} offers to build it from source. Arguments Pixi
-can't use, such as \code{lib} or \code{repos}, and package files give an error.
-Turn this off with \code{options(rpix.install_packages = FALSE)}.
+conda-forge, \code{pixi_add()} offers to build it from source. \code{repos} is
+ignored, and other arguments Pixi can't use, such as \code{lib}, give an
+error. Package files and folders are installed with
+\code{utils::install.packages()}, so \code{pixi.toml} doesn't record them. Turn
+this off with \code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
+\item If the project was moved or copied, Pixi's activation cache, which has
+the old location, is removed, and environments that need reinstalling
+are named.
 }
 
 It never fails: problems are reported as messages.

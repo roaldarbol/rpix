@@ -1,9 +1,43 @@
+# says once that PIXI_WORKSPACE_ROOT points elsewhere
+
+    Code
+      invisible(find_manifest())
+    Message
+      ! `PIXI_WORKSPACE_ROOT` points to '<original>', so using the working directory's project, '<copy>'.
+      i If the project was copied or moved, check it with `pixi_sitrep()`.
+      This message is displayed once per session.
+
 # offers to install Pixi in an interactive session
 
     Code
       pixi <- pixi_binary()
     Message
       ! rpix needs Pixi, which isn't installed.
+
+# a long step says what it does, and shows the output if it fails
+
+    Code
+      run_pixi_step("install", step = "Building it", done = "Built it")
+    Message
+      ~ Building it...
+      v Built it [time]
+      
+
+---
+
+    Code
+      run_pixi_step("install", step = "Building it", done = "Built it")
+    Message
+      ~ Building it...
+      x Building it... [time]
+      
+    Output
+      a line of the build log
+      the build failed
+    Condition
+      Error:
+      ! `pixi install` failed with exit status 1.
+      i See Pixi's output above.
 
 # secrets are hidden in commands, output and errors
 

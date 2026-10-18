@@ -176,8 +176,18 @@ test_that("find_r_packages() looks on conda-forge, then bioconda", {
   expect_length(find_r_packages(character()), 0)
 })
 
-test_that("on_channel() asks pixi search", {
-  calls <- local_recorded_pixi()
+# Pixi's error when it finds no package
+pixi_not_found <- function(stderr = "No packages found matching 'r-nope'") {
+  stop(structure(
+    list(message = "not found", call = NULL, stderr = stderr),
+    class = c("rpix_error_pixi", "error", "condition")
+  ))
+}
+
+test_that("on_channel() asks pixi search for the exact name", {
+  calls <- local_recorded_pixi(
+    list(noarch = data.frame(name = "bioconductor-deseq2"))
+  )
   expect_true(on_channel("bioconductor-deseq2", "bioconda"))
   expect_equal(
     calls$args[[1]],
@@ -191,21 +201,27 @@ test_that("on_channel() asks pixi search", {
     )
   )
 
-  local_mocked_bindings(
-    run_pixi = function(...) {
-      stop(structure(
-        list(message = "not found", call = NULL),
-        class = c("rpix_error_pixi", "error", "condition")
-      ))
-    }
-  )
+  # Pixi falls back to names that contain the name
+  local_recorded_pixi(list(noarch = data.frame(name = "r-fauxpas")))
+  expect_false(on_channel("r-faux", "conda-forge"))
+
+  # With a version
+  local_recorded_pixi(list(`osx-64` = data.frame(name = "r-cli")))
+  expect_true(on_channel("r-cli==3.6.1", "conda-forge"))
+
+  local_mocked_bindings(run_pixi = function(...) pixi_not_found())
+  expect_false(on_channel("r-nope", "conda-forge"))
+  local_mocked_bindings(run_pixi = function(...) pixi_not_found("offline"))
   expect_false(on_channel("r-nope", "conda-forge"))
 })
 
 test_that("on_channel() finds packages with Pixi", {
   skip_if_no_pixi()
   expect_true(on_channel("r-cli", "conda-forge"))
+  expect_true(on_channel("r-cli==3.6.1", "conda-forge"))
   expect_false(on_channel("r-surely-not-a-package-xyz", "conda-forge"))
+  # Pixi finds r-fauxpas for it
+  expect_false(on_channel("r-faux", "conda-forge"))
 })
 
 test_that("project_dependencies() reads the default environment's packages", {

@@ -21,6 +21,12 @@
 * `use_pixi()` turns on Pixi's activation cache for the project, so R started
   through Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
   second rather than a few. `activation_cache = FALSE` leaves it off (#195).
+* `options(rpix.verbose = TRUE)` shows the output and build logs of Pixi
+  that rpix keeps back, as they come (#222).
+* When R starts in a Pixi environment without rpix, e.g. a collaborator's or
+  another environment of the project, the project's `.Rprofile` says so, with
+  the command that installs it. `use_pixi()` updates the `.Rprofile` of a
+  project set up earlier (#216).
 
 ## Changed
 
@@ -43,12 +49,37 @@
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
+* `use_pixi()` and the IDE setups only add the packages the project doesn't
+  have yet, rather than having Pixi say of each of the others that it's
+  there, and `use_pixi(ide = )` sets direnv up once for several editors, so
+  running them again, or for several IDEs, says each thing once (#222).
+* `pixi_add()`, and `install.packages()` in a Pixi environment, show Pixi's
+  output once the packages are added. When Pixi can't add them but rpix can,
+  e.g. from bioconda or by building from source, Pixi's error isn't shown;
+  when rpix can't, all of Pixi's output is (#222).
+* A package from GitHub shows a line while it builds, rather than the
+  build's log, which is shown if the build fails (#222).
+* `use_pixi()` installs rpix into the environment quietly, and only if the
+  environment doesn't have this version or a newer one (#222).
 
 ## Fixed
 
 * When a package isn't on conda-forge for one of the project's platforms,
   `pixi_add()` says so, and for which, rather than that it couldn't be found
   (#215).
+* `pixi_import_renv()` adds only the packages the project uses from lock
+  files written by renv 1.1 or later too, which record what each package
+  needs differently; it added every package in them (#206).
+* In a Pixi environment, `install.packages()` accepts `repos`, and adds the
+  packages with Pixi as usual. Package files and folders (`repos = NULL`) go
+  to `utils::install.packages()`, which `pixi.toml` doesn't record. VS Code's
+  R extension can now install its sess package (#209).
+* `use_pixi()` sets up the folder it's given, or the working directory, rather
+  than a Pixi project in a parent folder. It says when a parent folder is a
+  Pixi project, and in an interactive session asks whether to set that one up
+  instead (#214).
+* In a package, `pixi_sitrep()` no longer says the package itself was
+  installed without Pixi, e.g. after `devtools::install()` (#220).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
@@ -57,6 +88,56 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* When the IDE is set up for the project but runs another R, `pixi_sitrep()`
+  says how to start the project's R in it, e.g. `pixi run rstudio` for
+  RStudio, rather than that the IDE is set up. It no longer lists R's base
+  packages as loaded from outside the project, and knows Emacs, Neovim and
+  Zed when it's in none of the IDEs (#219).
+* In a copy of a project, rpix's functions such as `pixi_add()` no longer
+  change the original project. When the running Pixi environment says it's
+  from another project than the working directory's, as Pixi's activation
+  cache can after a copy or move, rpix uses the working directory's project,
+  and says so (#218).
+* A moved or copied project no longer runs the R of its old location. Pixi's
+  activation cache, which `use_pixi()` turns on, keeps the old paths, so rpix
+  removes it when it has another location, before Pixi uses it, and says the
+  project was moved or copied. `pixi_activate()` and `pixi_sitrep()` also
+  name environments that were installed in the old location, which can't be
+  moved, and say how to reinstall them (#217).
+* When conda-forge has a new R but no R packages for it yet, as with R 4.6:
+  `use_pixi(install_rpix = FALSE)` picks the newest R it has packages for,
+  rather than one no package can be added to; `use_pixi(r_version = )` with
+  that R says so, and which R is the newest you can use; and
+  `pixi_import_renv()` with a lock file from that R uses the newest R the
+  packages are built for, and says so (#207).
+* When a package isn't built for the project's R, `pixi_add()` names it,
+  also when it has a version constraint, and suggests a command that's valid
+  R and replaces the project's R rather than adding a second one. For an old
+  version pinned with `==` or `=`, which conda-forge won't build for a newer
+  R, it offers a newer version, a build of that version from source, or the
+  older R for the whole project (#208).
+* `pixi_add()` and `install.packages()` only offer to build a package from
+  CRAN's source when it's on CRAN. A mistyped name, such as `"dplyrr"`, says
+  it's on neither conda-forge nor CRAN, and suggests close names: "Did you
+  mean dplyr?" (#212).
+* A package from GitHub that rpix can't read says why: there's no public
+  repository by that name, it has no such branch, tag or commit, or GitHub
+  couldn't be reached, rather than always that it needs a `DESCRIPTION`
+  (#213).
+* `pixi_remove()` and `pixi_search()` take a Bioconductor package's name
+  without `bioc::`, as `pixi_add()` does: `pixi_remove("limma")` removes
+  bioconductor-limma when that's what `pixi.toml` has, and
+  `pixi_search("limma")` looks on bioconda when it isn't on conda-forge
+  (#211).
+* rpix only counts a package as on conda-forge or bioconda when one has its
+  exact name, as Pixi's search also finds names that contain it. So
+  `pixi_add()` offers to build a CRAN package such as faux from source, rather
+  than failing because Pixi found r-fauxpas, and `pixi_search("faux")` no
+  longer shows r-fauxpas (#205).
+* In a project with packages as of a date before 2026-10-15, `pixi_add()`
+  and `pixi_import_renv()` no longer offer to build CRAN packages that
+  aren't on conda-forge from source, which then failed: they say that the
+  date hides Pixi's build backend instead (#221).
 
 # rpix 0.8.0 (2026-10-13)
 

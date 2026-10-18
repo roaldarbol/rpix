@@ -23,6 +23,7 @@ local_renv_project <- function(
       found <- c(
         cli = "cran::cli",
         dplyr = "cran::dplyr",
+        ggplot2 = "cran::ggplot2",
         Matrix = "cran::Matrix",
         DESeq2 = "bioc::DESeq2",
         notonconda = NA,
@@ -77,6 +78,21 @@ test_that("pixi_import_renv() adds the packages the project uses, and turns renv
   )
 })
 
+test_that("pixi_import_renv() finds what packages need in renv 1.1+ lock files", {
+  # Written by renv 1.2.4 for a script using dplyr and ggplot2, which need
+  # the rest. Depends, Imports and LinkingTo count, and Suggests don't.
+  calls <- local_renv_project()
+
+  suppressMessages(pixi_import_renv(
+    test_path("fixtures", "renv-1.2.lock"),
+    deactivate = FALSE
+  ))
+  expect_equal(
+    calls$add,
+    list(c("r-base>=4.6", "cran::dplyr>=1.2.1", "cran::ggplot2>=4.0.3"))
+  )
+})
+
 test_that("pixi_import_renv() can add every package, at exact versions", {
   calls <- local_renv_project()
 
@@ -120,6 +136,69 @@ test_that("pixi_import_renv() says how to build them if the answer is no", {
   expect_false(any(grepl("github::cran", calls$add[[1]])))
   expect_equal(result$from_source, c("mypkg", "ghdep"))
   expect_equal(result$missing, c("unipkg", "biocmissing", "notonconda"))
+})
+
+test_that("pixi_import_renv() uses the newest R with packages, if the lock file's has none", {
+  calls <- local_renv_project()
+  lockfile <- file.path(calls$dir, "renv.lock")
+  writeLines(
+    sub('"4.4.2"', '"4.6.1"', readLines(lockfile), fixed = TRUE),
+    lockfile
+  )
+  # Pixi's error for R 4.6 when conda-forge had no R packages for it
+  stderr <- paste(
+    readLines(
+      test_path("fixtures", "pixi-r-version-new-r.txt"),
+      encoding = "UTF-8"
+    ),
+    collapse = "\n"
+  )
+  pixi <- structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(message = "pixi failed", call = NULL, stderr = stderr)
+  )
+  local_mocked_bindings(
+    pixi_add = function(packages, path, dry_run) {
+      calls$add <- c(calls$add, list(packages))
+      if (packages[1] != "r-base") {
+        cli::cli_abort(
+          "Not built",
+          class = "rpix_error_r_version",
+          parent = pixi
+        )
+      }
+    }
+  )
+
+  expect_snapshot(result <- pixi_import_renv(deactivate = FALSE))
+  expect_equal(calls$add[[1]][1], "r-base>=4.6")
+  expect_equal(calls$add[[2]], c("r-base", calls$add[[1]][-1]))
+  expect_equal(result$packages, calls$add[[2]])
+
+  # An R that has packages stays, and so does the error
+  writeLines(
+    sub('"4.6.1"', '"4.4.2"', readLines(lockfile), fixed = TRUE),
+    lockfile
+  )
+  calls$add <- list()
+  expect_error(
+    suppressMessages(pixi_import_renv(deactivate = FALSE)),
+    class = "rpix_error_r_version"
+  )
+  expect_length(calls$add, 1)
+})
+
+test_that("pixi_import_renv() explains why it can't build them in a project with a date", {
+  calls <- local_renv_project(answer = TRUE)
+  writeLines(
+    c("[workspace]", 'exclude-newer = "2025-06-01"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+
+  expect_snapshot(result <- pixi_import_renv(deactivate = FALSE))
+  expect_length(calls$asked, 0)
+  expect_false(any(grepl("github::cran", calls$add[[1]])))
+  expect_true("notonconda" %in% result$missing)
 })
 
 test_that("pixi_import_renv() can leave versions, R and renv alone", {
