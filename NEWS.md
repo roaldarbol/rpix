@@ -40,6 +40,10 @@
 
 ## Fixed
 
+* `use_pixi()` sets up the folder it's given, or the working directory, rather
+  than a Pixi project in a parent folder. It says when a parent folder is a
+  Pixi project, and in an interactive session asks whether to set that one up
+  instead (#214).
 * In a package, `pixi_sitrep()` no longer says the package itself was
   installed without Pixi, e.g. after `devtools::install()` (#220).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and

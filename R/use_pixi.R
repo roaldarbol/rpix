@@ -1,8 +1,12 @@
 #' Set up a Pixi project for R
 #'
 #' @description
-#' Create a Pixi project in the working directory if there isn't one, add R to
-#' it, and install rpix into its environment.
+#' Create a Pixi project in the working directory, or `path`, if there isn't
+#' one there, add R to it, and install rpix into its environment.
+#'
+#' It sets up that folder even inside another Pixi project. If a parent folder
+#' is a Pixi project, it says so, and in an interactive session asks whether to
+#' set that one up instead.
 #'
 #' It also adds conda-forge's `conda-ecosystem-user-package-isolation`, which
 #' keeps your personal R library out of the environment's R. Otherwise
@@ -92,7 +96,7 @@ use_pixi <- function(
   pixi_binary()
   dir <- normalizePath(path %||% getwd(), winslash = "/", mustWork = FALSE)
 
-  manifest <- find_manifest(dir)
+  manifest <- manifest_in(dir) %||% parent_project(dir)
   if (is.null(manifest)) {
     if (!init_if_missing) {
       cli::cli_abort(c(
@@ -101,7 +105,7 @@ use_pixi <- function(
       ))
     }
     run_pixi(c("init", dir), project = "none", echo = TRUE)
-    manifest <- find_manifest(dir)
+    manifest <- manifest_in(dir)
   }
   path <- dirname(manifest)
   build_ignore(path, pixi_files(path))
@@ -160,6 +164,30 @@ use_pixi <- function(
     )
   }
   invisible(manifest)
+}
+
+# The manifest of a Pixi project in a parent folder of `dir`, if the user
+# would rather set that one up. use_pixi() sets up `dir` otherwise.
+parent_project <- function(dir) {
+  manifest <- find_manifest(dirname(dir))
+  if (is.null(manifest)) {
+    return(NULL)
+  }
+  root <- dirname(manifest)
+  if (is_interactive()) {
+    question <- cli::format_inline(
+      "{.path {root}} is a Pixi project. Set that one up, rather than {.path {dir}}?"
+    )
+    if (isTRUE(ask_yes_no(question))) {
+      return(manifest)
+    }
+  } else {
+    command <- paste0("use_pixi(path = ", deparse(root), ")")
+    cli::cli_alert_info(
+      "{.path {root}} is a Pixi project too. To set that one up instead, run {.code {command}}."
+    )
+  }
+  NULL
 }
 
 # rpix's own dependencies, as conda packages. Reads rpix's DESCRIPTION through
