@@ -84,6 +84,16 @@ direnv_binary <- function() {
   Sys.which("direnv")
 }
 
+# Whether the project's .envrc activates the environment as rpix writes it
+envrc_activates <- function(root, environment) {
+  file <- file.path(root, ".envrc")
+  if (!file.exists(file)) {
+    return(FALSE)
+  }
+  lines <- readLines(file, warn = FALSE)
+  identical(set_envrc_environment(lines, environment), lines)
+}
+
 # Whether the project's .envrc activates a Pixi environment
 direnv_set_up <- function(root) {
   file <- file.path(root, ".envrc")

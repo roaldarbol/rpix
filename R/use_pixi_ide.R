@@ -139,11 +139,7 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
   console <- match.arg(console, consoles)
   # sess and jgd, which the R extension also uses, aren't on conda-forge yet
   # (#56)
-  run_pixi(
-    c("add", "r-languageserver", if (console != "R") console),
-    path = root,
-    echo = TRUE
-  )
+  add_missing(c("r-languageserver", if (console != "R") console), root)
 
   file <- update_vscode_settings(root, vscode_settings("default", console))
   if (is_windows()) {
@@ -240,7 +236,7 @@ use_pixi_zed <- function(path = NULL) {
 # sets to the environment's
 use_pixi_editor <- function(path, editor, call = parent.frame()) {
   root <- require_project(path, call = call)
-  run_pixi(c("add", "r-languageserver"), path = root, echo = TRUE)
+  add_missing("r-languageserver", root)
   name <- ide_name(editor)
   if (is_windows()) {
     command <- editor_command(editor)
@@ -249,7 +245,11 @@ use_pixi_editor <- function(path, editor, call = parent.frame()) {
     )
     return(invisible(file.path(root, "pixi.toml")))
   }
-  file <- use_pixi_direnv(root)
+  # Once is enough, e.g. when use_pixi() sets up several editors
+  file <- file.path(root, ".envrc")
+  if (!envrc_activates(root, "default")) {
+    use_pixi_direnv(root)
+  }
   cli::cli_alert_info(switch(
     editor,
     emacs = "In Emacs, install the {.pkg envrc} package and turn on {.code (envrc-global-mode)}. ESS and languageserver then use the project's R.",
@@ -257,6 +257,15 @@ use_pixi_editor <- function(path, editor, call = parent.frame()) {
     zed = "Zed loads direnv itself. With its R extension, languageserver uses the project's R, and so does R in Zed's terminal."
   ))
   invisible(file)
+}
+
+# Add the packages the project doesn't have yet. Pixi would say of the others
+# that they're there, e.g. when several IDEs are set up.
+add_missing <- function(packages, root) {
+  packages <- packages[!has_dependency(packages, root)]
+  if (length(packages) > 0) {
+    run_pixi(c("add", packages), path = root, echo = TRUE)
+  }
 }
 
 # The command that starts an editor in the project

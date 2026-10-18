@@ -73,7 +73,8 @@ a project for Windows, MSYS2's \code{make}, \code{sed} and \code{coreutils}, and
 compilers in place of \code{pixi-build-r}'s. See
 \url{https://pixi.prefix.dev/latest/build/backends/pixi-build-r/}.
 This may change, e.g. to use \verb{pixi add} once it can set a build backend;
-see \url{https://github.com/roaldarbol/rpix/issues/96}.
+see \url{https://github.com/roaldarbol/rpix/issues/96}. While Pixi builds,
+rpix shows a line rather than the build's log, unless the build fails.
 }
 
 In a project with several environments, Pixi doesn't install after adding
@@ -83,6 +84,11 @@ runs in (or else the default one), when the change applies to it.
 When it adds R (\code{r-base}) to the default feature, it also adds
 \code{conda-ecosystem-user-package-isolation}, unless it's there, to keep your
 personal R library out of the environment's R, as \code{\link[=use_pixi]{use_pixi()}} does.
+
+Pixi's output is shown once it has added the packages, or if it fails in a
+way rpix can't handle, but not when rpix can, e.g. by looking on bioconda.
+To see Pixi's output and build logs as Pixi runs, set
+\code{options(rpix.verbose = TRUE)}.
 
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/add/}.
 }
