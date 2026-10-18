@@ -21,6 +21,8 @@
 * `use_pixi()` turns on Pixi's activation cache for the project, so R started
   through Pixi, e.g. by `pixi run R` or Positron, starts in a fraction of a
   second rather than a few. `activation_cache = FALSE` leaves it off (#195).
+* `options(rpix.verbose = TRUE)` shows the output and build logs of Pixi
+  that rpix keeps back, as they come (#222).
 * When R starts in a Pixi environment without rpix, e.g. a collaborator's or
   another environment of the project, the project's `.Rprofile` says so, with
   the command that installs it. `use_pixi()` updates the `.Rprofile` of a
@@ -41,6 +43,14 @@
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
+* `pixi_add()`, and `install.packages()` in a Pixi environment, show Pixi's
+  output once the packages are added. When Pixi can't add them but rpix can,
+  e.g. from bioconda or by building from source, Pixi's error isn't shown;
+  when rpix can't, all of Pixi's output is (#222).
+* A package from GitHub shows a line while it builds, rather than the
+  build's log, which is shown if the build fails (#222).
+* `use_pixi()` installs rpix into the environment quietly, and only if the
+  environment doesn't have this version or a newer one (#222).
 
 ## Fixed
 

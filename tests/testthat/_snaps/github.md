@@ -83,8 +83,10 @@
     Code
       pixi_add(c("dplyr", "github::hadley/emo"), path = calls$dir)
     Message
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+      ~ Building hadley/emo with `pixi-build-r`, which can take a minute...
+      v Built hadley/emo from source [time]
+      
 
 # pixi_add() adds what builds on Windows need, in projects for Windows
 
@@ -92,8 +94,10 @@
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
       i On Windows, rpix adds MSYS2's build tools, and MinGW's compilers in place of `pixi-build-r`'s, until `pixi-build-r` does this itself.
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+      ~ Building hadley/emo with `pixi-build-r`, which can take a minute...
+      v Built hadley/emo from source [time]
+      
 
 # pixi_add() says what it adds to a GitHub package's build
 
@@ -101,8 +105,10 @@
       pixi_add("github::me/javan", path = calls$dir)
     Message
       i Adding openjdk to the build of r-javan, as `pixi-build-r` doesn't yet.
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+      ~ Building me/javan with `pixi-build-r`, which can take a minute...
+      v Built me/javan from source [time]
+      
 
 # pixi_add() refuses a GitHub package when the project's date hides pixi-build-r 0.2
 
@@ -118,29 +124,39 @@
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+      ~ Building hadley/emo with `pixi-build-r`, which can take a minute...
+      x Building hadley/emo with `pixi-build-r`, which can take a minute... [time]
+      
+    Output
+      build failed
     Condition
       Error in `pixi_add()`:
       ! Pixi couldn't build github::hadley/emo, so 'pixi.toml' is as it was.
       i See Pixi's output above.
       i The project's `exclude-newer = "7d"` applies to Pixi's build backend too, and may hide `pixi-build-r` 0.2.0, from 2026-10-14. See `?rpix::pixi_set_date()`.
-      Caused by error in `run_pixi()`:
-      ! build failed
+      Caused by error:
+      ! `pixi install` failed with exit status 1.
+      i See Pixi's output above.
 
 # pixi_add() puts pixi.toml back if Pixi can't build the package
 
     Code
       pixi_add("github::hadley/emo", path = calls$dir)
     Message
-      i Pixi builds it from source with `pixi-build-r`, which can take a minute.
       i Packages from GitHub are experimental: see <https://github.com/roaldarbol/rpix/issues/96>.
+      ~ Building hadley/emo with `pixi-build-r`, which can take a minute...
+      x Building hadley/emo with `pixi-build-r`, which can take a minute... [time]
+      
+    Output
+      build failed
     Condition
       Error in `pixi_add()`:
       ! Pixi couldn't build github::hadley/emo, so 'pixi.toml' is as it was.
       i See Pixi's output above.
-      Caused by error in `run_pixi()`:
-      ! build failed
+      Caused by error:
+      ! `pixi install` failed with exit status 1.
+      i See Pixi's output above.
 
 # pixi_add() shows what it would add to pixi.toml
 

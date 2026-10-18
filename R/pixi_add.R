@@ -32,7 +32,8 @@
 #'   compilers in place of `pixi-build-r`'s. See
 #'   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>.
 #'   This may change, e.g. to use `pixi add` once it can set a build backend;
-#'   see <https://github.com/roaldarbol/rpix/issues/96>.
+#'   see <https://github.com/roaldarbol/rpix/issues/96>. While Pixi builds,
+#'   rpix shows a line rather than the build's log, unless the build fails.
 #'
 #' In a project with several environments, Pixi doesn't install after adding
 #' or removing, so `pixi_add()` and [pixi_remove()] install the environment R
@@ -41,6 +42,11 @@
 #' When it adds R (`r-base`) to the default feature, it also adds
 #' `conda-ecosystem-user-package-isolation`, unless it's there, to keep your
 #' personal R library out of the environment's R, as [use_pixi()] does.
+#'
+#' Pixi's output is shown once it has added the packages, or if it fails in a
+#' way rpix can't handle, but not when rpix can, e.g. by looking on bioconda.
+#' To see Pixi's output and build logs as Pixi runs, set
+#' `options(rpix.verbose = TRUE)`.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
 #'
@@ -143,17 +149,26 @@ pixi_add <- function(
     }
   }
 
+  # Pixi's output is kept back until rpix knows whether it can handle a
+  # failure, such as a package that's on bioconda rather than conda-forge
   result <- tryCatch(
     run_pixi(
       c("add", package_specs(parsed), scope_args(feature, platform)),
       path = path,
-      echo = TRUE,
+      echo = rpix_verbose(),
+      announce = TRUE,
       dry_run = dry_run
     ),
     rpix_error_pixi = function(e) {
       unbuilt <- not_built_for_r(e$stderr)
       if (!is.null(unbuilt)) {
-        abort_not_built(unbuilt, requested, github, parent = e, call = caller)
+        abort_not_built(
+          unbuilt,
+          requested,
+          github,
+          parent = reveal_pixi_failure(e),
+          call = caller
+        )
       }
       if (grepl("No candidates were found", e$stderr, fixed = TRUE)) {
         missing <- if (is.null(channel) || identical(channel, "bioconda")) {
@@ -193,10 +208,10 @@ pixi_add <- function(
             "i" = "Use {.code bioc::} for Bioconductor packages, and {.code conda::} for conda packages that aren't R packages."
           ),
           class = "rpix_error_package_not_found",
-          parent = e
+          parent = reveal_pixi_failure(e)
         )
       }
-      stop(e)
+      stop(reveal_pixi_failure(e))
     }
   )
 
@@ -207,6 +222,9 @@ pixi_add <- function(
       platform = platform,
       path = path
     ))
+  }
+  if (!isTRUE(dry_run) && !rpix_verbose()) {
+    show_pixi_output(result)
   }
   if (length(github) > 0) {
     add_github_packages(

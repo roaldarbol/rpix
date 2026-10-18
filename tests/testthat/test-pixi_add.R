@@ -245,10 +245,7 @@ local_mock_pixi <- function(
 }
 
 pixi_error <- function(stderr) {
-  structure(
-    class = c("rpix_error_pixi", "error", "condition"),
-    list(message = "pixi failed", call = NULL, stderr = stderr)
-  )
+  pixi_failure(stderr)
 }
 
 test_that("pixi_add() only adds channels that aren't in the project yet", {
@@ -267,14 +264,44 @@ test_that("pixi_add() only adds channels that aren't in the project yet", {
 })
 
 test_that("pixi_add() hints at prefixes when a package isn't found", {
-  local_mock_pixi(error = pixi_error("No candidates were found for r-gdal *."))
-  expect_error(pixi_add("gdal"), class = "rpix_error_package_not_found")
+  local_mock_pixi(
+    error = pixi_failure("No candidates were found for r-gdal *.")
+  )
+  # Not one rpix knows where to find
+  local_mocked_bindings(on_channel = function(...) TRUE)
+  expect_output(
+    expect_error(pixi_add("gdal"), class = "rpix_error_package_not_found"),
+    "No candidates"
+  )
 })
 
-test_that("pixi_add() passes on other pixi errors", {
-  local_mock_pixi(error = pixi_error("Some other failure"))
-  err <- expect_error(pixi_add("dplyr"), class = "rpix_error_pixi")
+test_that("pixi_add() passes on other pixi errors, with Pixi's output", {
+  local_mock_pixi(error = pixi_failure("Some other failure"))
+  expect_output(
+    err <- expect_error(pixi_add("dplyr"), class = "rpix_error_pixi"),
+    "Some other failure"
+  )
   expect_false(inherits(err, "rpix_error_package_not_found"))
+  expect_match(conditionMessage(err), "output above")
+})
+
+test_that("pixi_add() shows Pixi's output once it has added the packages", {
+  calls <- list()
+  local_mocked_bindings(
+    run_pixi = function(args, echo = FALSE, announce = echo, ...) {
+      calls <<- c(calls, list(list(echo = echo, announce = announce)))
+      invisible(list(status = 0, output = "Added r-dplyr\n"))
+    },
+    project_channels = function(...) "conda-forge",
+    install_changed_environment = function(...) NULL
+  )
+  expect_output(pixi_add("dplyr"), "Added r-dplyr")
+  expect_equal(calls[[1]], list(echo = FALSE, announce = TRUE))
+
+  # Or as it runs
+  withr::local_options(rpix.verbose = TRUE)
+  expect_silent(pixi_add("dplyr"))
+  expect_equal(calls[[2]], list(echo = TRUE, announce = TRUE))
 })
 
 test_that("pixi_add(), pixi_remove() and pixi_search() target the project in `path`", {
@@ -306,13 +333,21 @@ read_fixture <- function(name) {
 
 test_that("pixi_add() explains packages that aren't built for the project's R", {
   local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-error.txt")))
-  expect_snapshot(pixi_add(c("languageserver", "praise")), error = TRUE)
-  expect_error(pixi_add("praise"), class = "rpix_error_r_version")
+  # Pixi's output, which comes first, is in the fixture
+  expect_snapshot(
+    invisible(capture.output(pixi_add(c("languageserver", "praise")))),
+    error = TRUE
+  )
+  expect_output(
+    expect_error(pixi_add("praise"), class = "rpix_error_r_version")
+  )
   # A package Pixi names that wasn't asked for, e.g. a dependency
-  expect_error(
-    pixi_add("languageserver"),
-    "r-praise isn't built",
-    class = "rpix_error_r_version"
+  expect_output(
+    expect_error(
+      pixi_add("languageserver"),
+      "r-praise isn't built",
+      class = "rpix_error_r_version"
+    )
   )
 })
 
@@ -336,8 +371,10 @@ test_that("pixi_add() suggests R in place of the project's, as valid R", {
     "viridisLite>=0.4.3",
     "github::me/mypkg@main"
   )
-  err <- expect_error(pixi_add(packages), class = "rpix_error_r_version")
-  expect_snapshot(pixi_add(packages), error = TRUE)
+  expect_output(
+    err <- expect_error(pixi_add(packages), class = "rpix_error_r_version")
+  )
+  expect_snapshot(invisible(capture.output(pixi_add(packages))), error = TRUE)
   command <- regmatches(
     conditionMessage(err),
     regexpr("pixi_add\\(c\\(.*\\)\\)", conditionMessage(err))
@@ -360,9 +397,15 @@ test_that("pixi_add() suggests R in place of the project's, as valid R", {
 test_that("pixi_add() explains that an old version isn't built for a newer R", {
   # Pixi's error for r-ggplot2==3.4.4 in a project with R 4.5
   local_mock_pixi(error = pixi_error(read_fixture("pixi-r-version-pinned.txt")))
-  expect_snapshot(pixi_add(c("dplyr", "ggplot2==3.4.4")), error = TRUE)
+  expect_snapshot(
+    invisible(capture.output(pixi_add(c("dplyr", "ggplot2==3.4.4")))),
+    error = TRUE
+  )
   # A version series isn't a tag to build from source
-  expect_snapshot(pixi_add("ggplot2", versions = "3.4.4"), error = TRUE)
+  expect_snapshot(
+    invisible(capture.output(pixi_add("ggplot2", versions = "3.4.4"))),
+    error = TRUE
+  )
 })
 
 test_that("pixi_add() only offers a build from source for CRAN packages", {
@@ -376,7 +419,10 @@ test_that("pixi_add() only offers a build from source for CRAN packages", {
     channels = c("conda-forge", "bioconda"),
     error = pixi_error(pinned)
   )
-  expect_snapshot(pixi_add("bioc::limma==3.4.4"), error = TRUE)
+  expect_snapshot(
+    invisible(capture.output(pixi_add("bioc::limma==3.4.4"))),
+    error = TRUE
+  )
 })
 
 test_that("not_built_for_r() reads Pixi's error", {
@@ -419,7 +465,7 @@ local_not_on_conda_forge <- function(
               sub("^.*::", "", sub("[=<>].*$", "", args))
           )
       ) {
-        stop(pixi_error("No candidates were found for r-something *."))
+        stop(pixi_failure("No candidates were found for r-something *."))
       }
       invisible(list(status = 0))
     },
@@ -509,10 +555,13 @@ test_that("pixi_add() explains, rather than offers, a build from source in a pro
 
 test_that("pixi_add() doesn't offer it for packages that aren't from CRAN", {
   local_not_on_conda_forge("gdal-nope")
-  expect_error(
-    pixi_add("conda::gdal-nope"),
-    "couldn't be found",
-    class = "rpix_error_package_not_found"
+  expect_output(
+    expect_error(
+      pixi_add("conda::gdal-nope"),
+      "couldn't be found",
+      class = "rpix_error_package_not_found"
+    ),
+    "No candidates were found"
   )
 })
 
