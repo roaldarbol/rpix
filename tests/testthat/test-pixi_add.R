@@ -327,6 +327,20 @@ test_that("pixi_add() says how to build them when it can't ask, or the answer is
   expect_null(calls$github)
 })
 
+test_that("pixi_add() explains, rather than offers, a build from source in a project with a date", {
+  calls <- local_not_on_conda_forge("fortunes", answer = TRUE)
+  root <- local_pixi_project(
+    content = c("[workspace]", 'exclude-newer = "2025-06-01"')
+  )
+
+  expect_snapshot(
+    pixi_add(c("praise", "fortunes"), path = root),
+    error = TRUE
+  )
+  expect_length(calls$asked, 0)
+  expect_null(calls$github)
+})
+
 test_that("pixi_add() doesn't offer it for packages that aren't from CRAN", {
   local_not_on_conda_forge("gdal-nope")
   expect_error(

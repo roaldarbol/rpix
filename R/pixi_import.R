@@ -295,7 +295,12 @@ pixi_import_renv <- function(
       character(1)
     )
     parsed <- parse_packages(paste0("cran::", cran, constraints))
-    built <- offer_cran_source(parsed, seq_along(cran), abort = FALSE)
+    built <- offer_cran_source(
+      parsed,
+      seq_along(cran),
+      abort = FALSE,
+      path = root
+    )
     if (is.null(built)) {
       declined <- cran
       cran <- character()
