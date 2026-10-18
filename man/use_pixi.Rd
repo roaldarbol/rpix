@@ -12,13 +12,14 @@ use_pixi(
   date = NULL,
   path = NULL,
   activation_cache = TRUE,
+  platforms = NULL,
   ...
 )
 }
 \arguments{
 \item{r_version}{Optional. The R version to add, such as \code{"4.5"}. Defaults
-to the newest one that the packages \code{use_pixi()} adds are built for on
-conda-forge.}
+to the newest one that conda-forge has R packages for; it has a new R
+before its packages are built for it.}
 
 \item{ide}{Optional. IDEs to set the project up for: any of \code{"rstudio"},
 \code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"}. See
@@ -26,9 +27,9 @@ conda-forge.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
-\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment.
-Its dependencies come from conda-forge, and rpix itself from R-universe
-until it's on conda-forge.}
+\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment,
+unless it has this version or a newer one. Its dependencies come from
+conda-forge, and rpix itself from R-universe until it's on conda-forge.}
 
 \item{date}{Optional. Use packages as they were on this date, such as
 \code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is
@@ -40,6 +41,11 @@ added, so R and the packages are all as of that date. See
 \item{activation_cache}{If \code{TRUE}, turn on Pixi's activation cache for the
 project.}
 
+\item{platforms}{The platforms a new project supports, besides this
+computer's. Defaults to \code{"linux-64"}, \code{"osx-64"}, \code{"osx-arm64"} and
+\code{"win-64"}. To add platforms to an existing project, use
+\code{\link[=pixi_add_platform]{pixi_add_platform()}}.}
+
 \item{...}{Passed on to the IDE setup, e.g. \code{console = "arf"} for
 \code{\link[=use_pixi_vscode]{use_pixi_vscode()}}, or \code{default_r = FALSE} for \code{\link[=use_pixi_positron]{use_pixi_positron()}}.}
 }
@@ -47,8 +53,12 @@ project.}
 The path to the project's manifest, invisibly.
 }
 \description{
-Create a Pixi project in the working directory if there isn't one, add R to
-it, and install rpix into its environment.
+Create a Pixi project in the working directory, or \code{path}, if there isn't
+one there, add R to it, and install rpix into its environment.
+
+It sets up that folder even inside another Pixi project. If a parent folder
+is a Pixi project, it says so, and in an interactive session asks whether to
+set that one up instead.
 
 It also adds conda-forge's \code{conda-ecosystem-user-package-isolation}, which
 keeps your personal R library out of the environment's R. Otherwise
@@ -65,6 +75,12 @@ It also adds a block to the project's \code{.Rprofile} that calls
 R directly. Projects set up with rpix 0.3.0 or earlier have a "Pixi R
 library setup" block in their \code{.Rprofile} instead, which pointed a running
 R at the Pixi library. It's removed.
+
+A new project supports Linux, macOS (Intel and Apple Silicon) and Windows,
+as well as this computer's platform, so collaborators on any of them can
+install it. \code{pixi.lock} then covers each of them, so a package can only be
+added if it's on conda-forge for all of them; for one that isn't, see
+\code{platform} in \code{\link[=pixi_add]{pixi_add()}}.
 
 In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
 \code{.Rbuildignore}, so they stay out of the package's builds.

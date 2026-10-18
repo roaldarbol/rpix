@@ -31,22 +31,49 @@ install_with_pixi <- function(pkgs, ..., root) {
   if (isFALSE(getOption("rpix.install_packages"))) {
     return(utils_install_packages(pkgs, ...))
   }
-  extra <- names(list(...))
-  extra <- setdiff(extra[nzchar(extra)], c("dependencies", "quiet", "Ncpus"))
-  files <- grepl("[/\\\\]|\\.(tar\\.gz|tgz|zip)$", pkgs)
-  if (length(extra) > 0 || any(files)) {
-    unusable <- c(
-      if (length(extra) > 0) paste0("`", extra, "`"),
-      if (any(files)) "package files"
+  args <- list(...)
+  # Package files and folders, which utils installs with repos = NULL, or
+  # infers it for archives
+  local <- ("repos" %in% names(args) && is.null(args$repos)) ||
+    any(grepl("[/\\\\]|\\.(tar\\.gz|tgz|zip)$", pkgs))
+  if (local) {
+    cli::cli_alert_info(
+      "Installing {.file {pkgs}} with {.fn utils::install.packages}, as Pixi can't add package files. {.file pixi.toml} doesn't record {?it/them}."
     )
+    return(utils_install_packages(pkgs, ...))
+  }
+  extra <- names(args)
+  extra <- setdiff(
+    extra[nzchar(extra)],
+    c("dependencies", "quiet", "Ncpus", "repos")
+  )
+  if (length(extra) > 0) {
     cli::cli_abort(
       c(
-        "In a Pixi environment, {.fn install.packages} adds packages with Pixi, which can't use {unusable}.",
+        "In a Pixi environment, {.fn install.packages} adds packages with Pixi, which can't use {.arg {extra}}.",
         "i" = "Give package names, e.g. {.code install.packages(\"dplyr\")}.",
         "i" = "For a package that isn't on conda-forge, Pixi can build it from source: {.code pixi_add(\"github::user/repo\")}."
       ),
       call = NULL
     )
+  }
+  if ("repos" %in% names(args)) {
+    cli::cli_alert_info(
+      "Pixi takes packages from conda-forge and bioconda, not {.arg repos}."
+    )
+  }
+
+  # Pixi only says it's already a dependency, which doesn't update it
+  listed <- listed_packages(pkgs, root)
+  if (length(listed) > 0) {
+    update <- paste0("pixi_update(", deparse1(unname(listed)), ")")
+    cli::cli_alert_info(
+      "{.pkg {names(listed)}} {?is/are} already in {.file pixi.toml}. To update {?it/them}, run {.code {update}}."
+    )
+    pkgs <- setdiff(pkgs, names(listed))
+    if (length(pkgs) == 0) {
+      return(invisible())
+    }
   }
 
   found <- find_r_packages(pkgs)
@@ -64,6 +91,25 @@ install_with_pixi <- function(pkgs, ..., root) {
     path = root
   )
   invisible()
+}
+
+# The packages pixi.toml lists for the environment R runs in, as references
+# for pixi_update(), named by package
+listed_packages <- function(pkgs, root) {
+  dependencies <- tryCatch(environment_dependencies(root), error = function(e) {
+    NULL
+  })
+  environment <- pixi_r_location(r_home())$name %||% "default"
+  dependencies <- as.character(unlist(dependencies[[environment]]))
+  dependencies <- dependencies[grepl("^(r|bioconductor)-", dependencies)]
+  conda <- dependencies[match(tolower(pkgs), r_names(dependencies))]
+  listed <- !is.na(conda)
+  references <- ifelse(
+    startsWith(conda[listed], "bioconductor-"),
+    paste0("bioc::", pkgs[listed]),
+    pkgs[listed]
+  )
+  stats::setNames(references, pkgs[listed])
 }
 
 utils_install_packages <- function(...) {

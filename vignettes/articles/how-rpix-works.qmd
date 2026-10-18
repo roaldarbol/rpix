@@ -29,7 +29,7 @@ IDEs need to be pointed at the environment's R; see [Using rpix with an IDE](ide
 Positron and VS Code start the environment's R themselves, without Pixi, so the environment isn't activated. `use_pixi()` adds a few lines to the project's `.Rprofile` that make up for that. When R starts, they:
 
 1. Remove your personal library from `.libPaths()` (see below), before any package loads.
-2. Call `rpix::pixi_activate()`, which sets the environment variables Pixi would have set, and adds the project's own library.
+2. Call `rpix::pixi_activate()`, which sets the environment variables Pixi would have set, and adds the project's own library. If the environment's R doesn't have rpix, e.g. for a collaborator, they say so, with the command that installs it.
 
 In R that isn't from the project's environment, `pixi_activate()` changes nothing, and tells you how to start the right R instead.
 
