@@ -138,6 +138,69 @@ test_that("pixi_import_renv() says how to build them if the answer is no", {
   expect_equal(result$missing, c("unipkg", "biocmissing", "notonconda"))
 })
 
+test_that("pixi_import_renv() uses the newest R with packages, if the lock file's has none", {
+  calls <- local_renv_project()
+  lockfile <- file.path(calls$dir, "renv.lock")
+  writeLines(
+    sub('"4.4.2"', '"4.6.1"', readLines(lockfile), fixed = TRUE),
+    lockfile
+  )
+  # Pixi's error for R 4.6 when conda-forge had no R packages for it
+  stderr <- paste(
+    readLines(
+      test_path("fixtures", "pixi-r-version-new-r.txt"),
+      encoding = "UTF-8"
+    ),
+    collapse = "\n"
+  )
+  pixi <- structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(message = "pixi failed", call = NULL, stderr = stderr)
+  )
+  local_mocked_bindings(
+    pixi_add = function(packages, path, dry_run) {
+      calls$add <- c(calls$add, list(packages))
+      if (packages[1] != "r-base") {
+        cli::cli_abort(
+          "Not built",
+          class = "rpix_error_r_version",
+          parent = pixi
+        )
+      }
+    }
+  )
+
+  expect_snapshot(result <- pixi_import_renv(deactivate = FALSE))
+  expect_equal(calls$add[[1]][1], "r-base>=4.6")
+  expect_equal(calls$add[[2]], c("r-base", calls$add[[1]][-1]))
+  expect_equal(result$packages, calls$add[[2]])
+
+  # An R that has packages stays, and so does the error
+  writeLines(
+    sub('"4.6.1"', '"4.4.2"', readLines(lockfile), fixed = TRUE),
+    lockfile
+  )
+  calls$add <- list()
+  expect_error(
+    suppressMessages(pixi_import_renv(deactivate = FALSE)),
+    class = "rpix_error_r_version"
+  )
+  expect_length(calls$add, 1)
+})
+
+test_that("pixi_import_renv() explains why it can't build them in a project with a date", {
+  calls <- local_renv_project(answer = TRUE)
+  writeLines(
+    c("[workspace]", 'exclude-newer = "2025-06-01"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+
+  expect_snapshot(result <- pixi_import_renv(deactivate = FALSE))
+  expect_length(calls$asked, 0)
+  expect_false(any(grepl("github::cran", calls$add[[1]])))
+  expect_true("notonconda" %in% result$missing)
+})
+
 test_that("pixi_import_renv() can leave versions, R and renv alone", {
   calls <- local_renv_project(dependencies = "r-base")
 

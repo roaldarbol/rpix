@@ -271,6 +271,31 @@ test_that("sets the editors up with languageserver and direnv", {
   }
 })
 
+test_that("adds only what's missing, and sets direnv up once", {
+  p <- local_ide_project()
+  local_mocked_bindings(
+    is_windows = function() FALSE,
+    direnv_binary = function() ""
+  )
+  cat(
+    "[dependencies]",
+    'r-languageserver = ">=0.3"',
+    file = file.path(p$root, "pixi.toml"),
+    sep = "\n",
+    append = TRUE
+  )
+
+  suppressMessages(use_pixi_vscode(p$root, console = "arf"))
+  expect_equal(p$args, list(c("add", "arf")))
+
+  # As use_pixi(ide = c("emacs", "neovim")) does
+  expect_snapshot({
+    use_pixi_emacs(p$root)
+    use_pixi_neovim(p$root)
+  })
+  expect_length(p$args, 1)
+})
+
 test_that("tells Windows users to start the editor from the environment", {
   p <- local_ide_project()
   local_mocked_bindings(is_windows = function() TRUE)
