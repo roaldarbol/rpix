@@ -1,3 +1,20 @@
+# pixi_search() only shows an R package by its exact name
+
+    Code
+      pixi_search("faux")
+    Condition
+      Error in `pixi_search()`:
+      ! There's no package r-faux.
+      i Packages with similar names: r-fauxpas.
+
+---
+
+    Code
+      pixi_search("faux")
+    Condition
+      Error in `pixi_search()`:
+      ! There's no package r-faux.
+
 # pixi_add() explains packages that aren't built for the project's R
 
     Code

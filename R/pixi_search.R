@@ -5,7 +5,8 @@
 #'
 #' The package name is translated like in [pixi_add()]: `"dplyr"` searches for
 #' `r-dplyr`, `"bioc::DESeq2"` for `bioconductor-deseq2` on bioconda, and
-#' `"conda::gdal"` for `gdal`.
+#' `"conda::gdal"` for `gdal`. An R package's name has to match exactly, while
+#' Pixi also finds conda packages whose names contain the one searched for.
 #'
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/search/>.
 #'
@@ -41,6 +42,25 @@ pixi_search <- function(
   args <- c("search", parsed$name)
   if (length(channel) > 0) {
     args <- c(args, "--channel", channel)
+  }
+
+  # Pixi shows a package whose name contains the one searched for when there's
+  # none by that name, e.g. r-fauxpas for r-faux, but an R package's name is
+  # exact
+  if (!isTRUE(dry_run) && parsed$source != "conda") {
+    found <- search_names(args, project = "optional", path = path)
+    if (!parsed$name %in% found) {
+      similar <- utils::head(found, 5)
+      cli::cli_abort(
+        c(
+          "There's no package {.pkg {parsed$name}}.",
+          "i" = if (length(similar) > 0) {
+            "Packages with similar names: {.pkg {similar}}."
+          }
+        ),
+        class = "rpix_error_package_not_found"
+      )
+    }
   }
 
   run_pixi(
