@@ -75,8 +75,41 @@ test_that("install.packages() explains what Pixi can't do", {
       repos = "https://cran.r-project.org",
       root = "/p"
     )
-    install_with_pixi("~/dplyr_1.1.4.tar.gz", root = "/p")
   })
+})
+
+test_that("install.packages() takes packages from conda-forge, not `repos`", {
+  calls <- local_install(c(later = "cran::later", rstudioapi = "rstudioapi"))
+
+  # As VS Code's R extension installs sess's dependencies
+  expect_snapshot(install_with_pixi(
+    c("later", "rstudioapi"),
+    repos = "https://cran.r-project.org/",
+    root = "/p"
+  ))
+  expect_equal(calls$added, c("cran::later", "rstudioapi"))
+})
+
+test_that("install.packages() leaves package files to utils", {
+  calls <- local_install(c(dplyr = "cran::dplyr"))
+
+  # As VS Code's R extension installs sess
+  expect_snapshot(install_with_pixi(
+    "/ext/sess",
+    repos = NULL,
+    type = "source",
+    root = "/p"
+  ))
+  expect_equal(calls$utils, list("/ext/sess", repos = NULL, type = "source"))
+  expect_null(calls$added)
+
+  # A folder in the working directory, or an archive, for which utils infers
+  # `repos = NULL`
+  suppressMessages(install_with_pixi("sess", repos = NULL, root = "/p"))
+  expect_equal(calls$utils, list("sess", repos = NULL))
+  suppressMessages(install_with_pixi(c("a.tar.gz", "b.zip"), root = "/p"))
+  expect_equal(calls$utils, list(c("a.tar.gz", "b.zip")))
+  expect_null(calls$added)
 })
 
 test_that("install.packages() can be left to utils", {
