@@ -72,6 +72,11 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* When the IDE is set up for the project but runs another R, `pixi_sitrep()`
+  says how to start the project's R in it, e.g. `pixi run rstudio` for
+  RStudio, rather than that the IDE is set up. It no longer lists R's base
+  packages as loaded from outside the project, and knows Emacs, Neovim and
+  Zed when it's in none of the IDEs (#219).
 * In a copy of a project, rpix's functions such as `pixi_add()` no longer
   change the original project. When the running Pixi environment says it's
   from another project than the working directory's, as Pixi's activation

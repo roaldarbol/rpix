@@ -71,18 +71,36 @@ test_that("reports a missing Pixi, project or Pixi R", {
     environment = NULL,
     in_project = FALSE,
     activated = FALSE,
-    ide = NA_character_
+    ide = NA_character_,
+    ide_set_up = NULL
   ))
   expect_match(out, "can't find it")
   expect_match(out, "no Pixi project")
   expect_match(out, "isn't from a Pixi environment")
-  expect_match(out, "Not in RStudio, Positron or VS Code")
+  expect_match(out, "set your IDE up")
+  expect_match(out, "Not in RStudio, Positron, VS Code, Emacs, Neovim or Zed")
 
   out <- sitrep_output(good_report(
     environment = list(root = "/other", name = "default"),
     in_project = FALSE
   ))
   expect_match(out, "another project")
+})
+
+test_that("gives the IDE's step when it's set up, but runs another R", {
+  out <- sitrep_output(good_report(
+    environment = NULL,
+    in_project = FALSE,
+    activated = FALSE,
+    ide = "rstudio",
+    ide_set_up = TRUE,
+    ide_step = "Start RStudio with {.code pixi run rstudio} in the project."
+  ))
+  expect_match(out, "or in the IDE as below")
+  expect_no_match(out, "set your IDE up")
+  expect_match(out, "RStudio is set up for the project, but runs another R")
+  expect_match(out, "Start RStudio with `pixi run rstudio`")
+  expect_no_match(out, "RStudio is set up for the project.", fixed = TRUE)
 })
 
 test_that("reports a moved or copied project", {
@@ -195,9 +213,21 @@ test_that("collects the setup of a project's Pixi R", {
   # In an IDE, running the project's R counts as set up
   withr::local_envvar(POSITRON = "1")
   expect_true(sitrep_data(root)$ide_set_up)
-  # This R's libraries and packages are outside the temporary project
+  expect_null(sitrep_data(root)$ide_step)
+  # This R's libraries and packages are outside the temporary project, but
+  # base packages come with any R
   expect_true(length(report$libraries_outside) > 0)
-  expect_true("base" %in% report$packages_outside)
+  expect_true(length(report$packages_outside) > 0)
+  expect_false(any(base_packages() %in% report$packages_outside))
+
+  # Set up, but running another R
+  local_mocked_bindings(
+    r_home = function() R.home(),
+    ide_set_up = function(...) TRUE
+  )
+  report <- sitrep_data(root)
+  expect_true(report$ide_set_up)
+  expect_match(report$ide_step, "R (Pixi: default)", fixed = TRUE)
 })
 
 test_that("collects a moved or copied project, and removes its stale cache", {
@@ -287,6 +317,62 @@ test_that("detects the IDE", {
   expect_equal(detect_ide(), "rstudio")
   withr::local_envvar(POSITRON = "1")
   expect_equal(detect_ide(), "positron")
+})
+
+test_that("says how to start the project's R in each IDE", {
+  root <- withr::local_tempdir()
+  local_mocked_bindings(is_windows = function() FALSE)
+
+  local_mocked_bindings(rstudio_addin = function(...) NULL)
+  expect_equal(
+    ide_step("rstudio", root),
+    "Start RStudio with {.code pixi run rstudio} in the project."
+  )
+  local_mocked_bindings(rstudio_addin = function(...) "Open with Pixi R")
+  expect_match(
+    ide_step("rstudio", root),
+    "or with {.val Open with Pixi R} in rpix's Addins.",
+    fixed = TRUE
+  )
+
+  expect_match(ide_step("positron", root), "R (Pixi: default)", fixed = TRUE)
+
+  expect_match(ide_step("vscode", root), "pixi_install()", fixed = TRUE)
+  expect_match(ide_step("vscode", root), "Reload Window")
+  r <- environment_r(root, "default")
+  dir.create(dirname(r), recursive = TRUE)
+  file.create(r)
+  expect_match(ide_step("vscode", root), "R: Create R Terminal")
+
+  for (editor in c("emacs", "neovim", "zed")) {
+    expect_match(ide_step(editor, root), "direnv allow")
+  }
+
+  # On Windows, these leave R to the PATH
+  local_mocked_bindings(is_windows = function() TRUE)
+  expect_match(ide_step("vscode", root), "pixi run code .", fixed = TRUE)
+  expect_match(ide_step("zed", root), "Start Zed from the project's")
+})
+
+test_that("finds the name of an RStudio addin", {
+  expect_null(rstudio_addin("addin_open_with_pixi_r", file = ""))
+
+  file <- withr::local_tempfile(fileext = ".dcf")
+  writeLines(
+    c(
+      "Name: Add packages...",
+      "Binding: addin_add_packages",
+      "",
+      "Name: Open with the project's Pixi R",
+      "Binding: addin_open_with_pixi_r"
+    ),
+    file
+  )
+  expect_equal(
+    rstudio_addin("addin_open_with_pixi_r", file = file),
+    "Open with the project's Pixi R"
+  )
+  expect_null(rstudio_addin("addin_other", file = file))
 })
 
 test_that("tells whether an IDE is set up for the project", {
