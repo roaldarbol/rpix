@@ -122,6 +122,19 @@ test_that("pixi_import_renv() says how to build them if the answer is no", {
   expect_equal(result$missing, c("unipkg", "biocmissing", "notonconda"))
 })
 
+test_that("pixi_import_renv() explains why it can't build them in a project with a date", {
+  calls <- local_renv_project(answer = TRUE)
+  writeLines(
+    c("[workspace]", 'exclude-newer = "2025-06-01"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+
+  expect_snapshot(result <- pixi_import_renv(deactivate = FALSE))
+  expect_length(calls$asked, 0)
+  expect_false(any(grepl("github::cran", calls$add[[1]])))
+  expect_true("notonconda" %in% result$missing)
+})
+
 test_that("pixi_import_renv() can leave versions, R and renv alone", {
   calls <- local_renv_project(dependencies = "r-base")
 
