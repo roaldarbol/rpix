@@ -129,6 +129,13 @@
   gives their builds MinGW’s compilers, which R uses there, in place of
   `pixi-build-r`’s, whose Fortran compiler broke the script’s checks
   ([\#191](https://github.com/roaldarbol/rpix/issues/191)).
+- In a copy of a project, rpix’s functions such as
+  [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md) no
+  longer change the original project. When the running Pixi environment
+  says it’s from another project than the working directory’s, as Pixi’s
+  activation cache can after a copy or move, rpix uses the working
+  directory’s project, and says so
+  ([\#218](https://github.com/roaldarbol/rpix/issues/218)).
 - A moved or copied project no longer runs the R of its old location.
   Pixi’s activation cache, which
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
