@@ -44,6 +44,12 @@
 
 ## Fixed
 
+* `use_pixi()` sets up the folder it's given, or the working directory, rather
+  than a Pixi project in a parent folder. It says when a parent folder is a
+  Pixi project, and in an interactive session asks whether to set that one up
+  instead (#214).
+* In a package, `pixi_sitrep()` no longer says the package itself was
+  installed without Pixi, e.g. after `devtools::install()` (#220).
 * In a project with several environments, `pixi_add()`, `pixi_remove()` and
   `install.packages()` install the environment R runs in, as Pixi doesn't by
   itself there; a package added was missing until the next `pixi install`
@@ -52,6 +58,10 @@
   gives their builds MinGW's compilers, which R uses there, in place of
   `pixi-build-r`'s, whose Fortran compiler broke the script's checks
   (#191).
+* In a project with packages as of a date before 2026-10-15, `pixi_add()`
+  and `pixi_import_renv()` no longer offer to build CRAN packages that
+  aren't on conda-forge from source, which then failed: they say that the
+  date hides Pixi's build backend instead (#221).
 
 # rpix 0.8.0 (2026-10-13)
 
