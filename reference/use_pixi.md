@@ -71,9 +71,9 @@ use_pixi(
 
 - install_rpix:
 
-  If `TRUE`, install rpix into the project's environment. Its
-  dependencies come from conda-forge, and rpix itself from R-universe
-  until it's on conda-forge.
+  If `TRUE`, install rpix into the project's environment, unless it has
+  this version or a newer one. Its dependencies come from conda-forge,
+  and rpix itself from R-universe until it's on conda-forge.
 
 - date:
 

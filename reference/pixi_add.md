@@ -39,7 +39,8 @@ a prefix to say where a package comes from:
   `pixi-build-r`'s. See
   <https://pixi.prefix.dev/latest/build/backends/pixi-build-r/>. This
   may change, e.g. to use `pixi add` once it can set a build backend;
-  see <https://github.com/roaldarbol/rpix/issues/96>.
+  see <https://github.com/roaldarbol/rpix/issues/96>. While Pixi builds,
+  rpix shows a line rather than the build's log, unless the build fails.
 
 In a project with several environments, Pixi doesn't install after
 adding or removing, so `pixi_add()` and
@@ -52,6 +53,11 @@ When it adds R (`r-base`) to the default feature, it also adds
 your personal R library out of the environment's R, as
 [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
 does.
+
+Pixi's output is shown once it has added the packages, or if it fails in
+a way rpix can't handle, but not when rpix can, e.g. by looking on
+bioconda. To see Pixi's output and build logs as Pixi runs, set
+`options(rpix.verbose = TRUE)`.
 
 For more information, see
 <https://pixi.prefix.dev/latest/reference/cli/pixi/add/>.
