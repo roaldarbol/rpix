@@ -47,7 +47,9 @@ starts, they:
 2.  Call
     [`rpix::pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md),
     which sets the environment variables Pixi would have set, and adds
-    the project’s own library.
+    the project’s own library. If the environment’s R doesn’t have rpix,
+    e.g. for a collaborator, they say so, with the command that installs
+    it.
 
 In R that isn’t from the project’s environment,
 [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)

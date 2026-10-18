@@ -177,3 +177,15 @@ Pixi installs the same versions you have, from the lock file, before
 starting R. See [Sharing and
 reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md)
 for more, including other platforms and CI.
+
+rpix itself isn’t in the lock file yet:
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+installed it into your environment from R-universe. So the
+collaborator’s environment doesn’t have it, and nor do other
+environments of the project. When R starts in one of them, the project’s
+`.Rprofile` says so, with the command that installs it:
+
+``` r
+
+install.packages("rpix", repos = "https://roaldarbol.r-universe.dev", lib = .Library, dependencies = FALSE, type = "source")
+```

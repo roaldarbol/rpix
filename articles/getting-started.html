@@ -171,6 +171,9 @@
 <p>Commit <code>pixi.toml</code> and <code>pixi.lock</code>. A collaborator installs Pixi, clones the project, and runs:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run R</span></code></pre></div>
 <p>Pixi installs the same versions you have, from the lock file, before starting R. See <a href="reproducibility.html">Sharing and reproducibility</a> for more, including other platforms and CI.</p>
+<p>rpix itself isn’t in the lock file yet: <code><a href="../reference/use_pixi.html">use_pixi()</a></code> installed it into your environment from R-universe. So the collaborator’s environment doesn’t have it, and nor do other environments of the project. When R starts in one of them, the project’s <code>.Rprofile</code> says so, with the command that installs it:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rpix"</span>, repos <span class="op">=</span> <span class="st">"https://roaldarbol.r-universe.dev"</span>, lib <span class="op">=</span> <span class="va">.Library</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></code></pre></div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

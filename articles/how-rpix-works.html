@@ -109,7 +109,7 @@
 <p>Positron and VS Code start the environment’s R themselves, without Pixi, so the environment isn’t activated. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds a few lines to the project’s <code>.Rprofile</code> that make up for that. When R starts, they:</p>
 <ol type="1">
 <li>Remove your personal library from <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> (see below), before any package loads.</li>
-<li>Call <code><a href="../reference/pixi_activate.html">rpix::pixi_activate()</a></code>, which sets the environment variables Pixi would have set, and adds the project’s own library.</li>
+<li>Call <code><a href="../reference/pixi_activate.html">rpix::pixi_activate()</a></code>, which sets the environment variables Pixi would have set, and adds the project’s own library. If the environment’s R doesn’t have rpix, e.g. for a collaborator, they say so, with the command that installs it.</li>
 </ol>
 <p>In R that isn’t from the project’s environment, <code><a href="../reference/pixi_activate.html">pixi_activate()</a></code> changes nothing, and tells you how to start the right R instead.</p>
 <p>Positron activates the environment itself when it starts an R it found in a Pixi environment. On Windows, the environment’s R can’t start at all without activation, so start VS Code through Pixi there; see <a href="ide.html#vs-code">Using rpix with an IDE</a>.</p>
