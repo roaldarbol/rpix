@@ -101,6 +101,11 @@
   gives their builds MinGW’s compilers, which R uses there, in place of
   `pixi-build-r`’s, whose Fortran compiler broke the script’s checks
   ([\#191](https://github.com/roaldarbol/rpix/issues/191)).
+- A package from GitHub that rpix can’t read says why: there’s no public
+  repository by that name, it has no such branch, tag or commit, or
+  GitHub couldn’t be reached, rather than always that it needs a
+  `DESCRIPTION`
+  ([\#213](https://github.com/roaldarbol/rpix/issues/213)).
 - [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
   and
   [`pixi_search()`](https://roald-arboel.com/rpix/reference/pixi_search.md)
