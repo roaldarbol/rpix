@@ -30,6 +30,9 @@
 
 ## Changed
 
+* In a Pixi environment, `install.packages()` of a package already in
+  `pixi.toml` says so, and how to update it with `pixi_update()`, rather than
+  passing on Pixi's "already a dependency" (#210).
 * `use_pixi()` creates a project for Linux, macOS (Intel and Apple Silicon)
   and Windows, and your computer's platform if it's another one, so
   collaborators on any of them can install it; `platforms` chooses others.

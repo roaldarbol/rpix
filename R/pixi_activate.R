@@ -13,9 +13,10 @@
 #'   that devtools adds, are kept.
 #' * `install.packages()` adds packages with [pixi_add()] instead, so they're
 #'   recorded in `pixi.toml` and `pixi.lock`. For a CRAN package that isn't on
-#'   conda-forge, `pixi_add()` offers to build it from source. `repos` is
-#'   ignored, and other arguments Pixi can't use, such as `lib`, give an
-#'   error. Package files and folders are installed with
+#'   conda-forge, `pixi_add()` offers to build it from source. For a package
+#'   already in `pixi.toml`, it says to update it with [pixi_update()]
+#'   instead. `repos` is ignored, and other arguments Pixi can't use, such as
+#'   `lib`, give an error. Package files and folders are installed with
 #'   `utils::install.packages()`, so `pixi.toml` doesn't record them. Turn
 #'   this off with `options(rpix.install_packages = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
