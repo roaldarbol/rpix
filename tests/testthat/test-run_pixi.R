@@ -40,9 +40,15 @@ test_that("returns NULL outside a project", {
 test_that("uses PIXI_WORKSPACE_ROOT, then the working directory, when no path is given", {
   root <- local_pixi_project()
   other <- local_pixi_project()
+  nested <- file.path(root, "a")
+  dir.create(nested)
 
   withr::local_envvar(PIXI_WORKSPACE_ROOT = root, PIXI_PROJECT_ROOT = NA)
-  withr::local_dir(other)
+  withr::local_dir(nested)
+  expect_equal(find_project_root(), root)
+
+  # Outside any project, e.g. after setwd()
+  withr::local_dir(withr::local_tempdir())
   expect_equal(find_project_root(), root)
 
   # Pixi before 0.82 sets only PIXI_PROJECT_ROOT
@@ -50,7 +56,43 @@ test_that("uses PIXI_WORKSPACE_ROOT, then the working directory, when no path is
   expect_equal(find_project_root(), root)
 
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(other)
   expect_equal(find_project_root(), other)
+})
+
+test_that("uses the working directory's project when PIXI_WORKSPACE_ROOT is another", {
+  # As in a copy of a project, whose activation cache points to the original
+  withr::local_options(rlib_message_verbosity = "verbose")
+  original <- local_pixi_project()
+  copy <- local_pixi_project()
+  withr::local_dir(copy)
+
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = original, PIXI_PROJECT_ROOT = NA)
+  expect_message(
+    expect_equal(find_manifest(), file.path(copy, "pixi.toml")),
+    "PIXI_WORKSPACE_ROOT"
+  )
+
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = original)
+  expect_message(
+    expect_equal(find_project_root(), copy),
+    "PIXI_PROJECT_ROOT"
+  )
+})
+
+test_that("says once that PIXI_WORKSPACE_ROOT points elsewhere", {
+  withr::local_options(rlib_message_verbosity = "default")
+  rlang::reset_message_verbosity("rpix_other_workspace_root")
+  withr::defer(rlang::reset_message_verbosity("rpix_other_workspace_root"))
+  original <- local_pixi_project()
+  copy <- local_pixi_project()
+  withr::local_envvar(PIXI_WORKSPACE_ROOT = original, PIXI_PROJECT_ROOT = NA)
+  withr::local_dir(copy)
+
+  expect_snapshot(invisible(find_manifest()), transform = function(x) {
+    gsub(copy, "<copy>", gsub(original, "<original>", x, fixed = TRUE))
+  })
+  expect_no_message(find_manifest())
 })
 
 # pixi_binary() ---------------------------------------------------------------

@@ -1,3 +1,12 @@
+# says once that PIXI_WORKSPACE_ROOT points elsewhere
+
+    Code
+      invisible(find_manifest())
+    Message
+      ! `PIXI_WORKSPACE_ROOT` points to '<original>', so using the working directory's project, '<copy>'.
+      i If the project was copied or moved, check it with `pixi_sitrep()`.
+      This message is displayed once per session.
+
 # offers to install Pixi in an interactive session
 
     Code
