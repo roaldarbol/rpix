@@ -58,6 +58,9 @@
 
 ## Fixed
 
+* `pixi_import_renv()` adds only the packages the project uses from lock
+  files written by renv 1.1 or later too, which record what each package
+  needs differently; it added every package in them (#206).
 * In a Pixi environment, `install.packages()` accepts `repos`, and adds the
   packages with Pixi as usual. Package files and folders (`repos = NULL`) go
   to `utils::install.packages()`, which `pixi.toml` doesn't record. VS Code's

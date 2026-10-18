@@ -278,7 +278,7 @@ pixi_import_renv <- function(
   source <- vapply(entries, lock_source, character(1))
   if (!all) {
     # conda-forge brings in what other packages need, but only its own
-    needed <- unlist(lapply(entries, function(entry) entry$Requirements))
+    needed <- unlist(lapply(entries, lock_requirements))
     keep <- !names(entries) %in% needed | source != "repository"
     entries <- entries[keep]
     source <- source[keep]
@@ -390,6 +390,13 @@ pixi_import_renv <- function(
     not_from_repository = c(subfolder, other),
     missing = c(missing, declined)
   ))
+}
+
+# The packages a package in renv.lock needs. renv 1.1 and later record its
+# Depends, Imports and LinkingTo, with versions, and older renv Requirements.
+lock_requirements <- function(entry) {
+  fields <- c(entry$Requirements, entry$Depends, entry$Imports, entry$LinkingTo)
+  sub("[[:space:]]*\\(.*$", "", unlist(fields))
 }
 
 # Where a package in renv.lock is from: "repository" (CRAN-like or
