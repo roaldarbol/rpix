@@ -213,6 +213,33 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_silent(pixi_activate(p$root, quiet = TRUE))
 })
 
+test_that("says when the project was moved or copied", {
+  p <- local_activation()
+  cache <- file.path(p$root, ".pixi", "activation-env-v0")
+  dir.create(cache, recursive = TRUE)
+  stale <- '{"environment_variables": {"PIXI_WORKSPACE_ROOT": "/old/project"}}'
+  writeLines(stale, file.path(cache, "activation_default.json"))
+
+  expect_message(pixi_activate(p$root, quiet = FALSE), "moved or copied")
+  expect_false(file.exists(file.path(cache, "activation_default.json")))
+
+  # In R from the old location, with the hint
+  local_mocked_bindings(r_home = function() {
+    "/old/project/.pixi/envs/default/lib/R"
+  })
+  writeLines(stale, file.path(cache, "activation_default.json"))
+  messages <- character()
+  withCallingHandlers(
+    pixi_activate(p$root, quiet = FALSE),
+    message = function(m) {
+      messages <<- c(messages, conditionMessage(m))
+      invokeRestart("muffleMessage")
+    }
+  )
+  expect_match(messages, "moved or copied")
+  expect_match(messages, "pixi run R")
+})
+
 test_that("gives a hint in a folder without a Pixi project", {
   local_mocked_bindings(r_home = function() "/project/.pixi/envs/default/lib/R")
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
@@ -260,6 +287,32 @@ test_that("updates the block in place instead of adding it again", {
   add_rprofile_block(file)
   add_rprofile_block(file)
   expect_equal(readLines(file), c("before", rprofile_block, "after"))
+})
+
+# Run the block, with stand-ins for what it asks R
+run_rprofile_block <- function(home, rpix = FALSE, interactive = TRUE) {
+  env <- new.env()
+  env$R.home <- function() home
+  env$normalizePath <- function(path, ...) path
+  env$.libPaths <- function(new) invisible(base::.libPaths())
+  env$requireNamespace <- function(...) rpix
+  env$getNamespaceExports <- function(ns) "something_else"
+  env$interactive <- function() interactive
+  eval(parse(text = rprofile_block), envir = env)
+}
+
+test_that("the block says how to install rpix in an environment without it", {
+  home <- "/project/.pixi/envs/r44/lib/R"
+  message <- expect_message(run_rprofile_block(home), "doesn't have rpix")
+  command <- strsplit(conditionMessage(message), "\n")[[1]][2]
+  expect_match(command, "lib = .Library", fixed = TRUE)
+  # A command that runs as it's shown
+  expect_equal(as.character(str2lang(command)[[1]]), "install.packages")
+
+  # Not when it isn't interactive, outside Pixi, or with rpix there
+  expect_silent(run_rprofile_block(home, interactive = FALSE))
+  expect_silent(run_rprofile_block("/opt/R/4.5/lib/R"))
+  expect_silent(run_rprofile_block(home, rpix = TRUE))
 })
 
 test_that("r_home() is R.home()", {

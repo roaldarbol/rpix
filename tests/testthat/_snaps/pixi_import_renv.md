@@ -40,6 +40,32 @@
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
       ! Not on conda-forge or bioconda, so not added: unipkg and biocmissing.
 
+# pixi_import_renv() uses the newest R with packages, if the lock file's has none
+
+    Code
+      result <- pixi_import_renv(deactivate = FALSE)
+    Message
+      ! Not on conda-forge, so not added: notonconda.
+      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      ! conda-forge doesn't have the packages for R 4.6, the lock file's R, so rpix adds the newest R that has them.
+      i Built mypkg and ghdep from source, which is experimental.
+      ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
+      ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
+      ! Not on conda-forge or bioconda, so not added: unipkg and biocmissing.
+
+# pixi_import_renv() explains why it can't build them in a project with a date
+
+    Code
+      result <- pixi_import_renv(deactivate = FALSE)
+    Message
+      ! Not on conda-forge, so not added: notonconda.
+      i Pixi can't build it from source in this project: its date, "2025-06-01", hides the `pixi-build-r` that builds packages.
+      i `exclude-newer` applies to Pixi's build backend too, and `pixi-build-r` 0.2.0 came out on 2026-10-14.
+      i Built mypkg and ghdep from source, which is experimental.
+      ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
+      ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
+      ! Not on conda-forge or bioconda, so not added: unipkg and biocmissing.
+
 # pixi_import_renv() can leave versions, R and renv alone
 
     Code

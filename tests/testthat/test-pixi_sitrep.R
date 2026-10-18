@@ -85,6 +85,16 @@ test_that("reports a missing Pixi, project or Pixi R", {
   expect_match(out, "another project")
 })
 
+test_that("reports a moved or copied project", {
+  out <- sitrep_output(good_report(
+    stale_cache = TRUE,
+    moved_environments = c(default = "/old/project")
+  ))
+  expect_match(out, "moved or copied")
+  expect_match(out, "installed in '/old/project'")
+  expect_match(out, "pixi clean")
+})
+
 test_that("reports what a package's DESCRIPTION needs", {
   out <- sitrep_output(good_report(
     description = list(
@@ -170,6 +180,8 @@ test_that("collects the setup of a project's Pixi R", {
   expect_true(report$activated)
   expect_true(report$rprofile)
   expect_true(is.na(report$ide))
+  expect_false(report$stale_cache)
+  expect_length(report$moved_environments, 0)
   expect_length(report$build_unignored, 0)
 
   # In a package, Pixi's files and .vscode belong in .Rbuildignore
@@ -188,6 +200,37 @@ test_that("collects the setup of a project's Pixi R", {
   expect_true("base" %in% report$packages_outside)
 })
 
+test_that("collects a moved or copied project, and removes its stale cache", {
+  root <- local_pixi_project()
+  cache <- file.path(
+    root,
+    ".pixi",
+    "activation-env-v0",
+    "activation_default.json"
+  )
+  dir.create(dirname(cache), recursive = TRUE)
+  writeLines(
+    '{"environment_variables": {"PIXI_WORKSPACE_ROOT": "/old/project"}}',
+    cache
+  )
+  bin <- file.path(root, ".pixi", "envs", "default", "bin")
+  dir.create(bin, recursive = TRUE)
+  writeLines(
+    'R_HOME_DIR="/old/project/.pixi/envs/default/lib/R"',
+    file.path(bin, "R")
+  )
+  local_mocked_bindings(
+    pixi_binary = function(...) stop("no pixi"),
+    detect_ide = function() NA_character_
+  )
+
+  report <- sitrep_data(root)
+  expect_true(report$stale_cache)
+  expect_false(file.exists(cache))
+  old <- normalizePath("/old/project", winslash = "/", mustWork = FALSE)
+  expect_equal(report$moved_environments, c(default = old))
+})
+
 test_that("collects nothing project-specific outside a project", {
   withr::local_envvar(PIXI_WORKSPACE_ROOT = NA, PIXI_PROJECT_ROOT = NA)
   local_mocked_bindings(pixi_binary = function(...) stop("no pixi"))
@@ -198,6 +241,8 @@ test_that("collects nothing project-specific outside a project", {
   expect_null(report$lock_up_to_date)
   expect_length(report$libraries_outside, 0)
   expect_false(report$rprofile)
+  expect_false(report$stale_cache)
+  expect_null(report$moved_environments)
 })
 
 test_that("tells whether the lock file is up to date", {
@@ -325,6 +370,10 @@ test_that("finds packages in the environment that Pixi didn't install", {
     }
   )
   expect_equal(unrecorded_packages("default", "/p"), extra[1])
+
+  root <- withr::local_tempdir()
+  writeLines(paste("Package:", extra[1]), file.path(root, "DESCRIPTION"))
+  expect_equal(unrecorded_packages("default", root), character())
 
   local_mocked_bindings(pixi_list = function(...) stop("no Pixi"))
   expect_equal(unrecorded_packages("default", "/p"), character())
