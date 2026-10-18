@@ -71,6 +71,12 @@
 
 ### Fixed
 
+- In a package,
+  [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  no longer says the package itself was installed without Pixi,
+  e.g. after
+  [`devtools::install()`](https://devtools.r-lib.org/reference/install.html)
+  ([\#220](https://github.com/roaldarbol/rpix/issues/220)).
 - In a project with several environments,
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md)
