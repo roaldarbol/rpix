@@ -105,6 +105,11 @@
 
 ### Fixed
 
+- [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
+  adds only the packages the project uses from lock files written by
+  renv 1.1 or later too, which record what each package needs
+  differently; it added every package in them
+  ([\#206](https://github.com/roaldarbol/rpix/issues/206)).
 - In a Pixi environment,
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
   accepts `repos`, and adds the packages with Pixi as usual. Package
