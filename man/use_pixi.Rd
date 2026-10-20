@@ -29,7 +29,11 @@ before its packages are built for it.}
 
 \item{install_rpix}{If \code{TRUE}, install rpix into the project's environment,
 unless it has this version or a newer one. Its dependencies come from
-conda-forge, and rpix itself from R-universe until it's on conda-forge.}
+conda-forge, and rpix itself from R-universe until it's on conda-forge.
+To try a change before R-universe has built it, set \code{options(rpix.ref)}
+to a branch, tag or commit, e.g. \code{"main"} or a pull request's branch:
+rpix then comes from GitHub, unless the environment has that commit
+already.}
 
 \item{date}{Optional. Use packages as they were on this date, such as
 \code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is

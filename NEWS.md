@@ -2,6 +2,10 @@
 
 ## Added
 
+* `options(rpix.ref)` makes `use_pixi()` install rpix into the environment
+  from GitHub, at a branch, tag or commit (e.g. `"main"`, or a pull request's
+  branch), to try a change before R-universe has built it. The installed rpix
+  records the commit, so `use_pixi()` reinstalls only when it changes (#245).
 * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those
   editors, and `use_pixi(ide = )` takes them too. They add languageserver,
   and a `.envrc` from the new `use_pixi_direnv()`, which activates the
