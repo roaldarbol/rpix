@@ -62,6 +62,17 @@
 #'   the default one. See [pixi_add_environment()].
 #' @param platform Optional. Only add the packages for this platform, such as
 #'   `"linux-64"`.
+#' @param type Optional. In a package, also add the packages to this field of
+#'   `DESCRIPTION`, as `usethis::use_package()` does: `"Imports"`,
+#'   `"Depends"`, `"Suggests"`, `"LinkingTo"` or `"Enhances"` for R packages,
+#'   or `"SystemRequirements"` for software outside R, given as conda
+#'   packages (`"conda::gdal"`). A `>=` constraint becomes the minimum version
+#'   there; other constraints only go in `pixi.toml`. A package from GitHub
+#'   also goes in `Remotes` (unless it's CRAN's mirror, `cran/`).
+#'   `SystemRequirements` gets conda-forge's names, such as `gdal` or
+#'   `pkg-config`, added after what it says already, which stays as it is.
+#'   `DESCRIPTION` changes once Pixi has added the packages, and `feature`
+#'   still decides where they go in `pixi.toml`.
 #' @param path The project. Defaults to the project of the running Pixi
 #'   environment, or the working directory.
 #' @param dry_run If `TRUE`, show the Pixi commands without running them.
@@ -84,9 +95,25 @@ pixi_add <- function(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 ) {
+  if (!is.null(type)) {
+    # Checked first, so DESCRIPTION is only changed once Pixi has added them
+    entries <- description_entries(packages, versions, type, path)
+    result <- pixi_add(
+      packages,
+      versions = versions,
+      channel = channel,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )
+    add_to_description(entries, dry_run = dry_run)
+    return(invisible(result))
+  }
   caller <- environment()
   if (!is.null(versions)) {
     if (!length(versions) %in% c(1, length(packages))) {

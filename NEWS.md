@@ -2,6 +2,13 @@
 
 ## Added
 
+* `pixi_add(type = )` and `pixi_remove(type = )` also add packages to, or
+  remove them from, a field of the package's `DESCRIPTION`, such as
+  `"Imports"` or `"Suggests"`, as `usethis::use_package()` does. A `>=`
+  constraint becomes the minimum version there, and packages from GitHub go
+  in `Remotes` too. `type = "SystemRequirements"` adds conda packages there
+  under conda-forge's names, e.g. `pixi_add("conda::gdal", type =
+  "SystemRequirements")`. The rest of `DESCRIPTION` stays as it is (#256).
 * In a package's Pixi environment, rpix notices when `DESCRIPTION` comes to
   need packages that `pixi.toml` doesn't have, e.g. after
   `usethis::use_package()` or an edit, and in an interactive session offers to

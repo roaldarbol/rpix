@@ -31,6 +31,7 @@ parse_github <- function(package, call = parent.frame()) {
     ref = ref,
     # The package's name can differ from the repository's
     name = paste0("r-", tolower(description$Package)),
+    package = description$Package,
     requirements = build_requirements(description)
   )
 }
