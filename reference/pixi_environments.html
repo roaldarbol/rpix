@@ -110,6 +110,7 @@ environment of it with <code>pixi_add_environment()</code>, and start its R with
 <span><span class="fu">pixi_add_environment</span><span class="op">(</span></span>
 <span>  <span class="va">name</span>,</span>
 <span>  features <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  r_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  solve_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  default_feature <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -135,7 +136,19 @@ environment, or the working directory.</p></dd>
 
 <dt id="arg-features">features<a class="anchor" aria-label="anchor" href="#arg-features"></a></dt>
 <dd><p>The features it's made of. They have to exist already, so
-add packages to them first with <code>pixi_add(feature = )</code>.</p></dd>
+add packages to them first with <code>pixi_add(feature = )</code>. Without any, the
+environment is a copy of the default one.</p></dd>
+
+
+<dt id="arg-r-version">r_version<a class="anchor" aria-label="anchor" href="#arg-r-version"></a></dt>
+<dd><p>Optional. Another version of R for the environment, such
+as <code>"4.4"</code>, in one step: a feature named after the environment gets that
+R, the default feature's packages (by name, so it gets the versions built
+for that R) and <code>conda-ecosystem-user-package-isolation</code>. The environment
+leaves out the default feature, which has the project's R, and is
+installed, with rpix in it if the project has rpix. Packages built from
+source aren't copied; rpix says how to add them. If that R can't have the
+project's packages, <code>pixi.toml</code> and <code>pixi.lock</code> are left as they were.</p></dd>
 
 
 <dt id="arg-solve-group">solve_group<a class="anchor" aria-label="anchor" href="#arg-solve-group"></a></dt>
@@ -189,28 +202,17 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">project</span>, <span class="st">"pixi.toml"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># An environment with R 4.4, next to the default one. It leaves out the</span></span></span>
-<span class="r-in"><span><span class="co"># default feature, since that has another version of R.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="pixi_add.html">pixi_add</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r-base=4.4"</span>, <span class="st">"dplyr"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  feature <span class="op">=</span> <span class="st">"r44"</span>,</span></span>
-<span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
-<span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-base=4.4 r-dplyr --feature r44 --manifest-path /tmp/RtmpfmLctB/rpix-example/pixi.toml`</span>
-<span class="r-in"><span><span class="fu">pixi_add_environment</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"r44"</span>,</span></span>
-<span class="r-in"><span>  features <span class="op">=</span> <span class="st">"r44"</span>,</span></span>
-<span class="r-in"><span>  default_feature <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
-<span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/RtmpfmLctB/rpix-example/pixi.toml`</span>
+<span class="r-in"><span><span class="co"># An environment with R 4.4 and the project's packages, next to the</span></span></span>
+<span class="r-in"><span><span class="co"># default one</span></span></span>
+<span class="r-in"><span><span class="fu">pixi_add_environment</span><span class="op">(</span><span class="st">"r44"</span>, r_version <span class="op">=</span> <span class="st">"4.4"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation --manifest-path /tmp/Rtmp8T3U2Q/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/Rtmp8T3U2Q/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --feature r44 --exclude r-base --no-install --manifest-path /tmp/Rtmp8T3U2Q/rpix-example/pixi.toml`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># An environment with the default packages plus testthat, on the same</span></span></span>
 <span class="r-in"><span><span class="co"># versions as the default environment</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"testthat"</span>, feature <span class="op">=</span> <span class="st">"test"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-testthat --feature test --manifest-path /tmp/RtmpfmLctB/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-testthat --feature test --manifest-path /tmp/Rtmp8T3U2Q/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_add_environment</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"test"</span>,</span></span>
 <span class="r-in"><span>  features <span class="op">=</span> <span class="st">"test"</span>,</span></span>
@@ -218,7 +220,7 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
 <span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/RtmpfmLctB/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/Rtmp8T3U2Q/rpix-example/pixi.toml`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Needs Pixi</span></span></span>

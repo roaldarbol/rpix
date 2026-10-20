@@ -112,47 +112,56 @@
 <p>The feature has to exist before an environment can use it, so add its packages first.</p>
 </section><section class="level2"><h2 id="another-version-of-r">Another version of R<a class="anchor" aria-label="anchor" href="#another-version-of-r"></a>
 </h2>
-<p>An environment with R 4.4, next to the default one with the latest R:</p>
+<p>An environment with R 4.4, next to the default one with the latest R, in one step:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"r44"</span>, r_version <span class="op">=</span> <span class="st">"4.4"</span><span class="op">)</span></span></code></pre></div>
+<p>This adds a feature <code>r44</code> with R 4.4 and the project’s packages, from the default feature, and makes an environment of it, then installs it. The packages are copied by name, so the environment gets the versions built for R 4.4, which Pixi then pins in <code>pixi.toml</code>. rpix comes along if the project has it, so <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> and the <code>.Rprofile</code> work there too.</p>
+<ul>
+<li><p><strong>The default feature is left out:</strong> it has the project’s R, and an environment can’t have two. <code>conda-ecosystem-user-package-isolation</code>, which keeps your personal R library out, is copied too; without it, R 4.4 could load packages from your personal library that were built for another R, and crash.</p></li>
+<li><p><strong>Packages built from source</strong> (from GitHub, or CRAN packages that aren’t on conda-forge) aren’t copied, as their entries pin the project’s R. rpix lists them; add them with <code>pixi_add(..., feature = "r44")</code>.</p></li>
+<li>
+<p><strong>If R 4.4 can’t have all the packages,</strong> e.g. an old R and a package that’s newer than it, rpix leaves <code>pixi.toml</code> as it was and shows Pixi’s error. Then build the environment by hand, with the packages it can have:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r-base=4.4"</span>, <span class="st">"dplyr"</span><span class="op">)</span>, feature <span class="op">=</span> <span class="st">"r44"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"r44"</span>, features <span class="op">=</span> <span class="st">"r44"</span>, default_feature <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><code>default_feature = FALSE</code> leaves out the default feature. Here that’s needed: the default feature has its own version of R, and an environment can’t have two. It also leaves out <code>conda-ecosystem-user-package-isolation</code>, which <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds to the default feature to keep your personal R library out, so <code><a href="../reference/pixi_environments.html">pixi_add_environment()</a></code> adds it to the <code>r44</code> feature. Without it, R 4.4 could load packages from your personal library that were built for another R, and crash.</p>
-</section><section class="level2"><h2 id="keeping-environments-in-step">Keeping environments in step<a class="anchor" aria-label="anchor" href="#keeping-environments-in-step"></a>
+<p><code><a href="../reference/pixi_environments.html">pixi_add_environment()</a></code> adds the isolation to the <code>r44</code> feature then too.</p>
+</li>
+</ul></section><section class="level2"><h2 id="keeping-environments-in-step">Keeping environments in step<a class="anchor" aria-label="anchor" href="#keeping-environments-in-step"></a>
 </h2>
 <p>Environments in the same <em>solve group</em> get the same versions of the packages they share. That suits a test environment, which should test the versions the project uses:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"test"</span>, features <span class="op">=</span> <span class="st">"test"</span>, solve_group <span class="op">=</span> <span class="st">"default"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Environments with different versions of R can’t share a solve group.</p>
 </section><section class="level2"><h2 id="using-an-environment">Using an environment<a class="anchor" aria-label="anchor" href="#using-an-environment"></a>
 </h2>
 <p>Switch your IDE to an environment’s R with:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_switch.html">pixi_switch</a></span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></code></pre></div>
 <p>See <a href="ide.html">Using rpix with an IDE</a> for what that does in each IDE. From a terminal, <code>pixi run --environment r44 R</code> starts that R.</p>
 <p>To move your IDE to it, run <code>pixi_switch("r44")</code>, or <code><a href="../reference/pixi_switch.html">pixi_switch()</a></code> to pick it from a menu. In RStudio this starts a new RStudio with that R; in Positron it opens the interpreter picker; in VS Code it points the R extension at that R. See <a href="ide.html">Using rpix with an IDE</a>.</p>
 <p>Or run a function in it from the R you’re in, and get the result back:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_r.html">pixi_r</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="va">R.version.string</span>, environment <span class="op">=</span> <span class="st">"r44"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "R version 4.4.3 (2025-02-28)"</span></span></code></pre></div>
 <p>The function runs in a new R, so it doesn’t see your variables: pass what it needs as arguments, with <code>args = list(...)</code>.</p>
 <p>In Positron, each environment shows up as its own R in the interpreter picker, e.g. “R 4.4.3 (Pixi: r44)”.</p>
 <p>See the project’s environments, and their features, with:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_environments.html">pixi_environments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </section><section class="level2"><h2 id="developing-a-package">Developing a package<a class="anchor" aria-label="anchor" href="#developing-a-package"></a>
 </h2>
 <p>For the whole workflow, from setting up to CI, see <a href="package-development.html">Developing a package</a>.</p>
 <p>For a package, <code><a href="../reference/pixi_import_description.html">pixi_import_description()</a></code> adds what the package needs from its <code>DESCRIPTION</code>: <code>Depends</code> and <code>Imports</code> to the project, and <code>Suggests</code> to a <code>test</code> environment, in the same solve group as the default one:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_import_description.html">pixi_import_description</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Packages that aren’t on conda-forge or bioconda are listed, and left out.</p>
 <section class="level3"><h3 id="checking-it-on-several-versions-of-r">Checking it on several versions of R<a class="anchor" aria-label="anchor" href="#checking-it-on-several-versions-of-r"></a>
 </h3>
 <p><code><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix()</a></code> adds an environment for each version of R, with the package’s dependencies and what the tests and <code>R CMD check</code> need:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.3"</span>, <span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then run the tests in all of them, and see the results side by side:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">pixi_check_matrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Tests ──────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ✔ r43  R 4.3.3: 120 passed, 0 failed, 2 skipped, 0 warnings (41 s)</span></span>
@@ -162,7 +171,7 @@
 </section><section class="level3"><h3 id="checking-the-minimum-versions">Checking the minimum versions<a class="anchor" aria-label="anchor" href="#checking-the-minimum-versions"></a>
 </h3>
 <p><code>DESCRIPTION</code> says which versions a package needs at least, such as <code>cli (&gt;= 3.0)</code>, but those are easy to get wrong when nothing tests them. <code>minimum = TRUE</code> adds a <code>minimum</code> environment, with R at the version <code>Depends</code> asks for, and each dependency at the lowest version its constraint allows:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span>minimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/pixi_check_matrix.html">pixi_check_matrix</a></span><span class="op">(</span><span class="st">"minimum"</span><span class="op">)</span></span></code></pre></div>
 <p>A dependency without a minimum gets the oldest version on conda-forge for that R, which rpix points out. The <code>Suggests</code> are there too, for the tests and examples: those without a minimum get at least the version the project has, as they aren’t what’s tested. Only versions on conda-forge count, and for old builds, conda-forge’s record of their own dependencies is sometimes looser than their <code>DESCRIPTION</code>; then R refuses to load one even though Pixi installed it. That’s worth knowing when a failure doesn’t seem to be about your package.</p>
