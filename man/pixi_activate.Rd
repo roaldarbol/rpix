@@ -36,6 +36,12 @@ instead. \code{repos} is ignored, and other arguments Pixi can't use, such as
 \code{lib}, give an error. Package files and folders are installed with
 \code{utils::install.packages()}, so \code{pixi.toml} doesn't record them. Turn
 this off with \code{options(rpix.install_packages = FALSE)}.
+\item In a package, in an interactive session, rpix notices when \code{DESCRIPTION}
+comes to need packages that \code{pixi.toml} doesn't have, e.g. after
+\code{usethis::use_package()} or an edit, and offers to add them with
+\code{\link[=pixi_import_description]{pixi_import_description()}}. It also says when \code{DESCRIPTION} no longer
+lists a package, which you can remove with \code{\link[=pixi_remove]{pixi_remove()}}. Turn this off
+with \code{options(rpix.watch_description = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
 \item If the project was moved or copied, Pixi's activation cache, which has

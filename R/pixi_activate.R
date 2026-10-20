@@ -19,6 +19,12 @@
 #'   `lib`, give an error. Package files and folders are installed with
 #'   `utils::install.packages()`, so `pixi.toml` doesn't record them. Turn
 #'   this off with `options(rpix.install_packages = FALSE)`.
+#' * In a package, in an interactive session, rpix notices when `DESCRIPTION`
+#'   comes to need packages that `pixi.toml` doesn't have, e.g. after
+#'   `usethis::use_package()` or an edit, and offers to add them with
+#'   [pixi_import_description()]. It also says when `DESCRIPTION` no longer
+#'   lists a package, which you can remove with [pixi_remove()]. Turn this off
+#'   with `options(rpix.watch_description = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
 #'   in an interactive session you get a hint instead.
 #' * If the project was moved or copied, Pixi's activation cache, which has
@@ -99,6 +105,7 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
         result$lib_paths <- .libPaths()
       }
       attach_install_packages(root)
+      watch_description(root)
     },
     error = function(e) {
       inform(c(
