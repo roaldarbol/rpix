@@ -230,7 +230,7 @@ and Windsurf: they read the same settings, and get the R extension from
 set up once works in all of them.
 
 sess and jgd aren’t on conda-forge yet, so they come from
-[rpix-forge](https://prefix.dev/roaldarbol/rpix-forge), a channel rpix
+[rpix-forge](https://prefix.dev/channels/rpix-forge), a channel rpix
 adds to the project after conda-forge. The extension only uses a sess
 built from its own release, so when the extension is newer than
 rpix-forge’s sess, it offers to install its bundled copy: accept. It

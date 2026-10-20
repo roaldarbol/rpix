@@ -75,7 +75,7 @@ a newly installed Java."><meta property="og:image" content="https://roald-arboel
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -207,10 +207,10 @@ experimental).</p></dd>
 <dt id="arg-install-rpix">install_rpix<a class="anchor" aria-label="anchor" href="#arg-install-rpix"></a></dt>
 <dd><p>If <code>TRUE</code>, add rpix to the project (<code>r-rpix</code>), so it's
 in <code>pixi.lock</code> like the other packages, and a collaborator's environment
-has it too. Until rpix is on conda-forge, it comes from
-<a href="https://prefix.dev/roaldarbol/rpix-forge" class="external-link">https://prefix.dev/roaldarbol/rpix-forge</a>, which is added to the
-project's channels after conda-forge, so everything else still comes
-from conda-forge. To try a change to rpix, set <code>options(rpix.ref)</code> to a
+has it too. Until rpix is on conda-forge, it comes from the
+<a href="https://prefix.dev/channels/rpix-forge" class="external-link">rpix-forge</a> channel, which is
+added to the project's channels after conda-forge, so everything else
+still comes from conda-forge. To try a change to rpix, set <code>options(rpix.ref)</code> to a
 branch, tag or commit, e.g. <code>"main"</code> or a pull request's branch: rpix is
 then also installed from GitHub, unless the environment has that commit
 already.</p></dd>

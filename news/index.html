@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rpix-development-version">rpix (development version)<a class="anchor" aria-label="anchor" href="#rpix-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.9.1" id="rpix-091">rpix 0.9.1<a class="anchor" aria-label="anchor" href="#rpix-091"></a></h2>
+<div class="section level3">
+<h3 id="fixed-0-9-1">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-9-1"></a></h3>
+<ul><li>The question at startup, whether to reopen the project in RStudio with its Pixi R, is only asked in an interactive session.</li>
+<li>Links to the rpix-forge channel go to its page on prefix.dev, rather than to the channel’s URL, which has no page.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.0" id="rpix-090-2026-10-20">rpix 0.9.0 (2026-10-20)<a class="anchor" aria-label="anchor" href="#rpix-090-2026-10-20"></a></h2>
@@ -112,7 +117,7 @@
 <li>Messages write rpix’s functions with <code>rpix::</code>, so the code they suggest runs as shown, as rpix usually isn’t attached (<a href="https://github.com/roaldarbol/rpix/issues/251" class="external-link">#251</a>).</li>
 <li>rpix needs Pixi 0.77 or later, which <code>SystemRequirements</code> now says. It’s the first Pixi that can build packages with pixi-build-r 0.2.0, for <code>github::</code> packages and CRAN packages that aren’t on conda-forge. A CI job checks rpix with it (<a href="https://github.com/roaldarbol/rpix/issues/84" class="external-link">#84</a>).</li>
 <li>The examples of <code><a href="../reference/pixi_add.html">pixi_add()</a></code>, <code><a href="../reference/pixi_remove.html">pixi_remove()</a></code>, <code><a href="../reference/pixi_search.html">pixi_search()</a></code>, <code><a href="../reference/pixi_install.html">pixi_install()</a></code>, the environment, channel and task functions, <code><a href="../reference/use_pixi_direnv.html">use_pixi_direnv()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code> and <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> run without Pixi: they set up a throwaway project in R’s temporary folder, and show the Pixi commands with <code>dry_run = TRUE</code> (<a href="https://github.com/roaldarbol/rpix/issues/84" class="external-link">#84</a>).</li>
-<li>rpix is a dependency of the project (<code>r-rpix</code>), so it’s in <code>pixi.lock</code> and a collaborator’s environment has it, rather than installed into the environment from R-universe. It isn’t on conda-forge yet: until it is, <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds the channel <a href="https://prefix.dev/roaldarbol/rpix-forge" class="external-link uri">https://prefix.dev/roaldarbol/rpix-forge</a>, after conda-forge, which also has the R extension’s sess and jgd for VS Code. Everything else still comes from conda-forge. The <code>.Rprofile</code> hint for an environment without rpix gives the Pixi commands that add it.</li>
+<li>rpix is a dependency of the project (<code>r-rpix</code>), so it’s in <code>pixi.lock</code> and a collaborator’s environment has it, rather than installed into the environment from R-universe. It isn’t on conda-forge yet: until it is, <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds the channel <a href="https://prefix.dev/channels/rpix-forge" class="external-link">rpix-forge</a>, after conda-forge, which also has the R extension’s sess and jgd for VS Code. Everything else still comes from conda-forge. The <code>.Rprofile</code> hint for an environment without rpix gives the Pixi commands that add it.</li>
 <li>In a Pixi environment, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> of a package already in <code>pixi.toml</code> says so, and how to update it with <code><a href="../reference/pixi_install.html">pixi_update()</a></code>, rather than passing on Pixi’s “already a dependency” (<a href="https://github.com/roaldarbol/rpix/issues/210" class="external-link">#210</a>).</li>
 <li>
 <code><a href="../reference/use_pixi.html">use_pixi()</a></code> creates a project for Linux, macOS (Intel and Apple Silicon) and Windows, and your computer’s platform if it’s another one, so collaborators on any of them can install it; <code>platforms</code> chooses others. Before, a project only had the platform it was created on (<a href="https://github.com/roaldarbol/rpix/issues/215" class="external-link">#215</a>).</li>
