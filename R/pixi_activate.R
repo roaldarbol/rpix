@@ -26,7 +26,12 @@
 #'   lists a package, which you can remove with [pixi_remove()]. Turn this off
 #'   with `options(rpix.watch_description = FALSE)`.
 #' * If R isn't the R of a Pixi environment in this project, nothing changes;
-#'   in an interactive session you get a hint instead.
+#'   in an interactive session you get a hint instead. In RStudio, it also
+#'   offers to reopen the project in a new RStudio with the environment's R,
+#'   and to close this one. Turn that off with `RPIX_OFFER_SWITCH=false` in
+#'   your `.Renviron`.
+#' * If the project also has renv, e.g. because RStudio's New Project set it
+#'   up, it says so: renv and Pixi both manage the project's packages.
 #' * If the project was moved or copied, Pixi's activation cache, which has
 #'   the old location, is removed, and environments that need reinstalling
 #'   are named.
@@ -52,13 +57,30 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
     {
       env <- pixi_r_location(r_home())
       root <- find_project_root(path)
+      if (!is.null(root) && has_renv(root)) {
+        inform(renv_clash_message())
+      }
       moved <- if (!is.null(root)) moved_project(root)
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
+        in_rstudio <- identical(detect_ide(), "rstudio") && !is.null(root)
+        # In RStudio, the question once it's ready says what to do
+        ask_switch <- !quiet && in_rstudio && offer_switch_enabled()
         inform(c(
           moved,
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
-          "i" = "Start R with {.code pixi run R}, or see {.url https://roald-arboel.com/rpix/articles/ide.html}."
+          if (!ask_switch) {
+            c(
+              "i" = if (in_rstudio) {
+                "Move to its R with {.strong Addins > Open with the project's Pixi R}, or {.code rpix::pixi_switch()}."
+              } else {
+                "Open the project in an IDE set up with {.code rpix::use_pixi(ide = ...)}, or start R with {.code pixi run R}. See {.url https://roald-arboel.com/rpix/articles/ide.html}."
+              }
+            )
+          }
         ))
+        if (ask_switch) {
+          when_rstudio_ready(function() offer_pixi_r(root))
+        }
         return(invisible(result))
       }
       if (length(moved) > 0) {
@@ -194,4 +216,54 @@ same_path <- function(x, y) {
       normalizePath(x, winslash = "/", mustWork = FALSE),
       normalizePath(y, winslash = "/", mustWork = FALSE)
     )
+}
+
+# Whether rpix may offer to reopen the project in RStudio with its Pixi R.
+# An environment variable, as the project's .Rprofile replaces the personal
+# one, so options set there don't apply.
+offer_switch_enabled <- function() {
+  !identical(tolower(Sys.getenv("RPIX_OFFER_SWITCH")), "false")
+}
+
+# Offer to reopen the project in a new RStudio with its Pixi R, and close this
+# one
+offer_pixi_r <- function(root) {
+  if (!ask_yes_no("Reopen this project in a new RStudio, with its Pixi R?")) {
+    cli::cli_alert_info(
+      "Later, use {.strong Addins > Open with the project's Pixi R}. To stop this question, set {.envvar RPIX_OFFER_SWITCH=false} in {.file ~/.Renviron}."
+    )
+    return(invisible(FALSE))
+  }
+  environments <- pixi_environments(root)$name
+  environment <- if (length(environments) == 1) environments
+  if (is.null(pixi_switch(environment, ide = "rstudio", path = root))) {
+    return(invisible(FALSE))
+  }
+  quit_session <- rstudio_api("executeCommand")
+  if (!is.null(quit_session)) {
+    quit_session("quitSession")
+  }
+  invisible(TRUE)
+}
+
+# Run a function once RStudio's session is ready, when its console can ask
+when_rstudio_ready <- function(fun) {
+  setHook(
+    "rstudio.sessionInit",
+    function(newSession) fun(),
+    action = "append"
+  )
+}
+
+# Whether the project also has renv
+has_renv <- function(root) {
+  file.exists(file.path(root, "renv", "activate.R"))
+}
+
+renv_clash_message <- function() {
+  c(
+    "!" = "This project also has renv, which clashes with Pixi: both manage the project's packages.",
+    "i" = "Turn renv off, and move its packages to {.file pixi.toml}, with {.code rpix::pixi_import_renv()}. Then delete the {.file renv} folder and {.file renv.lock}.",
+    "i" = "If RStudio's New Project added it ({.strong Use renv with this project}, which it applies to templates too), turn it off with {.code rstudioapi::writeRStudioPreference(\"new_proj_use_renv\", FALSE)}, or create one project with it unticked: RStudio only saves it when a project is created."
+  )
 }

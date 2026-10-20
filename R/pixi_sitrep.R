@@ -212,6 +212,15 @@ pixi_sitrep <- function(path = NULL) {
     )
   }
 
+  if (isTRUE(report$renv)) {
+    cli::cli_alert_warning(
+      "The project also has renv, which clashes with Pixi."
+    )
+    hint(
+      "Delete the {.file renv} folder and {.file renv.lock}, and the line in {.file .Rprofile} that runs {.file renv/activate.R}."
+    )
+  }
+
   if (!is.null(report$project)) {
     if (report$rprofile) {
       cli::cli_alert_success(
@@ -337,6 +346,7 @@ sitrep_data <- function(path = NULL) {
     },
     rprofile = !is.null(project) &&
       has_rprofile_block(file.path(project, ".Rprofile")),
+    renv = !is.null(project) && has_renv(project),
     ide = ide,
     ide_set_up = ide_ready,
     ide_step = if (isTRUE(ide_ready) && !in_project) ide_step(ide, project)
