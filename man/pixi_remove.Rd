@@ -8,6 +8,7 @@ pixi_remove(
   packages,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 )
@@ -20,6 +21,10 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 
 \item{platform}{Optional. Only add the packages for this platform, such as
 \code{"linux-64"}.}
+
+\item{type}{Optional. In a package, also remove the packages from this
+field of \code{DESCRIPTION}, such as \code{"Imports"}, and packages from GitHub
+from \code{Remotes}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}

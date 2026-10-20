@@ -40,6 +40,14 @@ devtools::check()
 
 Install packages with `pixi_add()`, not with `devtools::install_dev_deps()`, `pak` or `remotes`: those install into the environment without recording it in `pixi.toml`, so a collaborator doesn't get them, and Pixi may remove them the next time it installs the environment. In the environment's R, `install.packages()` goes through rpix.
 
+For a dependency of the package, `type` adds it to `DESCRIPTION` too, as `usethis::use_package()` does, so the two files stay in step:
+
+```r
+pixi_add("rlang>=1.1", type = "Imports")    # rlang (>= 1.1) in Imports
+pixi_add("github::hadley/emo", type = "Imports")  # also hadley/emo in Remotes
+pixi_remove("rlang", type = "Imports")
+```
+
 Pixi tasks make the common commands one word, in a terminal and in CI:
 
 ```r

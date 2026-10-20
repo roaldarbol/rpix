@@ -10,6 +10,7 @@ pixi_add(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 )
@@ -31,6 +32,14 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 
 \item{platform}{Optional. Only add the packages for this platform, such as
 \code{"linux-64"}.}
+
+\item{type}{Optional. In a package, also add the packages to this field of
+\code{DESCRIPTION}, as \code{usethis::use_package()} does: \code{"Imports"},
+\code{"Depends"}, \code{"Suggests"}, \code{"LinkingTo"} or \code{"Enhances"}. A \code{>=}
+constraint becomes the minimum version there; other constraints only go
+in \code{pixi.toml}. A package from GitHub also goes in \code{Remotes} (unless it's
+CRAN's mirror, \verb{cran/}). \code{DESCRIPTION} changes once Pixi has added the
+packages, and \code{feature} still decides where they go in \code{pixi.toml}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}
