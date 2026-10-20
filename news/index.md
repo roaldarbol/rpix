@@ -1,6 +1,6 @@
 # Changelog
 
-## rpix 0.9.1
+## rpix 0.9.1 (2026-10-21)
 
 ### Fixed
 

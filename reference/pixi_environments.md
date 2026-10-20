@@ -124,14 +124,14 @@ writeLines(
 # An environment with R 4.4 and the project's packages, next to the
 # default one
 pixi_add_environment("r44", r_version = "4.4", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation --manifest-path /tmp/RtmpJ2zEQ7/rpix-example/pixi.toml`
-#> ℹ Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/RtmpJ2zEQ7/rpix-example/pixi.toml`
-#> ℹ Would run: `pixi upgrade --feature r44 --exclude r-base --no-install --manifest-path /tmp/RtmpJ2zEQ7/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation --manifest-path /tmp/RtmpnAxAUJ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/RtmpnAxAUJ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi upgrade --feature r44 --exclude r-base --no-install --manifest-path /tmp/RtmpnAxAUJ/rpix-example/pixi.toml`
 
 # An environment with the default packages plus testthat, on the same
 # versions as the default environment
 pixi_add("testthat", feature = "test", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-testthat --feature test --manifest-path /tmp/RtmpJ2zEQ7/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-testthat --feature test --manifest-path /tmp/RtmpnAxAUJ/rpix-example/pixi.toml`
 pixi_add_environment(
   "test",
   features = "test",
@@ -139,7 +139,7 @@ pixi_add_environment(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/RtmpJ2zEQ7/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/RtmpnAxAUJ/rpix-example/pixi.toml`
 
 if (FALSE) { # \dontrun{
 # Needs Pixi
