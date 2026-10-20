@@ -35,6 +35,15 @@
 
 ## Changed
 
+* rpix needs Pixi 0.77 or later, which `SystemRequirements` now says. It's
+  the first Pixi that can build packages with pixi-build-r 0.2.0, for
+  `github::` packages and CRAN packages that aren't on conda-forge. A CI job
+  checks rpix with it (#84).
+* The examples of `pixi_add()`, `pixi_remove()`, `pixi_search()`,
+  `pixi_install()`, the environment, channel and task functions,
+  `use_pixi_direnv()`, `use_pixi_positron()` and `pixi_sitrep()` run without
+  Pixi: they set up a throwaway project in R's temporary folder, and show the
+  Pixi commands with `dry_run = TRUE` (#84).
 * rpix is a dependency of the project (`r-rpix`), so it's in `pixi.lock` and
   a collaborator's environment has it, rather than installed into the
   environment from R-universe. It isn't on conda-forge yet: until it is,

@@ -93,9 +93,29 @@ To see Pixi's output and build logs as Pixi runs, set
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/add/}.
 }
 \examples{
-\dontrun{
-pixi_add("tibble")
-pixi_add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
-pixi_add("dplyr", versions = "1.1")
-}
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_add("tibble", path = project, dry_run = TRUE)
+pixi_add(
+  c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
+  path = project,
+  dry_run = TRUE
+)
+pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
 }
