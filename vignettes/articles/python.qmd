@@ -16,14 +16,19 @@ use_pixi_python()
 
 or, for a new project, `use_pixi(python = TRUE)`. This adds Python, reticulate, and what reticulate needs to use the environment's Python, and points reticulate at it. Restart R afterwards.
 
-Then add Python packages, from conda-forge or from PyPI:
+Then add Python packages. Most are on conda-forge:
 
 ```r
 pixi_add("conda::numpy")
-pixi_add("pypi::humanize")
 ```
 
-and use them from R as usual:
+For those that aren't, such as [pydytuesday](https://pypi.org/project/pydytuesday/) (TidyTuesday's data, for Python), add them from PyPI:
+
+```r
+pixi_add("pypi::pydytuesday")
+```
+
+Use them from R as usual:
 
 ```r
 numpy <- reticulate::import("numpy")
@@ -39,4 +44,4 @@ numpy <- reticulate::import("numpy")
 ## Things to know
 
 - **`reticulate::py_require()` doesn't install into the project's Python:** add Python packages with `pixi_add()` instead.
-- **PyPI packages** need Python in the environment, and Pixi installs them with uv, next to the conda packages.
+- **PyPI packages** are for what conda-forge doesn't have: a package from conda-forge can bring the system libraries it needs, one from PyPI can't. They need Python in the environment, and Pixi installs them with uv, next to the conda packages.

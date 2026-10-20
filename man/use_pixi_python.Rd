@@ -38,7 +38,7 @@ program before it uses its Python, which Pixi doesn't have
 }
 
 Add Python packages with \code{\link[=pixi_add]{pixi_add()}}: \code{pixi_add("conda::numpy")} from
-conda-forge, or \code{pixi_add("pypi::humanize")} from PyPI. reticulate's
+conda-forge, or \code{pixi_add("pypi::pydytuesday")} from PyPI. reticulate's
 \code{py_require()} doesn't install into the project's Python.
 
 Restart R afterwards, so reticulate finds the environment's Python. The
@@ -49,6 +49,6 @@ it later, run \code{use_pixi_python()} again.
 \dontrun{
 # Needs Pixi, and adds Python to the project
 use_pixi_python()
-pixi_add(c("conda::numpy", "pypi::humanize"))
+pixi_add(c("conda::numpy", "pypi::pydytuesday"))
 }
 }

@@ -6,8 +6,8 @@
       i Python in the project is experimental: see <https://github.com/roaldarbol/rpix/issues/108>.
       v Set `RETICULATE_PYTHON` and `RETICULATE_CONDA` in 'pixi.toml', so reticulate uses the environment's Python.
         Restart R, then add Python packages with e.g.
-        `rpix::pixi_add("conda::numpy")`, or `rpix::pixi_add("pypi::humanize")` from
-        PyPI.
+        `rpix::pixi_add("conda::numpy")`, or `rpix::pixi_add("pypi::pydytuesday")`
+        from PyPI.
 
 ---
 

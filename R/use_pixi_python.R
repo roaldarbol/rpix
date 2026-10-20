@@ -21,7 +21,7 @@
 #'   (<https://github.com/rstudio/reticulate/issues/1650>).
 #'
 #' Add Python packages with [pixi_add()]: `pixi_add("conda::numpy")` from
-#' conda-forge, or `pixi_add("pypi::humanize")` from PyPI. reticulate's
+#' conda-forge, or `pixi_add("pypi::pydytuesday")` from PyPI. reticulate's
 #' `py_require()` doesn't install into the project's Python.
 #'
 #' Restart R afterwards, so reticulate finds the environment's Python. The
@@ -37,7 +37,7 @@
 #' \dontrun{
 #' # Needs Pixi, and adds Python to the project
 #' use_pixi_python()
-#' pixi_add(c("conda::numpy", "pypi::humanize"))
+#' pixi_add(c("conda::numpy", "pypi::pydytuesday"))
 #' }
 use_pixi_python <- function(python_version = NULL, path = NULL) {
   root <- require_project(path)
@@ -65,7 +65,7 @@ use_pixi_python <- function(python_version = NULL, path = NULL) {
     "Set {.envvar RETICULATE_PYTHON} and {.envvar RETICULATE_CONDA} in {.file {basename(manifest)}}, so reticulate uses the environment's Python."
   )
   hint(
-    "Restart R, then add Python packages with e.g. {.code rpix::pixi_add(\"conda::numpy\")}, or {.code rpix::pixi_add(\"pypi::humanize\")} from PyPI."
+    "Restart R, then add Python packages with e.g. {.code rpix::pixi_add(\"conda::numpy\")}, or {.code rpix::pixi_add(\"pypi::pydytuesday\")} from PyPI."
   )
   invisible(manifest)
 }

@@ -18,7 +18,7 @@
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
-#' * `"pypi::humanize"` (experimental): a Python package from PyPI, added with
+#' * `"pypi::pydytuesday"` (experimental): a Python package from PyPI, added with
 #'   `pixi add --pypi`, for Python in the project (see [use_pixi_python()]).
 #' * `"github::user/repo"` (experimental): an R package on GitHub, which Pixi
 #'   builds from source with its R build backend, `pixi-build-r`. Add `@ref` for a branch,
