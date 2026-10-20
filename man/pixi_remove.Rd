@@ -8,6 +8,7 @@ pixi_remove(
   packages,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 )
@@ -20,6 +21,10 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 
 \item{platform}{Optional. Only add the packages for this platform, such as
 \code{"linux-64"}.}
+
+\item{type}{Optional. In a package, also remove the packages from this
+field of \code{DESCRIPTION}, such as \code{"Imports"} or \code{"SystemRequirements"},
+and packages from GitHub from \code{Remotes}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}
@@ -39,7 +44,23 @@ that's what the manifest has, as \code{\link[=pixi_add]{pixi_add()}} adds it.
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/remove/}.
 }
 \examples{
-\dontrun{
-pixi_remove("tibble")
-}
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_remove("tibble", path = project, dry_run = TRUE)
 }

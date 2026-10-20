@@ -55,8 +55,13 @@ pixi_scan <- function(add = FALSE, path = NULL) {
   if (length(missing) > 0) {
     cli::cli_alert_warning("Not in {.file pixi.toml}: {.pkg {missing}}.")
     if (!add) {
+      add <- offer(
+        "Would you like to add {cli::qty(length(missing))}{?it/them} to {.file pixi.toml}?"
+      )
+    }
+    if (!add) {
       cli::cli_bullets(c(
-        " " = "Add them with {.code pixi_scan(add = TRUE)}."
+        " " = "Add them with {.code rpix::pixi_scan(add = TRUE)}."
       ))
     }
   } else {

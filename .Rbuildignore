@@ -14,8 +14,13 @@
 # vignettes/ only holds pkgdown articles
 ^vignettes$
 ^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$
 ^data-raw$
 # The agent skill, its plugin manifests and its evals
 ^skills$
 ^\.claude-plugin$
 ^evals$
+# Shared by several examples through roxygen's @example; it ends up in the
+# Rd files, so the package doesn't need it
+^man/examples$
+^cran-comments\.md$

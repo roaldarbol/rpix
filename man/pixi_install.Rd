@@ -7,7 +7,14 @@
 \alias{pixi_lock}
 \title{Install and update the project's packages}
 \usage{
-pixi_install(environment = NULL, all = FALSE, path = NULL, dry_run = FALSE)
+pixi_install(
+  environment = NULL,
+  all = FALSE,
+  locked = FALSE,
+  frozen = FALSE,
+  path = NULL,
+  dry_run = FALSE
+)
 
 pixi_update(packages = NULL, environment = NULL, path = NULL, dry_run = FALSE)
 
@@ -19,6 +26,13 @@ pixi_lock(path = NULL, dry_run = FALSE)
 \item{environment}{Optional. The environment. Defaults to \code{default}.}
 
 \item{all}{If \code{TRUE}, install all the project's environments.}
+
+\item{locked}{If \code{TRUE}, fail if \code{pixi.lock} is out of date with
+\code{pixi.toml}, rather than updating it, e.g. to check that a collaborator
+or CI gets exactly what's committed.}
+
+\item{frozen}{If \code{TRUE}, install exactly what \code{pixi.lock} says, without
+checking it against \code{pixi.toml}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}
@@ -36,7 +50,9 @@ of the Pixi call (invisibly).
 \description{
 \itemize{
 \item \code{pixi_install()} installs an environment as \code{pixi.lock} describes it,
-e.g. after cloning a project. \verb{pixi run} does this by itself, too.
+e.g. after cloning a project. \verb{pixi run} does this by itself, too. If
+\code{pixi.lock} is out of date with \code{pixi.toml}, Pixi updates it first,
+unless \code{locked} or \code{frozen} says otherwise.
 \item \code{pixi_update()} updates packages to the newest versions \code{pixi.toml}
 allows, in \code{pixi.lock}.
 \item \code{pixi_upgrade()} updates packages beyond that, and raises the versions in
@@ -56,9 +72,25 @@ For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi
 \url{https://pixi.prefix.dev/latest/reference/cli/pixi/lock/}.
 }
 \examples{
-\dontrun{
-pixi_install()
-pixi_update("dplyr")
-pixi_upgrade()
-}
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_install(path = project, dry_run = TRUE)
+pixi_update("dplyr", path = project, dry_run = TRUE)
+pixi_upgrade(path = project, dry_run = TRUE)
 }

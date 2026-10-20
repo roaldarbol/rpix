@@ -4,7 +4,7 @@
       path <- install_pixi()
     Message
       v Pixi is installed already, at '/usr/local/bin/pixi'.
-      i Update it with `pixi self-update` in a terminal, or reinstall it with `install_pixi(force = TRUE)`.
+      i Update it with `pixi self-update` in a terminal, or reinstall it with `rpix::install_pixi(force = TRUE)`.
 
 # install_pixi() asks, then runs Pixi's installer
 

@@ -2,7 +2,9 @@
 #'
 #' @description
 #' * `pixi_install()` installs an environment as `pixi.lock` describes it,
-#'   e.g. after cloning a project. `pixi run` does this by itself, too.
+#'   e.g. after cloning a project. `pixi run` does this by itself, too. If
+#'   `pixi.lock` is out of date with `pixi.toml`, Pixi updates it first,
+#'   unless `locked` or `frozen` says otherwise.
 #' * `pixi_update()` updates packages to the newest versions `pixi.toml`
 #'   allows, in `pixi.lock`.
 #' * `pixi_upgrade()` updates packages beyond that, and raises the versions in
@@ -22,28 +24,45 @@
 #'
 #' @param environment Optional. The environment. Defaults to `default`.
 #' @param all If `TRUE`, install all the project's environments.
+#' @param locked If `TRUE`, fail if `pixi.lock` is out of date with
+#'   `pixi.toml`, rather than updating it, e.g. to check that a collaborator
+#'   or CI gets exactly what's committed.
+#' @param frozen If `TRUE`, install exactly what `pixi.lock` says, without
+#'   checking it against `pixi.toml`.
 #' @param packages Optional. Only update these packages. Defaults to all.
 #' @param feature Optional. Only upgrade the packages of this feature.
 #' @inheritParams pixi_environments
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_install()
-#' pixi_update("dplyr")
-#' pixi_upgrade()
-#' }
+#'
+#' pixi_install(path = project, dry_run = TRUE)
+#' pixi_update("dplyr", path = project, dry_run = TRUE)
+#' pixi_upgrade(path = project, dry_run = TRUE)
 pixi_install <- function(
   environment = NULL,
   all = FALSE,
+  locked = FALSE,
+  frozen = FALSE,
   path = NULL,
   dry_run = FALSE
 ) {
+  if (isTRUE(locked) && isTRUE(frozen)) {
+    cli::cli_abort(
+      c(
+        "Use {.arg locked} or {.arg frozen}, not both.",
+        "i" = "{.arg locked} fails if {.file pixi.lock} is out of date; {.arg frozen} doesn't check."
+      )
+    )
+  }
   args <- c(
     "install",
     if (!is.null(environment)) c("--environment", environment),
-    if (all) "--all"
+    if (all) "--all",
+    if (isTRUE(locked)) "--locked",
+    if (isTRUE(frozen)) "--frozen"
   )
   result <- run_pixi(args, path = path, echo = TRUE, dry_run = dry_run)
   if (!isTRUE(dry_run)) {
