@@ -2,6 +2,11 @@
 
 ## Added
 
+* `use_pixi_jupyter()`, and `use_pixi(ide = "jupyter")`, set the project up
+  for Jupyter notebooks: a kernel for each environment with R, which starts
+  that environment's R through `pixi run`, JupyterLab in an environment of its
+  own, and a `jupyter` task that starts it with those kernels. Experimental.
+  See the IDE guide (#184).
 * `pixi_add_environment(r_version = )` adds an environment with another
   version of R in one step: R, the project's packages (so it gets the versions
   built for that R), rpix and the isolation from your personal library, and

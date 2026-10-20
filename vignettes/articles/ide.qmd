@@ -12,7 +12,7 @@ Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code
 rpix::use_pixi(ide = "positron")
 ```
 
-or later, for one IDE at a time, with `use_pixi_rstudio()`, `use_pixi_positron()`, `use_pixi_vscode()`, `use_pixi_emacs()`, `use_pixi_neovim()` or `use_pixi_zed()`.
+or later, for one IDE at a time, with `use_pixi_rstudio()`, `use_pixi_positron()`, `use_pixi_vscode()`, `use_pixi_emacs()`, `use_pixi_neovim()` or `use_pixi_zed()`. For Jupyter notebooks, see [Jupyter](#jupyter).
 
 Some settings are a matter of taste, such as VS Code's R console. rpix asks about them as it sets the IDE up. To answer in advance, e.g. in a script, give them as arguments, also to `use_pixi()`:
 
@@ -196,6 +196,41 @@ On Windows, direnv is rarely available, and the environment's R only starts when
 ### Another environment
 
 Run `rpix::pixi_switch("r44")`. It points `.envrc` at that environment. Reload direnv in the editor (in Emacs, `M-x envrc-reload`; in Neovim, start it again from the project; in Zed, reopen the project), then restart R.
+
+## Jupyter
+
+**Experimental:** this may still change. See [#184](https://github.com/roaldarbol/rpix/issues/184).
+
+### Set up
+
+```r
+rpix::use_pixi_jupyter()   # or use_pixi(ide = "jupyter")
+```
+
+This:
+
+- adds IRkernel to each environment with R (and, where an environment has Python, ipykernel);
+- writes a kernel for each of those environments into the project, in `.jupyter/kernels/`, named e.g. "R (Pixi: default)". A kernel starts its environment's R with `pixi run`, so it gets the activated environment on every platform. The kernels hold no paths of your computer, so commit them;
+- adds JupyterLab in an environment of its own, `jupyter`, so your R environments don't get Python and JupyterLab;
+- adds a `jupyter` task that starts JupyterLab with the project's kernels.
+
+### Every day
+
+```r
+rpix::pixi_run("jupyter")
+```
+
+starts JupyterLab. Open a notebook, and pick one of the "(Pixi: ...)" kernels.
+
+rpix doesn't use the `ir` kernel that comes with conda-forge's IRkernel: a kernel of that name in your own Jupyter folder, such as one from `IRkernel::installspec()`, would be used instead, with another R.
+
+### Another environment
+
+Run `rpix::use_pixi_jupyter()` again after adding an environment: it writes that environment's kernel too.
+
+### Other editors
+
+VS Code, Positron and other editors that run notebooks look for kernels in Jupyter's own folders, not in `.jupyter/kernels/`. That they find the project's kernels when the folder is on `JUPYTER_PATH` is not yet tried.
 
 ## The message at startup
 

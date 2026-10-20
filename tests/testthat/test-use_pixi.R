@@ -709,3 +709,14 @@ test_that("use_pixi() offers the newest R conda-forge has packages for, and uses
   expect_true("r-base=4.6" %in% adds[[1]])
   expect_true("r-base=4.5" %in% adds[[2]])
 })
+
+test_that("use_pixi(ide = \"jupyter\") sets Jupyter up", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  local_mocked_bindings(
+    use_pixi_jupyter = function(path, ...) calls$jupyter <- path
+  )
+  suppressMessages(use_pixi(path = dir, install_rpix = FALSE, ide = "jupyter"))
+  expect_true(same_path(calls$jupyter, dir))
+})

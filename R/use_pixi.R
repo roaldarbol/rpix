@@ -49,8 +49,9 @@
 #'   to the newest one that conda-forge has R packages for; it has a new R
 #'   before its packages are built for it.
 #' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
-#'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"`. See
-#'   [use_pixi_ide].
+#'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"` (see
+#'   [use_pixi_ide]), and `"jupyter"` (see [use_pixi_jupyter()],
+#'   experimental).
 #' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
 #' @param date Optional. Use packages as they were on this date, such as
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
@@ -100,7 +101,8 @@ use_pixi <- function(
     vscode = use_pixi_vscode,
     emacs = use_pixi_emacs,
     neovim = use_pixi_neovim,
-    zed = use_pixi_zed
+    zed = use_pixi_zed,
+    jupyter = use_pixi_jupyter
   )
   if (!is.null(ide)) {
     ide <- match.arg(ide, names(setup_ide), several.ok = TRUE)
