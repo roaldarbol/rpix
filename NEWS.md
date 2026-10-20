@@ -2,6 +2,13 @@
 
 ## Added
 
+* `pixi_add_environment(r_version = )` adds an environment with another
+  version of R in one step: R, the project's packages (so it gets the versions
+  built for that R), rpix and the isolation from your personal library, and
+  installs it. If that R can't have the packages, `pixi.toml` is left as it
+  was. `pixi_add_environment()` without features says the environment is a
+  copy of the default one, and `pixi_add(feature = )` for a feature no
+  environment uses says how to add one (#201).
 * RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task, open
   `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",

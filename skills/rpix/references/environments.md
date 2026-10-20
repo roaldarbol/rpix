@@ -22,11 +22,10 @@ The feature has to exist before an environment can use it, so add its packages f
 Another version of R, next to the default environment's:
 
 ```r
-pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
-pixi_add_environment("r44", features = "r44", default_feature = FALSE)
+pixi_add_environment("r44", r_version = "4.4")
 ```
 
-`default_feature = FALSE` is needed because the default feature has its own R, and an environment can't have two. It also leaves out the default feature's `conda-ecosystem-user-package-isolation`, without which conda-forge's R loads packages from the user's personal library, built for another R. `pixi_add_environment()` adds it to the environment's first feature when the environment has R; an older rpix doesn't, so check with `pixi_sitrep()`, which reports environments with R that lack it, with the `pixi_add()` call that adds it. Write `no-default-feature = true` into `pixi.toml` by hand only with that check after. For a package's checks across R versions, `use_pixi_check_matrix()` does all this (see `package-development.md`).
+It adds a feature `r44` with R 4.4, the default feature's packages by name (so it gets the versions built for that R, pinned after), rpix and `conda-ecosystem-user-package-isolation`, makes an environment of it without the default feature (which has the project's R), and installs it. Packages built from source aren't copied, as their entries pin the project's R; it lists them, to add with `pixi_add(..., feature = "r44")`. If that R can't have all the packages, it leaves `pixi.toml` as it was and shows Pixi's error: then do it by hand with fewer packages, `pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")` and `pixi_add_environment("r44", features = "r44", default_feature = FALSE)`, which adds the isolation to the feature too (an older rpix doesn't; `pixi_sitrep()` reports environments with R that lack it). For a package's checks across R versions, `use_pixi_check_matrix()` does all this (see `package-development.md`).
 
 ## Using an environment
 

@@ -28,14 +28,24 @@ The feature has to exist before an environment can use it, so add its packages f
 
 ## Another version of R
 
-An environment with R 4.4, next to the default one with the latest R:
+An environment with R 4.4, next to the default one with the latest R, in one step:
 
 ```r
-pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
-pixi_add_environment("r44", features = "r44", default_feature = FALSE)
+pixi_add_environment("r44", r_version = "4.4")
 ```
 
-`default_feature = FALSE` leaves out the default feature. Here that's needed: the default feature has its own version of R, and an environment can't have two. It also leaves out `conda-ecosystem-user-package-isolation`, which `use_pixi()` adds to the default feature to keep your personal R library out, so `pixi_add_environment()` adds it to the `r44` feature. Without it, R 4.4 could load packages from your personal library that were built for another R, and crash.
+This adds a feature `r44` with R 4.4 and the project's packages, from the default feature, and makes an environment of it, then installs it. The packages are copied by name, so the environment gets the versions built for R 4.4, which Pixi then pins in `pixi.toml`. rpix comes along if the project has it, so `pixi_switch()` and the `.Rprofile` work there too.
+
+- **The default feature is left out:** it has the project's R, and an environment can't have two. `conda-ecosystem-user-package-isolation`, which keeps your personal R library out, is copied too; without it, R 4.4 could load packages from your personal library that were built for another R, and crash.
+- **Packages built from source** (from GitHub, or CRAN packages that aren't on conda-forge) aren't copied, as their entries pin the project's R. rpix lists them; add them with `pixi_add(..., feature = "r44")`.
+- **If R 4.4 can't have all the packages,** e.g. an old R and a package that's newer than it, rpix leaves `pixi.toml` as it was and shows Pixi's error. Then build the environment by hand, with the packages it can have:
+
+  ```r
+  pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
+  pixi_add_environment("r44", features = "r44", default_feature = FALSE)
+  ```
+
+  `pixi_add_environment()` adds the isolation to the `r44` feature then too.
 
 ## Keeping environments in step
 

@@ -236,3 +236,144 @@ test_that("pixi_add_environment() keeps the personal library out without the def
     1
   )
 })
+
+r_project_manifest <- c(
+  "[workspace]",
+  'channels = ["conda-forge"]',
+  "",
+  "[dependencies]",
+  'r-base = "4.5.*"',
+  'conda-ecosystem-user-package-isolation = ">=1.0,<2"',
+  'r-cli = ">=3.6"  # a comment',
+  'bioconductor-limma = { version = "*", channel = "bioconda" }',
+  "r-mypkg = {",
+  '  git = "https://github.com/me/mypkg",',
+  '  package = { build.backend.name = "pixi-build-r" },',
+  "}",
+  "",
+  "[feature.test.dependencies]",
+  'r-testthat = "*"'
+)
+
+test_that("default_feature_packages() copies names and channels, not source packages", {
+  packages <- default_feature_packages(r_project_manifest)
+  expect_equal(
+    packages$specs,
+    c(
+      "r-base",
+      "conda-ecosystem-user-package-isolation",
+      "r-cli",
+      "bioconda::bioconductor-limma"
+    )
+  )
+  expect_equal(packages$skipped, "r-mypkg")
+})
+
+test_that("pixi_add_environment(r_version = ) adds R, the packages and the environment", {
+  root <- local_pixi_project(content = r_project_manifest)
+  commands <- suppressMessages(pixi_add_environment(
+    "r44",
+    r_version = "4.4",
+    features = "test",
+    path = root,
+    dry_run = TRUE
+  ))
+  expect_match(
+    commands[1],
+    "pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation r-cli bioconda::bioconductor-limma",
+    fixed = TRUE
+  )
+  expect_match(
+    commands[2],
+    "pixi workspace environment add r44 --feature r44 --feature test --no-default-feature",
+    fixed = TRUE
+  )
+  expect_match(
+    commands[3],
+    "pixi upgrade --feature r44 --exclude r-base --no-install",
+    fixed = TRUE
+  )
+})
+
+test_that("pixi_add_environment(r_version = ) installs it, and says what it didn't copy", {
+  root <- local_pixi_project(content = r_project_manifest)
+  calls <- local_recorded_pixi()
+  local_mocked_bindings(
+    install_environment = function(environment, root) {
+      calls$installed <- environment
+    }
+  )
+  expect_snapshot(pixi_add_environment("r44", r_version = "4.4", path = root))
+  expect_equal(calls$installed, "r44")
+  expect_equal(
+    vapply(calls$args, `[`, "", 1),
+    c("add", "workspace", "upgrade")
+  )
+})
+
+test_that("pixi_add_environment(r_version = ) puts pixi.toml back if R can't have the packages", {
+  root <- local_pixi_project(content = r_project_manifest)
+  writeLines("lock", file.path(root, "pixi.lock"))
+  error <- structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(
+      message = "pixi failed",
+      call = NULL,
+      stderr = "no solution",
+      stdout = ""
+    )
+  )
+  local_mocked_bindings(
+    run_pixi = function(args, ...) {
+      # As Pixi would leave them, partway through
+      write(
+        "[feature.r44.dependencies]",
+        file.path(root, "pixi.toml"),
+        append = TRUE
+      )
+      writeLines("changed", file.path(root, "pixi.lock"))
+      if (args[1] == "upgrade") {
+        stop(error)
+      }
+      invisible(list(status = 0))
+    },
+    install_environment = function(...) stop("shouldn't install")
+  )
+  expect_error(
+    suppressMessages(pixi_add_environment(
+      "r44",
+      r_version = "4.4",
+      path = root
+    )),
+    "can't have all the project's packages"
+  )
+  expect_equal(readLines(file.path(root, "pixi.toml")), r_project_manifest)
+  expect_equal(readLines(file.path(root, "pixi.lock")), "lock")
+})
+
+test_that("pixi_add_environment() without features says it's a copy", {
+  root <- local_pixi_project(content = r_project_manifest)
+  expect_message(
+    pixi_add_environment("copy", path = root, dry_run = TRUE),
+    "copy of the default environment"
+  )
+})
+
+test_that("pixi_add() says how to use a feature no environment has", {
+  root <- local_pixi_project(content = r_project_manifest)
+  local_recorded_pixi()
+  local_mocked_bindings(install_changed_environment = function(...) NULL)
+  expect_message(
+    pixi_add("testthat", feature = "test", path = root),
+    "rpix::pixi_add_environment",
+    fixed = TRUE
+  )
+  writeLines(
+    c(r_project_manifest, "", "[environments]", 'test = ["test"]'),
+    file.path(root, "pixi.toml")
+  )
+  expect_no_message(
+    pixi_add("testthat", feature = "test", path = root),
+    message = "No environment uses"
+  )
+})
