@@ -4,7 +4,7 @@
       result <- pixi_import_renv()
     Message
       ! Not on conda-forge, so not added: notonconda.
-      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      i Pixi can build it from CRAN's source: `rpix::pixi_add("github::cran/notonconda")`.
       i Built mypkg and ghdep from source, which is experimental.
       ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
@@ -34,7 +34,7 @@
       ! notonconda isn't on conda-forge.
       i Pixi can build it from CRAN's source, at <https://github.com/cran/notonconda>, with its dependencies from conda-forge.
       ! Didn't add notonconda.
-      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      i Pixi can build it from CRAN's source: `rpix::pixi_add("github::cran/notonconda")`.
       i Built mypkg and ghdep from source, which is experimental.
       ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
@@ -46,7 +46,7 @@
       result <- pixi_import_renv(deactivate = FALSE)
     Message
       ! Not on conda-forge, so not added: notonconda.
-      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      i Pixi can build it from CRAN's source: `rpix::pixi_add("github::cran/notonconda")`.
       ! conda-forge doesn't have the packages for R 4.6, the lock file's R, so rpix adds the newest R that has them.
       i Built mypkg and ghdep from source, which is experimental.
       ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
@@ -72,7 +72,7 @@
       pixi_import_renv(versions = "none", deactivate = FALSE, dry_run = TRUE)
     Message
       ! Not on conda-forge, so not added: notonconda.
-      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      i Pixi can build it from CRAN's source: `rpix::pixi_add("github::cran/notonconda")`.
       i Would build mypkg and ghdep from source, which is experimental.
       ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.
@@ -84,7 +84,7 @@
       pixi_import_renv(dry_run = TRUE)
     Message
       ! Not on conda-forge, so not added: notonconda.
-      i Pixi can build it from CRAN's source: `pixi_add("github::cran/notonconda")`.
+      i Pixi can build it from CRAN's source: `rpix::pixi_add("github::cran/notonconda")`.
       i Would build mypkg and ghdep from source, which is experimental.
       ! In a subfolder of a GitHub repository, which rpix can't add yet, so not added: subpkg.
       ! Not from CRAN, Bioconductor or GitHub, so not added: labpkg.

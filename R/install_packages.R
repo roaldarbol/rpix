@@ -52,7 +52,7 @@ install_with_pixi <- function(pkgs, ..., root) {
       c(
         "In a Pixi environment, {.fn install.packages} adds packages with Pixi, which can't use {.arg {extra}}.",
         "i" = "Give package names, e.g. {.code install.packages(\"dplyr\")}.",
-        "i" = "For a package that isn't on conda-forge, Pixi can build it from source: {.code pixi_add(\"github::user/repo\")}."
+        "i" = "For a package that isn't on conda-forge, Pixi can build it from source: {.code rpix::pixi_add(\"github::user/repo\")}."
       ),
       call = NULL
     )
@@ -66,7 +66,7 @@ install_with_pixi <- function(pkgs, ..., root) {
   # Pixi only says it's already a dependency, which doesn't update it
   listed <- listed_packages(pkgs, root)
   if (length(listed) > 0) {
-    update <- paste0("pixi_update(", deparse1(unname(listed)), ")")
+    update <- paste0("rpix::pixi_update(", deparse1(unname(listed)), ")")
     cli::cli_alert_info(
       "{.pkg {names(listed)}} {?is/are} already in {.file pixi.toml}. To update {?it/them}, run {.code {update}}."
     )

@@ -68,12 +68,16 @@
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_add("tibble")
-#' pixi_add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
-#' pixi_add("dplyr", versions = "1.1")
-#' }
+#'
+#' pixi_add("tibble", path = project, dry_run = TRUE)
+#' pixi_add(
+#'   c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#' pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
 pixi_add <- function(
   packages,
   versions = NULL,
@@ -207,7 +211,7 @@ pixi_add <- function(
           name <- if (is.na(row)) unavailable$package else parsed$input[row]
           other <- setdiff(common_platforms, unavailable$platform)[1]
           command <- paste0(
-            "pixi_add(",
+            "rpix::pixi_add(",
             deparse(name),
             ", platform = ",
             deparse(other),
@@ -393,7 +397,7 @@ abort_not_built <- function(unbuilt, requested, github, parent, call) {
 # The pixi_add() call that adds `packages`, as valid R: deparse() splits long
 # vectors over several lines
 pixi_add_call <- function(packages) {
-  paste0("pixi_add(", paste(deparse(packages), collapse = ""), ")")
+  paste0("rpix::pixi_add(", paste(deparse(packages), collapse = ""), ")")
 }
 
 scope_args <- function(feature = NULL, platform = NULL) {
@@ -555,7 +559,11 @@ offer_cran_source <- function(
     "{.pkg {names}} {?isn't/aren't} on conda-forge."
   }
   # deparse() splits long vectors over several lines
-  command <- paste0("pixi_add(", paste(deparse(github), collapse = ""), ")")
+  command <- paste0(
+    "rpix::pixi_add(",
+    paste(deparse(github), collapse = ""),
+    ")"
+  )
   how <- "Pixi can build {cli::qty(length(names))}{?it/them} from CRAN's source: {.code {command}}."
   if (!abort) {
     if (!is_interactive()) {

@@ -33,6 +33,11 @@
 #' In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 #' `.Rbuildignore`, so they stay out of the package's builds.
 #'
+#' In a project that uses renv (with a `renv.lock`), it offers to move the
+#' packages over with [pixi_import_renv()] first, which also turns renv off.
+#' renv keeps rpix out of the project's own R, so run `use_pixi(path = )` from
+#' another R session, e.g. your usual R outside the project.
+#'
 #' It turns on Pixi's activation cache for the project, in
 #' `.pixi/config.toml`. Pixi then reuses the environment's activation until the
 #' project changes, so R started through Pixi, e.g. by `pixi run` or Positron,
@@ -118,7 +123,7 @@ use_pixi <- function(
     if (!init_if_missing) {
       cli::cli_abort(c(
         "There's no Pixi project in {.path {dir}}.",
-        "i" = "Create one with {.code use_pixi()} or {.code pixi init}."
+        "i" = "Create one with {.code rpix::use_pixi()} or {.code pixi init}."
       ))
     }
     run_pixi(c("init", dir), project = "none", echo = TRUE)
@@ -146,6 +151,8 @@ use_pixi <- function(
       "Using packages as they were on {.val {value}} ({.code exclude-newer})."
     )
   }
+
+  offer_renv_import(path)
 
   r_base <- if (is.null(r_version)) "r-base" else paste0("r-base=", r_version)
   # conda-forge's R puts the user library of a regular R install first on
@@ -186,7 +193,19 @@ use_pixi <- function(
         echo = TRUE
       ),
       rpix_error_pixi = function(e) {
-        abort_r_without_packages(e, r_version, call = caller)
+        newest <- r_without_packages(e, r_version)
+        if (is.null(newest)) {
+          stop(e)
+        }
+        if (!offer_newest_r(newest)) {
+          abort_r_without_packages(e, newest, call = caller)
+        }
+        packages[packages == r_base] <- paste0("r-base=", newest$r_version)
+        run_pixi(
+          c("add", if (length(probe) > 0) "--no-install", packages),
+          path = path,
+          echo = TRUE
+        )
       }
     )
   }
@@ -213,15 +232,43 @@ use_pixi <- function(
   cli::cli_alert_success("Set up {.path {path}} for R.")
   if (is.null(ide)) {
     cli::cli_alert_info(
-      "Start R from the project's environment, e.g. with {.code pixi run R}, or set up your IDE with {.code use_pixi(ide = ...)}."
+      "Start R from the project's environment, e.g. with {.code pixi run R}, or set up your IDE with {.code rpix::use_pixi(ide = ...)}."
     )
   }
   invisible(manifest)
 }
 
+# A project that uses renv: offer to move its packages over first, as
+# pixi_import_renv() also adds the lock file's R (#252). Not when the project
+# has R already, e.g. when use_pixi() runs again.
+offer_renv_import <- function(path) {
+  if (
+    !file.exists(file.path(path, "renv.lock")) ||
+      has_dependency("r-base", path)
+  ) {
+    return(invisible(FALSE))
+  }
+  cli::cli_alert_info("This project uses renv ({.file renv.lock}).")
+  if (
+    !is_interactive() ||
+      !isTRUE(ask_yes_no(
+        "Would you like to move its packages to Pixi, and turn renv off?"
+      ))
+  ) {
+    cli::cli_alert_info(
+      "Move them with {.code rpix::pixi_import_renv()}, which also turns renv off."
+    )
+    return(invisible(FALSE))
+  }
+  pixi_import_renv(path = path)
+  invisible(TRUE)
+}
+
 # When Pixi can't add R packages for the R asked for, as it's newer than
 # conda-forge has them for, say so plainly. Other errors go on as they are.
-abort_r_without_packages <- function(e, r_version, call) {
+# The R asked for, and the newest R conda-forge has packages for, when Pixi
+# failed for that reason; otherwise NULL
+r_without_packages <- function(e, r_version) {
   unbuilt <- not_built_for_r(e$stderr)
   r_version <- r_version %||% ""
   asked <- regmatches(r_version, regexpr("^[0-9]+\\.[0-9]+", r_version))
@@ -230,12 +277,28 @@ abort_r_without_packages <- function(e, r_version, call) {
       length(asked) == 0 ||
       package_version(asked) <= package_version(unbuilt$r_version)
   ) {
-    stop(e)
+    return(NULL)
   }
+  list(asked = asked, r_version = unbuilt$r_version)
+}
+
+offer_newest_r <- function(newest) {
+  if (!is_interactive()) {
+    return(FALSE)
+  }
+  cli::cli_alert_warning(
+    "conda-forge has no R packages for R {newest$asked} yet; R {newest$r_version} is the newest you can use."
+  )
+  ask_yes_no(paste0("Would you like to use R ", newest$r_version, " instead?"))
+}
+
+abort_r_without_packages <- function(e, newest, call) {
+  asked <- newest$asked
+  unbuilt <- newest
   cli::cli_abort(
     c(
       "conda-forge has no R packages for R {asked} yet; R {unbuilt$r_version} is the newest you can use.",
-      "i" = "Use it with {.code use_pixi(r_version = \"{unbuilt$r_version}\")}."
+      "i" = "Use it with {.code rpix::use_pixi(r_version = \"{unbuilt$r_version}\")}."
     ),
     class = "rpix_error_r_version",
     parent = e,
@@ -382,7 +445,7 @@ parent_project <- function(dir) {
       return(manifest)
     }
   } else {
-    command <- paste0("use_pixi(path = ", deparse(root), ")")
+    command <- paste0("rpix::use_pixi(path = ", deparse(root), ")")
     cli::cli_alert_info(
       "{.path {root}} is a Pixi project too. To set that one up instead, run {.code {command}}."
     )

@@ -10,11 +10,11 @@
     Code
       install_with_pixi("dplyr", root = "/p")
     Message
-      i dplyr is already in 'pixi.toml'. To update it, run `pixi_update("dplyr")`.
+      i dplyr is already in 'pixi.toml'. To update it, run `rpix::pixi_update("dplyr")`.
     Code
       install_with_pixi(c("dplyr", "DESeq2", "tidyr"), root = "/p")
     Message
-      i dplyr and DESeq2 are already in 'pixi.toml'. To update them, run `pixi_update(c("dplyr", "bioc::DESeq2"))`.
+      i dplyr and DESeq2 are already in 'pixi.toml'. To update them, run `rpix::pixi_update(c("dplyr", "bioc::DESeq2"))`.
       i Adding tidyr with Pixi, so it's recorded in 'pixi.toml'.
 
 # install.packages() explains what Pixi can't do
@@ -26,7 +26,7 @@
       Error:
       ! In a Pixi environment, `install.packages()` adds packages with Pixi, which can't use `lib`.
       i Give package names, e.g. `install.packages("dplyr")`.
-      i For a package that isn't on conda-forge, Pixi can build it from source: `pixi_add("github::user/repo")`.
+      i For a package that isn't on conda-forge, Pixi can build it from source: `rpix::pixi_add("github::user/repo")`.
 
 # install.packages() takes packages from conda-forge, not `repos`
 

@@ -80,9 +80,29 @@ Existing settings in \code{.vscode/settings.json} are kept. In a package,
 \code{.vscode} is added to \code{.Rbuildignore}.
 }
 \examples{
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+use_pixi_positron(path = project)
+
 \dontrun{
+# These need Pixi, and add packages to the project
 use_pixi_rstudio()
-use_pixi_positron()
 use_pixi_vscode(console = "arf")
 use_pixi_neovim()
 }
