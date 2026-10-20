@@ -34,9 +34,8 @@ one searched for.
 For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi/search/}.
 }
 \examples{
-\dontrun{
-pixi_search("tibble")
-pixi_search("bioc::DESeq2")
-pixi_search("conda::numpy", channel = "conda-forge")
-}
+# With `dry_run = TRUE`, rpix shows the Pixi command it would run
+pixi_search("tibble", dry_run = TRUE)
+pixi_search("bioc::DESeq2", dry_run = TRUE)
+pixi_search("conda::numpy", channel = "conda-forge", dry_run = TRUE)
 }

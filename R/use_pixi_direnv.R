@@ -17,11 +17,11 @@
 #' @inheritParams use_pixi_ide
 #' @returns The `.envrc` file, invisibly.
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' use_pixi_direnv()
-#' use_pixi_direnv(environment = "r44")
-#' }
+#'
+#' use_pixi_direnv(path = project)
+#' use_pixi_direnv(path = project, environment = "r44")
 use_pixi_direnv <- function(path = NULL, environment = "default") {
   root <- require_project(path)
   file <- file.path(root, ".envrc")

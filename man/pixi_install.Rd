@@ -72,9 +72,25 @@ For more information, see \url{https://pixi.prefix.dev/latest/reference/cli/pixi
 \url{https://pixi.prefix.dev/latest/reference/cli/pixi/lock/}.
 }
 \examples{
-\dontrun{
-pixi_install()
-pixi_update("dplyr")
-pixi_upgrade()
-}
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_install(path = project, dry_run = TRUE)
+pixi_update("dplyr", path = project, dry_run = TRUE)
+pixi_upgrade(path = project, dry_run = TRUE)
 }

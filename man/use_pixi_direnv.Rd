@@ -28,8 +28,24 @@ direnv with \verb{pixi global install direnv}. In a package, \code{.envrc} is ad
 to \code{.Rbuildignore}.
 }
 \examples{
-\dontrun{
-use_pixi_direnv()
-use_pixi_direnv(environment = "r44")
-}
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+use_pixi_direnv(path = project)
+use_pixi_direnv(path = project, environment = "r44")
 }

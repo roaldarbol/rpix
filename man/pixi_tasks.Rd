@@ -92,14 +92,45 @@ Tasks are commands saved in \code{pixi.toml}, such as \code{test = "Rscript -e '
 For more information, see \url{https://pixi.prefix.dev/latest/workspace/advanced_tasks/}.
 }
 \examples{
-\dontrun{
-pixi_add_task("test", "Rscript -e 'devtools::test()'")
-pixi_tasks()
-pixi_run("test")
-pixi_run("test", environment = "r44")
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_add_task(
+  "test",
+  "Rscript -e 'devtools::test()'",
+  path = project,
+  dry_run = TRUE
+)
+pixi_run("test", path = project, dry_run = TRUE)
+pixi_run("test", environment = "r44", path = project, dry_run = TRUE)
 
 # A task with an argument
-pixi_add_task("render", "quarto render {{ file }}", args = "file")
-pixi_run("render", "analysis.qmd")
+pixi_add_task(
+  "render",
+  "quarto render {{ file }}",
+  args = "file",
+  path = project,
+  dry_run = TRUE
+)
+pixi_run("render", "analysis.qmd", path = project, dry_run = TRUE)
+
+\dontrun{
+# Needs Pixi
+pixi_tasks()
 }
 }
