@@ -221,3 +221,9 @@ test_that("SystemRequirements takes conda packages, and the R fields R packages"
     )
   })
 })
+
+test_that("a dry run of pixi_remove(type = ) leaves DESCRIPTION alone", {
+  root <- local_description_project()
+  expect_snapshot(pixi_remove("cli", type = "Imports", dry_run = TRUE))
+  expect_equal(readLines(file.path(root, "DESCRIPTION")), description_lines)
+})

@@ -41,3 +41,11 @@
       Error:
       ! SystemRequirements is for software outside R, not R packages from GitHub.
 
+# a dry run of pixi_remove(type = ) leaves DESCRIPTION alone
+
+    Code
+      pixi_remove("cli", type = "Imports", dry_run = TRUE)
+    Message
+      i Would run: `pixi remove r-cli --manifest-path pixi.toml`
+      i Would remove cli from Imports in 'DESCRIPTION'.
+
