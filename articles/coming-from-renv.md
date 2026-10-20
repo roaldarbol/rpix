@@ -36,18 +36,23 @@ familiar.
 
 ## Moving a project from renv
 
-In a terminal, in the project’s folder, create a Pixi project, then let
-rpix move the packages over and set the project up:
+renv keeps rpix out of the project’s own R, so set the project up from
+another R session, e.g. your usual R outside the project.
+[`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+notices `renv.lock`, and offers to move the packages over first:
 
-``` sh
-pixi init
-Rscript --no-init-file -e 'rpix::pixi_import_renv(); rpix::use_pixi()'
+``` r
+
+rpix::use_pixi(path = "~/myproject")
+#> ℹ This project uses renv ('renv.lock').
+#> ? Would you like to move its packages to Pixi, and turn renv off?
+#> 1: Yes
+#> 2: No
 ```
 
-`--no-init-file` keeps renv from starting, so this runs in your usual R,
-where rpix is installed.
-
-[`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md):
+Yes runs
+[`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md),
+which:
 
 - adds the packages in `renv.lock` to `pixi.toml`, at least at their
   locked versions, with the lock file’s version of R. Use
@@ -68,5 +73,10 @@ where rpix is installed.
   `.Rprofile`. Delete `renv.lock` and the `renv` folder when you no
   longer need them.
 
-Then start R with `pixi run R`, or set up your IDE (see [Using rpix with
-an IDE](https://roald-arboel.com/rpix/articles/ide.md)).
+Then open the project in your IDE, set up with `use_pixi(ide = )` (see
+[Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.md)).
+
+For other options, e.g. the locked versions themselves, answer no, and
+run `rpix::pixi_import_renv(versions = "exact", path = "~/myproject")`
+afterwards.

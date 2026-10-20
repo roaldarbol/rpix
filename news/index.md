@@ -4,6 +4,13 @@
 
 ### Added
 
+- [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  notices a project that uses renv (`renv.lock`), and in an interactive
+  session offers to move its packages over with
+  [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md),
+  which also turns renv off. *Coming from renv* now moves a project with
+  `use_pixi(path = )` from your usual R, rather than with commands in a
+  terminal ([\#252](https://github.com/roaldarbol/rpix/issues/252)).
 - In an interactive session, rpix offers to do the next step itself,
   rather than only saying how, as
   [`rlang::check_installed()`](https://rlang.r-lib.org/reference/is_installed.html)

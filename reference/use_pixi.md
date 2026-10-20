@@ -36,6 +36,13 @@ isn't, see `platform` in
 In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 `.Rbuildignore`, so they stay out of the package's builds.
 
+In a project that uses renv (with a `renv.lock`), it offers to move the
+packages over with
+[`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
+first, which also turns renv off. renv keeps rpix out of the project's
+own R, so run `use_pixi(path = )` from another R session, e.g. your
+usual R outside the project.
+
 It turns on Pixi's activation cache for the project, in
 `.pixi/config.toml`. Pixi then reuses the environment's activation until
 the project changes, so R started through Pixi, e.g. by `pixi run` or

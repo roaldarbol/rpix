@@ -159,11 +159,14 @@
 </tbody>
 </table></section><section class="level2"><h2 id="moving-a-project-from-renv">Moving a project from renv<a class="anchor" aria-label="anchor" href="#moving-a-project-from-renv"></a>
 </h2>
-<p>In a terminal, in the project’s folder, create a Pixi project, then let rpix move the packages over and set the project up:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> init</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">--no-init-file</span> <span class="at">-e</span> <span class="st">'rpix::pixi_import_renv(); rpix::use_pixi()'</span></span></code></pre></div>
-<p><code>--no-init-file</code> keeps renv from starting, so this runs in your usual R, where rpix is installed.</p>
-<p><code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code>:</p>
+<p>renv keeps rpix out of the project’s own R, so set the project up from another R session, e.g. your usual R outside the project. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> notices <code>renv.lock</code>, and offers to move the packages over first:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"~/myproject"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ This project uses renv ('renv.lock').</span></span>
+<span><span class="co">#&gt; ? Would you like to move its packages to Pixi, and turn renv off?</span></span>
+<span><span class="co">#&gt; 1: Yes</span></span>
+<span><span class="co">#&gt; 2: No</span></span></code></pre></div>
+<p>Yes runs <code><a href="../reference/pixi_import_renv.html">pixi_import_renv()</a></code>, which:</p>
 <ul>
 <li>adds the packages in <code>renv.lock</code> to <code>pixi.toml</code>, at least at their locked versions, with the lock file’s version of R. Use <code>versions = "exact"</code> for the locked versions themselves, where conda-forge has them.</li>
 <li>adds only the packages that nothing else in the lock file needs: the ones your project uses. Pixi installs what they need.</li>
@@ -171,7 +174,8 @@
 <li>lists packages it can’t add: those in a subfolder of a GitHub repository, from other sources such as GitLab, and those that aren’t on conda-forge or bioconda and can’t be built.</li>
 <li>turns renv off, by removing <code>source("renv/activate.R")</code> from <code>.Rprofile</code>. Delete <code>renv.lock</code> and the <code>renv</code> folder when you no longer need them.</li>
 </ul>
-<p>Then start R with <code>pixi run R</code>, or set up your IDE (see <a href="ide.html">Using rpix with an IDE</a>).</p>
+<p>Then open the project in your IDE, set up with <code>use_pixi(ide = )</code> (see <a href="ide.html">Using rpix with an IDE</a>).</p>
+<p>For other options, e.g. the locked versions themselves, answer no, and run <code>rpix::pixi_import_renv(versions = "exact", path = "~/myproject")</code> afterwards.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

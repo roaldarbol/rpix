@@ -24,6 +24,10 @@ added if it's on conda-forge for all of them; for one that isn't, see
 platform in pixi_add().
 In a package, it adds .pixi, pixi.toml and pixi.lock to
 .Rbuildignore, so they stay out of the package's builds.
+In a project that uses renv (with a renv.lock), it offers to move the
+packages over with pixi_import_renv() first, which also turns renv off.
+renv keeps rpix out of the project's own R, so run use_pixi(path = ) from
+another R session, e.g. your usual R outside the project.
 It turns on Pixi's activation cache for the project, in
 .pixi/config.toml. Pixi then reuses the environment's activation until the
 project changes, so R started through Pixi, e.g. by pixi run or Positron,
@@ -54,6 +58,10 @@ added if it's on conda-forge for all of them; for one that isn't, see
 platform in pixi_add().
 In a package, it adds .pixi, pixi.toml and pixi.lock to
 .Rbuildignore, so they stay out of the package's builds.
+In a project that uses renv (with a renv.lock), it offers to move the
+packages over with pixi_import_renv() first, which also turns renv off.
+renv keeps rpix out of the project's own R, so run use_pixi(path = ) from
+another R session, e.g. your usual R outside the project.
 It turns on Pixi's activation cache for the project, in
 .pixi/config.toml. Pixi then reuses the environment's activation until the
 project changes, so R started through Pixi, e.g. by pixi run or Positron,
@@ -145,6 +153,10 @@ added if it's on conda-forge for all of them; for one that isn't, see
 <code>platform</code> in <code><a href="pixi_add.html">pixi_add()</a></code>.</p>
 <p>In a package, it adds <code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code> to
 <code>.Rbuildignore</code>, so they stay out of the package's builds.</p>
+<p>In a project that uses renv (with a <code>renv.lock</code>), it offers to move the
+packages over with <code><a href="pixi_import_renv.html">pixi_import_renv()</a></code> first, which also turns renv off.
+renv keeps rpix out of the project's own R, so run <code>use_pixi(path = )</code> from
+another R session, e.g. your usual R outside the project.</p>
 <p>It turns on Pixi's activation cache for the project, in
 <code>.pixi/config.toml</code>. Pixi then reuses the environment's activation until the
 project changes, so R started through Pixi, e.g. by <code>pixi run</code> or Positron,
