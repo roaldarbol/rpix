@@ -53,9 +53,10 @@ there. The path is for the operating system you run it on; on another
 one, Positron ignores it.
 \item \code{use_pixi_vscode()} adds languageserver, the R extension's sess (how it
 talks to R) and jgd (its plots), and the console if it isn't R, to the
-environment. sess and jgd come from
-\url{https://prefix.dev/roaldarbol/rpix-forge} until they're on conda-forge;
-it's added to the project's channels after conda-forge. It points the R extension for VS Code, and the
+environment. sess and jgd come from the
+\href{https://prefix.dev/channels/rpix-forge}{rpix-forge} channel until
+they're on conda-forge; it's added to the project's channels after
+conda-forge. It points the R extension for VS Code, and the
 editors based on it such as VSCodium, Cursor and Windsurf, at the
 environment's R and the console, in \code{.vscode/settings.json}. On
 Windows, the environment's R only starts when the environment is

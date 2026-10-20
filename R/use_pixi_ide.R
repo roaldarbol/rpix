@@ -18,9 +18,10 @@
 #'   one, Positron ignores it.
 #' * `use_pixi_vscode()` adds languageserver, the R extension's sess (how it
 #'   talks to R) and jgd (its plots), and the console if it isn't R, to the
-#'   environment. sess and jgd come from
-#'   <https://prefix.dev/roaldarbol/rpix-forge> until they're on conda-forge;
-#'   it's added to the project's channels after conda-forge. It points the R extension for VS Code, and the
+#'   environment. sess and jgd come from the
+#'   [rpix-forge](https://prefix.dev/channels/rpix-forge) channel until
+#'   they're on conda-forge; it's added to the project's channels after
+#'   conda-forge. It points the R extension for VS Code, and the
 #'   editors based on it such as VSCodium, Cursor and Windsurf, at the
 #'   environment's R and the console, in `.vscode/settings.json`. On
 #'   Windows, the environment's R only starts when the environment is

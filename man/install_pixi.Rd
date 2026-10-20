@@ -29,8 +29,9 @@ works in a terminal too, after you open a new one. If Pixi is installed
 already, nothing happens unless \code{force = TRUE}; update an existing Pixi with
 \verb{pixi self-update} in a terminal.
 
-The installer is downloaded from \url{https://pixi.sh}. It may send prefix.dev
-an anonymous install count; set \code{PIXI_NO_TELEMETRY=1} to turn that off. See
+The installer is Pixi's own, \code{install.sh} (or \code{install.ps1} on Windows)
+from \code{pixi.sh}. It may send prefix.dev an anonymous install count; set
+\code{PIXI_NO_TELEMETRY=1} to turn that off. See
 \url{https://pixi.prefix.dev/latest/installation/}.
 }
 \examples{

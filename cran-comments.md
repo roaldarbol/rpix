@@ -8,19 +8,21 @@ records them in a lock file, and works with that project from the R console.
 
 ## Test environments
 
-<!-- Fill in before submitting, from the runs of this version. -->
+<!-- Fill in the builders' results before submitting. -->
 
 * GitHub Actions: R CMD check on macOS, Windows and Ubuntu (R release; Ubuntu
-  also R-devel and oldrel-1), with Pixi installed.
+  also R-devel and oldrel-1), and with Pixi installed (the newest Pixi, and
+  0.77, the oldest rpix supports).
 * GitHub Actions: `R CMD check --as-cran` on Ubuntu (R release), with
   `NOT_CRAN=false` and without Pixi, as on CRAN's machines.
+* Local, macOS (Intel), R 4.5: `R CMD check --as-cran` with CRAN's incoming
+  checks, without Pixi on the `PATH`.
 * win-builder (R-devel and release):
 * macOS builder (R release):
 * R-hub:
 
 ## R CMD check results
 
-<!-- Fill in from the runs above. -->
 
 0 errors | 0 warnings | 1 note
 
@@ -49,8 +51,8 @@ it, and `install_pixi()` installs it.
 rpix writes files only when the user calls a function that is meant to, and
 only in the project folder it's given (`path`, by default the working
 directory), as usethis does: `pixi.toml`, `.Rprofile`, `.gitignore`, and IDE
-settings such as `.vscode/settings.json`. Examples and tests only write in
-`tempdir()`.
+settings such as `.vscode/settings.json`, `.envrc` and `.jupyter/kernels/`.
+Examples and tests only write in `tempdir()`.
 
 `install_pixi()` installs Pixi with Pixi's official installer, into
 `~/.pixi`, and by default lets the installer add it to the shell's `PATH`
@@ -67,6 +69,24 @@ with `attach()`, putting an environment named `rpix:install` with its own
 `.Rprofile`, which `use_pixi()` writes, calls `pixi_activate()` in R started
 from that project's Pixi environment. Loading or attaching rpix never changes
 the search path, and `options(rpix.install_packages = FALSE)` turns it off.
+
+## RStudio and Positron
+
+rpix has RStudio addins and a New Project template (in `inst/rstudio`). In
+RStudio, a few functions call RStudio's own API functions (`.rs.api.*`, from
+the `tools:rstudio` environment, as rstudioapi does, so rpix doesn't depend
+on it): to read the editor's selection, show a prompt, or restart R after
+the project's packages are updated, which the user is asked about first.
+`pixi_switch()` uses Positron's `.ps.ui.executeCommand()` the same way.
+Outside these IDEs, and outside interactive sessions, none of this runs.
+
+## Questions at startup
+
+The project's `.Rprofile` (written by `use_pixi()`) calls `pixi_activate()`.
+In an interactive session, it may ask a question, such as whether to reopen
+the project in RStudio with the project's own R. It never asks in a
+non-interactive session, and `RPIX_OFFER_SWITCH=false` turns the question
+off. Loading or attaching rpix by itself never asks anything.
 
 ## Network
 
