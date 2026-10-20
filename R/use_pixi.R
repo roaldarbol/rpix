@@ -49,8 +49,9 @@
 #'   to the newest one that conda-forge has R packages for; it has a new R
 #'   before its packages are built for it.
 #' @param ide Optional. IDEs to set the project up for: any of `"rstudio"`,
-#'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"`. See
-#'   [use_pixi_ide].
+#'   `"positron"`, `"vscode"`, `"emacs"`, `"neovim"` and `"zed"` (see
+#'   [use_pixi_ide]), and `"jupyter"` (see [use_pixi_jupyter()],
+#'   experimental).
 #' @param init_if_missing If `TRUE`, create a Pixi project if there isn't one.
 #' @param date Optional. Use packages as they were on this date, such as
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
@@ -72,6 +73,8 @@
 #'   computer's. Defaults to `"linux-64"`, `"osx-64"`, `"osx-arm64"` and
 #'   `"win-64"`. To add platforms to an existing project, use
 #'   [pixi_add_platform()].
+#' @param python If `TRUE`, add Python for reticulate, with
+#'   [use_pixi_python()] (experimental).
 #' @param ... Passed on to the IDE setup, e.g. `console = "arf"` for
 #'   [use_pixi_vscode()], or `default_r = FALSE` for [use_pixi_positron()].
 #' @returns The path to the project's manifest, invisibly.
@@ -92,6 +95,7 @@ use_pixi <- function(
   path = NULL,
   activation_cache = TRUE,
   platforms = NULL,
+  python = FALSE,
   ...
 ) {
   setup_ide <- list(
@@ -100,7 +104,8 @@ use_pixi <- function(
     vscode = use_pixi_vscode,
     emacs = use_pixi_emacs,
     neovim = use_pixi_neovim,
-    zed = use_pixi_zed
+    zed = use_pixi_zed,
+    jupyter = use_pixi_jupyter
   )
   if (!is.null(ide)) {
     ide <- match.arg(ide, names(setup_ide), several.ok = TRUE)
@@ -224,6 +229,9 @@ use_pixi <- function(
     use_activation_cache(path)
   }
 
+  if (isTRUE(python)) {
+    use_pixi_python(path = path)
+  }
   for (i in ide) {
     args <- ide_args[intersect(names(ide_args), names(formals(setup_ide[[i]])))]
     do.call(setup_ide[[i]], c(list(path), args))

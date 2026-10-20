@@ -37,6 +37,12 @@ pixi_search <- function(
     )
   }
 
+  if (is_pypi(package)) {
+    cli::cli_abort(c(
+      "{.fn pixi_search} searches conda channels, not PyPI.",
+      "i" = "Look for Python packages on {.url https://pypi.org}."
+    ))
+  }
   parsed <- parse_packages(package)
   # As in pixi_add(), a package that isn't on conda-forge may be a
   # Bioconductor package, on bioconda

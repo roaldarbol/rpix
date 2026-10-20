@@ -40,11 +40,11 @@ parse_package <- function(input, call) {
   if (length(prefix) == 1) {
     source <- tolower(sub("::$", "", prefix))
     ref <- substring(ref, nchar(prefix) + 1)
-    if (!source %in% c("cran", "bioc", "conda")) {
+    if (!source %in% c("cran", "bioc", "conda", "pypi")) {
       cli::cli_abort(
         c(
           "Unknown source {.val {source}} in {.val {input}}.",
-          "i" = "Use {.code cran::}, {.code bioc::}, {.code conda::} or {.code github::}, or the {.arg channel} argument for other conda channels."
+          "i" = "Use {.code cran::}, {.code bioc::}, {.code conda::}, {.code pypi::} or {.code github::}, or the {.arg channel} argument for other conda channels."
         ),
         call = call
       )

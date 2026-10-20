@@ -78,6 +78,7 @@ articles:
       - articles/environments
       - articles/package-development
       - articles/coming-from-renv
+      - articles/python
       - articles/reproducibility
       - articles/private-channels
 
@@ -131,5 +132,7 @@ reference:
       - use_pixi
       - use_pixi_ide
       - use_pixi_direnv
+      - use_pixi_jupyter
+      - use_pixi_python
       - pixi_import_renv
       - pixi_activate

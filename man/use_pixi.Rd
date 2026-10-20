@@ -13,6 +13,7 @@ use_pixi(
   path = NULL,
   activation_cache = TRUE,
   platforms = NULL,
+  python = FALSE,
   ...
 )
 }
@@ -22,8 +23,9 @@ to the newest one that conda-forge has R packages for; it has a new R
 before its packages are built for it.}
 
 \item{ide}{Optional. IDEs to set the project up for: any of \code{"rstudio"},
-\code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"}. See
-\link{use_pixi_ide}.}
+\code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"} (see
+\link{use_pixi_ide}), and \code{"jupyter"} (see \code{\link[=use_pixi_jupyter]{use_pixi_jupyter()}},
+experimental).}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
@@ -51,6 +53,9 @@ project.}
 computer's. Defaults to \code{"linux-64"}, \code{"osx-64"}, \code{"osx-arm64"} and
 \code{"win-64"}. To add platforms to an existing project, use
 \code{\link[=pixi_add_platform]{pixi_add_platform()}}.}
+
+\item{python}{If \code{TRUE}, add Python for reticulate, with
+\code{\link[=use_pixi_python]{use_pixi_python()}} (experimental).}
 
 \item{...}{Passed on to the IDE setup, e.g. \code{console = "arf"} for
 \code{\link[=use_pixi_vscode]{use_pixi_vscode()}}, or \code{default_r = FALSE} for \code{\link[=use_pixi_positron]{use_pixi_positron()}}.}
