@@ -112,6 +112,8 @@ test_that("pixi_add() and pixi_install() check for skipped scripts", {
     class = "rpix_warning_post_link"
   )
   expect_warning(pixi_install(), class = "rpix_warning_post_link")
+  # Without the install after them, which would warn again
+  withr::local_envvar(PIXI_NO_INSTALL = "1")
   expect_warning(pixi_update(), class = "rpix_warning_post_link")
   expect_warning(pixi_upgrade(), class = "rpix_warning_post_link")
 })

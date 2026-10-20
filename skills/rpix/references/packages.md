@@ -70,4 +70,4 @@ The lasting fix is the package on conda-forge, for everyone: `pixi exec rattler-
 
 ## Updating
 
-`pixi update` (`pixi_update()`) moves packages to the newest versions `pixi.toml` allows; `pixi upgrade` (`pixi_upgrade()`) raises the constraints in `pixi.toml` too. Both rewrite `pixi.lock`: commit it.
+`pixi update` (`pixi_update()`) moves packages to the newest versions `pixi.toml` allows; `pixi upgrade` (`pixi_upgrade()`) raises the constraints in `pixi.toml` too. Both rewrite `pixi.lock`: commit it. `pixi_upgrade()` leaves R as it is (`--exclude r-base`) unless `r = TRUE`; plain `pixi upgrade` upgrades R too, so prefer `pixi_upgrade()`. In an interactive R both show the changes and ask first, then install; in the project's own R, restart R afterwards (on Windows they only update `pixi.lock`, as a running R locks its packages' DLLs).
