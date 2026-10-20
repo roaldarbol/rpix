@@ -151,6 +151,15 @@
   which `pixi.toml` doesn’t record. VS Code’s R extension can now
   install its sess package
   ([\#209](https://github.com/roaldarbol/rpix/issues/209)).
+- [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  and `use_pixi(ide = "vscode")`, add the packages the R extension’s
+  sess package needs (later, rstudioapi, processx and jsonlite) from
+  conda-forge. Version 3.2 of the extension installs them from CRAN,
+  past rpix’s
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html),
+  and later needs a compiler the environment doesn’t have, so it
+  couldn’t start an R Interactive session
+  ([\#244](https://github.com/roaldarbol/rpix/issues/244)).
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   sets up the folder it’s given, or the working directory, rather than a
   Pixi project in a parent folder. It says when a parent folder is a
