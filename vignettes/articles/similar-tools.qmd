@@ -1,0 +1,87 @@
+---
+title: "rpix and similar tools"
+---
+
+Many tools give an R project its own, recorded set of packages, and since 2025 there have been several new ones. This page maps where Pixi and rpix sit among them: what each tool takes care of, where they overlap, and how they work together. It isn't a ranking: they make different trade-offs, and several of them combine well. It's as of October 2026, and the field moves quickly, so check each tool's own documentation.
+
+For another overview, without Pixi, see R Works' [An explosion of R package and environment managers](https://rworks.dev/posts/r-managers/) (October 2026).
+
+## Pixi and rpix
+
+The package manager here is [Pixi](https://pixi.prefix.dev), by prefix.dev, not rpix. Pixi installs R, the packages and the system libraries they need, works out which versions go together, and writes them to `pixi.lock`. rpix is Pixi's interface from R:
+
+- it runs Pixi from the R console or your IDE;
+- it translates R package names into conda's, e.g. `dplyr` into `r-dplyr`, and Bioconductor packages into bioconda's;
+- it sets up RStudio, Positron and VS Code to use the project's R;
+- it adds what's specific to R, such as activating the environment from `.Rprofile`, and having Pixi build CRAN and GitHub packages that aren't on conda-forge.
+
+A project set up with rpix is an ordinary Pixi project. Anyone can use it with Pixi alone, from a terminal, without rpix, as can people who use the same project from Python. So where this page compares what a tool manages, it's Pixi; where it compares how you use it, it's rpix.
+
+## Where they sit
+
+It helps to think of three layers:
+
+1. **Where packages are published:** CRAN, Bioconductor, R-universe and GitHub.
+2. **Who builds them into binaries,** ready to install:
+   - CRAN itself, for Windows and macOS;
+   - Posit Package Manager, for Linux too;
+   - R-universe, for the packages it hosts;
+   - r2u, for Ubuntu;
+   - Nix;
+   - conda-forge and bioconda, for every platform, together with R and the system libraries packages need.
+3. **What installs them for a project and records them:** renv, rv, uvr and rig, from CRAN-like repositories; rix, from Nix; Docker, as an image; and Pixi, from conda-forge.
+
+rpix sits on top of Pixi, as the way to use it from R. In the middle layer, Pixi depends on conda-forge: it installs what conda-forge has built, and builds the rest from CRAN's or GitHub's source itself. conda-forge in turn builds its R packages from CRAN's and Bioconductor's releases, so all of them start from the same first layer.
+
+## What each one manages
+
+| Tool | Installs R | R packages from | System libraries (GDAL, compilers, …) | Records | Several environments per project | Windows | Used through |
+|---|---|---|---|---|---|---|---|
+| **Pixi**, with rpix | Yes | conda-forge and bioconda; GitHub and other CRAN packages built from source (experimental) | Installed and locked, from conda-forge | `pixi.toml`, `pixi.lock`: every package, R and system libraries included, with hashes, for each platform | Yes, e.g. one per R version | Yes | R functions (rpix); Pixi's CLI |
+| [renv](https://rstudio.github.io/renv/) | No (records its version) | CRAN, Posit Package Manager, Bioconductor, GitHub, … | No | `renv.lock`: package versions and sources | Profiles | Yes | R functions |
+| [rig](https://github.com/r-lib/rig) | Yes, several side by side | CRAN (Posit Package Manager's binaries), Bioconductor, git | Installs them with the system's package manager on Linux; not locked | `rproj.toml`, `rproj.lock` (`rig proj`, experimental) | Locks for several R versions at once | Yes | CLI |
+| [uvr](https://github.com/nbafrank/uvr) | Yes (Posit's portable builds) | Posit Package Manager's binaries, CRAN, Bioconductor, git | Prints or installs Linux system dependencies; not locked | `uvr.toml`, `uvr.lock` | No | Yes | CLI; an R package |
+| [rv](https://github.com/A2-ai/rv) | No (picks an installed R) | CRAN-like repositories, Bioconductor, git, local | Lists them | `rproject.toml`, `rv.lock` | No | Yes | CLI |
+| [rix](https://docs.ropensci.org/rix/) | Yes | Nix (nearly all of CRAN and Bioconductor) | Installed and pinned, from Nix | `default.nix`, pinning a nixpkgs commit: everything, with hashes | Yes, one `.nix` each | Through WSL2 | R functions; Nix's CLI |
+| [Docker](https://rocker-project.org/) (Rocker) | Yes, in the image | Whatever the image installs | Yes, in the image | The image (by digest) and its Dockerfile | One image each | In a Linux container | Docker |
+
+Some tools do part of this, and pair with the ones above:
+
+- **[pak](https://pak.r-lib.org/)** installs packages fast, with their Linux system requirements, and is used by rig and others. It's an installer, not a project manager.
+- **[Posit Package Manager](https://packagemanager.posit.co/)'s dated snapshots** pin package versions by date through the repository URL, with renv, rv, uvr or Docker.
+- **[groundhog](https://groundhogr.com/)** loads packages as they were on a date, written in the script itself.
+- **[r2u](https://github.com/eddelbuettel/r2u) and [bspm](https://github.com/cran4linux/bspm)** install CRAN packages as Ubuntu (or other Linux) system packages, quickly and with their system libraries, at their current versions.
+- **conda or mamba** install R and conda-forge's packages too, without a project or lock file of their own; Pixi adds those.
+
+## How they differ
+
+- **R itself.** Pixi, rig, uvr, rix and Docker install R. renv and rv use an R you have, and record its version.
+- **System libraries.** Packages such as sf need GDAL, PROJ and a compiler. Pixi (from conda-forge) and rix (from Nix) install them and lock them with the packages, on every platform they support. rig, uvr, pak and r2u install them with the system's package manager on Linux, without locking them; on Windows and macOS, binary packages bring them along.
+- **Which packages you can get.** Tools that use CRAN and Posit Package Manager see all of CRAN and Bioconductor. Nix covers nearly all of it. conda-forge has about 3,400 of CRAN's 25,400 packages (14%), but 953 of the 1,000 that other packages depend on most, and a new R gets its packages some months after its release. rpix has Pixi build others from source; see [How many packages you can use](package-availability.html).
+- **How exact the record is.** `default.nix` and `pixi.lock` pin everything, system libraries included, with hashes. The lock files of rig, uvr and rv record package versions and sources; `renv.lock` records versions and sources too. A snapshot date pins versions, but not R or system libraries.
+- **Windows.** All of them work on Windows, except rix, which needs WSL2, and Docker, which runs Linux in a container.
+- **Several environments.** Pixi (environments), renv (profiles), rig (several R versions in one lock) and rix (several `.nix` files) can keep more than one in a project, e.g. to test a package with two versions of R.
+- **How you use them.** renv and rix are used from R, and so is Pixi, through rpix. rig, uvr, rv and Pixi itself are command-line tools, written in Rust, and quick. rpix also sets up RStudio, Positron and VS Code to use the project's R.
+- **Age.** renv, pak, rig's R installs, Rocker and conda-forge have been around for years. Pixi is from 2023. uvr, rv and `rig proj` are from 2025 and 2026, and rpix had its first release in October 2026; they still change.
+
+## What Pixi and rpix add
+
+- The project needs **system libraries**, such as GDAL, or compilers, and you want them recorded with R and the packages, on Windows, macOS and Linux alike.
+- The project mixes **R with other software** from conda-forge, such as Python, Quarto or command-line tools, in one environment and one lock file.
+- You want **several environments** in a project, e.g. one per version of R, or a test environment.
+- Collaborators use **different operating systems**, and should get the same versions.
+
+## What other tools cover that Pixi doesn't
+
+- **Packages that aren't on conda-forge**, and that you'd rather not build from source: renv, rig, uvr or rv get all of CRAN as binaries, through Posit Package Manager.
+- **Exact reproducibility of everything on Linux or macOS**, for years: rix pins the whole system through Nix.
+- **Deploying to a server:** a Docker image, with renv or a Pixi environment inside it.
+- **Several versions of R on one computer**, outside any project: rig.
+
+## How they work together
+
+- **rig and Pixi:** rig installs and switches the R you use outside projects, which is where rpix itself is installed; Pixi gives each project its own R.
+- **renv and Pixi:** a renv project moves to Pixi with `use_pixi()`, which offers to import `renv.lock` (see [Coming from renv](coming-from-renv.html)).
+- **CRAN, GitHub and Pixi:** a package that isn't on conda-forge is built from CRAN's or GitHub's source by Pixi (see [Finding packages](finding-packages.html)). Getting it onto conda-forge, from its CRAN release, makes it a binary for everyone.
+- **Docker and Pixi:** a Pixi environment can go inside a Docker image, installed from `pixi.lock`, as renv's libraries can.
+- **Other pairs:** rig with renv, renv inside Docker, or Posit Package Manager's snapshots with renv, rv or uvr.
