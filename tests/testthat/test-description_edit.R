@@ -138,6 +138,7 @@ test_that("description_entries() checks the type, the project and the packages",
   expect_snapshot(error = TRUE, {
     description_entries("dplyr", NULL, "imports", path = root)
     description_entries("conda::gdal", NULL, "Imports", path = root)
+    description_entries("pypi::pydytuesday", NULL, "Imports", path = root)
   })
   unlink(file.path(root, "DESCRIPTION"))
   expect_error(
