@@ -159,7 +159,7 @@ use_pixi_check_matrix <- function(
     names <- c(names, add_minimum_environment(root, r_versions))
   }
   cli::cli_alert_success(
-    "Added the environment{?s} {.val {names}}. Run {.code pixi_check_matrix()}."
+    "Added the environment{?s} {.val {names}}. Run {.code rpix::pixi_check_matrix()}."
   )
   invisible(names)
 }

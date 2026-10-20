@@ -61,7 +61,7 @@
     Code
       names <- use_pixi_check_matrix(c("4.4", "4.5"))
     Message
-      v Added the environments "r44" and "r45". Run `pixi_check_matrix()`.
+      v Added the environments "r44" and "r45". Run `rpix::pixi_check_matrix()`.
 
 # use_pixi_check_matrix() adds a minimum-versions environment
 
@@ -69,7 +69,7 @@
       names <- use_pixi_check_matrix(minimum = TRUE)
     Message
       ! rlang and Rcpp have no minimum version in 'DESCRIPTION', so they get the oldest version on conda-forge for that R.
-      v Added the environment "minimum". Run `pixi_check_matrix()`.
+      v Added the environment "minimum". Run `rpix::pixi_check_matrix()`.
 
 # the minimum environment has the Suggests, at recent minimums
 
@@ -78,7 +78,7 @@
     Message
       ! nowhere isn't on conda-forge or bioconda, so the "minimum" environment leaves it out.
       ! covr has no minimum version in 'DESCRIPTION', and the project doesn't have it, so it gets the oldest version on conda-forge for that R.
-      v Added the environment "minimum". Run `pixi_check_matrix()`.
+      v Added the environment "minimum". Run `rpix::pixi_check_matrix()`.
 
 # the Suggests' versions come from the default environment, or none
 
@@ -86,7 +86,7 @@
       use_pixi_check_matrix(minimum = TRUE)
     Message
       ! withr has no minimum version in 'DESCRIPTION', and the project doesn't have it, so it gets the oldest version on conda-forge for that R.
-      v Added the environment "minimum". Run `pixi_check_matrix()`.
+      v Added the environment "minimum". Run `rpix::pixi_check_matrix()`.
 
 # the Suggests get the oldest versions if the project's don't solve
 
@@ -94,7 +94,7 @@
       use_pixi_check_matrix(minimum = TRUE)
     Message
       ! Pixi couldn't solve the "minimum" environment with withr at the project's version, which may not be built for `r-base >=4.1`, so it gets the oldest version on conda-forge instead.
-      v Added the environment "minimum". Run `pixi_check_matrix()`.
+      v Added the environment "minimum". Run `rpix::pixi_check_matrix()`.
 
 ---
 
@@ -115,7 +115,7 @@
       use_pixi_check_matrix(minimum = TRUE)
     Message
       ! nowhere isn't on conda-forge or bioconda, so the "minimum" environment leaves it out.
-      v Added the environment "minimum". Run `pixi_check_matrix()`.
+      v Added the environment "minimum". Run `rpix::pixi_check_matrix()`.
 
 # use_pixi_check_matrix() puts pixi.toml back if Pixi can't solve it
 

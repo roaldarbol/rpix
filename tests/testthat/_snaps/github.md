@@ -117,7 +117,7 @@
     Condition
       Error in `pixi_add()`:
       ! The project uses packages as of "2026-09-01", which hides the `pixi-build-r` that builds packages from GitHub.
-      i `exclude-newer` applies to Pixi's build backend too, and `pixi-build-r` 0.2.0 came out on 2026-10-14. Use a later date, e.g. with `pixi_set_date()`.
+      i `exclude-newer` applies to Pixi's build backend too, and `pixi-build-r` 0.2.0 came out on 2026-10-14. Use a later date, e.g. with `rpix::pixi_set_date()`.
 
 # pixi_add() explains a failed build in a project with a date
 

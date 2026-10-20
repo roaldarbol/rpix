@@ -308,16 +308,34 @@ editor_command <- function(editor) {
 
 require_project <- function(path, call = parent.frame()) {
   root <- find_project_root(path %||% getwd())
+  if (is.null(root) && offer_project(path)) {
+    root <- find_project_root(path %||% getwd())
+  }
   if (is.null(root)) {
     cli::cli_abort(
       c(
         "There's no Pixi project in {.path {path %||% getwd()}}.",
-        "i" = "Create one with {.code use_pixi()}."
+        "i" = "Create one with {.code rpix::use_pixi()}."
       ),
       call = call
     )
   }
   root
+}
+
+# Offer to set up a project where there's none, with use_pixi(). TRUE if it
+# did.
+offer_project <- function(path) {
+  where <- path %||% getwd()
+  if (!is_interactive()) {
+    return(FALSE)
+  }
+  cli::cli_alert_warning("There's no Pixi project in {.path {where}}.")
+  if (!isTRUE(ask_yes_no("Would you like to set one up there, with R?"))) {
+    return(FALSE)
+  }
+  use_pixi(path = where)
+  TRUE
 }
 
 # Platforms of the project's default environment

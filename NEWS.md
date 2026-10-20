@@ -2,6 +2,14 @@
 
 ## Added
 
+* In an interactive session, rpix offers to do the next step itself, rather
+  than only saying how, as `rlang::check_installed()` does: setting up a
+  project where there's none (with `use_pixi()`), logging in to a channel
+  that refused access and trying again, adding the packages `pixi_scan()`
+  finds, updating the packages after `pixi_set_date(NULL)`, adding VS Code's
+  console (arf or radian) when `pixi_switch()` finds it missing, adding
+  linux-64 for `use_pixi_github_action()`, and using the newest R conda-forge
+  has packages for when `use_pixi()` asks for a newer one (#251).
 * `pixi_remove_channel()` and `pixi_remove_platform()` remove channels and
   platforms from the project, as `pixi_add_channel()` and
   `pixi_add_platform()` add them (#254).
@@ -41,6 +49,8 @@
 
 ## Changed
 
+* Messages write rpix's functions with `rpix::`, so the code they suggest
+  runs as shown, as rpix usually isn't attached (#251).
 * rpix needs Pixi 0.77 or later, which `SystemRequirements` now says. It's
   the first Pixi that can build packages with pixi-build-r 0.2.0, for
   `github::` packages and CRAN packages that aren't on conda-forge. A CI job
@@ -98,6 +108,9 @@
 
 ## Fixed
 
+* When VS Code's console is missing, `pixi_switch()` now suggests
+  `pixi_add("conda::arf")`; `pixi_add("arf")` would look for an R package
+  called arf (#251).
 * When a package isn't on conda-forge for one of the project's platforms,
   `pixi_add()` says so, and for which, rather than that it couldn't be found
   (#215).
