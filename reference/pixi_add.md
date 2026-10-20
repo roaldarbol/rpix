@@ -71,6 +71,7 @@ pixi_add(
   channel = NULL,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 )
@@ -105,6 +106,22 @@ pixi_add(
 
   Optional. Only add the packages for this platform, such as
   `"linux-64"`.
+
+- type:
+
+  Optional. In a package, also add the packages to this field of
+  `DESCRIPTION`, as
+  [`usethis::use_package()`](https://usethis.r-lib.org/reference/use_package.html)
+  does: `"Imports"`, `"Depends"`, `"Suggests"`, `"LinkingTo"` or
+  `"Enhances"` for R packages, or `"SystemRequirements"` for software
+  outside R, given as conda packages (`"conda::gdal"`). A `>=`
+  constraint becomes the minimum version there; other constraints only
+  go in `pixi.toml`. A package from GitHub also goes in `Remotes`
+  (unless it's CRAN's mirror, `cran/`). `SystemRequirements` gets
+  conda-forge's names, such as `gdal` or `pkg-config`, added after what
+  it says already, which stays as it is. `DESCRIPTION` changes once Pixi
+  has added the packages, and `feature` still decides where they go in
+  `pixi.toml`.
 
 - path:
 
@@ -142,14 +159,14 @@ writeLines(
 )
 
 pixi_add("tibble", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
 pixi_add(
   c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
-#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
 pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
 ```

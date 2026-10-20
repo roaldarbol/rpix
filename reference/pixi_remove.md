@@ -19,6 +19,7 @@ pixi_remove(
   packages,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 )
@@ -40,6 +41,12 @@ pixi_remove(
 
   Optional. Only add the packages for this platform, such as
   `"linux-64"`.
+
+- type:
+
+  Optional. In a package, also remove the packages from this field of
+  `DESCRIPTION`, such as `"Imports"` or `"SystemRequirements"`, and
+  packages from GitHub from `Remotes`.
 
 - path:
 
@@ -77,5 +84,5 @@ writeLines(
 )
 
 pixi_remove("tibble", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi remove r-tibble --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi remove r-tibble --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
 ```

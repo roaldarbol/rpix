@@ -65,6 +65,23 @@ environment’s R,
 [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
 goes through rpix.
 
+For a dependency of the package, `type` adds it to `DESCRIPTION` too, as
+[`usethis::use_package()`](https://usethis.r-lib.org/reference/use_package.html)
+does, so the two files stay in step:
+
+``` r
+
+pixi_add("rlang>=1.1", type = "Imports")    # rlang (>= 1.1) in Imports
+pixi_add("github::hadley/emo", type = "Imports")  # also hadley/emo in Remotes
+pixi_add("conda::gdal>=3.6", type = "SystemRequirements")  # gdal (>= 3.6)
+pixi_remove("rlang", type = "Imports")
+```
+
+`SystemRequirements` gets conda-forge’s names, such as `gdal` or
+`pkg-config`, after what it says already. Those are the names tools that
+map `SystemRequirements` to packages look for, conda-forge’s recipe
+tools among them.
+
 Pixi tasks make the common commands one word, in a terminal and in CI:
 
 ``` r
