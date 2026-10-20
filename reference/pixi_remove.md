@@ -77,5 +77,5 @@ writeLines(
 )
 
 pixi_remove("tibble", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi remove r-tibble --manifest-path /tmp/Rtmpa7NZ5v/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi remove r-tibble --manifest-path /tmp/RtmpH8zQcq/rpix-example/pixi.toml`
 ```

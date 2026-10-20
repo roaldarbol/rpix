@@ -16,6 +16,12 @@ instead. repos is ignored, and other arguments Pixi can't use, such as
 lib, give an error. Package files and folders are installed with
 utils::install.packages(), so pixi.toml doesn't record them. Turn
 this off with options(rpix.install_packages = FALSE).
+In a package, in an interactive session, rpix notices when DESCRIPTION
+comes to need packages that pixi.toml doesn't have, e.g. after
+usethis::use_package() or an edit, and offers to add them with
+pixi_import_description(). It also says when DESCRIPTION no longer
+lists a package, which you can remove with pixi_remove(). Turn this off
+with options(rpix.watch_description = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
 If the project was moved or copied, Pixi's activation cache, which has
@@ -40,6 +46,12 @@ instead. repos is ignored, and other arguments Pixi can't use, such as
 lib, give an error. Package files and folders are installed with
 utils::install.packages(), so pixi.toml doesn't record them. Turn
 this off with options(rpix.install_packages = FALSE).
+In a package, in an interactive session, rpix notices when DESCRIPTION
+comes to need packages that pixi.toml doesn't have, e.g. after
+usethis::use_package() or an edit, and offers to add them with
+pixi_import_description(). It also says when DESCRIPTION no longer
+lists a package, which you can remove with pixi_remove(). Turn this off
+with options(rpix.watch_description = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.
 If the project was moved or copied, Pixi's activation cache, which has
@@ -124,6 +136,12 @@ instead. <code>repos</code> is ignored, and other arguments Pixi can't use, such
 <code>lib</code>, give an error. Package files and folders are installed with
 <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so <code>pixi.toml</code> doesn't record them. Turn
 this off with <code>options(rpix.install_packages = FALSE)</code>.</p></li>
+<li><p>In a package, in an interactive session, rpix notices when <code>DESCRIPTION</code>
+comes to need packages that <code>pixi.toml</code> doesn't have, e.g. after
+<code><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">usethis::use_package()</a></code> or an edit, and offers to add them with
+<code><a href="pixi_import_description.html">pixi_import_description()</a></code>. It also says when <code>DESCRIPTION</code> no longer
+lists a package, which you can remove with <code><a href="pixi_remove.html">pixi_remove()</a></code>. Turn this off
+with <code>options(rpix.watch_description = FALSE)</code>.</p></li>
 <li><p>If R isn't the R of a Pixi environment in this project, nothing changes;
 in an interactive session you get a hint instead.</p></li>
 <li><p>If the project was moved or copied, Pixi's activation cache, which has

@@ -127,8 +127,18 @@
 <p>Then <code>pixi run test</code>, or <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code> to list them.</p>
 </section><section class="level2"><h2 id="keeping-description-and-pixi-toml-in-step">Keeping DESCRIPTION and pixi.toml in step<a class="anchor" aria-label="anchor" href="#keeping-description-and-pixi-toml-in-step"></a>
 </h2>
-<p><code>DESCRIPTION</code> and <code>pixi.toml</code> drift apart easily: <code><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">usethis::use_package()</a></code> only changes <code>DESCRIPTION</code>, and <code><a href="../reference/pixi_add.html">pixi_add()</a></code> only <code>pixi.toml</code>. <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> compares them, in a “Package” section:</p>
+<p><code>DESCRIPTION</code> and <code>pixi.toml</code> drift apart easily: <code><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">usethis::use_package()</a></code> only changes <code>DESCRIPTION</code>, and <code><a href="../reference/pixi_add.html">pixi_add()</a></code> only <code>pixi.toml</code>.</p>
+<p>In the environment’s R, rpix notices when <code>DESCRIPTION</code> changes, and offers to add what it now needs:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">use_package</a></span><span class="op">(</span><span class="st">"rlang"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Adding rlang to Imports field in DESCRIPTION.</span></span>
+<span><span class="co">#&gt; ℹ 'DESCRIPTION' now needs rlang, which isn't in 'pixi.toml'.</span></span>
+<span><span class="co">#&gt; ? Would you like to add it?</span></span>
+<span><span class="co">#&gt; 1: Yes</span></span>
+<span><span class="co">#&gt; 2: No</span></span></code></pre></div>
+<p>It says when <code>DESCRIPTION</code> no longer lists a package too, but leaves removing it to you, as <code>pixi.toml</code> can need it for other reasons. <code>options(rpix.watch_description = FALSE)</code> turns this off.</p>
+<p><code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> also compares them, in a “Package” section:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_sitrep.html">pixi_sitrep</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Package ──</span></span>
 <span><span class="co">#&gt; ! 'DESCRIPTION' needs rlang, which isn't in the default environment in 'pixi.toml'.</span></span>
@@ -140,7 +150,7 @@
 <ul>
 <li>
 <p><strong>Windows:</strong> R’s build tools also need MSYS2’s <code>make</code>, <code>sed</code> and <code>coreutils</code>, which conda-forge’s R doesn’t bring there. Without them, devtools asks for Rtools. Add them for Windows only:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conda::m2-make"</span>, <span class="st">"conda::m2-sed"</span>, <span class="st">"conda::m2-coreutils"</span><span class="op">)</span>, feature <span class="op">=</span> <span class="st">"dev"</span>, platform <span class="op">=</span> <span class="st">"win-64"</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li><p><strong>macOS:</strong> the compilers use Apple’s SDK, from Xcode’s Command Line Tools. If a build can’t find system headers such as <code>stdio.h</code>, install them with <code>xcode-select --install</code> in a terminal.</p></li>
@@ -159,7 +169,7 @@
 </section><section class="level2"><h2 id="continuous-integration">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration"></a>
 </h2>
 <p><code><a href="../reference/use_pixi_github_action.html">use_pixi_github_action()</a></code> writes a GitHub Actions workflow that installs the environments from <code>pixi.lock</code>, so CI runs with exactly what you ran:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_check_matrix.html">use_pixi_check_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4.4"</span>, <span class="st">"4.5"</span><span class="op">)</span>, minimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/use_pixi_github_action.html">use_pixi_github_action</a></span><span class="op">(</span><span class="st">"check"</span><span class="op">)</span></span></code></pre></div>
 <p><code>"check"</code> runs <code>R CMD check</code> on Linux, macOS and Windows (those of the project’s platforms), in each environment that has <code>rcmdcheck</code> and the package’s <code>Suggests</code>, as the check matrix’s <code>r44</code>, <code>r45</code> and <code>minimum</code> do: the default environment has neither. Or name the environments with <code>environments =</code>. <code>"test-coverage"</code> and <code>"pkgdown"</code> write the other two workflows a package usually has. Commit <code>pixi.lock</code>: the run fails when it’s out of date with <code>pixi.toml</code>.</p>

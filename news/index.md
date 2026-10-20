@@ -4,6 +4,14 @@
 
 ### Added
 
+- In a package’s Pixi environment, rpix notices when `DESCRIPTION` comes
+  to need packages that `pixi.toml` doesn’t have, e.g. after
+  [`usethis::use_package()`](https://usethis.r-lib.org/reference/use_package.html)
+  or an edit, and in an interactive session offers to add them with
+  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md).
+  It also says when `DESCRIPTION` no longer lists a package.
+  `options(rpix.watch_description = FALSE)` turns it off
+  ([\#255](https://github.com/roaldarbol/rpix/issues/255)).
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   notices a project that uses renv (`renv.lock`), and in an interactive
   session offers to move its packages over with

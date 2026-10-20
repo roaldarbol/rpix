@@ -30,6 +30,17 @@ up.
   so `pixi.toml` doesn't record them. Turn this off with
   `options(rpix.install_packages = FALSE)`.
 
+- In a package, in an interactive session, rpix notices when
+  `DESCRIPTION` comes to need packages that `pixi.toml` doesn't have,
+  e.g. after
+  [`usethis::use_package()`](https://usethis.r-lib.org/reference/use_package.html)
+  or an edit, and offers to add them with
+  [`pixi_import_description()`](https://roald-arboel.com/rpix/reference/pixi_import_description.md).
+  It also says when `DESCRIPTION` no longer lists a package, which you
+  can remove with
+  [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md).
+  Turn this off with `options(rpix.watch_description = FALSE)`.
+
 - If R isn't the R of a Pixi environment in this project, nothing
   changes; in an interactive session you get a hint instead.
 

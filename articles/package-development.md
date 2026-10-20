@@ -84,8 +84,26 @@ to list them.
 only changes `DESCRIPTION`, and
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md) only
 `pixi.toml`.
+
+In the environment’s R, rpix notices when `DESCRIPTION` changes, and
+offers to add what it now needs:
+
+``` r
+
+usethis::use_package("rlang")
+#> ✔ Adding rlang to Imports field in DESCRIPTION.
+#> ℹ 'DESCRIPTION' now needs rlang, which isn't in 'pixi.toml'.
+#> ? Would you like to add it?
+#> 1: Yes
+#> 2: No
+```
+
+It says when `DESCRIPTION` no longer lists a package too, but leaves
+removing it to you, as `pixi.toml` can need it for other reasons.
+`options(rpix.watch_description = FALSE)` turns this off.
+
 [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
-compares them, in a “Package” section:
+also compares them, in a “Package” section:
 
 ``` r
 
