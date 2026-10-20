@@ -41,7 +41,13 @@ pixi_scan <- function(add = FALSE, path = NULL) {
   missing <- setdiff(used$package, c(own, "rpix", base_packages()))
   missing <- missing[!tolower(missing) %in% in_manifest]
 
-  ignore <- c("r-base", "r-languageserver", rpix_dependencies())
+  ignore <- c(
+    "r-base",
+    "r-languageserver",
+    "r-rpix",
+    vscode_r_packages,
+    rpix_dependencies()
+  )
   default <- setdiff(project_dependencies(root), ignore)
   default <- default[grepl("^(r|bioconductor)-", default)]
   unused <- default[!r_names(default) %in% tolower(used$package)]

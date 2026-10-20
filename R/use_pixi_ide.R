@@ -16,9 +16,11 @@
 #'   then starts that R when the project opens, until you pick another R
 #'   there. The path is for the operating system you run it on; on another
 #'   one, Positron ignores it.
-#' * `use_pixi_vscode()` adds languageserver, the packages the R extension's
-#'   sess package needs (so the extension needn't build them from source), and
-#'   the console if it isn't R, to the environment. It points the R extension for VS Code, and the
+#' * `use_pixi_vscode()` adds languageserver, the R extension's sess (how it
+#'   talks to R) and jgd (its plots), and the console if it isn't R, to the
+#'   environment. sess and jgd come from
+#'   <https://prefix.dev/roaldarbol/rpix-forge> until they're on conda-forge;
+#'   it's added to the project's channels after conda-forge. It points the R extension for VS Code, and the
 #'   editors based on it such as VSCodium, Cursor and Windsurf, at the
 #'   environment's R and the console, in `.vscode/settings.json`. On
 #'   Windows, the environment's R only starts when the environment is
@@ -147,8 +149,9 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
     }
   }
   console <- match.arg(console, consoles)
+  use_rpix_forge(root)
   add_missing(
-    c("r-languageserver", sess_dependencies, if (console != "R") console),
+    c("r-languageserver", vscode_r_packages, if (console != "R") console),
     root
   )
 
@@ -160,18 +163,19 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
     vscode_forks_hint()
   }
   cli::cli_alert_info(
-    "When the R extension offers to install its {.pkg sess} package, accept."
+    "If the R extension offers to install its {.pkg sess} package (e.g. after the extension was updated), accept."
   )
   invisible(file)
 }
 
-# The R extension installs its sess package itself (sess and jgd aren't on
-# conda-forge yet, #56). sess's dependencies that R doesn't have, it installs
-# from CRAN, as source, with `utils::install.packages()` and without the
-# project's .Rprofile, so rpix's install.packages() doesn't catch it: later
-# needs Rcpp compiled, and the environment has no compiler (#244). They come
-# from conda-forge instead.
-sess_dependencies <- c("r-jsonlite", "r-later", "r-processx", "r-rstudioapi")
+# The R extension's sess, and jgd, its plot device, from rpix_forge until
+# they're on conda-forge (#56). The extension uses an installed sess only if it
+# has exactly its bundled source revision, which this sess is stamped with
+# (built from the same vscode-R release). Otherwise it installs its own copy,
+# whose dependencies it would take from CRAN, as source, past rpix's
+# install.packages(): later needs a compiler the environment doesn't have
+# (#244). r-sess brings them from conda-forge either way.
+vscode_r_packages <- c("r-sess", "r-jgd")
 
 # VSCodium, Cursor and Windsurf read the same settings, but have their own
 # command

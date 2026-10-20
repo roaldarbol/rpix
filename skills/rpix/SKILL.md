@@ -36,7 +36,7 @@ rpix works from any R and finds the project by looking upwards from the working 
 2. `Rscript -e 'rpix::pixi_add("dplyr")'`: the user's usual R, if rpix is installed there. Fine for rpix's functions, which only drive Pixi; never for the project's own code.
 3. The Pixi CLI, with conda names: `pixi add r-dplyr`. rpix prints each Pixi command it runs, and `dry_run = TRUE` shows it without running it.
 
-rpix itself isn't in `pixi.toml`: it isn't on conda-forge yet, so `use_pixi()` installs it from R-universe. A fresh clone's environment may lack it (`pixi run Rscript -e 'packageVersion("rpix")'`); then use 2 or 3, or run `use_pixi()` again from the user's usual R, which keeps the project's versions and reinstalls rpix into the environment.
+rpix is in `pixi.toml` as `r-rpix`. It isn't on conda-forge yet, so it comes from the channel `https://prefix.dev/roaldarbol/rpix-forge`, which `use_pixi()` adds after conda-forge. A project set up by an earlier rpix, or another environment, may lack it (`pixi run Rscript -e 'packageVersion("rpix")'`); then use 2 or 3, or run `use_pixi()` again from the user's usual R, which keeps the project's versions and adds rpix.
 
 For more than a line of R, write a script and `pixi run Rscript script.R` rather than fight shell quoting. The first `pixi run` or `pixi install` downloads R and every package: allow several minutes, and run Pixi commands one at a time.
 

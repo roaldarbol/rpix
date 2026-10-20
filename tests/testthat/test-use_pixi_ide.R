@@ -149,8 +149,12 @@ test_that("adds languageserver and points the R extension at the environment's R
 
   suppressMessages(use_pixi_vscode(p$root))
 
-  # And sess's dependencies, so the R extension needn't compile them (#244)
-  expect_equal(p$args[[1]], c("add", "r-languageserver", sess_dependencies))
+  # sess and jgd come from rpix-forge until they're on conda-forge
+  expect_equal(
+    p$args[[1]],
+    c("workspace", "channel", "add", rpix_forge, "--no-install")
+  )
+  expect_equal(p$args[[2]], c("add", "r-languageserver", vscode_r_packages))
   r <- "${workspaceFolder}/.pixi/envs/default/bin/R"
   expect_equal(
     read_settings(p$root),
@@ -173,8 +177,8 @@ test_that("sets up arf or radian as the console, with the environment's R", {
 
   suppressMessages(use_pixi_vscode(p$root, console = "arf"))
   expect_equal(
-    p$args[[1]],
-    c("add", "r-languageserver", sess_dependencies, "arf")
+    p$args[[2]],
+    c("add", "r-languageserver", vscode_r_packages, "arf")
   )
   expect_equal(
     read_settings(p$root),
@@ -217,8 +221,8 @@ test_that("asks which console to use, or keeps the one set up", {
   )
   suppressMessages(use_pixi_vscode(p$root))
   expect_equal(
-    p$args[[1]],
-    c("add", "r-languageserver", sess_dependencies, "arf")
+    p$args[[2]],
+    c("add", "r-languageserver", vscode_r_packages, "arf")
   )
   expect_equal(vscode_console(p$root), "arf")
 
@@ -293,6 +297,7 @@ test_that("adds only what's missing, and sets direnv up once", {
     direnv_binary = function() ""
   )
   cat(
+    paste0('channels = ["conda-forge", "', rpix_forge, '"]'),
     "[dependencies]",
     'r-languageserver = ">=0.3"',
     file = file.path(p$root, "pixi.toml"),
@@ -300,8 +305,9 @@ test_that("adds only what's missing, and sets direnv up once", {
     append = TRUE
   )
 
+  # The channel's there already, and so is languageserver
   suppressMessages(use_pixi_vscode(p$root, console = "arf"))
-  expect_equal(p$args, list(c("add", sess_dependencies, "arf")))
+  expect_equal(p$args, list(c("add", vscode_r_packages, "arf")))
 
   # As use_pixi(ide = c("emacs", "neovim")) does
   expect_snapshot({
