@@ -40,16 +40,31 @@
 #' * The others: the command (invisibly) if `dry_run = TRUE`, otherwise the
 #'   result of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_add_task("test", "Rscript -e 'devtools::test()'")
-#' pixi_tasks()
-#' pixi_run("test")
-#' pixi_run("test", environment = "r44")
+#'
+#' pixi_add_task(
+#'   "test",
+#'   "Rscript -e 'devtools::test()'",
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#' pixi_run("test", path = project, dry_run = TRUE)
+#' pixi_run("test", environment = "r44", path = project, dry_run = TRUE)
 #'
 #' # A task with an argument
-#' pixi_add_task("render", "quarto render {{ file }}", args = "file")
-#' pixi_run("render", "analysis.qmd")
+#' pixi_add_task(
+#'   "render",
+#'   "quarto render {{ file }}",
+#'   args = "file",
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#' pixi_run("render", "analysis.qmd", path = project, dry_run = TRUE)
+#'
+#' \dontrun{
+#' # Needs Pixi
+#' pixi_tasks()
 #' }
 pixi_tasks <- function(environment = NULL, path = NULL) {
   result <- run_pixi(c("task", "list", "--json"), path = path)
