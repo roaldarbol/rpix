@@ -23,9 +23,9 @@ renv and Pixi solve the same problem: giving each project its own, recorded set 
 | `renv::install("dplyr")` | `rpix::pixi_add("dplyr")` |
 | `renv::remove("dplyr")` | `rpix::pixi_remove("dplyr")` |
 | `renv::snapshot()` | Not needed |
-| `renv::restore()` | `pixi install` in a terminal, or just `pixi run R` |
-| `renv::status()` | `pixi lock --check`, which fails if `pixi.lock` is out of date |
-| `renv::update()` | `pixi update`, within the versions `pixi.toml` allows, or `pixi upgrade` to raise those |
+| `renv::restore()` | `rpix::pixi_install()` |
+| `renv::status()` | `rpix::pixi_sitrep()`, which says when `pixi.lock` is out of date, or `rpix::pixi_install(locked = TRUE)`, which fails then |
+| `renv::update()` | `rpix::pixi_update()`, within the versions `pixi.toml` allows, or `rpix::pixi_upgrade()` to raise those |
 | `renv.lock` | `pixi.toml` and `pixi.lock` |
 
 ## Moving a project from renv
