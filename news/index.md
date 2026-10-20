@@ -4,6 +4,15 @@
 
 ### Added
 
+- The IDE guide says how to install each IDE, and which
+  `pixi global install` can install (Emacs, Neovim, Zed and direnv).
+  [`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  [`use_pixi_neovim()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  [`use_pixi_zed()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
+  and
+  [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
+  on Windows, link to it when the editor’s command isn’t on the `PATH`
+  ([\#193](https://github.com/roaldarbol/rpix/issues/193)).
 - RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task,
   open `pixi.toml`, and the sitrep. A New Project template, “Project

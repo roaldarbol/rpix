@@ -95,7 +95,7 @@
 
 
 
-    <p>Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code, or an editor such as Emacs, Neovim or Zed. Install the IDE as usual; most IDEs aren’t available as conda packages, or not in recent versions. Then let rpix point it at the R in your project’s Pixi environment, when you set the project up:</p>
+    <p>Most R users work in an IDE rather than a terminal: RStudio, Positron or VS Code, or an editor such as Emacs, Neovim or Zed. Install the IDE as usual (see <a href="#installing-the-ides">Installing the IDEs</a>). Then let rpix point it at the R in your project’s Pixi environment, when you set the project up:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span></span></code></pre></div>
 <p>or later, for one IDE at a time, with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_positron()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_vscode()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_emacs()</a></code>, <code><a href="../reference/use_pixi_ide.html">use_pixi_neovim()</a></code> or <code><a href="../reference/use_pixi_ide.html">use_pixi_zed()</a></code>.</p>
@@ -103,7 +103,63 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"vscode"</span>, console <span class="op">=</span> <span class="st">"arf"</span><span class="op">)</span></span></code></pre></div>
 <p>Whichever IDE you use, <code><a href="../reference/pixi_sitrep.html">rpix::pixi_sitrep()</a></code> checks that it runs the project’s R, and suggests fixes if it doesn’t.</p>
-<section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
+<section class="level2"><h2 id="installing-the-ides">Installing the IDEs<a class="anchor" aria-label="anchor" href="#installing-the-ides"></a>
+</h2>
+<p>Install the IDE as you’d install any program. conda-forge has the command-line editors, and direnv, in recent versions, so Pixi can install them for you as your own tools, outside any project, with <code>pixi global install</code>:</p>
+<table class="table caption-top">
+<thead><tr class="header">
+<th>IDE</th>
+<th>Install</th>
+<th>With Pixi</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>RStudio</td>
+<td><a href="https://posit.co/download/rstudio-desktop/" class="external-link">posit.co/download/rstudio-desktop</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Positron</td>
+<td><a href="https://positron.posit.co/download.html" class="external-link">positron.posit.co/download</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>VS Code</td>
+<td><a href="https://code.visualstudio.com/download" class="external-link">code.visualstudio.com/download</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Emacs</td>
+<td><a href="https://www.gnu.org/software/emacs/download.html" class="external-link">gnu.org/software/emacs/download</a></td>
+<td><code>pixi global install emacs</code></td>
+</tr>
+<tr class="odd">
+<td>Neovim</td>
+<td><a href="https://neovim.io/doc/install/" class="external-link">neovim.io/doc/install</a></td>
+<td><code>pixi global install nvim</code></td>
+</tr>
+<tr class="even">
+<td>Zed</td>
+<td><a href="https://zed.dev/download" class="external-link">zed.dev/download</a></td>
+<td><code>pixi global install zed</code></td>
+</tr>
+<tr class="odd">
+<td>direnv, for Emacs, Neovim and Zed</td>
+<td><a href="https://direnv.net/docs/installation.html" class="external-link">direnv.net/docs/installation</a></td>
+<td><code>pixi global install direnv</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<strong>Neovim’s package is <code>nvim</code>.</strong> conda-forge’s <code>neovim</code> is its Python client, without the editor.</li>
+<li>
+<strong>RStudio</strong> is on conda-forge too, as <code>rstudio-desktop</code>, but in a version from 2024; install it from Posit instead.</li>
+<li>
+<strong>Commands:</strong> rpix’s setups for Emacs, Neovim and Zed, and for VS Code on Windows, say when the editor’s command (<code>emacs</code>, <code>nvim</code>, <code>zed</code>, <code>code</code>) isn’t on the <code>PATH</code>. An app can be installed without it: Zed’s comes from its <strong>zed: install cli</strong> command, and VS Code’s from <strong>Shell Command: Install ‘code’ command in PATH</strong>, on macOS. <code>pixi global install</code> puts the commands in <code>~/.pixi/bin</code>, which is on the <code>PATH</code>.</li>
+<li>
+<strong>direnv</strong> also needs hooking into your shell once, which <code>pixi global install</code> doesn’t do: see <a href="https://direnv.net/docs/hook.html" class="external-link">direnv’s instructions</a>.</li>
+</ul></section><section class="level2"><h2 id="positron">Positron<a class="anchor" aria-label="anchor" href="#positron"></a>
 </h2>
 <section class="level3"><h3 id="set-up">Set up<a class="anchor" aria-label="anchor" href="#set-up"></a>
 </h3>
@@ -210,10 +266,8 @@
 <p>These editors start R, and languageserver, from the <code>PATH</code>. <a href="https://direnv.net" class="external-link">direnv</a> puts the environment’s on it whenever you’re in the project’s folder.</p>
 <section class="level3"><h3 id="set-up-3">Set up<a class="anchor" aria-label="anchor" href="#set-up-3"></a>
 </h3>
-<p>Install direnv once, with Pixi:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> global install direnv</span></code></pre></div>
-<p>Then, in the project:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Install direnv once (see <a href="#installing-the-ides">Installing the IDEs</a>), and hook it into your shell. Then, in the project:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_emacs</a></span><span class="op">(</span><span class="op">)</span>   <span class="co"># or use_pixi_neovim(), use_pixi_zed()</span></span></code></pre></div>
 <p>This adds the languageserver package to the environment, and a <code>.envrc</code> file that activates the environment (<code><a href="../reference/use_pixi_direnv.html">rpix::use_pixi_direnv()</a></code> writes just the file). direnv only loads a <code>.envrc</code> you’ve allowed, and again after it changes: rpix offers to allow it, or run <code>direnv allow</code> in the project.</p>
 <p>Each editor loads direnv in its own way:</p>
@@ -239,7 +293,7 @@
 </section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
 </h2>
 <p>In the IDE’s R console, <code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/path/to/project/.pixi/envs/default/lib/R"</span></span></code></pre></div>
 </section><script id="quarto-html-after-body" type="application/javascript">

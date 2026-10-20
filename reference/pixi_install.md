@@ -112,9 +112,9 @@ writeLines(
 )
 
 pixi_install(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi install --manifest-path /tmp/RtmpP6jZDw/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi install --manifest-path /tmp/Rtmpx5kIt2/rpix-example/pixi.toml`
 pixi_update("dplyr", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpP6jZDw/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/Rtmpx5kIt2/rpix-example/pixi.toml`
 pixi_upgrade(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi upgrade --manifest-path /tmp/RtmpP6jZDw/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi upgrade --manifest-path /tmp/Rtmpx5kIt2/rpix-example/pixi.toml`
 ```

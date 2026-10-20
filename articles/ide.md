@@ -2,9 +2,9 @@
 
 Most R users work in an IDE rather than a terminal: RStudio, Positron or
 VS Code, or an editor such as Emacs, Neovim or Zed. Install the IDE as
-usual; most IDEs aren’t available as conda packages, or not in recent
-versions. Then let rpix point it at the R in your project’s Pixi
-environment, when you set the project up:
+usual (see [Installing the IDEs](#installing-the-ides)). Then let rpix
+point it at the R in your project’s Pixi environment, when you set the
+project up:
 
 ``` r
 
@@ -33,6 +33,38 @@ rpix::use_pixi(ide = "vscode", console = "arf")
 Whichever IDE you use,
 [`rpix::pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
 checks that it runs the project’s R, and suggests fixes if it doesn’t.
+
+## Installing the IDEs
+
+Install the IDE as you’d install any program. conda-forge has the
+command-line editors, and direnv, in recent versions, so Pixi can
+install them for you as your own tools, outside any project, with
+`pixi global install`:
+
+| IDE | Install | With Pixi |
+|----|----|----|
+| RStudio | [posit.co/download/rstudio-desktop](https://posit.co/download/rstudio-desktop/) |  |
+| Positron | [positron.posit.co/download](https://positron.posit.co/download.html) |  |
+| VS Code | [code.visualstudio.com/download](https://code.visualstudio.com/download) |  |
+| Emacs | [gnu.org/software/emacs/download](https://www.gnu.org/software/emacs/download.html) | `pixi global install emacs` |
+| Neovim | [neovim.io/doc/install](https://neovim.io/doc/install/) | `pixi global install nvim` |
+| Zed | [zed.dev/download](https://zed.dev/download) | `pixi global install zed` |
+| direnv, for Emacs, Neovim and Zed | [direnv.net/docs/installation](https://direnv.net/docs/installation.html) | `pixi global install direnv` |
+
+- **Neovim’s package is `nvim`.** conda-forge’s `neovim` is its Python
+  client, without the editor.
+- **RStudio** is on conda-forge too, as `rstudio-desktop`, but in a
+  version from 2024; install it from Posit instead.
+- **Commands:** rpix’s setups for Emacs, Neovim and Zed, and for VS Code
+  on Windows, say when the editor’s command (`emacs`, `nvim`, `zed`,
+  `code`) isn’t on the `PATH`. An app can be installed without it: Zed’s
+  comes from its **zed: install cli** command, and VS Code’s from
+  **Shell Command: Install ‘code’ command in PATH**, on macOS.
+  `pixi global install` puts the commands in `~/.pixi/bin`, which is on
+  the `PATH`.
+- **direnv** also needs hooking into your shell once, which
+  `pixi global install` doesn’t do: see [direnv’s
+  instructions](https://direnv.net/docs/hook.html).
 
 ## Positron
 
@@ -265,13 +297,8 @@ you’re in the project’s folder.
 
 ### Set up
 
-Install direnv once, with Pixi:
-
-``` sh
-pixi global install direnv
-```
-
-Then, in the project:
+Install direnv once (see [Installing the IDEs](#installing-the-ides)),
+and hook it into your shell. Then, in the project:
 
 ``` r
 
