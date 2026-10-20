@@ -63,6 +63,8 @@
 <div class="section level3">
 <h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
 <ul><li>
+<code><a href="../reference/pixi_add_channel.html">pixi_remove_channel()</a></code> and <code><a href="../reference/pixi_add_channel.html">pixi_remove_platform()</a></code> remove channels and platforms from the project, as <code><a href="../reference/pixi_add_channel.html">pixi_add_channel()</a></code> and <code><a href="../reference/pixi_add_channel.html">pixi_add_platform()</a></code> add them (<a href="https://github.com/roaldarbol/rpix/issues/254" class="external-link">#254</a>).</li>
+<li>
 <code>pixi_install(locked = TRUE)</code> fails if <code>pixi.lock</code> is out of date with <code>pixi.toml</code>, and <code>pixi_install(frozen = TRUE)</code> installs <code>pixi.lock</code> without checking it, as <code>pixi install --locked</code> and <code>--frozen</code> do (<a href="https://github.com/roaldarbol/rpix/issues/253" class="external-link">#253</a>).</li>
 <li>
 <code>options(rpix.ref)</code> makes <code><a href="../reference/use_pixi.html">use_pixi()</a></code> also install rpix into the environment from GitHub, at a branch, tag or commit (e.g. <code>"main"</code>, or a pull request’s branch), to try a change before it’s released. The installed rpix records the commit, so <code><a href="../reference/use_pixi.html">use_pixi()</a></code> reinstalls only when it changes (<a href="https://github.com/roaldarbol/rpix/issues/245" class="external-link">#245</a>).</li>

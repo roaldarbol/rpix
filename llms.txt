@@ -141,7 +141,9 @@ workflow.*
   a function in another environment's R
 - [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
   [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
-  : Add channels or platforms to the project
+  [`pixi_remove_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  [`pixi_remove_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  : Add or remove the project's channels and platforms
 
 ## Developing a package
 

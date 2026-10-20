@@ -1,4 +1,4 @@
-# Add channels or platforms to the project
+# Add or remove the project's channels and platforms
 
 - `pixi_add_channel()` adds conda channels, which packages are installed
   from.
@@ -9,10 +9,14 @@
   `"osx-arm64"` or `"win-64"`, so `pixi.lock` covers them too and
   collaborators on them get the same packages.
 
+- `pixi_remove_channel()` and `pixi_remove_platform()` remove them
+  again, e.g. a platform no one uses, which Pixi then no longer solves
+  for, or a channel the project no longer needs packages from.
+
 For more information, see
-<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/>
+<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/>
 and
-<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/>.
+<https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/>.
 
 ## Usage
 
@@ -20,6 +24,10 @@ and
 pixi_add_channel(channels, path = NULL, dry_run = FALSE)
 
 pixi_add_platform(platforms, path = NULL, dry_run = FALSE)
+
+pixi_remove_channel(channels, path = NULL, dry_run = FALSE)
+
+pixi_remove_platform(platforms, path = NULL, dry_run = FALSE)
 ```
 
 ## Arguments
@@ -68,7 +76,7 @@ writeLines(
 )
 
 pixi_add_channel("bioconda", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi workspace channel add bioconda --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace channel add bioconda --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml`
 pixi_add_platform("osx-64", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi workspace platform add osx-64 --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace platform add osx-64 --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml`
 ```

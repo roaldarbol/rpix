@@ -4,6 +4,14 @@
 
 ### Added
 
+- [`pixi_remove_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  and
+  [`pixi_remove_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  remove channels and platforms from the project, as
+  [`pixi_add_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  and
+  [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
+  add them ([\#254](https://github.com/roaldarbol/rpix/issues/254)).
 - `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
   `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock`
   without checking it, as `pixi install --locked` and `--frozen` do
