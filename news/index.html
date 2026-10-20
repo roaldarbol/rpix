@@ -65,6 +65,8 @@
 <div class="section level3">
 <h3 id="added-0-9-0">Added<a class="anchor" aria-label="anchor" href="#added-0-9-0"></a></h3>
 <ul><li>
+<code><a href="../reference/use_pixi_jupyter.html">use_pixi_jupyter()</a></code>, and <code>use_pixi(ide = "jupyter")</code>, set the project up for Jupyter notebooks: a kernel for each environment with R, which starts that environment’s R through <code>pixi run</code>, JupyterLab in an environment of its own, and a <code>jupyter</code> task that starts it with those kernels. Experimental. See the IDE guide (<a href="https://github.com/roaldarbol/rpix/issues/184" class="external-link">#184</a>).</li>
+<li>
 <code><a href="../reference/use_pixi_python.html">use_pixi_python()</a></code>, and <code>use_pixi(python = TRUE)</code>, add Python to the project’s environment for reticulate, and point reticulate at it, and <code>pixi_add("pypi::pydytuesday")</code> adds Python packages from PyPI. Both are experimental. See <em>Python alongside R</em> (<a href="https://github.com/roaldarbol/rpix/issues/108" class="external-link">#108</a>).</li>
 <li>
 <code>pixi_add_environment(r_version = )</code> adds an environment with another version of R in one step: R, the project’s packages (so it gets the versions built for that R), rpix and the isolation from your personal library, and installs it. If that R can’t have the packages, <code>pixi.toml</code> is left as it was. <code><a href="../reference/pixi_environments.html">pixi_add_environment()</a></code> without features says the environment is a copy of the default one, and <code>pixi_add(feature = )</code> for a feature no environment uses says how to add one (<a href="https://github.com/roaldarbol/rpix/issues/201" class="external-link">#201</a>).</li>

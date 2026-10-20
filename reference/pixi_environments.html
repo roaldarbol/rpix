@@ -206,14 +206,14 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span><span class="co"># An environment with R 4.4 and the project's packages, next to the</span></span></span>
 <span class="r-in"><span><span class="co"># default one</span></span></span>
 <span class="r-in"><span><span class="fu">pixi_add_environment</span><span class="op">(</span><span class="st">"r44"</span>, r_version <span class="op">=</span> <span class="st">"4.4"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --feature r44 --exclude r-base --no-install --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add --feature r44 --no-install r-base=4.4 conda-ecosystem-user-package-isolation --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --feature r44 --exclude r-base --no-install --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># An environment with the default packages plus testthat, on the same</span></span></span>
 <span class="r-in"><span><span class="co"># versions as the default environment</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="pixi_add.html">pixi_add</a></span><span class="op">(</span><span class="st">"testthat"</span>, feature <span class="op">=</span> <span class="st">"test"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-testthat --feature test --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-testthat --feature test --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_add_environment</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"test"</span>,</span></span>
 <span class="r-in"><span>  features <span class="op">=</span> <span class="st">"test"</span>,</span></span>
@@ -221,7 +221,7 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
 <span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Needs Pixi</span></span></span>

@@ -217,11 +217,11 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
 <span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi task add test "Rscript -e 'devtools::test()'" --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi task add test "Rscript -e 'devtools::test()'" --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_run</span><span class="op">(</span><span class="st">"test"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml test`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml test`</span>
 <span class="r-in"><span><span class="fu">pixi_run</span><span class="op">(</span><span class="st">"test"</span>, environment <span class="op">=</span> <span class="st">"r44"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml --environment r44 test`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml --environment r44 test`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A task with an argument</span></span></span>
 <span class="r-in"><span><span class="fu">pixi_add_task</span><span class="op">(</span></span></span>
@@ -231,9 +231,9 @@ result of the Pixi call (invisibly).</p></li>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
 <span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi task add render "quarto render {{ file }}" --arg file --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi task add render "quarto render {{ file }}" --arg file --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_run</span><span class="op">(</span><span class="st">"render"</span>, <span class="st">"analysis.qmd"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml render analysis.qmd`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi run --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml render analysis.qmd`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Needs Pixi</span></span></span>

@@ -163,14 +163,14 @@ writeLines(
 )
 
 pixi_add("tibble", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
 pixi_add(
   c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
-#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
 pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
 ```

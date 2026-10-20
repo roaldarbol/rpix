@@ -4,6 +4,13 @@
 
 ### Added
 
+- [`use_pixi_jupyter()`](https://roald-arboel.com/rpix/reference/use_pixi_jupyter.md),
+  and `use_pixi(ide = "jupyter")`, set the project up for Jupyter
+  notebooks: a kernel for each environment with R, which starts that
+  environment’s R through `pixi run`, JupyterLab in an environment of
+  its own, and a `jupyter` task that starts it with those kernels.
+  Experimental. See the IDE guide
+  ([\#184](https://github.com/roaldarbol/rpix/issues/184)).
 - [`use_pixi_python()`](https://roald-arboel.com/rpix/reference/use_pixi_python.md),
   and `use_pixi(python = TRUE)`, add Python to the project’s environment
   for reticulate, and point reticulate at it, and
