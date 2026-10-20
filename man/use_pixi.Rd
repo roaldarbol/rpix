@@ -23,8 +23,9 @@ to the newest one that conda-forge has R packages for; it has a new R
 before its packages are built for it.}
 
 \item{ide}{Optional. IDEs to set the project up for: any of \code{"rstudio"},
-\code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"}. See
-\link{use_pixi_ide}.}
+\code{"positron"}, \code{"vscode"}, \code{"emacs"}, \code{"neovim"} and \code{"zed"} (see
+\link{use_pixi_ide}), and \code{"jupyter"} (see \code{\link[=use_pixi_jupyter]{use_pixi_jupyter()}},
+experimental).}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 

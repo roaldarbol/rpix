@@ -2,6 +2,11 @@
 
 ## Added
 
+* `use_pixi_jupyter()`, and `use_pixi(ide = "jupyter")`, set the project up
+  for Jupyter notebooks: a kernel for each environment with R, which starts
+  that environment's R through `pixi run`, JupyterLab in an environment of its
+  own, and a `jupyter` task that starts it with those kernels. Experimental.
+  See the IDE guide (#184).
 * `use_pixi_python()`, and `use_pixi(python = TRUE)`, add Python to the
   project's environment for reticulate, and point reticulate at it, and
   `pixi_add("pypi::pydytuesday")` adds Python packages from PyPI. Both are

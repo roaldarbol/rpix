@@ -720,3 +720,14 @@ test_that("use_pixi(python = TRUE) sets Python up", {
   suppressMessages(use_pixi(path = dir, install_rpix = FALSE, python = TRUE))
   expect_true(same_path(calls$python, dir))
 })
+
+test_that("use_pixi(ide = \"jupyter\") sets Jupyter up", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  local_mocked_bindings(
+    use_pixi_jupyter = function(path, ...) calls$jupyter <- path
+  )
+  suppressMessages(use_pixi(path = dir, install_rpix = FALSE, ide = "jupyter"))
+  expect_true(same_path(calls$jupyter, dir))
+})

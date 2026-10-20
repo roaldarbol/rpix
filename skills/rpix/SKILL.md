@@ -88,7 +88,7 @@ Symptom by symptom, with rpix's messages: `references/troubleshooting.md`.
 
 ## Setting up, sharing, developing
 
-- **New project, or a folder of R code:** `use_pixi(ide = "positron")` (or `"rstudio"`, `"vscode"`, `"emacs"`, `"neovim"`, `"zed"`), then `pixi_scan(add = TRUE)`. It adds R, rpix, `conda-ecosystem-user-package-isolation` (keeps the personal library out) and an `.Rprofile` block (activates the environment when an IDE starts R): keep all of them. `r_version =` and `date =` set R's version and a package date up front.
+- **New project, or a folder of R code:** `use_pixi(ide = "positron")` (or `"rstudio"`, `"vscode"`, `"emacs"`, `"neovim"`, `"zed"`, and `"jupyter"` for notebooks, experimental), then `pixi_scan(add = TRUE)`. It adds R, rpix, `conda-ecosystem-user-package-isolation` (keeps the personal library out) and an `.Rprofile` block (activates the environment when an IDE starts R): keep all of them. `r_version =` and `date =` set R's version and a package date up front.
 - **Sharing:** commit `pixi.toml` and `pixi.lock`; collaborators run `pixi_install()` from their usual R (or `pixi install`), then open the project in their IDE. `use_pixi()` makes a project for Linux, macOS (Intel and Apple Silicon) and Windows; `pixi_add_platform()` and `pixi_remove_platform()` change that.
 - **Packages as of a date:** `use_pixi(date = )` for a new project, `pixi_set_date()` for an existing one.
 - **Another version of R, or packages just for tests:** `pixi_add_environment("r44", r_version = "4.4")` for another R in one step; features and environments in `references/environments.md`.
