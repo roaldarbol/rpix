@@ -247,7 +247,7 @@ pixi_add <- function(
           cli::cli_abort(
             c(
               "{.pkg {unavailable$package}} isn't on conda-forge for {.val {unavailable$platform}}, one of the project's platforms.",
-              "i" = "Add it only for the platforms that have it, one at a time, e.g. {.code {command}}, or remove the platform with {.code pixi workspace platform remove {unavailable$platform}}."
+              "i" = "Add it only for the platforms that have it, one at a time, e.g. {.code {command}}, or remove the platform with {.code rpix::pixi_remove_platform(\"{unavailable$platform}\")}."
             ),
             class = "rpix_error_package_not_found",
             parent = reveal_pixi_failure(e)
@@ -277,6 +277,14 @@ pixi_add <- function(
   }
   if (!isTRUE(dry_run) && !rpix_verbose()) {
     show_pixi_output(result)
+  }
+  if (!isTRUE(dry_run) && !is.null(feature) && feature_unused(feature, path)) {
+    cli::cli_alert_info(
+      "No environment uses the {.val {feature}} feature yet, so its packages aren't installed anywhere."
+    )
+    hint(
+      "Add an environment with it with {.code rpix::pixi_add_environment(\"{feature}\", features = \"{feature}\")}, or with {.code default_feature = FALSE} if it has its own R."
+    )
   }
   if (length(github) > 0) {
     add_github_packages(
@@ -616,4 +624,18 @@ package_references <- function(parsed) {
 package_r_names <- function(parsed) {
   base <- sub("^[A-Za-z]+::", "", parsed$input)
   sub("[[:space:]=<>!~].*$", "", base)
+}
+
+# Whether no environment in the project uses a feature
+feature_unused <- function(feature, path = NULL) {
+  manifest <- find_manifest(path)
+  if (is.null(manifest)) {
+    return(FALSE)
+  }
+  lines <- readLines(manifest, warn = FALSE)
+  rows <- c(
+    table_lines(lines, "environments"),
+    table_lines(lines, "tool.pixi.environments")
+  )
+  !any(grepl(paste0('"', feature, '"'), lines[rows], fixed = TRUE))
 }

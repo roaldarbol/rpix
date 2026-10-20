@@ -2,6 +2,22 @@
 
 ## Added
 
+* `pixi_add_environment(r_version = )` adds an environment with another
+  version of R in one step: R, the project's packages (so it gets the versions
+  built for that R), rpix and the isolation from your personal library, and
+  installs it. If that R can't have the packages, `pixi.toml` is left as it
+  was. `pixi_add_environment()` without features says the environment is a
+  copy of the default one, and `pixi_add(feature = )` for a feature no
+  environment uses says how to add one (#201).
+* `pixi_sitrep()` lists files that more than one package in an environment
+  installs, such as shared libraries, and whose copy is there: only one can
+  be, so the other package may not work. It says when it's Strawberry Perl's
+  MinGW runtime over conda-forge's, which on Windows stops compiled R
+  packages from loading, and how to find what brings perl in (#176, #177).
+* The IDE guide says how to install each IDE, and which `pixi global install`
+  can install (Emacs, Neovim, Zed and direnv). `use_pixi_emacs()`,
+  `use_pixi_neovim()`, `use_pixi_zed()`, and `use_pixi_vscode()` on Windows,
+  link to it when the editor's command isn't on the `PATH` (#193).
 * RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task, open
   `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",

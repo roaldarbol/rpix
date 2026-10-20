@@ -20,7 +20,16 @@
 #'
 #' @param name The environment's name.
 #' @param features The features it's made of. They have to exist already, so
-#'   add packages to them first with `pixi_add(feature = )`.
+#'   add packages to them first with `pixi_add(feature = )`. Without any, the
+#'   environment is a copy of the default one.
+#' @param r_version Optional. Another version of R for the environment, such
+#'   as `"4.4"`, in one step: a feature named after the environment gets that
+#'   R, the default feature's packages (by name, so it gets the versions built
+#'   for that R) and `conda-ecosystem-user-package-isolation`. The environment
+#'   leaves out the default feature, which has the project's R, and is
+#'   installed, with rpix in it if the project has rpix. Packages built from
+#'   source aren't copied; rpix says how to add them. If that R can't have the
+#'   project's packages, `pixi.toml` and `pixi.lock` are left as they were.
 #' @param solve_group Optional. Environments in the same solve group get the
 #'   same versions of the packages they share.
 #' @param default_feature If `FALSE`, leave out the default feature. Needed
@@ -42,21 +51,9 @@
 #' @example man/examples/project.R
 #' @examples
 #'
-#' # An environment with R 4.4, next to the default one. It leaves out the
-#' # default feature, since that has another version of R.
-#' pixi_add(
-#'   c("r-base=4.4", "dplyr"),
-#'   feature = "r44",
-#'   path = project,
-#'   dry_run = TRUE
-#' )
-#' pixi_add_environment(
-#'   "r44",
-#'   features = "r44",
-#'   default_feature = FALSE,
-#'   path = project,
-#'   dry_run = TRUE
-#' )
+#' # An environment with R 4.4 and the project's packages, next to the
+#' # default one
+#' pixi_add_environment("r44", r_version = "4.4", path = project, dry_run = TRUE)
 #'
 #' # An environment with the default packages plus testthat, on the same
 #' # versions as the default environment
@@ -91,12 +88,32 @@ pixi_environments <- function(path = NULL) {
 pixi_add_environment <- function(
   name,
   features = NULL,
+  r_version = NULL,
   solve_group = NULL,
   default_feature = TRUE,
   overwrite = FALSE,
   path = NULL,
   dry_run = FALSE
 ) {
+  if (!is.null(r_version)) {
+    return(add_r_environment(
+      name,
+      r_version,
+      features = features,
+      solve_group = solve_group,
+      overwrite = overwrite,
+      path = path,
+      dry_run = dry_run
+    ))
+  }
+  if (length(features) == 0) {
+    cli::cli_alert_warning(
+      "Without {.arg features}, {.val {name}} is a copy of the default environment."
+    )
+    hint(
+      "Give it features of its own, e.g. {.code features = \"test\"}, or another R with {.code r_version = \"4.4\"}."
+    )
+  }
   args <- c(
     "workspace",
     "environment",
@@ -228,4 +245,125 @@ pixi_remove_platform <- function(platforms, path = NULL, dry_run = FALSE) {
     echo = TRUE,
     dry_run = dry_run
   )
+}
+
+# An environment with another version of R, in one step (#201): a feature
+# named after it, with that R, the default feature's packages and the
+# isolation, without the default feature, which has the project's R
+add_r_environment <- function(
+  name,
+  r_version,
+  features = NULL,
+  solve_group = NULL,
+  overwrite = FALSE,
+  path = NULL,
+  dry_run = FALSE,
+  call = parent.frame()
+) {
+  root <- require_project(path, call = call)
+  manifest <- find_manifest(root)
+  lines <- readLines(manifest, warn = FALSE)
+  default <- default_feature_packages(lines)
+  specs <- unique(c(
+    paste0("r-base=", r_version),
+    isolation_package,
+    setdiff(default$specs, c("r-base", isolation_package))
+  ))
+  add <- c("add", "--feature", name, "--no-install", specs)
+  environment <- c(
+    "workspace",
+    "environment",
+    "add",
+    name,
+    as.vector(rbind("--feature", unique(c(name, features)))),
+    "--no-default-feature",
+    if (!is.null(solve_group)) c("--solve-group", solve_group),
+    if (overwrite) "--force"
+  )
+  # Pins the versions, which Pixi leaves at * for a feature no environment
+  # used yet, but not R
+  pin <- c("upgrade", "--feature", name, "--exclude", "r-base", "--no-install")
+  if (isTRUE(dry_run)) {
+    commands <- vapply(
+      list(add, environment, pin),
+      function(args) run_pixi(args, path = root, dry_run = TRUE),
+      character(1)
+    )
+    return(invisible(commands))
+  }
+
+  lock <- file.path(root, "pixi.lock")
+  locked <- if (file.exists(lock)) readLines(lock, warn = FALSE)
+  restore <- function() {
+    writeLines(lines, manifest)
+    if (!is.null(locked)) writeLines(locked, lock)
+  }
+  cli::cli_alert_info(
+    "Adding the {.val {name}} environment, with R {r_version} and the project's {length(specs) - 2} package{?s}."
+  )
+  tryCatch(
+    {
+      run_pixi(add, path = root)
+      run_pixi(environment, path = root)
+      run_pixi(pin, path = root)
+    },
+    rpix_error_pixi = function(e) {
+      restore()
+      cli::cli_abort(
+        c(
+          "R {r_version} can't have all the project's packages, so {.file pixi.toml} is as it was.",
+          "i" = "Pixi's output below names what doesn't fit. Add the environment with fewer packages with {.code rpix::pixi_add(c(\"r-base={r_version}\", ...), feature = \"{name}\")} and {.code rpix::pixi_add_environment(\"{name}\", features = \"{name}\", default_feature = FALSE)}."
+        ),
+        parent = reveal_pixi_failure(e),
+        call = call
+      )
+    }
+  )
+  install_environment(name, root)
+  cli::cli_alert_success(
+    "Added the {.val {name}} environment, with R {r_version}."
+  )
+  if (length(default$skipped) > 0) {
+    cli::cli_alert_info(
+      "Not copied, as {cli::qty(length(default$skipped))}{?it's/they're} built from source: {.pkg {default$skipped}}. Add {?it/them} to the environment with {.code rpix::pixi_add(..., feature = \"{name}\")}."
+    )
+  }
+  hint("Switch to it with {.code rpix::pixi_switch(\"{name}\")}.")
+  invisible(file.path(root, "pixi.toml"))
+}
+
+# The default feature's packages as `pixi add` takes them: names, with their
+# channel if they have one (e.g. bioconda::bioconductor-limma), and the ones
+# built from source (git, path or url sources), which can't be copied by name
+default_feature_packages <- function(lines) {
+  rows <- c(
+    table_lines(lines, "dependencies"),
+    table_lines(lines, "tool.pixi.dependencies")
+  )
+  rows <- rows[!grepl("^\\s*\\[", lines[rows])]
+  text <- sub("#.*$", "", lines[rows])
+  # Each entry with its continuation lines, as TOML 1.1's inline tables can
+  # span several
+  braces <- function(x, brace) lengths(regmatches(x, gregexpr(brace, x)))
+  depth <- cumsum(braces(text, "\\{") - braces(text, "\\}"))
+  starts <- c(TRUE, depth[-length(depth)] == 0)
+  entries <- vapply(
+    split(text, cumsum(starts)),
+    paste,
+    character(1),
+    collapse = " "
+  )
+  pattern <- '^\\s*"?([A-Za-z0-9._-]+)"?\\s*=\\s*(.*)$'
+  entries <- entries[grepl(pattern, entries)]
+  names <- sub(pattern, "\\1", entries)
+  values <- trimws(sub(pattern, "\\2", entries))
+  table <- startsWith(values, "{")
+  source <- table & grepl("\\b(git|path|url|package)\\s*=", values)
+  channel <- ifelse(
+    table & grepl('channel\\s*=\\s*"', values),
+    sub('^.*channel\\s*=\\s*"([^"]+)".*$', "\\1", values),
+    NA_character_
+  )
+  specs <- ifelse(is.na(channel), names, paste0(channel, "::", names))
+  list(specs = unname(specs[!source]), skipped = unname(names[source]))
 }

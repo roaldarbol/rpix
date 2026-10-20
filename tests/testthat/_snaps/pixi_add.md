@@ -29,7 +29,7 @@
     Condition
       Error in `pixi_add()`:
       ! r-rmpi isn't on conda-forge for "win-64", one of the project's platforms.
-      i Add it only for the platforms that have it, one at a time, e.g. `rpix::pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `pixi workspace platform remove win-64`.
+      i Add it only for the platforms that have it, one at a time, e.g. `rpix::pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `rpix::pixi_remove_platform("win-64")`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.

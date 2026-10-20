@@ -161,6 +161,7 @@ use_pixi_vscode <- function(path = NULL, console = NULL) {
 
   file <- update_vscode_settings(root, vscode_settings("default", console))
   if (is_windows()) {
+    hint_missing_editor("vscode")
     cli::cli_alert_info(
       "Start VS Code from the project's environment, with {.code pixi run code .}: on Windows, its R only starts when the environment is activated."
     )
@@ -263,6 +264,7 @@ use_pixi_zed <- function(path = NULL) {
 # sets to the environment's
 use_pixi_editor <- function(path, editor, call = parent.frame()) {
   root <- require_project(path, call = call)
+  hint_missing_editor(editor)
   add_missing("r-languageserver", root)
   name <- ide_name(editor)
   if (is_windows()) {
@@ -293,6 +295,33 @@ add_missing <- function(packages, root) {
   if (length(packages) > 0) {
     run_pixi(c("add", packages), path = root, echo = TRUE)
   }
+}
+
+# If an editor's command isn't on the PATH, say where to get the editor
+# (#193). An app can be installed without its command, e.g. Zed's or VS
+# Code's on macOS, so this only says how, rather than that it's missing.
+hint_missing_editor <- function(editor) {
+  command <- c(vscode = "code", emacs = "emacs", neovim = "nvim", zed = "zed")[[
+    editor
+  ]]
+  if (on_path(command)) {
+    return(invisible(FALSE))
+  }
+  name <- ide_name(editor)
+  # On conda-forge, in recent versions
+  package <- c(emacs = "emacs", neovim = "nvim", zed = "zed")[editor]
+  cli::cli_alert_info(paste0(
+    "{name}'s {.code {command}} command isn't on the {.envvar PATH}. ",
+    if (!is.na(package)) {
+      "If {name} isn't installed, {.code pixi global install {package}} installs it. "
+    },
+    "See {.url https://roald-arboel.com/rpix/articles/ide.html#installing-the-ides}."
+  ))
+  invisible(TRUE)
+}
+
+on_path <- function(command) {
+  nzchar(Sys.which(command))
 }
 
 # The command that starts an editor in the project
