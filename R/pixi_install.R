@@ -376,11 +376,14 @@ display_name <- function(names) {
 }
 
 # The conda platform of this computer, e.g. "osx-arm64"
-conda_platform <- function() {
-  arm <- R.version$arch %in% c("aarch64", "arm64")
-  if (is_windows()) {
+conda_platform <- function(
+  sysname = Sys.info()[["sysname"]],
+  arch = R.version$arch
+) {
+  arm <- arch %in% c("aarch64", "arm64")
+  if (sysname == "Windows") {
     "win-64"
-  } else if (Sys.info()[["sysname"]] == "Darwin") {
+  } else if (sysname == "Darwin") {
     if (arm) "osx-arm64" else "osx-64"
   } else {
     if (arm) "linux-aarch64" else "linux-64"

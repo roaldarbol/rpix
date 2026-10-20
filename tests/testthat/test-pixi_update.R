@@ -180,3 +180,46 @@ test_that("change_rows() reads Pixi's changes", {
   expect_equal(rows$after, c("4.5.3", "3.64.1", "none", "1.0"))
   expect_equal(rows$explicit, c(TRUE, TRUE, FALSE, FALSE))
 })
+
+test_that("change_rows() reads PyPI's versions, and copes without one", {
+  rows <- change_rows(list(
+    list(
+      name = "pydytuesday",
+      before = list(version = "0.1.1"),
+      after = list(version = "0.1.2")
+    ),
+    list(name = "odd", before = list(conda = "odd.conda"), after = NULL)
+  ))
+  expect_equal(rows$before, c("0.1.1", "?"))
+  expect_equal(rows$after, c("0.1.2", "none"))
+})
+
+test_that("it goes ahead when Pixi can't show the changes", {
+  calls <- local_previewed_pixi(json = "not JSON")
+  local_mocked_bindings(is_interactive = function() TRUE)
+  suppressMessages(pixi_update())
+  expect_equal(calls$args[[2]], "update")
+})
+
+test_that("conda_platform() names this computer's platform", {
+  expect_equal(conda_platform("Windows", "x86_64"), "win-64")
+  expect_equal(conda_platform("Darwin", "aarch64"), "osx-arm64")
+  expect_equal(conda_platform("Darwin", "x86_64"), "osx-64")
+  expect_equal(conda_platform("Linux", "aarch64"), "linux-aarch64")
+  expect_equal(conda_platform("Linux", "x86_64"), "linux-64")
+  expect_true(
+    conda_platform() %in%
+      c("win-64", "osx-arm64", "osx-64", "linux-aarch64", "linux-64")
+  )
+})
+
+test_that("running_environment() finds the project's environment this R runs in", {
+  root <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(root, "pixi.toml"))
+  local_mocked_bindings(
+    r_home = function() file.path(root, ".pixi", "envs", "r44", "lib", "R")
+  )
+  expect_equal(running_environment(root), "r44")
+  local_mocked_bindings(r_home = function() "/usr/lib/R")
+  expect_null(running_environment(root))
+})
