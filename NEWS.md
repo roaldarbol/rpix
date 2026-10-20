@@ -2,6 +2,10 @@
 
 ## Added
 
+* `use_pixi_python()`, and `use_pixi(python = TRUE)`, add Python to the
+  project's environment for reticulate, and point reticulate at it, and
+  `pixi_add("pypi::humanize")` adds Python packages from PyPI. Both are
+  experimental. See *Python alongside R* (#108).
 * `pixi_add_environment(r_version = )` adds an environment with another
   version of R in one step: R, the project's packages (so it gets the versions
   built for that R), rpix and the isolation from your personal library, and

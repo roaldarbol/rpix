@@ -44,6 +44,12 @@ description_entries <- function(
     function(p) parse_github(p, call = call)$package,
     character(1)
   )
+  if (any(is_pypi(packages))) {
+    cli::cli_abort(
+      "{.val {packages[is_pypi(packages)]}} {?is a Python package/are Python packages}, so {?it doesn't/they don't} go in {.file DESCRIPTION}.",
+      call = call
+    )
+  }
   if (any(!on_github)) {
     parsed <- parse_packages(packages[!on_github])
     conda <- parsed$source == "conda"

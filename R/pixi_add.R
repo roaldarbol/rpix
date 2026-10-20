@@ -18,6 +18,8 @@
 #' * `"conda::gdal"`: a conda package that isn't an R package, used as is.
 #'   Names containing `-` or `_`, such as `"c-compiler"`, are also used as is.
 #' * `"cran::dplyr"`: same as `"dplyr"`.
+#' * `"pypi::humanize"` (experimental): a Python package from PyPI, added with
+#'   `pixi add --pypi`, for Python in the project (see [use_pixi_python()]).
 #' * `"github::user/repo"` (experimental): an R package on GitHub, which Pixi
 #'   builds from source with its R build backend, `pixi-build-r`. Add `@ref` for a branch,
 #'   tag or commit, as in `"github::cran/praise@1.0.0"`; `pixi.lock` records
@@ -134,6 +136,26 @@ pixi_add <- function(
     cli::cli_abort(
       "{.arg channel} doesn't apply to packages from GitHub."
     )
+  }
+  # Python packages from PyPI, which Pixi adds on their own
+  on_pypi <- is_pypi(packages)
+  if (any(on_pypi)) {
+    if (!is.null(channel) || !is.null(versions)) {
+      cli::cli_abort(
+        "{.arg channel} and {.arg versions} don't apply to packages from PyPI; give a constraint in the name, e.g. {.val pypi::pandas>=2}."
+      )
+    }
+    pypi <- add_pypi_packages(
+      packages[on_pypi],
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )
+    packages <- packages[!on_pypi]
+    if (length(packages) == 0 && length(github) == 0) {
+      return(invisible(pypi))
+    }
   }
   if (length(packages) == 0) {
     return(invisible(add_github_packages(
@@ -638,4 +660,34 @@ feature_unused <- function(feature, path = NULL) {
     table_lines(lines, "tool.pixi.environments")
   )
   !any(grepl(paste0('"', feature, '"'), lines[rows], fixed = TRUE))
+}
+
+is_pypi <- function(packages) {
+  grepl("^pypi::", packages, ignore.case = TRUE)
+}
+
+# Python packages from PyPI (#108), with `pixi add --pypi`. Experimental.
+add_pypi_packages <- function(
+  packages,
+  feature = NULL,
+  platform = NULL,
+  path = NULL,
+  dry_run = FALSE
+) {
+  specs <- sub("^pypi::", "", packages, ignore.case = TRUE)
+  if (!isTRUE(dry_run)) {
+    cli::cli_alert_info(
+      "Python packages from PyPI are experimental: see {.url https://github.com/roaldarbol/rpix/issues/108}."
+    )
+  }
+  result <- run_pixi(
+    c("add", "--pypi", specs, scope_args(feature, platform)),
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
+  if (!isTRUE(dry_run)) {
+    install_changed_environment(feature, path = path)
+  }
+  invisible(result)
 }

@@ -72,6 +72,8 @@ offers to allow it.
 \item \code{"conda::gdal"}: a conda package that isn't an R package, used as is.
 Names containing \code{-} or \verb{_}, such as \code{"c-compiler"}, are also used as is.
 \item \code{"cran::dplyr"}: same as \code{"dplyr"}.
+\item \code{"pypi::humanize"} (experimental): a Python package from PyPI, added with
+\verb{pixi add --pypi}, for Python in the project (see \code{\link[=use_pixi_python]{use_pixi_python()}}).
 \item \code{"github::user/repo"} (experimental): an R package on GitHub, which Pixi
 builds from source with its R build backend, \code{pixi-build-r}. Add \verb{@ref} for a branch,
 tag or commit, as in \code{"github::cran/praise@1.0.0"}; \code{pixi.lock} records

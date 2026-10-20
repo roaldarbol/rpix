@@ -708,3 +708,44 @@ test_that("pixi_add() adds the isolation from the personal library with R", {
   )
   expect_no_match(dry(pixi_add("r-base", dry_run = TRUE)), "isolation")
 })
+
+test_that("pixi_add() adds PyPI packages with --pypi, and the others as usual", {
+  local_project_dir()
+  messages <- capture.output(
+    pixi_add(c("pypi::humanize>=4", "dplyr"), dry_run = TRUE),
+    type = "message"
+  )
+  expect_match(
+    messages,
+    'pixi add --pypi "humanize>=4"',
+    fixed = TRUE,
+    all = FALSE
+  )
+  expect_match(messages, "pixi add r-dplyr", fixed = TRUE, all = FALSE)
+  expect_equal(
+    dry(pixi_add("pypi::humanize>=4", feature = "py", dry_run = TRUE)),
+    'pixi add --pypi "humanize>=4" --feature py --manifest-path pixi.toml'
+  )
+  expect_error(
+    pixi_add("pypi::humanize", channel = "x", dry_run = TRUE),
+    "don't apply to packages from PyPI"
+  )
+  expect_equal(
+    dry(pixi_remove("pypi::humanize", dry_run = TRUE)),
+    "pixi remove --pypi humanize --manifest-path pixi.toml"
+  )
+  expect_error(pixi_search("pypi::humanize"), "not PyPI")
+})
+
+test_that("pixi_add() installs what it adds from PyPI, and says it's experimental", {
+  local_project_dir()
+  calls <- local_recorded_pixi()
+  local_mocked_bindings(
+    install_changed_environment = function(feature, path) {
+      calls$installed <- TRUE
+    }
+  )
+  expect_message(pixi_add("pypi::humanize"), "experimental")
+  expect_equal(calls$args[[1]], c("add", "--pypi", "humanize"))
+  expect_true(calls$installed)
+})
