@@ -6,7 +6,9 @@
   remove them from, a field of the package's `DESCRIPTION`, such as
   `"Imports"` or `"Suggests"`, as `usethis::use_package()` does. A `>=`
   constraint becomes the minimum version there, and packages from GitHub go
-  in `Remotes` too. The rest of `DESCRIPTION` stays as it is (#256).
+  in `Remotes` too. `type = "SystemRequirements"` adds conda packages there
+  under conda-forge's names, e.g. `pixi_add("conda::gdal", type =
+  "SystemRequirements")`. The rest of `DESCRIPTION` stays as it is (#256).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed

@@ -35,11 +35,15 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 
 \item{type}{Optional. In a package, also add the packages to this field of
 \code{DESCRIPTION}, as \code{usethis::use_package()} does: \code{"Imports"},
-\code{"Depends"}, \code{"Suggests"}, \code{"LinkingTo"} or \code{"Enhances"}. A \code{>=}
-constraint becomes the minimum version there; other constraints only go
-in \code{pixi.toml}. A package from GitHub also goes in \code{Remotes} (unless it's
-CRAN's mirror, \verb{cran/}). \code{DESCRIPTION} changes once Pixi has added the
-packages, and \code{feature} still decides where they go in \code{pixi.toml}.}
+\code{"Depends"}, \code{"Suggests"}, \code{"LinkingTo"} or \code{"Enhances"} for R packages,
+or \code{"SystemRequirements"} for software outside R, given as conda
+packages (\code{"conda::gdal"}). A \code{>=} constraint becomes the minimum version
+there; other constraints only go in \code{pixi.toml}. A package from GitHub
+also goes in \code{Remotes} (unless it's CRAN's mirror, \verb{cran/}).
+\code{SystemRequirements} gets conda-forge's names, such as \code{gdal} or
+\code{pkg-config}, added after what it says already, which stays as it is.
+\code{DESCRIPTION} changes once Pixi has added the packages, and \code{feature}
+still decides where they go in \code{pixi.toml}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}

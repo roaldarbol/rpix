@@ -170,3 +170,54 @@ test_that("pixi_add(type = ) leaves DESCRIPTION alone if Pixi fails", {
   expect_error(suppressMessages(pixi_add("dplyr", type = "Imports")))
   expect_equal(readLines(file.path(root, "DESCRIPTION")), description_lines)
 })
+
+test_that("SystemRequirements gets conda packages, after what it says already", {
+  root <- local_description_project()
+  entries <- description_entries(
+    c("conda::gdal>=3.6", "conda::pkg-config"),
+    NULL,
+    "SystemRequirements",
+    path = root
+  )
+  expect_equal(entries$names, c("gdal", "pkg-config"))
+  suppressMessages(add_to_description(entries))
+  expect_equal(field(root, "SystemRequirements"), "gdal (>= 3.6), pkg-config")
+
+  # Free text that's there stays as it is
+  lines <- readLines(file.path(root, "DESCRIPTION"))
+  lines[grepl("^SystemRequirements:", lines)] <-
+    "SystemRequirements: GNU make, and a C++17 compiler"
+  writeLines(lines, file.path(root, "DESCRIPTION"))
+  suppressMessages(add_to_description(
+    description_entries("conda::cmake", NULL, "SystemRequirements", path = root)
+  ))
+  expect_equal(
+    field(root, "SystemRequirements"),
+    "GNU make, and a C++17 compiler,\ncmake"
+  )
+  # Not twice, whatever the case
+  expect_snapshot(add_to_description(
+    description_entries("conda::CMake", NULL, "SystemRequirements", path = root)
+  ))
+
+  suppressMessages(remove_from_description(
+    description_entries("conda::cmake", NULL, "SystemRequirements", path = root)
+  ))
+  expect_equal(
+    field(root, "SystemRequirements"),
+    "GNU make, and a C++17 compiler"
+  )
+})
+
+test_that("SystemRequirements takes conda packages, and the R fields R packages", {
+  root <- local_description_project()
+  expect_snapshot(error = TRUE, {
+    description_entries("dplyr", NULL, "SystemRequirements", path = root)
+    description_entries(
+      "github::hadley/emo",
+      NULL,
+      "SystemRequirements",
+      path = root
+    )
+  })
+})

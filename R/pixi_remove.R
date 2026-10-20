@@ -10,8 +10,8 @@
 #'
 #' @param packages Package names.
 #' @param type Optional. In a package, also remove the packages from this
-#'   field of `DESCRIPTION`, such as `"Imports"`, and packages from GitHub
-#'   from `Remotes`.
+#'   field of `DESCRIPTION`, such as `"Imports"` or `"SystemRequirements"`,
+#'   and packages from GitHub from `Remotes`.
 #' @inheritParams pixi_add
 #' @param dry_run If `TRUE`, show the Pixi command without running it.
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of

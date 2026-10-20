@@ -23,8 +23,8 @@ the default one. See \code{\link[=pixi_add_environment]{pixi_add_environment()}}
 \code{"linux-64"}.}
 
 \item{type}{Optional. In a package, also remove the packages from this
-field of \code{DESCRIPTION}, such as \code{"Imports"}, and packages from GitHub
-from \code{Remotes}.}
+field of \code{DESCRIPTION}, such as \code{"Imports"} or \code{"SystemRequirements"},
+and packages from GitHub from \code{Remotes}.}
 
 \item{path}{The project. Defaults to the project of the running Pixi
 environment, or the working directory.}
