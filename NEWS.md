@@ -1,4 +1,4 @@
-# rpix (development version)
+# rpix 0.9.0 (2026-10-20)
 
 ## Added
 
@@ -12,9 +12,6 @@
 * At startup and in `pixi_sitrep()`, rpix says when a project also has renv,
   e.g. because RStudio's New Project set it up, as renv and Pixi clash, and
   that `pixi_import_renv()` turns renv off.
-* In R that isn't the project's, outside RStudio, the startup message now
-  points to opening the project in an IDE set up with `use_pixi(ide = )`,
-  before `pixi run R`.
 * `pixi_add(type = )` and `pixi_remove(type = )` also add packages to, or
   remove them from, a field of the package's `DESCRIPTION`, such as
   `"Imports"` or `"Suggests"`, as `usethis::use_package()` does. A `>=`
@@ -80,6 +77,9 @@
 
 ## Changed
 
+* In R that isn't the project's, outside RStudio, the startup message now
+  points to opening the project in an IDE set up with `use_pixi(ide = )`,
+  before `pixi run R`.
 * Messages write rpix's functions with `rpix::`, so the code they suggest
   runs as shown, as rpix usually isn't attached (#251).
 * rpix needs Pixi 0.77 or later, which `SystemRequirements` now says. It's
@@ -116,7 +116,6 @@
 * On Windows, `use_pixi_vscode()` and `pixi_switch()` also give the commands
   that start VSCodium, Cursor and Windsurf from the environment, and the IDE
   guide says the VS Code setup works in them too.
-
 * rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions set.
@@ -139,9 +138,6 @@
 
 ## Fixed
 
-* When VS Code's console is missing, `pixi_switch()` now suggests
-  `pixi_add("conda::arf")`; `pixi_add("arf")` would look for an R package
-  called arf (#251).
 * When a package isn't on conda-forge for one of the project's platforms,
   `pixi_add()` says so, and for which, rather than that it couldn't be found
   (#215).

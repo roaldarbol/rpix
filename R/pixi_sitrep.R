@@ -579,7 +579,7 @@ unisolated_environments <- function(project) {
 # The pixi_add() call that adds the isolation to a feature
 isolation_fix <- function(feature) {
   paste0(
-    'pixi_add("conda::',
+    'rpix::pixi_add("conda::',
     isolation_package,
     '"',
     if (!identical(feature, "default")) paste0(', feature = "', feature, '"'),

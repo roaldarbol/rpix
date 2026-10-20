@@ -38,6 +38,8 @@ rpix works from any R and finds the project by looking upwards from the working 
 
 rpix is in `pixi.toml` as `r-rpix`. It isn't on conda-forge yet, so it comes from the channel `https://prefix.dev/roaldarbol/rpix-forge`, which `use_pixi()` adds after conda-forge. A project set up by an earlier rpix, or another environment, may lack it (`pixi run Rscript -e 'packageVersion("rpix")'`); then use 2 or 3, or run `use_pixi()` again from the user's usual R, which keeps the project's versions and adds rpix.
 
+rpix needs Pixi 0.77 or later (`pixi --version`). In an interactive R, rpix offers to do a next step itself, such as setting up a project where there's none or adding what `DESCRIPTION` comes to need; from a script it doesn't ask, and prints the call instead.
+
 For more than a line of R, write a script and `pixi run Rscript script.R` rather than fight shell quoting. The first `pixi run` or `pixi install` downloads R and every package: allow several minutes, and run Pixi commands one at a time.
 
 ## Adding packages
@@ -72,7 +74,7 @@ Diagnose before fixing:
 pixi run Rscript -e 'rpix::pixi_sitrep()'
 ```
 
-It reports on Pixi, the project, whether `pixi.lock` matches `pixi.toml`, whether R is the project's and activated, libraries and packages from outside the project, packages installed without Pixi, the `.Rprofile` block, logins, and in a package whether `pixi.toml` covers `DESCRIPTION`, each with its fix. Run like this, it describes the R that `pixi run` starts; for the user's IDE, ask them to run `rpix::pixi_sitrep()` in its console and share the output.
+It reports on Pixi, the project, whether `pixi.lock` matches `pixi.toml`, whether R is the project's and activated, libraries and packages from outside the project, packages installed without Pixi, the `.Rprofile` block, logins, files that more than one package in an environment installs (e.g. Strawberry Perl's MinGW runtime on Windows), and in a package whether `pixi.toml` covers `DESCRIPTION`, each with its fix. Run like this, it describes the R that `pixi run` starts; for the user's IDE, ask them to run `rpix::pixi_sitrep()` in its console and share the output.
 
 When it can't run, or for a first look:
 
@@ -87,10 +89,10 @@ Symptom by symptom, with rpix's messages: `references/troubleshooting.md`.
 ## Setting up, sharing, developing
 
 - **New project, or a folder of R code:** `use_pixi(ide = "positron")` (or `"rstudio"`, `"vscode"`, `"emacs"`, `"neovim"`, `"zed"`), then `pixi_scan(add = TRUE)`. It adds R, rpix, `conda-ecosystem-user-package-isolation` (keeps the personal library out) and an `.Rprofile` block (activates the environment when an IDE starts R): keep all of them. `r_version =` and `date =` set R's version and a package date up front.
-- **Sharing:** commit `pixi.toml` and `pixi.lock`; collaborators run `pixi install`, or just `pixi run R`. A new project lists only the platform it was made on: add the collaborators' with `pixi_add_platform()`.
+- **Sharing:** commit `pixi.toml` and `pixi.lock`; collaborators run `pixi_install()` from their usual R (or `pixi install`), then open the project in their IDE. `use_pixi()` makes a project for Linux, macOS (Intel and Apple Silicon) and Windows; `pixi_add_platform()` and `pixi_remove_platform()` change that.
 - **Packages as of a date:** `use_pixi(date = )` for a new project, `pixi_set_date()` for an existing one.
-- **Another version of R, or packages just for tests:** features and environments, in `references/environments.md`.
-- **An R package:** `DESCRIPTION` stays the source of truth. `pixi_import_description()` brings its dependencies into `pixi.toml`, `use_pixi_check_matrix()` and `pixi_check_matrix()` test across R versions and minimum versions, and `use_pixi_github_action()` writes CI from the lock file. See `references/package-development.md`.
+- **Another version of R, or packages just for tests:** `pixi_add_environment("r44", r_version = "4.4")` for another R in one step; features and environments in `references/environments.md`.
+- **An R package:** `DESCRIPTION` stays the source of truth. `pixi_import_description()` brings its dependencies into `pixi.toml`, `pixi_add("rlang", type = "Imports")` adds one to both files, `use_pixi_check_matrix()` and `pixi_check_matrix()` test across R versions and minimum versions, and `use_pixi_github_action()` writes CI from the lock file. See `references/package-development.md`.
 - **IDEs, renv, tasks, documents, CI for analyses, private channels:** `references/setup-and-sharing.md`.
 
 ## Gotchas
