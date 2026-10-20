@@ -19,3 +19,7 @@
 ^skills$
 ^\.claude-plugin$
 ^evals$
+# Shared by several examples through roxygen's @example; it ends up in the
+# Rd files, so the package doesn't need it
+^man/examples$
+^cran-comments\.md$

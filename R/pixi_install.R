@@ -28,12 +28,12 @@
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_install()
-#' pixi_update("dplyr")
-#' pixi_upgrade()
-#' }
+#'
+#' pixi_install(path = project, dry_run = TRUE)
+#' pixi_update("dplyr", path = project, dry_run = TRUE)
+#' pixi_upgrade(path = project, dry_run = TRUE)
 pixi_install <- function(
   environment = NULL,
   all = FALSE,
