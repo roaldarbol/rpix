@@ -4,6 +4,12 @@
 
 ### Added
 
+- [`use_pixi_python()`](https://roald-arboel.com/rpix/reference/use_pixi_python.md),
+  and `use_pixi(python = TRUE)`, add Python to the project’s environment
+  for reticulate, and point reticulate at it, and
+  `pixi_add("pypi::pydytuesday")` adds Python packages from PyPI. Both
+  are experimental. See *Python alongside R*
+  ([\#108](https://github.com/roaldarbol/rpix/issues/108)).
 - `pixi_add_environment(r_version = )` adds an environment with another
   version of R in one step: R, the project’s packages (so it gets the
   versions built for that R), rpix and the isolation from your personal

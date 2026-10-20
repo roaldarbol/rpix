@@ -83,6 +83,8 @@
   : Set up an IDE for a Pixi project
 - [`use_pixi_direnv()`](https://roald-arboel.com/rpix/reference/use_pixi_direnv.md)
   : Activate the project's environment with direnv
+- [`use_pixi_python()`](https://roald-arboel.com/rpix/reference/use_pixi_python.md)
+  : Use Python alongside R, for reticulate
 - [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   : Move a project from renv
 - [`pixi_activate()`](https://roald-arboel.com/rpix/reference/pixi_activate.md)

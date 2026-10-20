@@ -62,6 +62,7 @@ use_pixi(
   path = NULL,
   activation_cache = TRUE,
   platforms = NULL,
+  python = FALSE,
   ...
 )
 ```
@@ -117,6 +118,12 @@ use_pixi(
   Defaults to `"linux-64"`, `"osx-64"`, `"osx-arm64"` and `"win-64"`. To
   add platforms to an existing project, use
   [`pixi_add_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md).
+
+- python:
+
+  If `TRUE`, add Python for reticulate, with
+  [`use_pixi_python()`](https://roald-arboel.com/rpix/reference/use_pixi_python.md)
+  (experimental).
 
 - ...:
 

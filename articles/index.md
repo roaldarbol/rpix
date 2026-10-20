@@ -17,6 +17,8 @@
   package](https://roald-arboel.com/rpix/articles/package-development.md):
 - [Coming from
   renv](https://roald-arboel.com/rpix/articles/coming-from-renv.md):
+- [Python alongside
+  R](https://roald-arboel.com/rpix/articles/python.md):
 - [Sharing and
   reproducibility](https://roald-arboel.com/rpix/articles/reproducibility.md):
 - [Private channels and company

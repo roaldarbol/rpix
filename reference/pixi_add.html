@@ -14,6 +14,8 @@ offers to allow it.
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
+&quot;pypi::pydytuesday&quot; (experimental): a Python package from PyPI, added with
+pixi add --pypi, for Python in the project (see use_pixi_python()).
 &quot;github::user/repo&quot; (experimental): an R package on GitHub, which Pixi
 builds from source with its R build backend, pixi-build-r. Add @ref for a branch,
 tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
@@ -57,6 +59,8 @@ offers to allow it.
 &quot;conda::gdal&quot;: a conda package that isn't an R package, used as is.
 Names containing - or _, such as &quot;c-compiler&quot;, are also used as is.
 &quot;cran::dplyr&quot;: same as &quot;dplyr&quot;.
+&quot;pypi::pydytuesday&quot; (experimental): a Python package from PyPI, added with
+pixi add --pypi, for Python in the project (see use_pixi_python()).
 &quot;github::user/repo&quot; (experimental): an R package on GitHub, which Pixi
 builds from source with its R build backend, pixi-build-r. Add @ref for a branch,
 tag or commit, as in &quot;github::cran/praise@1.0.0&quot;; pixi.lock records
@@ -112,6 +116,7 @@ For more information, see https://pixi.prefix.dev/latest/reference/cli/pixi/add/
     <li><a class="dropdown-item" href="../articles/environments.html">Several environments</a></li>
     <li><a class="dropdown-item" href="../articles/package-development.html">Developing a package</a></li>
     <li><a class="dropdown-item" href="../articles/coming-from-renv.html">Coming from renv</a></li>
+    <li><a class="dropdown-item" href="../articles/python.html">Python alongside R</a></li>
     <li><a class="dropdown-item" href="../articles/reproducibility.html">Sharing and reproducibility</a></li>
     <li><a class="dropdown-item" href="../articles/private-channels.html">Private channels and company networks</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -161,6 +166,8 @@ offers to allow it.</p></li>
 <li><p><code>"conda::gdal"</code>: a conda package that isn't an R package, used as is.
 Names containing <code>-</code> or <code>_</code>, such as <code>"c-compiler"</code>, are also used as is.</p></li>
 <li><p><code>"cran::dplyr"</code>: same as <code>"dplyr"</code>.</p></li>
+<li><p><code>"pypi::pydytuesday"</code> (experimental): a Python package from PyPI, added with
+<code>pixi add --pypi</code>, for Python in the project (see <code><a href="use_pixi_python.html">use_pixi_python()</a></code>).</p></li>
 <li><p><code>"github::user/repo"</code> (experimental): an R package on GitHub, which Pixi
 builds from source with its R build backend, <code>pixi-build-r</code>. Add <code>@ref</code> for a branch,
 tag or commit, as in <code>"github::cran/praise@1.0.0"</code>; <code>pixi.lock</code> records
@@ -285,16 +292,16 @@ of the Pixi call (invisibly).</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pixi_add</span><span class="op">(</span><span class="st">"tibble"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-tibble --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-tibble --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_add</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dplyr&gt;=1.1"</span>, <span class="st">"bioc::DESeq2"</span>, <span class="st">"conda::gdal"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="va">project</span>,</span></span>
 <span class="r-in"><span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add "r-dplyr&gt;=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add "r-dplyr&gt;=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_add</span><span class="op">(</span><span class="st">"dplyr"</span>, versions <span class="op">=</span> <span class="st">"1.1"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

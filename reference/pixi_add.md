@@ -22,6 +22,10 @@ a prefix to say where a package comes from:
 
 - `"cran::dplyr"`: same as `"dplyr"`.
 
+- `"pypi::pydytuesday"` (experimental): a Python package from PyPI,
+  added with `pixi add --pypi`, for Python in the project (see
+  [`use_pixi_python()`](https://roald-arboel.com/rpix/reference/use_pixi_python.md)).
+
 - `"github::user/repo"` (experimental): an R package on GitHub, which
   Pixi builds from source with its R build backend, `pixi-build-r`. Add
   `@ref` for a branch, tag or commit, as in
@@ -159,14 +163,14 @@ writeLines(
 )
 
 pixi_add("tibble", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-tibble --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
 pixi_add(
   c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`
-#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace channel add bioconda --no-install --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add "r-dplyr>=1.1" bioconda::bioconductor-deseq2 gdal --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
 pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/RtmpcGulpe/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-dplyr=1.1 --manifest-path /tmp/Rtmp9ul5WZ/rpix-example/pixi.toml`
 ```
