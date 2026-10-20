@@ -18,7 +18,13 @@ pixi_install(
 
 pixi_update(packages = NULL, environment = NULL, path = NULL, dry_run = FALSE)
 
-pixi_upgrade(packages = NULL, feature = NULL, path = NULL, dry_run = FALSE)
+pixi_upgrade(
+  packages = NULL,
+  feature = NULL,
+  r = FALSE,
+  path = NULL,
+  dry_run = FALSE
+)
 
 pixi_lock(path = NULL, dry_run = FALSE)
 }
@@ -42,6 +48,9 @@ environment, or the working directory.}
 \item{packages}{Optional. Only update these packages. Defaults to all.}
 
 \item{feature}{Optional. Only upgrade the packages of this feature.}
+
+\item{r}{If \code{TRUE}, upgrade R too (\code{r-base}), as far as the project's
+packages allow. Naming \code{"r-base"} in \code{packages} does the same.}
 }
 \value{
 The command (invisibly) if \code{dry_run = TRUE}, otherwise the result
@@ -54,12 +63,25 @@ e.g. after cloning a project. \verb{pixi run} does this by itself, too. If
 \code{pixi.lock} is out of date with \code{pixi.toml}, Pixi updates it first,
 unless \code{locked} or \code{frozen} says otherwise.
 \item \code{pixi_update()} updates packages to the newest versions \code{pixi.toml}
-allows, in \code{pixi.lock}.
+allows, in \code{pixi.lock}, and installs them.
 \item \code{pixi_upgrade()} updates packages beyond that, and raises the versions in
-\code{pixi.toml} to match.
+\code{pixi.toml} to match. It leaves R as it is, unless \code{r = TRUE}.
 \item \code{pixi_lock()} updates \code{pixi.lock} to match \code{pixi.toml}, without
 installing anything.
 }
+
+In an interactive session, \code{pixi_update()} and \code{pixi_upgrade()} first show
+what would change, and ask before going ahead. Then they install the
+environment this R runs in, or else the default one (or \code{environment}). If
+that's this R's own environment, restart R afterwards, as the packages it
+has loaded still use the old files: in RStudio, they offer to. On Windows,
+a running R keeps Pixi from replacing its packages' files, so there they
+only update \code{pixi.lock}, and say how to install it after closing R.
+
+Upgrading R (\code{r = TRUE}) means every R package needs a build for the new R.
+conda-forge has fewer packages for a new version of R at first, and
+packages built from source are pinned to the R they were added for, so R
+only moves as far as all the project's packages allow.
 
 Package names are translated like in \code{\link[=pixi_add]{pixi_add()}}. If Pixi skips an install
 script that a package needs, such as the ones Bioconductor's data packages

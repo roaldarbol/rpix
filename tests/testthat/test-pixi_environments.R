@@ -109,6 +109,8 @@ test_that("pixi_remove_channel() and pixi_remove_platform() build the commands",
 
 test_that("install, update, upgrade and lock build the commands", {
   calls <- local_recorded_pixi()
+  local_mocked_bindings(running_environment = function(...) NULL)
+  withr::local_envvar(PIXI_NO_INSTALL = NA)
 
   pixi_install()
   pixi_install(environment = "r44")
@@ -130,9 +132,13 @@ test_that("install, update, upgrade and lock build the commands", {
       c("install", "--locked"),
       c("install", "--frozen"),
       "update",
+      c("install", "--environment", "default"),
       c("update", "r-dplyr", "bioconductor-limma", "--environment", "r44"),
-      "upgrade",
-      c("upgrade", "r-dplyr", "--feature", "test"),
+      c("install", "--environment", "r44"),
+      c("upgrade", "--exclude", "r-base", "--no-install"),
+      c("install", "--environment", "default"),
+      c("upgrade", "r-dplyr", "--feature", "test", "--no-install"),
+      c("install", "--environment", "default"),
       "lock"
     )
   )
