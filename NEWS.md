@@ -2,6 +2,12 @@
 
 ## Added
 
+* In a package's Pixi environment, rpix notices when `DESCRIPTION` comes to
+  need packages that `pixi.toml` doesn't have, e.g. after
+  `usethis::use_package()` or an edit, and in an interactive session offers to
+  add them with `pixi_import_description()`. It also says when `DESCRIPTION`
+  no longer lists a package. `options(rpix.watch_description = FALSE)` turns
+  it off (#255).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed
