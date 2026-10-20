@@ -148,12 +148,13 @@ use_pixi <- function(
   isolation <- isolation_package
   # Added together with R, so Pixi picks the newest R they're all built for.
   # A new R comes out on conda-forge before its packages are rebuilt for it.
-  r_packages <- c(
+  r_packages <- unique(c(
     if (install_rpix) rpix_dependencies(),
     if (any(c("vscode", "emacs", "neovim", "zed") %in% ide)) {
       "r-languageserver"
-    }
-  )
+    },
+    if ("vscode" %in% ide) sess_dependencies
+  ))
   # Without any, r-cli stands in for them, and is removed afterwards, unless
   # the project has it
   probe <- if (length(r_packages) == 0 && !has_dependency("r-cli", path)) {

@@ -410,7 +410,8 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
       "add",
       "r-base",
       "conda-ecosystem-user-package-isolation",
-      "r-languageserver"
+      "r-languageserver",
+      sess_dependencies
     )
   )
   expect_error(use_pixi(ide = "notepad"), "should be one of")
