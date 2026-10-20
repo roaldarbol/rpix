@@ -28,4 +28,6 @@
   works](https://roald-arboel.com/rpix/articles/how-rpix-works.md):
 - [How many packages you can
   use](https://roald-arboel.com/rpix/articles/package-availability.md):
+- [rpix and similar
+  tools](https://roald-arboel.com/rpix/articles/similar-tools.md):
 - [Troubleshooting](https://roald-arboel.com/rpix/articles/troubleshooting.md):
