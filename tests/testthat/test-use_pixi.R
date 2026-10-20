@@ -64,17 +64,15 @@ test_that("use_pixi() creates a project and adds R and rpix", {
     )
   )
   calls$args <- calls$args[-2]
-  expect_equal(calls$args[[2]][1:2], c("add", "r-base"))
-  expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
-  expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[2]])
-  expect_equal(calls$args[[3]][1:3], c("run", "Rscript", "-e"))
-  # utils' own, not rpix's, which adds packages with Pixi
-  expect_match(
-    calls$args[[3]][4],
-    "utils::install.packages('rpix'",
-    fixed = TRUE
+  # rpix comes from rpix-forge until it's on conda-forge
+  expect_equal(
+    calls$args[[2]],
+    c("workspace", "channel", "add", rpix_forge, "--no-install")
   )
-  expect_match(calls$args[[3]][4], "lib = .Library", fixed = TRUE)
+  expect_equal(calls$args[[3]][1:2], c("add", "r-base"))
+  # rpix is a dependency, so it's in pixi.lock
+  expect_true("r-rpix" %in% calls$args[[3]])
+  expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[3]])
   expect_equal(calls$args[[4]], activation_cache_args)
   # Commands target the project, not the environment R happens to run in
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
@@ -94,6 +92,27 @@ test_that("use_pixi() only adds what the project doesn't have", {
 
   suppressMessages(use_pixi(path = dir, ide = "zed", install_rpix = FALSE))
   expect_equal(calls$args[[2]], c("add", "r-languageserver"))
+})
+
+test_that("use_pixi() adds rpix-forge, and rpix, once", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  deps <- c("r-base", isolation_package, "r-rpix")
+  writeLines(
+    c(
+      "[workspace]",
+      paste0('channels = ["conda-forge", "', rpix_forge, '"]'),
+      "",
+      "[dependencies]",
+      paste0(deps, ' = "*"')
+    ),
+    file.path(dir, "pixi.toml")
+  )
+
+  suppressMessages(use_pixi(path = dir))
+  commands <- vapply(calls$args, paste, character(1), collapse = " ")
+  expect_false(any(grepl("channel add", commands, fixed = TRUE)))
+  expect_false(any(startsWith(commands, "add ")))
 })
 
 test_that("has_dependency() reads the default feature's dependencies", {
@@ -122,35 +141,13 @@ test_that("has_dependency() reads the default feature's dependencies", {
   expect_true(has_dependency("r-cli", dir))
 })
 
-test_that("use_pixi() installs rpix quietly, unless it's there already", {
+test_that("without options(rpix.ref), there's nothing to install", {
   dir <- withr::local_tempdir()
-  steps <- list()
   local_mocked_bindings(
-    run_pixi_step = function(args, step, done, path) {
-      steps <<- c(steps, list(args))
-    }
+    run_pixi_step = function(...) stop("Nothing should be installed")
   )
-  # Not there
-  expect_true(install_rpix_into(dir))
-  expect_equal(steps[[1]][1:3], c("run", "Rscript", "-e"))
-  # A failed install fails Rscript
-  expect_match(steps[[1]][4], "^options\\(warn = 2\\); utils::install")
-
-  library <- file.path(dir, ".pixi", "envs", "default", "lib", "R", "library")
-  dir.create(file.path(library, "rpix"), recursive = TRUE)
-  description <- file.path(library, "rpix", "DESCRIPTION")
-  # Older than this rpix
-  writeLines("Version: 0.0.1", description)
-  expect_true(install_rpix_into(dir))
-  expect_length(steps, 2)
-
-  # This version, or newer
-  writeLines(paste("Version:", utils::packageVersion("rpix")), description)
-  expect_message(
-    expect_false(install_rpix_into(dir)),
-    "has rpix .* already"
-  )
-  expect_length(steps, 2)
+  # r-rpix is a dependency of the project
+  expect_false(install_rpix_into(dir))
 })
 
 test_that("with options(rpix.ref), rpix comes from GitHub, unless it has that commit", {
@@ -318,7 +315,12 @@ test_that("use_pixi() says when conda-forge has no R packages for the R asked fo
     class = c("rpix_error_pixi", "error", "condition"),
     list(message = "pixi failed", call = NULL, stderr = stderr)
   )
-  local_mocked_bindings(run_pixi = function(args, ...) stop(error))
+  # Adding the packages fails; adding rpix-forge to the channels doesn't
+  local_mocked_bindings(
+    run_pixi = function(args, ...) {
+      if (args[1] == "add") stop(error) else invisible(list(status = 0))
+    }
+  )
 
   expect_snapshot(
     use_pixi(r_version = "4.6", path = dir),
@@ -510,14 +512,19 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
   # Each IDE gets its own settings
   expect_equal(ides, c(vscode = "arf", positron = NA))
   # Added with R, so Pixi picks an R that languageserver is built for
+  # sess and jgd come from rpix-forge
   expect_equal(
     calls$args[[1]],
+    c("workspace", "channel", "add", rpix_forge, "--no-install")
+  )
+  expect_equal(
+    calls$args[[2]],
     c(
       "add",
       "r-base",
       "conda-ecosystem-user-package-isolation",
       "r-languageserver",
-      sess_dependencies
+      vscode_r_packages
     )
   )
   expect_error(use_pixi(ide = "notepad"), "should be one of")

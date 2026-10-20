@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Create a Pixi project in the working directory, or `path`, if there isn't
-#' one there, add R to it, and install rpix into its environment.
+#' one there, and add R and rpix to it.
 #'
 #' It sets up that folder even inside another Pixi project. If a parent folder
 #' is a Pixi project, it says so, and in an interactive session asks whether to
@@ -51,12 +51,14 @@
 #'   `"2025-06-01"`, e.g. to rerun an old analysis. Set before anything is
 #'   added, so R and the packages are all as of that date. See
 #'   [pixi_set_date()].
-#' @param install_rpix If `TRUE`, install rpix into the project's environment,
-#'   unless it has this version or a newer one. Its dependencies come from
-#'   conda-forge, and rpix itself from R-universe until it's on conda-forge.
-#'   To try a change before R-universe has built it, set `options(rpix.ref)`
-#'   to a branch, tag or commit, e.g. `"main"` or a pull request's branch:
-#'   rpix then comes from GitHub, unless the environment has that commit
+#' @param install_rpix If `TRUE`, add rpix to the project (`r-rpix`), so it's
+#'   in `pixi.lock` like the other packages, and a collaborator's environment
+#'   has it too. Until rpix is on conda-forge, it comes from
+#'   <https://prefix.dev/roaldarbol/rpix-forge>, which is added to the
+#'   project's channels after conda-forge, so everything else still comes
+#'   from conda-forge. To try a change to rpix, set `options(rpix.ref)` to a
+#'   branch, tag or commit, e.g. `"main"` or a pull request's branch: rpix is
+#'   then also installed from GitHub, unless the environment has that commit
 #'   already.
 #' @param path The folder to set up. Defaults to the working directory.
 #' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
@@ -152,13 +154,16 @@ use_pixi <- function(
   isolation <- isolation_package
   # Added together with R, so Pixi picks the newest R they're all built for.
   # A new R comes out on conda-forge before its packages are rebuilt for it.
-  r_packages <- unique(c(
-    if (install_rpix) rpix_dependencies(),
+  r_packages <- c(
+    if (install_rpix) "r-rpix",
     if (any(c("vscode", "emacs", "neovim", "zed") %in% ide)) {
       "r-languageserver"
     },
-    if ("vscode" %in% ide) sess_dependencies
-  ))
+    if ("vscode" %in% ide) vscode_r_packages
+  )
+  if (install_rpix || "vscode" %in% ide) {
+    use_rpix_forge(path)
+  }
   # Without any, r-cli stands in for them, and is removed afterwards, unless
   # the project has it
   probe <- if (length(r_packages) == 0 && !has_dependency("r-cli", path)) {
@@ -238,10 +243,10 @@ abort_r_without_packages <- function(e, r_version, call) {
   )
 }
 
-# Install rpix into the default environment, unless it has this version or a
-# newer one. From inside the environment's R, so rpix is installed for that R.
-# Its dependencies are already there, from conda-forge. With
-# `options(rpix.ref)`, from GitHub instead (#245).
+# rpix is a dependency of the project, r-rpix (see rpix_forge). With
+# `options(rpix.ref)`, rpix is also installed from GitHub, at that ref, to try
+# a change (#245). From inside the environment's R, so rpix is installed for
+# that R; its dependencies are there already, with r-rpix.
 install_rpix_into <- function(path) {
   installed <- file.path(
     path,
@@ -255,35 +260,15 @@ install_rpix_into <- function(path) {
     "DESCRIPTION"
   )
   ref <- getOption("rpix.ref")
-  if (!is.null(ref)) {
-    return(install_rpix_from_github(path, installed, ref))
-  }
-  version <- utils::packageVersion("rpix")
-  if (
-    file.exists(installed) &&
-      package_version(read.dcf(installed, "Version")[1, 1]) >= version
-  ) {
-    cli::cli_alert_success("The environment has rpix {version} already.")
+  if (is.null(ref)) {
     return(invisible(FALSE))
   }
-  # A failed install is only a warning, which would let Rscript succeed
-  install <- paste0(
-    "options(warn = 2); ",
-    "utils::install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', ",
-    "lib = .Library, dependencies = FALSE, type = 'source')"
-  )
-  run_pixi_step(
-    c("run", "Rscript", "-e", install),
-    step = "Installing rpix into the environment from R-universe",
-    done = "Installed rpix into the environment from R-universe",
-    path = path
-  )
-  invisible(TRUE)
+  install_rpix_from_github(path, installed, ref)
 }
 
-# rpix from GitHub, at a branch, tag or commit, to try a change before
-# R-universe has built it. Skipped when the environment has that commit, which
-# the installed DESCRIPTION records.
+# rpix from GitHub, at a branch, tag or commit, to try a change before it's
+# released. Skipped when the environment has that commit, which the installed
+# DESCRIPTION records.
 install_rpix_from_github <- function(path, installed, ref) {
   commit <- rpix_commit(ref)
   if (
@@ -405,6 +390,27 @@ parent_project <- function(dir) {
   NULL
 }
 
+# rpix, and the packages VS Code's R extension uses (r-sess, r-jgd), aren't on
+# conda-forge yet (conda-forge/staged-recipes#35133, #35105, #35104). Until
+# they are, they come from this channel, built from the same recipes against
+# conda-forge's R. It's added after conda-forge, so Pixi takes everything else
+# from conda-forge, and these too once they're there.
+rpix_forge <- "https://prefix.dev/roaldarbol/rpix-forge"
+
+# Add rpix_forge to the project's channels, unless it's there
+use_rpix_forge <- function(path) {
+  manifest <- find_manifest(path)
+  lines <- if (!is.null(manifest)) readLines(manifest, warn = FALSE)
+  if (!any(grepl(rpix_forge, lines, fixed = TRUE))) {
+    run_pixi(
+      c("workspace", "channel", "add", rpix_forge, "--no-install"),
+      path = path,
+      echo = TRUE
+    )
+  }
+  invisible()
+}
+
 # rpix's own dependencies, as conda packages. Reads rpix's DESCRIPTION through
 # its namespace path, which also works under devtools::load_all().
 rpix_dependencies <- function(imports = rpix_imports()) {
@@ -482,11 +488,11 @@ rprofile_block <- c(
   "      rpix::pixi_activate()",
   "    }",
   "  } else if (pixi && interactive()) {",
-  "    # rpix isn't in pixi.lock, e.g. for a collaborator, or in other environments",
+  "    # e.g. an environment without r-rpix, or a project set up by an earlier rpix",
   "    message(",
-  "      \"This Pixi environment's R doesn't have rpix. To install it, run:\\n\",",
-  "      \"install.packages('rpix', repos = 'https://roaldarbol.r-universe.dev', \",",
-  "      \"lib = .Library, dependencies = FALSE, type = 'source')\"",
+  "      \"This Pixi environment's R doesn't have rpix. To add it, run in a terminal:\\n\",",
+  "      \"pixi workspace channel add https://prefix.dev/roaldarbol/rpix-forge\\n\",",
+  "      \"pixi add r-rpix\"",
   "    )",
   "  }",
   "})",

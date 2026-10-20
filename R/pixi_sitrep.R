@@ -344,7 +344,7 @@ sitrep_data <- function(path = NULL) {
 }
 
 # Packages in the environment's library that Pixi didn't install, e.g. with
-# utils::install.packages(). rpix itself comes from R-universe for now, and
+# utils::install.packages(). rpix itself may come from GitHub (options(rpix.ref)), and
 # the project's own package from the project.
 unrecorded_packages <- function(environment, root) {
   installed <- rownames(utils::installed.packages(lib.loc = .Library))
