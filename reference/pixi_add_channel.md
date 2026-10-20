@@ -68,7 +68,7 @@ writeLines(
 )
 
 pixi_add_channel("bioconda", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi workspace channel add bioconda --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace channel add bioconda --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
 pixi_add_platform("osx-64", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi workspace platform add osx-64 --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace platform add osx-64 --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
 ```

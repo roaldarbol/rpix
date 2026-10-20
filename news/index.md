@@ -4,6 +4,10 @@
 
 ### Added
 
+- `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
+  `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock`
+  without checking it, as `pixi install --locked` and `--frozen` do
+  ([\#253](https://github.com/roaldarbol/rpix/issues/253)).
 - `options(rpix.ref)` makes
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   also install rpix into the environment from GitHub, at a branch, tag

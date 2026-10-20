@@ -1,7 +1,9 @@
 # Install and update the project's packages
 
 - `pixi_install()` installs an environment as `pixi.lock` describes it,
-  e.g. after cloning a project. `pixi run` does this by itself, too.
+  e.g. after cloning a project. `pixi run` does this by itself, too. If
+  `pixi.lock` is out of date with `pixi.toml`, Pixi updates it first,
+  unless `locked` or `frozen` says otherwise.
 
 - `pixi_update()` updates packages to the newest versions `pixi.toml`
   allows, in `pixi.lock`.
@@ -29,7 +31,14 @@ For more information, see
 ## Usage
 
 ``` r
-pixi_install(environment = NULL, all = FALSE, path = NULL, dry_run = FALSE)
+pixi_install(
+  environment = NULL,
+  all = FALSE,
+  locked = FALSE,
+  frozen = FALSE,
+  path = NULL,
+  dry_run = FALSE
+)
 
 pixi_update(packages = NULL, environment = NULL, path = NULL, dry_run = FALSE)
 
@@ -47,6 +56,17 @@ pixi_lock(path = NULL, dry_run = FALSE)
 - all:
 
   If `TRUE`, install all the project's environments.
+
+- locked:
+
+  If `TRUE`, fail if `pixi.lock` is out of date with `pixi.toml`, rather
+  than updating it, e.g. to check that a collaborator or CI gets exactly
+  what's committed.
+
+- frozen:
+
+  If `TRUE`, install exactly what `pixi.lock` says, without checking it
+  against `pixi.toml`.
 
 - path:
 
@@ -92,9 +112,9 @@ writeLines(
 )
 
 pixi_install(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi install --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi install --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
 pixi_update("dplyr", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
 pixi_upgrade(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi upgrade --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi upgrade --manifest-path /tmp/RtmpBm82CL/rpix-example/pixi.toml`
 ```
