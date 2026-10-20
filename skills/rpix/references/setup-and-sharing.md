@@ -15,7 +15,7 @@ Read this when creating a project or moving one to Pixi, setting up an IDE, shar
 | IDE | Set up | Every day | Another environment |
 |---|---|---|---|
 | Positron | `use_pixi_positron()`: turns on Pixi discovery in `.vscode/settings.json` | Pick "R (Pixi: default)" once in the interpreter picker | Pick its "(Pixi: name)" R, or `pixi_switch()` |
-| RStudio | `use_pixi_rstudio()`: an `rstudio` task, and an `.Rproj`. Or File > New Project > "Project with Pixi" | `pixi run rstudio`. RStudio picks its R when it starts, so opening the `.Rproj` directly gives the wrong R; the addin "Open with the project's Pixi R" fixes that. rpix's other addins add packages, install, run tasks and run the sitrep | `pixi_switch("name")` starts a new RStudio |
+| RStudio | `use_pixi_rstudio()`: an `rstudio` task, and an `.Rproj`. Or File > New Project > "Project with Pixi" | Open the project as usual: RStudio picks its R when it starts, so it opens with the user's usual R, and rpix (installed there) asks to reopen it with the project's; the addin "Open with the project's Pixi R", or `pixi_switch()`, does the same. From a terminal, `pixi run rstudio`. rpix's other addins add packages, install, run tasks and run the sitrep | `pixi_switch("name")` starts a new RStudio |
 | VS Code | `use_pixi_vscode()`: languageserver, sess and jgd (from rpix-forge), and the R extension pointed at the environment's R | Open the folder; on Windows start it with `pixi run code .` | `pixi_switch("name")`, then Reload Window |
 | Emacs, Neovim, Zed | `use_pixi_emacs()`, `use_pixi_neovim()`, `use_pixi_zed()`: languageserver, and a `.envrc` that activates the environment with direnv (`use_pixi_direnv()`) | direnv loads it: Emacs with the envrc package, Neovim from a shell with direnv's hook, Zed by itself. The user allows it once with `direnv allow`; on Windows, start the editor with `pixi run` | `pixi_switch("name")`, then reload direnv and restart R |
 
@@ -34,15 +34,15 @@ Rscript --no-init-file -e 'rpix::use_pixi(); rpix::pixi_import_renv()'
 ## Sharing and reproducing
 
 - Commit `pixi.toml`, `pixi.lock` and the `.gitattributes` that `pixi init` writes. Its `.gitignore` leaves out `.pixi/` except `.pixi/config.toml`, the project's local Pixi settings.
-- To recreate the environment, `pixi install`, or just `pixi run R`. If `pixi.toml` changed since the lock was written, both update the lock first. `pixi install --frozen` installs the lock as it is; `--locked` stops if the lock is out of date, which is what CI wants. `pixi lock --check` reports whether it's up to date.
-- `pixi.lock` covers the platforms in `pixi.toml`, and a new project lists only its own. Add others with `pixi_add_platform(c("linux-64", "osx-arm64", "osx-64", "win-64"))`. Every package then has to exist for each of them; bioconda has no Windows builds.
+- To recreate the environment, `pixi_install()` (or `pixi install`, or just `pixi run R`). If `pixi.toml` changed since the lock was written, they update the lock first. `pixi_install(frozen = TRUE)` installs the lock as it is; `pixi_install(locked = TRUE)` stops if the lock is out of date, which is what CI wants. `pixi_sitrep()` reports whether it's up to date.
+- `pixi.lock` covers the platforms in `pixi.toml`. `use_pixi()` makes a project for `linux-64`, `osx-64`, `osx-arm64` and `win-64`, plus the computer's own; projects made by rpix before 0.9.0 list only their own. Add platforms with `pixi_add_platform()`, remove them with `pixi_remove_platform()`. Every package has to exist for each of them; bioconda has no Windows builds.
 - The setting that allows install scripts is in `.pixi/config.toml`. Don't commit it unless the user decides to: it would allow the scripts for everyone who clones (see `packages.md`).
 
 ## Packages as of a date
 
 - `use_pixi(date = "2025-06-01")` when creating a project; `pixi_set_date("2025-06-01")` later; a duration, `pixi_set_date("7d")`, leaves out releases from the last week; `pixi_set_date(NULL)` removes it. It sets `exclude-newer` in `pixi.toml`.
 - `pixi_set_date()` fails, leaving `pixi.toml` as it was, when the project pins versions newer than the date, as `pixi_add()` does for what it adds. Setting the date when creating the project avoids that.
-- Only packages that were on conda-forge then are available. The date applies to Pixi's build backend too, so source builds fail with a date before the backend version Pixi needs (with Pixi 0.81, before 2026-08-18; prefix-dev/pixi#7240): use a later date, or a duration.
+- Only packages that were on conda-forge then are available. The date applies to Pixi's build backend too, so source builds fail with a date before the backend version Pixi needs (before 2026-10-15, when pixi-build-r 0.2.0 came out; prefix-dev/pixi#7240): use a later date, or a duration.
 
 ## Tasks, scripts and documents
 

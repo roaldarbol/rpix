@@ -559,14 +559,16 @@ test_that("reports environments that don't keep the personal library out", {
     out,
     "\"r44\" and \"plain\" don't keep your personal R library out"
   )
+  # The hints wrap, so compare them as one line
+  flat <- gsub("\\s+", " ", out)
   expect_match(
-    out,
-    'pixi_add("conda::conda-ecosystem-user-package-isolation", feature = "r44")',
+    flat,
+    'rpix::pixi_add("conda::conda-ecosystem-user-package-isolation", feature = "r44")',
     fixed = TRUE
   )
   expect_match(
-    out,
-    'pixi_add("conda::conda-ecosystem-user-package-isolation")',
+    flat,
+    'rpix::pixi_add("conda::conda-ecosystem-user-package-isolation")',
     fixed = TRUE
   )
   expect_no_match(
