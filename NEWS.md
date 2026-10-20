@@ -2,6 +2,11 @@
 
 ## Added
 
+* `pixi_sitrep()` lists files that more than one package in an environment
+  installs, such as shared libraries, and whose copy is there: only one can
+  be, so the other package may not work. It says when it's Strawberry Perl's
+  MinGW runtime over conda-forge's, which on Windows stops compiled R
+  packages from loading, and how to find what brings perl in (#176, #177).
 * The IDE guide says how to install each IDE, and which `pixi global install`
   can install (Emacs, Neovim, Zed and direnv). `use_pixi_emacs()`,
   `use_pixi_neovim()`, `use_pixi_zed()`, and `use_pixi_vscode()` on Windows,

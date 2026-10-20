@@ -105,6 +105,9 @@ pixi_sitrep <- function(path = NULL) {
         hint("Add the isolation with {.code {fix}}.")
       }
     }
+    if (NROW(report$clobbered) > 0) {
+      show_clobbered(report$clobbered)
+    }
     unignored <- report$build_unignored
     if (length(unignored) > 0) {
       cli::cli_alert_warning(
@@ -327,6 +330,7 @@ sitrep_data <- function(path = NULL) {
     unisolated = if (!is.null(project) && !is.null(pixi)) {
       unisolated_environments(project)
     },
+    clobbered = if (!is.null(project)) clobbered_files(project),
     r_home = r_home(),
     r_version = as.character(getRversion()),
     environment = environment,

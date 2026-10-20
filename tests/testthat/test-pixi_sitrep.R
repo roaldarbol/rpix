@@ -595,3 +595,20 @@ test_that("unisolated_environments() finds environments with R but no isolation"
   local_mocked_bindings(pixi_info = function(path) stop("no pixi"))
   expect_null(unisolated_environments("/p"))
 })
+
+test_that("reports files that more than one package installs", {
+  clobbered <- clobbered_frame(
+    environment = "default",
+    path = "Library/bin/libstdc++-6.dll",
+    winner = "perl",
+    build = "5.32.1.1_strawberry",
+    losers = "libstdcxx"
+  )
+  out <- sitrep_output(good_report(clobbered = clobbered))
+  expect_match(out, "installed by more than one package")
+  expect_match(out, "Strawberry Perl")
+  expect_no_match(
+    sitrep_output(good_report(clobbered = clobbered[0, ])),
+    "more than one package"
+  )
+})
