@@ -37,7 +37,7 @@ numpy <- reticulate::import("numpy")
 ## What it sets up
 
 - **`RETICULATE_PYTHON`,** in `pixi.toml`'s `[activation.env]`, points reticulate at the environment's Python. Without it, reticulate makes a Python of its own, which doesn't have the project's packages. It applies to R started with `pixi run`, and to R started by an IDE, through the project's `.Rprofile`.
-- **`micromamba` and `RETICULATE_CONDA`:** on macOS and Windows, reticulate activates a conda environment again before using its Python, with a conda program, which Pixi doesn't have ([rstudio/reticulate#1650](https://github.com/rstudio/reticulate/issues/1650)). conda-forge's micromamba does that.
+- **`micromamba` and `RETICULATE_CONDA`:** reticulate activates a conda environment again before using its Python, with a conda program, which a Pixi project doesn't have ([rstudio/reticulate#1650](https://github.com/rstudio/reticulate/issues/1650)). conda-forge's micromamba does that.
 - **`libpython`,** for Python 3.15 or later: conda-forge keeps Python's shared library, which reticulate loads, in a package of its own.
 - On Windows, the settings are written differently, as Pixi doesn't expand `$CONDA_PREFIX` there. They're only written if the project has `win-64`; if you add it later, run `use_pixi_python()` again.
 

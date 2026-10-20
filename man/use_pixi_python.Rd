@@ -31,9 +31,9 @@ library, which reticulate loads, apart from Python since 3.15.
 \code{pixi.toml}'s \verb{[activation.env]}, so R started with \verb{pixi run} uses it,
 and so does R started by an IDE, through the project's \code{.Rprofile}
 (\code{\link[=pixi_activate]{pixi_activate()}}). Without it, reticulate uses a Python of its own.
-\item It adds \code{micromamba}, and points \code{RETICULATE_CONDA} to it: on macOS and
-Windows, reticulate activates a conda environment again with a conda
-program before it uses its Python, which Pixi doesn't have
+\item It adds \code{micromamba}, and points \code{RETICULATE_CONDA} to it: reticulate
+activates a conda environment again with a conda program before it uses
+its Python, and a Pixi project doesn't have one
 (\url{https://github.com/rstudio/reticulate/issues/1650}).
 }
 

@@ -15,9 +15,9 @@
 #'   `pixi.toml`'s `[activation.env]`, so R started with `pixi run` uses it,
 #'   and so does R started by an IDE, through the project's `.Rprofile`
 #'   ([pixi_activate()]). Without it, reticulate uses a Python of its own.
-#' * It adds `micromamba`, and points `RETICULATE_CONDA` to it: on macOS and
-#'   Windows, reticulate activates a conda environment again with a conda
-#'   program before it uses its Python, which Pixi doesn't have
+#' * It adds `micromamba`, and points `RETICULATE_CONDA` to it: reticulate
+#'   activates a conda environment again with a conda program before it uses
+#'   its Python, and a Pixi project doesn't have one
 #'   (<https://github.com/rstudio/reticulate/issues/1650>).
 #'
 #' Add Python packages with [pixi_add()]: `pixi_add("conda::numpy")` from
