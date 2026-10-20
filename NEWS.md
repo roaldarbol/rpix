@@ -10,6 +10,12 @@
   console (arf or radian) when `pixi_switch()` finds it missing, adding
   linux-64 for `use_pixi_github_action()`, and using the newest R conda-forge
   has packages for when `use_pixi()` asks for a newer one (#251).
+* `pixi_remove_channel()` and `pixi_remove_platform()` remove channels and
+  platforms from the project, as `pixi_add_channel()` and
+  `pixi_add_platform()` add them (#254).
+* `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
+  `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock` without
+  checking it, as `pixi install --locked` and `--frozen` do (#253).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed
@@ -45,6 +51,15 @@
 
 * Messages write rpix's functions with `rpix::`, so the code they suggest
   runs as shown, as rpix usually isn't attached (#251).
+* rpix needs Pixi 0.77 or later, which `SystemRequirements` now says. It's
+  the first Pixi that can build packages with pixi-build-r 0.2.0, for
+  `github::` packages and CRAN packages that aren't on conda-forge. A CI job
+  checks rpix with it (#84).
+* The examples of `pixi_add()`, `pixi_remove()`, `pixi_search()`,
+  `pixi_install()`, the environment, channel and task functions,
+  `use_pixi_direnv()`, `use_pixi_positron()` and `pixi_sitrep()` run without
+  Pixi: they set up a throwaway project in R's temporary folder, and show the
+  Pixi commands with `dry_run = TRUE` (#84).
 * rpix is a dependency of the project (`r-rpix`), so it's in `pixi.lock` and
   a collaborator's environment has it, rather than installed into the
   environment from R-universe. It isn't on conda-forge yet: until it is,

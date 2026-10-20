@@ -37,10 +37,10 @@
 #'   environment, or the working directory.
 #' @returns A list with what it found, invisibly.
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_sitrep()
-#' }
+#'
+#' pixi_sitrep(path = project)
 pixi_sitrep <- function(path = NULL) {
   report <- sitrep_data(path)
 

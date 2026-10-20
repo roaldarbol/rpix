@@ -71,16 +71,53 @@ environment of it with \code{pixi_add_environment()}, and start its R with
 For more information, see \url{https://pixi.prefix.dev/latest/workspace/multi_environment/}.
 }
 \examples{
-\dontrun{
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
 # An environment with R 4.4, next to the default one. It leaves out the
 # default feature, since that has another version of R.
-pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
-pixi_add_environment("r44", features = "r44", default_feature = FALSE)
+pixi_add(
+  c("r-base=4.4", "dplyr"),
+  feature = "r44",
+  path = project,
+  dry_run = TRUE
+)
+pixi_add_environment(
+  "r44",
+  features = "r44",
+  default_feature = FALSE,
+  path = project,
+  dry_run = TRUE
+)
 
 # An environment with the default packages plus testthat, on the same
 # versions as the default environment
-pixi_add("testthat", feature = "test")
-pixi_add_environment("test", features = "test", solve_group = "default")
+pixi_add("testthat", feature = "test", path = project, dry_run = TRUE)
+pixi_add_environment(
+  "test",
+  features = "test",
+  solve_group = "default",
+  path = project,
+  dry_run = TRUE
+)
+
+\dontrun{
+# Needs Pixi
 pixi_environments()
 }
 }

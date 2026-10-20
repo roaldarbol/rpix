@@ -52,10 +52,14 @@
 #'   environment's R Positron's default for the project.
 #' @returns The file they changed, invisibly.
 #' @name use_pixi_ide
+#' @example man/examples/project.R
 #' @examples
+#'
+#' use_pixi_positron(path = project)
+#'
 #' \dontrun{
+#' # These need Pixi, and add packages to the project
 #' use_pixi_rstudio()
-#' use_pixi_positron()
 #' use_pixi_vscode(console = "arf")
 #' use_pixi_neovim()
 #' }

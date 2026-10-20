@@ -68,12 +68,16 @@
 #' @returns The commands (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_add("tibble")
-#' pixi_add(c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"))
-#' pixi_add("dplyr", versions = "1.1")
-#' }
+#'
+#' pixi_add("tibble", path = project, dry_run = TRUE)
+#' pixi_add(
+#'   c("dplyr>=1.1", "bioc::DESeq2", "conda::gdal"),
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#' pixi_add("dplyr", versions = "1.1", path = project, dry_run = TRUE)
 pixi_add <- function(
   packages,
   versions = NULL,
