@@ -33,6 +33,11 @@
 #' In a package, it adds `.pixi`, `pixi.toml` and `pixi.lock` to
 #' `.Rbuildignore`, so they stay out of the package's builds.
 #'
+#' In a project that uses renv (with a `renv.lock`), it offers to move the
+#' packages over with [pixi_import_renv()] first, which also turns renv off.
+#' renv keeps rpix out of the project's own R, so run `use_pixi(path = )` from
+#' another R session, e.g. your usual R outside the project.
+#'
 #' It turns on Pixi's activation cache for the project, in
 #' `.pixi/config.toml`. Pixi then reuses the environment's activation until the
 #' project changes, so R started through Pixi, e.g. by `pixi run` or Positron,
@@ -147,6 +152,8 @@ use_pixi <- function(
     )
   }
 
+  offer_renv_import(path)
+
   r_base <- if (is.null(r_version)) "r-base" else paste0("r-base=", r_version)
   # conda-forge's R puts the user library of a regular R install first on
   # .libPaths() (https://github.com/conda-forge/r-base-feedstock/issues/37).
@@ -217,6 +224,32 @@ use_pixi <- function(
     )
   }
   invisible(manifest)
+}
+
+# A project that uses renv: offer to move its packages over first, as
+# pixi_import_renv() also adds the lock file's R (#252). Not when the project
+# has R already, e.g. when use_pixi() runs again.
+offer_renv_import <- function(path) {
+  if (
+    !file.exists(file.path(path, "renv.lock")) ||
+      has_dependency("r-base", path)
+  ) {
+    return(invisible(FALSE))
+  }
+  cli::cli_alert_info("This project uses renv ({.file renv.lock}).")
+  if (
+    !is_interactive() ||
+      !isTRUE(ask_yes_no(
+        "Would you like to move its packages to Pixi, and turn renv off?"
+      ))
+  ) {
+    cli::cli_alert_info(
+      "Move them with {.code rpix::pixi_import_renv()}, which also turns renv off."
+    )
+    return(invisible(FALSE))
+  }
+  pixi_import_renv(path = path)
+  invisible(TRUE)
 }
 
 # When Pixi can't add R packages for the R asked for, as it's newer than

@@ -2,6 +2,11 @@
 
 ## Added
 
+* `use_pixi()` notices a project that uses renv (`renv.lock`), and in an
+  interactive session offers to move its packages over with
+  `pixi_import_renv()`, which also turns renv off. *Coming from renv* now
+  moves a project with `use_pixi(path = )` from your usual R, rather than
+  with commands in a terminal (#252).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed

@@ -608,3 +608,65 @@ test_that("use_pixi() only passes on settings of the IDEs it sets up", {
     "settings of the IDEs"
   )
 })
+
+local_renv_project <- function(answer, env = parent.frame()) {
+  calls <- local_mock_setup(env = env)
+  dir <- withr::local_tempdir(.local_envir = env)
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  writeLines("{}", file.path(dir, "renv.lock"))
+  calls$dir <- dir
+  calls$imported <- list()
+  local_mocked_bindings(
+    is_interactive = function() !is.null(answer),
+    ask_yes_no = function(question) {
+      calls$asked <- question
+      answer
+    },
+    pixi_import_renv = function(path, ...) {
+      calls$imported <- c(calls$imported, list(path))
+    },
+    .env = env
+  )
+  calls
+}
+
+test_that("use_pixi() offers to move a renv project's packages first", {
+  calls <- local_renv_project(answer = TRUE)
+  suppressMessages(use_pixi(path = calls$dir, install_rpix = FALSE))
+  expect_equal(
+    calls$asked,
+    "Would you like to move its packages to Pixi, and turn renv off?"
+  )
+  expect_length(calls$imported, 1)
+  expect_true(same_path(calls$imported[[1]], calls$dir))
+})
+
+test_that("use_pixi() says how to move them when the answer is no, or it can't ask", {
+  calls <- local_renv_project(answer = FALSE)
+  expect_message(
+    use_pixi(path = calls$dir, install_rpix = FALSE),
+    "rpix::pixi_import_renv()",
+    fixed = TRUE
+  )
+  expect_length(calls$imported, 0)
+
+  calls <- local_renv_project(answer = NULL)
+  expect_message(
+    use_pixi(path = calls$dir, install_rpix = FALSE),
+    "rpix::pixi_import_renv()",
+    fixed = TRUE
+  )
+  expect_null(calls$asked)
+  expect_length(calls$imported, 0)
+})
+
+test_that("use_pixi() doesn't offer it again once the project has R", {
+  calls <- local_renv_project(answer = TRUE)
+  writeLines(
+    c("[workspace]", "", "[dependencies]", 'r-base = "*"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+  suppressMessages(use_pixi(path = calls$dir, install_rpix = FALSE))
+  expect_null(calls$asked)
+  expect_length(calls$imported, 0)
+})
