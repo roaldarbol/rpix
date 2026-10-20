@@ -2,6 +2,51 @@
 
 ## Added
 
+* RStudio addins: open the project with its Pixi R, add packages (the
+  selection, or those a file uses), install the environment, run a task, open
+  `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
+  sets up a project as `use_pixi(ide = "rstudio")` does, for the version of
+  R picked there, optionally as a git repository. In
+  RStudio, when the project opens in an R that isn't its Pixi R, rpix offers
+  to reopen it in a new RStudio with that R (#137, #143).
+* At startup and in `pixi_sitrep()`, rpix says when a project also has renv,
+  e.g. because RStudio's New Project set it up, as renv and Pixi clash, and
+  that `pixi_import_renv()` turns renv off.
+* In R that isn't the project's, outside RStudio, the startup message now
+  points to opening the project in an IDE set up with `use_pixi(ide = )`,
+  before `pixi run R`.
+* `pixi_add(type = )` and `pixi_remove(type = )` also add packages to, or
+  remove them from, a field of the package's `DESCRIPTION`, such as
+  `"Imports"` or `"Suggests"`, as `usethis::use_package()` does. A `>=`
+  constraint becomes the minimum version there, and packages from GitHub go
+  in `Remotes` too. `type = "SystemRequirements"` adds conda packages there
+  under conda-forge's names, e.g. `pixi_add("conda::gdal", type =
+  "SystemRequirements")`. The rest of `DESCRIPTION` stays as it is (#256).
+* In a package's Pixi environment, rpix notices when `DESCRIPTION` comes to
+  need packages that `pixi.toml` doesn't have, e.g. after
+  `usethis::use_package()` or an edit, and in an interactive session offers to
+  add them with `pixi_import_description()`. It also says when `DESCRIPTION`
+  no longer lists a package. `options(rpix.watch_description = FALSE)` turns
+  it off (#255).
+* `use_pixi()` notices a project that uses renv (`renv.lock`), and in an
+  interactive session offers to move its packages over with
+  `pixi_import_renv()`, which also turns renv off. *Coming from renv* now
+  moves a project with `use_pixi(path = )` from your usual R, rather than
+  with commands in a terminal (#252).
+* In an interactive session, rpix offers to do the next step itself, rather
+  than only saying how, as `rlang::check_installed()` does: setting up a
+  project where there's none (with `use_pixi()`), logging in to a channel
+  that refused access and trying again, adding the packages `pixi_scan()`
+  finds, updating the packages after `pixi_set_date(NULL)`, adding VS Code's
+  console (arf or radian) when `pixi_switch()` finds it missing, adding
+  linux-64 for `use_pixi_github_action()`, and using the newest R conda-forge
+  has packages for when `use_pixi()` asks for a newer one (#251).
+* `pixi_remove_channel()` and `pixi_remove_platform()` remove channels and
+  platforms from the project, as `pixi_add_channel()` and
+  `pixi_add_platform()` add them (#254).
+* `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
+  `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock` without
+  checking it, as `pixi install --locked` and `--frozen` do (#253).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed
@@ -35,6 +80,17 @@
 
 ## Changed
 
+* Messages write rpix's functions with `rpix::`, so the code they suggest
+  runs as shown, as rpix usually isn't attached (#251).
+* rpix needs Pixi 0.77 or later, which `SystemRequirements` now says. It's
+  the first Pixi that can build packages with pixi-build-r 0.2.0, for
+  `github::` packages and CRAN packages that aren't on conda-forge. A CI job
+  checks rpix with it (#84).
+* The examples of `pixi_add()`, `pixi_remove()`, `pixi_search()`,
+  `pixi_install()`, the environment, channel and task functions,
+  `use_pixi_direnv()`, `use_pixi_positron()` and `pixi_sitrep()` run without
+  Pixi: they set up a throwaway project in R's temporary folder, and show the
+  Pixi commands with `dry_run = TRUE` (#84).
 * rpix is a dependency of the project (`r-rpix`), so it's in `pixi.lock` and
   a collaborator's environment has it, rather than installed into the
   environment from R-universe. It isn't on conda-forge yet: until it is,
@@ -83,6 +139,9 @@
 
 ## Fixed
 
+* When VS Code's console is missing, `pixi_switch()` now suggests
+  `pixi_add("conda::arf")`; `pixi_add("arf")` would look for an R package
+  called arf (#251).
 * When a package isn't on conda-forge for one of the project's platforms,
   `pixi_add()` says so, and for which, rather than that it couldn't be found
   (#215).

@@ -5,7 +5,7 @@
     Message
       i The code uses 7 packages.
       ! Not in 'pixi.toml': DESeq2 and ggplot2.
-        Add them with `pixi_scan(add = TRUE)`.
+        Add them with `rpix::pixi_scan(add = TRUE)`.
       i Never used in the code: r-tibble.
 
 # pixi_scan() can add the missing packages

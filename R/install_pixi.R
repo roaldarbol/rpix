@@ -33,7 +33,7 @@ install_pixi <- function(version = NULL, update_path = TRUE, force = FALSE) {
   if (!is.null(existing) && !force) {
     cli::cli_alert_success("Pixi is installed already, at {.path {existing}}.")
     cli::cli_alert_info(
-      "Update it with {.code pixi self-update} in a terminal, or reinstall it with {.code install_pixi(force = TRUE)}."
+      "Update it with {.code pixi self-update} in a terminal, or reinstall it with {.code rpix::install_pixi(force = TRUE)}."
     )
     return(invisible(existing))
   }

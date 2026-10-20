@@ -36,10 +36,7 @@ pixi_scan <- function(add = FALSE, path = NULL) {
   root <- require_project(path)
   used <- scan_project(root, task_commands(root))
 
-  own <- package_name(root)
-  in_manifest <- r_names(unlist(environment_dependencies(root)))
-  missing <- setdiff(used$package, c(own, "rpix", base_packages()))
-  missing <- missing[!tolower(missing) %in% in_manifest]
+  missing <- missing_packages(root, used$package)
 
   ignore <- c(
     "r-base",
@@ -58,8 +55,13 @@ pixi_scan <- function(add = FALSE, path = NULL) {
   if (length(missing) > 0) {
     cli::cli_alert_warning("Not in {.file pixi.toml}: {.pkg {missing}}.")
     if (!add) {
+      add <- offer(
+        "Would you like to add {cli::qty(length(missing))}{?it/them} to {.file pixi.toml}?"
+      )
+    }
+    if (!add) {
       cli::cli_bullets(c(
-        " " = "Add them with {.code pixi_scan(add = TRUE)}."
+        " " = "Add them with {.code rpix::pixi_scan(add = TRUE)}."
       ))
     }
   } else {
@@ -70,18 +72,32 @@ pixi_scan <- function(add = FALSE, path = NULL) {
   }
 
   if (add && length(missing) > 0) {
-    found <- find_r_packages(missing)
-    if (any(!is.na(found))) {
-      pixi_add(unname(found[!is.na(found)]), path = root)
-    }
-    if (anyNA(found)) {
-      cli::cli_alert_warning(
-        "Not on conda-forge or bioconda, so not added: {.pkg {names(found)[is.na(found)]}}."
-      )
-    }
+    add_missing_packages(root, missing)
   }
 
   invisible(list(used = used, missing = missing, unused = unused))
+}
+
+# The packages that aren't in pixi.toml, leaving out base R, rpix and the
+# project's own package
+missing_packages <- function(root, packages) {
+  own <- package_name(root)
+  in_manifest <- r_names(unlist(environment_dependencies(root)))
+  missing <- setdiff(packages, c(own, "rpix", base_packages()))
+  missing[!tolower(missing) %in% in_manifest]
+}
+
+# Add the packages found on conda-forge or bioconda, and say which aren't
+add_missing_packages <- function(root, missing) {
+  found <- find_r_packages(missing)
+  if (any(!is.na(found))) {
+    pixi_add(unname(found[!is.na(found)]), path = root)
+  }
+  if (anyNA(found)) {
+    cli::cli_alert_warning(
+      "Not on conda-forge or bioconda, so not added: {.pkg {names(found)[is.na(found)]}}."
+    )
+  }
 }
 
 # The packages each R file in the project, and its tasks, use

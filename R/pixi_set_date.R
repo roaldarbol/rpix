@@ -49,9 +49,16 @@ pixi_set_date <- function(date, path = NULL) {
   writeLines(set_exclude_newer(lines, value), manifest)
 
   if (is.null(value)) {
-    cli::cli_alert_success(
-      "Removed the date from {.file pixi.toml}. Get newer packages with {.code pixi_update()}."
-    )
+    cli::cli_alert_success("Removed the date from {.file pixi.toml}.")
+    if (
+      offer("Would you like to update the packages to their newest versions?")
+    ) {
+      pixi_update(path = dirname(manifest))
+    } else {
+      cli::cli_alert_info(
+        "Get newer packages with {.code rpix::pixi_update()}."
+      )
+    }
     return(invisible(previous))
   }
   cli::cli_alert_success(
@@ -64,8 +71,8 @@ pixi_set_date <- function(date, path = NULL) {
       cli::cli_abort(
         c(
           "Pixi couldn't solve the project with packages as of {.val {value}}, so {.file pixi.toml} is as it was.",
-          "i" = "The project may pin versions newer than that, e.g. ones {.code pixi_add()} added. See Pixi's output above.",
-          "i" = "Setting the date when you create a project, with {.code use_pixi(date = \"{value}\")}, avoids that."
+          "i" = "The project may pin versions newer than that, e.g. ones {.code rpix::pixi_add()} added. See Pixi's output above.",
+          "i" = "Setting the date when you create a project, with {.code rpix::use_pixi(date = \"{value}\")}, avoids that."
         ),
         parent = e,
         call = NULL

@@ -9,22 +9,38 @@
 #' For more information, see <https://pixi.prefix.dev/latest/reference/cli/pixi/remove/>.
 #'
 #' @param packages Package names.
+#' @param type Optional. In a package, also remove the packages from this
+#'   field of `DESCRIPTION`, such as `"Imports"` or `"SystemRequirements"`,
+#'   and packages from GitHub from `Remotes`.
 #' @inheritParams pixi_add
 #' @param dry_run If `TRUE`, show the Pixi command without running it.
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
 #'   the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_remove("tibble")
-#' }
+#'
+#' pixi_remove("tibble", path = project, dry_run = TRUE)
 pixi_remove <- function(
   packages,
   feature = NULL,
   platform = NULL,
+  type = NULL,
   path = NULL,
   dry_run = FALSE
 ) {
+  if (!is.null(type)) {
+    entries <- description_entries(packages, NULL, type, path)
+    result <- pixi_remove(
+      packages,
+      feature = feature,
+      platform = platform,
+      path = path,
+      dry_run = dry_run
+    )
+    remove_from_description(entries, dry_run = dry_run)
+    return(invisible(result))
+  }
   github <- packages[is_github(packages)]
   names <- vapply(github, function(p) parse_github(p)$name, character(1))
   others <- packages[!is_github(packages)]

@@ -42,6 +42,17 @@ devtools::check()
 
 Install packages with `pixi_add()`, not with `devtools::install_dev_deps()`, `pak` or `remotes`: those install into the environment without recording it in `pixi.toml`, so a collaborator doesn't get them, and Pixi may remove them the next time it installs the environment. In the environment's R, `install.packages()` goes through rpix.
 
+For a dependency of the package, `type` adds it to `DESCRIPTION` too, as `usethis::use_package()` does, so the two files stay in step:
+
+```r
+pixi_add("rlang>=1.1", type = "Imports")    # rlang (>= 1.1) in Imports
+pixi_add("github::hadley/emo", type = "Imports")  # also hadley/emo in Remotes
+pixi_add("conda::gdal>=3.6", type = "SystemRequirements")  # gdal (>= 3.6)
+pixi_remove("rlang", type = "Imports")
+```
+
+`SystemRequirements` gets conda-forge's names, such as `gdal` or `pkg-config`, after what it says already. Those are the names tools that map `SystemRequirements` to packages look for, conda-forge's recipe tools among them.
+
 Pixi tasks make the common commands one word, in a terminal and in CI:
 
 ```r
@@ -53,7 +64,22 @@ Then `pixi_run("test")`, or `pixi run test` in a terminal, and `pixi_tasks()` li
 
 ## Keeping DESCRIPTION and pixi.toml in step
 
-`DESCRIPTION` and `pixi.toml` drift apart easily: `usethis::use_package()` only changes `DESCRIPTION`, and `pixi_add()` only `pixi.toml`. `pixi_sitrep()` compares them, in a "Package" section:
+`DESCRIPTION` and `pixi.toml` drift apart easily: `usethis::use_package()` only changes `DESCRIPTION`, and `pixi_add()` only `pixi.toml`.
+
+In the environment's R, rpix notices when `DESCRIPTION` changes, and offers to add what it now needs:
+
+```r
+usethis::use_package("rlang")
+#> ✔ Adding rlang to Imports field in DESCRIPTION.
+#> ℹ 'DESCRIPTION' now needs rlang, which isn't in 'pixi.toml'.
+#> ? Would you like to add it?
+#> 1: Yes
+#> 2: No
+```
+
+It says when `DESCRIPTION` no longer lists a package too, but leaves removing it to you, as `pixi.toml` can need it for other reasons. `options(rpix.watch_description = FALSE)` turns this off.
+
+`pixi_sitrep()` also compares them, in a "Package" section:
 
 ```r
 pixi_sitrep()

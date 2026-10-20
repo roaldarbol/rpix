@@ -80,3 +80,110 @@ test_that("too_old() handles conda's version spelling", {
   expect_equal(old$needs, "999.0-1")
   expect_equal(nrow(too_old(hard[2, ])), 0)
 })
+
+local_watched_package <- function(answer = TRUE, env = parent.frame()) {
+  dir <- withr::local_tempdir(.local_envir = env)
+  writeLines(
+    c("Package: demo", "Version: 0.1", "Imports: cli"),
+    file.path(dir, "DESCRIPTION")
+  )
+  writeLines(
+    c("[workspace]", "", "[dependencies]", 'r-cli = "*"', 'r-tibble = "*"'),
+    file.path(dir, "pixi.toml")
+  )
+  calls <- new.env()
+  calls$dir <- dir
+  calls$imported <- 0
+  calls$asked <- character()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) {
+      calls$asked <- c(calls$asked, question)
+      answer
+    },
+    pixi_import_description = function(path, ...) {
+      calls$imported <- calls$imported + 1
+      lines <- readLines(file.path(path, "pixi.toml"))
+      writeLines(c(lines, 'r-rlang = "*"'), file.path(path, "pixi.toml"))
+    },
+    .env = env
+  )
+  calls
+}
+
+# Change DESCRIPTION, with a modification time the watcher can't miss
+edit_description <- function(dir, lines) {
+  file <- file.path(dir, "DESCRIPTION")
+  writeLines(lines, file)
+  Sys.setFileTime(file, Sys.time() + 10)
+}
+
+test_that("the watcher offers to add what DESCRIPTION comes to need", {
+  calls <- local_watched_package(answer = TRUE)
+  watcher <- description_watcher(calls$dir)
+
+  # Nothing changed, nothing happens
+  expect_true(watcher())
+  expect_length(calls$asked, 0)
+
+  edit_description(
+    calls$dir,
+    c("Package: demo", "Version: 0.1", "Imports: cli, rlang")
+  )
+  expect_snapshot(watcher())
+  expect_equal(calls$asked, "Would you like to add it?")
+  expect_equal(calls$imported, 1)
+
+  # Once added, the same change isn't offered again
+  expect_true(watcher())
+  expect_length(calls$asked, 1)
+})
+
+test_that("the watcher says how to add them when the answer is no", {
+  calls <- local_watched_package(answer = FALSE)
+  watcher <- description_watcher(calls$dir)
+  edit_description(
+    calls$dir,
+    c("Package: demo", "Version: 0.1", "Imports: cli, rlang, praise")
+  )
+  expect_snapshot(watcher())
+  expect_equal(calls$imported, 0)
+})
+
+test_that("the watcher says when DESCRIPTION drops a package", {
+  calls <- local_watched_package()
+  watcher <- description_watcher(calls$dir)
+  edit_description(calls$dir, c("Package: demo", "Version: 0.1"))
+  expect_snapshot(watcher())
+  expect_length(calls$asked, 0)
+})
+
+test_that("watch_description() registers the watcher once, in packages only", {
+  calls <- local_watched_package()
+  withr::defer(
+    if (watcher_name %in% getTaskCallbackNames()) {
+      removeTaskCallback(watcher_name)
+    }
+  )
+  expect_true(watch_description(calls$dir))
+  expect_true(watch_description(calls$dir))
+  expect_equal(sum(getTaskCallbackNames() == watcher_name), 1)
+
+  # Not when turned off, outside interactive sessions, or outside a package
+  removeTaskCallback(watcher_name)
+  withr::with_options(
+    list(rpix.watch_description = FALSE),
+    expect_false(watch_description(calls$dir))
+  )
+  unlink(file.path(calls$dir, "DESCRIPTION"))
+  expect_false(watch_description(calls$dir))
+  local_mocked_bindings(is_interactive = function() FALSE)
+  expect_false(watch_description(calls$dir))
+  expect_false(watcher_name %in% getTaskCallbackNames())
+})
+
+test_that("watch_description() leaves a DESCRIPTION it can't read alone", {
+  calls <- local_watched_package()
+  local_mocked_bindings(description_watcher = function(root) stop("unreadable"))
+  expect_false(watch_description(calls$dir))
+})

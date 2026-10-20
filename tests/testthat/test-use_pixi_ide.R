@@ -366,3 +366,37 @@ test_that("the IDE setup leaves .vscode out of a package's builds", {
   suppressMessages(update_vscode_settings(dir, list(a = 1)))
   expect_equal(readLines(file.path(dir, ".Rbuildignore")), "^\\.vscode$")
 })
+
+test_that("require_project() offers to set up a project where there's none", {
+  dir <- withr::local_tempdir()
+  asked <- character()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) {
+      asked <<- c(asked, question)
+      TRUE
+    },
+    use_pixi = function(path, ...) {
+      writeLines("[workspace]", file.path(path, "pixi.toml"))
+    }
+  )
+  root <- suppressMessages(require_project(dir))
+  expect_true(same_path(root, dir))
+  expect_equal(asked, "Would you like to set one up there, with R?")
+})
+
+test_that("require_project() says how when the answer is no, or it can't ask", {
+  dir <- withr::local_tempdir()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) FALSE,
+    use_pixi = function(...) stop("shouldn't set up a project")
+  )
+  expect_error(suppressMessages(require_project(dir)), "no Pixi project")
+
+  local_mocked_bindings(
+    is_interactive = function() FALSE,
+    ask_yes_no = function(question) stop("shouldn't ask")
+  )
+  expect_error(require_project(dir), "rpix::use_pixi()", fixed = TRUE)
+})

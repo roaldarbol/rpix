@@ -48,6 +48,7 @@ test_that("parse_github() reads the repository, ref and package name", {
       git = "https://github.com/hadley/emo",
       ref = NULL,
       name = "r-emo",
+      package = "emo",
       requirements = list(
         build = character(),
         host = character(),

@@ -91,6 +91,11 @@ added if it's on conda-forge for all of them; for one that isn't, see
 In a package, it adds \code{.pixi}, \code{pixi.toml} and \code{pixi.lock} to
 \code{.Rbuildignore}, so they stay out of the package's builds.
 
+In a project that uses renv (with a \code{renv.lock}), it offers to move the
+packages over with \code{\link[=pixi_import_renv]{pixi_import_renv()}} first, which also turns renv off.
+renv keeps rpix out of the project's own R, so run \code{use_pixi(path = )} from
+another R session, e.g. your usual R outside the project.
+
 It turns on Pixi's activation cache for the project, in
 \code{.pixi/config.toml}. Pixi then reuses the environment's activation until the
 project changes, so R started through Pixi, e.g. by \verb{pixi run} or Positron,

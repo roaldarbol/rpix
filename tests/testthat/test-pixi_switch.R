@@ -248,3 +248,22 @@ test_that("start_detached() starts Pixi in the project", {
   process$wait()
   expect_equal(process$get_exit_status(), 0)
 })
+
+test_that("pixi_switch() offers to add a missing console", {
+  calls <- local_switch_project()
+  dir.create(file.path(calls$dir, ".vscode"))
+  writeLines(
+    '{"r.consolePath": "radian"}',
+    file.path(calls$dir, ".vscode", "settings.json")
+  )
+  added <- NULL
+  local_mocked_bindings(
+    is_windows = function() FALSE,
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) TRUE,
+    pixi_add = function(packages, path) added <<- packages
+  )
+  suppressMessages(pixi_switch("r44", ide = "vscode"))
+  # The conda package, not r-radian
+  expect_equal(added, "conda::radian")
+})

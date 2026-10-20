@@ -148,15 +148,22 @@ switch_vscode <- function(root, environment) {
   if (
     console != "R" && !file.exists(environment_console(root, home, console))
   ) {
-    add <- if (home == "default") {
-      "Add it with {.code pixi_add(\"{console}\")}."
+    cli::cli_alert_warning(
+      "The {.val {home}} environment doesn't have {console}."
+    )
+    if (
+      home == "default" && offer(paste0("Would you like to add ", console, "?"))
+    ) {
+      pixi_add(paste0("conda::", console), path = root)
+    } else if (home == "default") {
+      cli::cli_alert_info(
+        "Add it with {.code rpix::pixi_add(\"conda::{console}\")}."
+      )
     } else {
-      "Add it to one of its features with {.code pixi_add(\"{console}\", feature = ...)}."
+      cli::cli_alert_info(
+        "Add it to one of its features with {.code rpix::pixi_add(\"conda::{console}\", feature = ...)}."
+      )
     }
-    cli::cli_alert_warning(c(
-      "The {.val {home}} environment doesn't have {console}. ",
-      add
-    ))
   }
   if (is_windows()) {
     cli::cli_alert_info(
