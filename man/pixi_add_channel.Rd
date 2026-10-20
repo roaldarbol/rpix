@@ -3,11 +3,17 @@
 \name{pixi_add_channel}
 \alias{pixi_add_channel}
 \alias{pixi_add_platform}
-\title{Add channels or platforms to the project}
+\alias{pixi_remove_channel}
+\alias{pixi_remove_platform}
+\title{Add or remove the project's channels and platforms}
 \usage{
 pixi_add_channel(channels, path = NULL, dry_run = FALSE)
 
 pixi_add_platform(platforms, path = NULL, dry_run = FALSE)
+
+pixi_remove_channel(channels, path = NULL, dry_run = FALSE)
+
+pixi_remove_platform(platforms, path = NULL, dry_run = FALSE)
 }
 \arguments{
 \item{channels}{Channel names, such as \code{"bioconda"}, or URLs.}
@@ -30,11 +36,14 @@ from. \code{\link[=pixi_add]{pixi_add()}} adds the ones it needs itself.
 \item \code{pixi_add_platform()} adds platforms, such as \code{"linux-64"}, \code{"osx-arm64"}
 or \code{"win-64"}, so \code{pixi.lock} covers them too and collaborators on them
 get the same packages.
+\item \code{pixi_remove_channel()} and \code{pixi_remove_platform()} remove them again,
+e.g. a platform no one uses, which Pixi then no longer solves for, or a
+channel the project no longer needs packages from.
 }
 
 For more information, see
-\url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/} and
-\url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/}.
+\url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/}
+and \url{https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/}.
 }
 \examples{
 \dontrun{
