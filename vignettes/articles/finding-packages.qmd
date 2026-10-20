@@ -29,6 +29,8 @@ The same names work in `pixi_add()`, `pixi_remove()` and `pixi_search()`.
 `pixi_search()` shows the available versions of a package and what they depend on:
 
 ```r
+library(rpix)
+
 pixi_search("dplyr")
 pixi_search("bioc::DESeq2")
 ```

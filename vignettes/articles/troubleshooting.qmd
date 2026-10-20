@@ -25,13 +25,13 @@ R.home()
 
 `R.home()` should be inside the project's `.pixi/envs/` folder, and `.libPaths()` shouldn't list any library outside it. If it does:
 
-- **You're in your usual R, not the environment's.** Start R with `pixi run R`, or see [Using rpix with an IDE](ide.html).
+- **You're in your usual R, not the environment's.** Open the project in an IDE set up with `use_pixi(ide = )`, or in RStudio run `rpix::pixi_switch()`; see [Using rpix with an IDE](ide.html). From a terminal, `pixi run R`.
 - **Your personal library is listed.** Keep it out of the environment; see [How rpix works](how-rpix-works.html#keep-your-personal-library-out).
 - **The project's `.Rprofile` changes `.libPaths()`.** rpix 0.3.0 and earlier added a block starting with `# Pixi R library setup`. `use_pixi()` removes it; for one in `~/.Rprofile`, remove it by hand.
 
 ## RStudio uses the wrong R
 
-RStudio picks its R when it starts, so it has to be started from the project's environment, as a new RStudio: set the project up with `use_pixi_rstudio()`, and start RStudio with `pixi run rstudio`. See [Using rpix with an IDE](ide.html#rstudio).
+RStudio picks its R when it starts, so it has to be started from the project's environment, as a new RStudio: set the project up with `use_pixi_rstudio()`, then run `rpix::pixi_switch()` in RStudio, which starts one (or `pixi run rstudio` in a terminal). See [Using rpix with an IDE](ide.html#rstudio).
 
 ## R doesn't start in VS Code on Windows
 

@@ -16,16 +16,17 @@ A Pixi project records everything it needs, including R itself, in two files. Sh
 
 ## Recreate the environment
 
-On another computer, install Pixi, get the project, and run either:
+On another computer, get the project, and install its environment from R:
 
-```sh
-pixi install
-pixi run R
+```r
+library(rpix)
+
+pixi_install(path = "path/to/project")
 ```
 
-`pixi install` only installs the environment. `pixi run R` installs it if needed, then starts R.
+Then open the project in your IDE (see [Using rpix with an IDE](ide.html)). From a terminal, `pixi install` does the same, and `pixi run R` installs the environment if needed, then starts R.
 
-If `pixi.toml` has changed since `pixi.lock` was written, Pixi updates the lock file first. To install exactly what's in the lock file instead, use `pixi install --frozen`. Or use `pixi install --locked`, which stops if the lock file is out of date.
+If `pixi.toml` has changed since `pixi.lock` was written, Pixi updates the lock file first. To install exactly what's in the lock file instead, use `pixi_install(frozen = TRUE)`. Or use `pixi_install(locked = TRUE)`, which stops if the lock file is out of date.
 
 Some packages finish installing with a script, which Pixi only runs in projects that allow it. Bioconductor's annotation and data packages, such as org.Hs.eg.db, download their data that way. The setting is in `.pixi/config.toml`, which `pixi init` leaves out of `.gitignore`. Commit it to allow the scripts for everyone who uses the project, CI included. Otherwise, allow them on each computer: `pixi_install()` offers to, or run `pixi config set --local run-post-link-scripts insecure`. `pixi.lock` pins these packages, but not the data the script downloads.
 
@@ -37,19 +38,19 @@ Some packages finish installing with a script, which Pixi only runs in projects 
 pixi_add_platform(c("linux-64", "osx-64", "osx-arm64", "win-64"))
 ```
 
-Every package then has to be on conda-forge for all of them. When one isn't, `pixi_add()` says for which platform, and adds nothing. You can add it only for the platforms that have it, one at a time, e.g. `pixi_add("Rmpi", platform = "linux-64")`, though code that uses it then doesn't run on the others. Or remove the platform with `pixi workspace platform remove`.
+Every package then has to be on conda-forge for all of them. When one isn't, `pixi_add()` says for which platform, and adds nothing. You can add it only for the platforms that have it, one at a time, e.g. `pixi_add("Rmpi", platform = "linux-64")`, though code that uses it then doesn't run on the others. Or remove the platform with `pixi_remove_platform()`.
 
-Packages from GitHub are built on each computer that installs them, and don't build on Apple Silicon Macs yet ([#199](https://github.com/roaldarbol/rpix/issues/199)), so a collaborator there can't install a project that has some.
+Packages from GitHub are built on each computer that installs them, so the first install takes longer there. Pixi brings what the build needs, on every platform the project has.
 
 ## Updating packages
 
 Packages stay at the versions in `pixi.lock` until you update them:
 
-```sh
-pixi update
+```r
+pixi_update()
 ```
 
-This updates to the newest versions `pixi.toml` allows. `pixi upgrade` also raises the version constraints in `pixi.toml`.
+This updates to the newest versions `pixi.toml` allows. `pixi_upgrade()` also raises the version constraints in `pixi.toml`.
 
 ## Packages as of a date
 
@@ -74,15 +75,17 @@ Only packages that were on conda-forge at the time are available. The date appli
 Save the commands that run the project as tasks in `pixi.toml`, so collaborators run them the same way:
 
 ```r
-rpix::pixi_add_task("analysis", "Rscript analysis.R", description = "Run the analysis")
-rpix::pixi_add_task("report", "quarto render report.qmd", depends_on = "analysis")
+pixi_add_task("analysis", "Rscript analysis.R", description = "Run the analysis")
+pixi_add_task("report", "quarto render report.qmd", depends_on = "analysis")
 ```
 
-Then anyone can run them, from a terminal with `pixi run report`, or from R:
+Then anyone can run them, from R:
 
 ```r
-rpix::pixi_run("report")
+pixi_run("report")
 ```
+
+or from a terminal, with `pixi run report`.
 
 `report` runs `analysis` first. `pixi_tasks()` lists a project's tasks.
 

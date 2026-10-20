@@ -13,8 +13,10 @@ A package developed in a Pixi project has its R, its dependencies and its develo
 In the package's folder, set up Pixi, then add what `DESCRIPTION` asks for:
 
 ```r
-rpix::use_pixi(ide = "positron")   # or "rstudio", or "vscode"
-rpix::pixi_import_description()
+library(rpix)
+
+use_pixi(ide = "positron")   # or "rstudio", or "vscode"
+pixi_import_description()
 ```
 
 - `use_pixi()` adds Pixi's files (`.pixi`, `pixi.toml` and `pixi.lock`) to `.Rbuildignore`, and setting up an IDE adds `.vscode`, so they stay out of the package's builds.
@@ -29,7 +31,7 @@ pixi_add_environment("default", features = "dev", overwrite = TRUE)
 
 ## The daily loop
 
-Work in the environment's R, as your IDE starts it once `use_pixi()` has set it up, or with `pixi run R`. devtools works as usual there:
+Work in the environment's R, as your IDE starts it once `use_pixi()` has set it up (from a terminal, `pixi run R`). devtools works as usual there:
 
 ```r
 devtools::load_all()
@@ -58,7 +60,7 @@ pixi_add_task("test", "Rscript -e 'devtools::test()'", description = "Run the te
 pixi_add_task("check", "Rscript -e 'devtools::check()'", description = "Run R CMD check")
 ```
 
-Then `pixi run test`, or `pixi_tasks()` to list them.
+Then `pixi_run("test")`, or `pixi run test` in a terminal, and `pixi_tasks()` lists them.
 
 ## Keeping DESCRIPTION and pixi.toml in step
 
