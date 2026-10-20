@@ -86,6 +86,7 @@ articles:
     contents:
       - articles/how-rpix-works
       - articles/package-availability
+      - articles/similar-tools
       - articles/troubleshooting
 
 reference:
