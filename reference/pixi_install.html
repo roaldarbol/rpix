@@ -165,11 +165,30 @@ of the Pixi call (invisibly).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">pixi_install</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pixi_update</span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">pixi_upgrade</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A throwaway Pixi project in R's temporary folder, so the examples leave</span></span></span>
+<span class="r-in"><span><span class="co"># yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.</span></span></span>
+<span class="r-in"><span><span class="va">project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"rpix-example"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">project</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"[workspace]"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'name = "rpix-example"'</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'channels = ["conda-forge"]'</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'platforms = ["linux-64", "osx-arm64", "win-64"]'</span>,</span></span>
+<span class="r-in"><span>    <span class="st">""</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"[dependencies]"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'r-base = "4.5.*"'</span>,</span></span>
+<span class="r-in"><span>    <span class="st">'conda-ecosystem-user-package-isolation = "*"'</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">project</span>, <span class="st">"pixi.toml"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">pixi_install</span><span class="op">(</span>path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi install --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`</span>
+<span class="r-in"><span><span class="fu">pixi_update</span><span class="op">(</span><span class="st">"dplyr"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`</span>
+<span class="r-in"><span><span class="fu">pixi_upgrade</span><span class="op">(</span>path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

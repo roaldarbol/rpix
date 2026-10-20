@@ -37,8 +37,28 @@ The `.envrc` file, invisibly.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-use_pixi_direnv()
-use_pixi_direnv(environment = "r44")
-} # }
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+use_pixi_direnv(path = project)
+#> ✔ Set .envrc to activate the "default" environment.
+#> ℹ Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+use_pixi_direnv(path = project, environment = "r44")
+#> ✔ Set .envrc to activate the "r44" environment.
+#> ℹ Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
 ```

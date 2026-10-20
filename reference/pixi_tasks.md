@@ -120,14 +120,50 @@ pixi_remove_task(
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-pixi_add_task("test", "Rscript -e 'devtools::test()'")
-pixi_tasks()
-pixi_run("test")
-pixi_run("test", environment = "r44")
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_add_task(
+  "test",
+  "Rscript -e 'devtools::test()'",
+  path = project,
+  dry_run = TRUE
+)
+#> ℹ Would run: `pixi task add test "Rscript -e 'devtools::test()'" --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+pixi_run("test", path = project, dry_run = TRUE)
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml test`
+pixi_run("test", environment = "r44", path = project, dry_run = TRUE)
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml --environment r44 test`
 
 # A task with an argument
-pixi_add_task("render", "quarto render {{ file }}", args = "file")
-pixi_run("render", "analysis.qmd")
+pixi_add_task(
+  "render",
+  "quarto render {{ file }}",
+  args = "file",
+  path = project,
+  dry_run = TRUE
+)
+#> ℹ Would run: `pixi task add render "quarto render {{ file }}" --arg file --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml`
+pixi_run("render", "analysis.qmd", path = project, dry_run = TRUE)
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpaEQ69c/rpix-example/pixi.toml render analysis.qmd`
+
+if (FALSE) { # \dontrun{
+# Needs Pixi
+pixi_tasks()
 } # }
 ```

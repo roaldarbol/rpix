@@ -88,9 +88,31 @@ The file they changed, invisibly.
 ## Examples
 
 ``` r
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+use_pixi_positron(path = project)
+#> ✔ Updated .vscode/settings.json.
+#> ℹ Positron (2026.10 or later) now starts the project's R when you open the project; restart it if it's open. If you've picked another R in this project before, pick "R (Pixi: default)" once.
+
 if (FALSE) { # \dontrun{
+# These need Pixi, and add packages to the project
 use_pixi_rstudio()
-use_pixi_positron()
 use_pixi_vscode(console = "arf")
 use_pixi_neovim()
 } # }

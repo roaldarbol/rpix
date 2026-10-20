@@ -68,7 +68,50 @@ A list with what it found, invisibly.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-pixi_sitrep()
-} # }
+# A throwaway Pixi project in R's temporary folder, so the examples leave
+# yours alone. With `dry_run = TRUE`, rpix shows the Pixi command it would run.
+project <- file.path(tempdir(), "rpix-example")
+dir.create(project, showWarnings = FALSE)
+writeLines(
+  c(
+    "[workspace]",
+    'name = "rpix-example"',
+    'channels = ["conda-forge"]',
+    'platforms = ["linux-64", "osx-arm64", "win-64"]',
+    "",
+    "[dependencies]",
+    'r-base = "4.5.*"',
+    'conda-ecosystem-user-package-isolation = "*"'
+  ),
+  file.path(project, "pixi.toml")
+)
+
+pixi_sitrep(path = project)
+#> 
+#> ── Pixi ──
+#> 
+#> ✔ pixi 0.82.0 at /home/runner/.pixi/bin/pixi
+#> 
+#> ── Project ──
+#> 
+#> ✔ /tmp/RtmpaEQ69c/rpix-example
+#> ! pixi.lock isn't up to date with pixi.toml.
+#>   Run `pixi install`.
+#> 
+#> ── R ──
+#> 
+#> ℹ R 4.5.3 at /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R
+#> ✖ This R is from another project's Pixi environment, in /home/runner/work/rpix/rpix.
+#> ! Libraries from outside the project:
+#> • /tmp/RtmpaEQ69c/temp_libpatha71180cf93f
+#> • /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R/library
+#>   Packages built for another R can crash this one. See
+#>   <https://roald-arboel.com/rpix/articles/how-rpix-works.html>.
+#> ! Loaded from outside the project: R6, Rcpp, askpass, brio, bslib, cachem, callr, cli, curl, desc, devtools, digest, downlit, ellipsis, evaluate, fansi, fastmap, fontawesome, …, xopen, and yaml
+#> ℹ .Rprofile doesn't activate the environment when an IDE starts R.
+#>   Run `use_pixi()` to add it.
+#> 
+#> ── IDE ──
+#> 
+#> ℹ Not in RStudio, Positron, VS Code, Emacs, Neovim or Zed.
 ```
