@@ -28,9 +28,11 @@ records them in a lock file, and works with that project from the R console.
 
 ## Pixi, an external program
 
-Pixi is in `SystemRequirements`, as `pixi`: the name of its executable and
-of its package in conda-forge and other package managers, so tools that map
-`SystemRequirements` to system packages can match it. rpix doesn't need Pixi
+Pixi is in `SystemRequirements`, as `pixi (>= 0.77)`: the name of its
+executable and of its package in conda-forge and other package managers, so
+tools that map `SystemRequirements` to system packages can match it. 0.77 is
+the first Pixi that can build packages with the build backend rpix uses; a CI
+job checks rpix with it. rpix doesn't need Pixi
 to install or load. On a machine without it, its functions say how to install
 it, and `install_pixi()` installs it.
 

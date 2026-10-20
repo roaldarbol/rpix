@@ -21,7 +21,7 @@ Config/testthat/edition: 3
 URL: https://roald-arboel.com/rpix/, https://github.com/roaldarbol/rpix
 BugReports: https://github.com/roaldarbol/rpix/issues
 Roxygen: list(markdown = TRUE)
-SystemRequirements: pixi
+SystemRequirements: pixi (>= 0.77)
 Imports:
     askpass,
     cli,
