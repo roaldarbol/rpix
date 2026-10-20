@@ -26,9 +26,8 @@ turns on Pixi’s activation cache for the project, in
 changes, and R starts in a fraction of a second. The cache is
 experimental in Pixi. To turn it on in a project set up another way:
 
-``` sh
-pixi config set --local experimental.use-environment-activation-cache true
-```
+`use_pixi(activation_cache = FALSE)` leaves it off. The setting it
+writes is Pixi’s `experimental.use-environment-activation-cache`.
 
 IDEs need to be pointed at the environment’s R; see [Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.md).
@@ -110,7 +109,7 @@ Each rpix function runs a Pixi command, and shows it:
 
 ``` r
 
-pixi_add("dplyr")
+rpix::pixi_add("dplyr")
 #> ℹ Running `pixi add r-dplyr --manifest-path pixi.toml`
 ```
 

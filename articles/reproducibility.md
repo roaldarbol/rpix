@@ -16,20 +16,25 @@ files. Share those, and anyone can recreate the environment.
 
 ## Recreate the environment
 
-On another computer, install Pixi, get the project, and run either:
+On another computer, get the project, and install its environment from
+R:
 
-``` sh
-pixi install
-pixi run R
+``` r
+
+library(rpix)
+
+pixi_install(path = "path/to/project")
 ```
 
-`pixi install` only installs the environment. `pixi run R` installs it
+Then open the project in your IDE (see [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.md)). From a terminal,
+`pixi install` does the same, and `pixi run R` installs the environment
 if needed, then starts R.
 
 If `pixi.toml` has changed since `pixi.lock` was written, Pixi updates
 the lock file first. To install exactly what’s in the lock file instead,
-use `pixi install --frozen`. Or use `pixi install --locked`, which stops
-if the lock file is out of date.
+use `pixi_install(frozen = TRUE)`. Or use `pixi_install(locked = TRUE)`,
+which stops if the lock file is out of date.
 
 Some packages finish installing with a script, which Pixi only runs in
 projects that allow it. Bioconductor’s annotation and data packages,
@@ -65,22 +70,23 @@ for which platform, and adds nothing. You can add it only for the
 platforms that have it, one at a time,
 e.g. `pixi_add("Rmpi", platform = "linux-64")`, though code that uses it
 then doesn’t run on the others. Or remove the platform with
-`pixi workspace platform remove`.
+[`pixi_remove_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md).
 
-Packages from GitHub are built on each computer that installs them, and
-don’t build on Apple Silicon Macs yet
-([\#199](https://github.com/roaldarbol/rpix/issues/199)), so a
-collaborator there can’t install a project that has some.
+Packages from GitHub are built on each computer that installs them, so
+the first install takes longer there. Pixi brings what the build needs,
+on every platform the project has.
 
 ## Updating packages
 
 Packages stay at the versions in `pixi.lock` until you update them:
 
-``` sh
-pixi update
+``` r
+
+pixi_update()
 ```
 
-This updates to the newest versions `pixi.toml` allows. `pixi upgrade`
+This updates to the newest versions `pixi.toml` allows.
+[`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
 also raises the version constraints in `pixi.toml`.
 
 ## Packages as of a date
@@ -124,17 +130,18 @@ collaborators run them the same way:
 
 ``` r
 
-rpix::pixi_add_task("analysis", "Rscript analysis.R", description = "Run the analysis")
-rpix::pixi_add_task("report", "quarto render report.qmd", depends_on = "analysis")
+pixi_add_task("analysis", "Rscript analysis.R", description = "Run the analysis")
+pixi_add_task("report", "quarto render report.qmd", depends_on = "analysis")
 ```
 
-Then anyone can run them, from a terminal with `pixi run report`, or
-from R:
+Then anyone can run them, from R:
 
 ``` r
 
-rpix::pixi_run("report")
+pixi_run("report")
 ```
+
+or from a terminal, with `pixi run report`.
 
 `report` runs `analysis` first.
 [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)

@@ -48,6 +48,8 @@ shows the available versions of a package and what they depend on:
 
 ``` r
 
+library(rpix)
+
 pixi_search("dplyr")
 pixi_search("bioc::DESeq2")
 ```

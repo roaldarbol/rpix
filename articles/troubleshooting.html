@@ -107,14 +107,14 @@
 <p><code><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home()</a></code> should be inside the project’s <code>.pixi/envs/</code> folder, and <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> shouldn’t list any library outside it. If it does:</p>
 <ul>
 <li>
-<strong>You’re in your usual R, not the environment’s.</strong> Start R with <code>pixi run R</code>, or see <a href="ide.html">Using rpix with an IDE</a>.</li>
+<strong>You’re in your usual R, not the environment’s.</strong> Open the project in an IDE set up with <code>use_pixi(ide = )</code>, or in RStudio run <code><a href="../reference/pixi_switch.html">rpix::pixi_switch()</a></code>; see <a href="ide.html">Using rpix with an IDE</a>. From a terminal, <code>pixi run R</code>.</li>
 <li>
 <strong>Your personal library is listed.</strong> Keep it out of the environment; see <a href="how-rpix-works.html#keep-your-personal-library-out">How rpix works</a>.</li>
 <li>
 <strong>The project’s <code>.Rprofile</code> changes <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>.</strong> rpix 0.3.0 and earlier added a block starting with <code># Pixi R library setup</code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> removes it; for one in <code>~/.Rprofile</code>, remove it by hand.</li>
 </ul></section><section class="level2"><h2 id="rstudio-uses-the-wrong-r">RStudio uses the wrong R<a class="anchor" aria-label="anchor" href="#rstudio-uses-the-wrong-r"></a>
 </h2>
-<p>RStudio picks its R when it starts, so it has to be started from the project’s environment, as a new RStudio: set the project up with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, and start RStudio with <code>pixi run rstudio</code>. See <a href="ide.html#rstudio">Using rpix with an IDE</a>.</p>
+<p>RStudio picks its R when it starts, so it has to be started from the project’s environment, as a new RStudio: set the project up with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, then run <code><a href="../reference/pixi_switch.html">rpix::pixi_switch()</a></code> in RStudio, which starts one (or <code>pixi run rstudio</code> in a terminal). See <a href="ide.html#rstudio">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="r-doesnt-start-in-vs-code-on-windows">R doesn’t start in VS Code on Windows<a class="anchor" aria-label="anchor" href="#r-doesnt-start-in-vs-code-on-windows"></a>
 </h2>
 <p>On Windows, the environment’s R only starts when the environment is activated. Start VS Code from the project’s environment, with <code>pixi run code .</code>; for VSCodium, Cursor or Windsurf, <code>pixi run codium .</code>, <code>pixi run cursor .</code> or <code>pixi run windsurf .</code>. See <a href="ide.html#vs-code">Using rpix with an IDE</a>.</p>

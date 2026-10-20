@@ -63,11 +63,17 @@ Environments with different versions of R can’t share a solve group.
 
 ## Using an environment
 
-Start an environment’s R with:
+Switch your IDE to an environment’s R with:
 
-``` sh
-pixi run --environment r44 R
+``` r
+
+pixi_switch("r44")
 ```
+
+See [Using rpix with an
+IDE](https://roald-arboel.com/rpix/articles/ide.md) for what that does
+in each IDE. From a terminal, `pixi run --environment r44 R` starts that
+R.
 
 To move your IDE to it, run `pixi_switch("r44")`, or
 [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)

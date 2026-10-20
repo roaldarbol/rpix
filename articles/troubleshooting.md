@@ -26,9 +26,12 @@ project’s `.pixi/envs/` folder, and
 [`.libPaths()`](https://rdrr.io/r/base/libPaths.html) shouldn’t list any
 library outside it. If it does:
 
-- **You’re in your usual R, not the environment’s.** Start R with
-  `pixi run R`, or see [Using rpix with an
-  IDE](https://roald-arboel.com/rpix/articles/ide.md).
+- **You’re in your usual R, not the environment’s.** Open the project in
+  an IDE set up with `use_pixi(ide = )`, or in RStudio run
+  [`rpix::pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md);
+  see [Using rpix with an
+  IDE](https://roald-arboel.com/rpix/articles/ide.md). From a terminal,
+  `pixi run R`.
 - **Your personal library is listed.** Keep it out of the environment;
   see [How rpix
   works](https://roald-arboel.com/rpix/articles/how-rpix-works.html#keep-your-personal-library-out).
@@ -43,7 +46,10 @@ library outside it. If it does:
 RStudio picks its R when it starts, so it has to be started from the
 project’s environment, as a new RStudio: set the project up with
 [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
-and start RStudio with `pixi run rstudio`. See [Using rpix with an
+then run
+[`rpix::pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+in RStudio, which starts one (or `pixi run rstudio` in a terminal). See
+[Using rpix with an
 IDE](https://roald-arboel.com/rpix/articles/ide.html#rstudio).
 
 ## R doesn’t start in VS Code on Windows

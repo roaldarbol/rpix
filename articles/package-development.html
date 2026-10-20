@@ -99,8 +99,10 @@
 </h2>
 <p>In the package’s folder, set up Pixi, then add what <code>DESCRIPTION</code> asks for:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span>   <span class="co"># or "rstudio", or "vscode"</span></span>
-<span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_import_description.html">pixi_import_description</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://roald-arboel.com/rpix/">rpix</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span>   <span class="co"># or "rstudio", or "vscode"</span></span>
+<span><span class="fu"><a href="../reference/pixi_import_description.html">pixi_import_description</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>
 <code><a href="../reference/use_pixi.html">use_pixi()</a></code> adds Pixi’s files (<code>.pixi</code>, <code>pixi.toml</code> and <code>pixi.lock</code>) to <code>.Rbuildignore</code>, and setting up an IDE adds <code>.vscode</code>, so they stay out of the package’s builds.</li>
@@ -113,7 +115,7 @@
 <span><span class="fu"><a href="../reference/pixi_environments.html">pixi_add_environment</a></span><span class="op">(</span><span class="st">"default"</span>, features <span class="op">=</span> <span class="st">"dev"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </section><section class="level2"><h2 id="the-daily-loop">The daily loop<a class="anchor" aria-label="anchor" href="#the-daily-loop"></a>
 </h2>
-<p>Work in the environment’s R, as your IDE starts it once <code><a href="../reference/use_pixi.html">use_pixi()</a></code> has set it up, or with <code>pixi run R</code>. devtools works as usual there:</p>
+<p>Work in the environment’s R, as your IDE starts it once <code><a href="../reference/use_pixi.html">use_pixi()</a></code> has set it up (from a terminal, <code>pixi run R</code>). devtools works as usual there:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -131,7 +133,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_tasks.html">pixi_add_task</a></span><span class="op">(</span><span class="st">"test"</span>, <span class="st">"Rscript -e 'devtools::test()'"</span>, description <span class="op">=</span> <span class="st">"Run the tests"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/pixi_tasks.html">pixi_add_task</a></span><span class="op">(</span><span class="st">"check"</span>, <span class="st">"Rscript -e 'devtools::check()'"</span>, description <span class="op">=</span> <span class="st">"Run R CMD check"</span><span class="op">)</span></span></code></pre></div>
-<p>Then <code>pixi run test</code>, or <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code> to list them.</p>
+<p>Then <code>pixi_run("test")</code>, or <code>pixi run test</code> in a terminal, and <code><a href="../reference/pixi_tasks.html">pixi_tasks()</a></code> lists them.</p>
 </section><section class="level2"><h2 id="keeping-description-and-pixi-toml-in-step">Keeping DESCRIPTION and pixi.toml in step<a class="anchor" aria-label="anchor" href="#keeping-description-and-pixi-toml-in-step"></a>
 </h2>
 <p><code>DESCRIPTION</code> and <code>pixi.toml</code> drift apart easily: <code><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">usethis::use_package()</a></code> only changes <code>DESCRIPTION</code>, and <code><a href="../reference/pixi_add.html">pixi_add()</a></code> only <code>pixi.toml</code>.</p>

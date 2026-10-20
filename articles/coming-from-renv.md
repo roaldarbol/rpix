@@ -29,9 +29,9 @@ familiar.
 | `renv::install("dplyr")` | `rpix::pixi_add("dplyr")` |
 | `renv::remove("dplyr")` | `rpix::pixi_remove("dplyr")` |
 | [`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html) | Not needed |
-| [`renv::restore()`](https://rstudio.github.io/renv/reference/restore.html) | `pixi install` in a terminal, or just `pixi run R` |
-| [`renv::status()`](https://rstudio.github.io/renv/reference/status.html) | `pixi lock --check`, which fails if `pixi.lock` is out of date |
-| [`renv::update()`](https://rstudio.github.io/renv/reference/update.html) | `pixi update`, within the versions `pixi.toml` allows, or `pixi upgrade` to raise those |
+| [`renv::restore()`](https://rstudio.github.io/renv/reference/restore.html) | [`rpix::pixi_install()`](https://roald-arboel.com/rpix/reference/pixi_install.md) |
+| [`renv::status()`](https://rstudio.github.io/renv/reference/status.html) | [`rpix::pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md), which says when `pixi.lock` is out of date, or `rpix::pixi_install(locked = TRUE)`, which fails then |
+| [`renv::update()`](https://rstudio.github.io/renv/reference/update.html) | [`rpix::pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md), within the versions `pixi.toml` allows, or [`rpix::pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md) to raise those |
 | `renv.lock` | `pixi.toml` and `pixi.lock` |
 
 ## Moving a project from renv

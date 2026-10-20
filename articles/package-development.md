@@ -13,8 +13,10 @@ for:
 
 ``` r
 
-rpix::use_pixi(ide = "positron")   # or "rstudio", or "vscode"
-rpix::pixi_import_description()
+library(rpix)
+
+use_pixi(ide = "positron")   # or "rstudio", or "vscode"
+pixi_import_description()
 ```
 
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
@@ -44,7 +46,8 @@ pixi_add_environment("default", features = "dev", overwrite = TRUE)
 
 Work in the environment’s R, as your IDE starts it once
 [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md) has
-set it up, or with `pixi run R`. devtools works as usual there:
+set it up (from a terminal, `pixi run R`). devtools works as usual
+there:
 
 ``` r
 
@@ -90,9 +93,9 @@ pixi_add_task("test", "Rscript -e 'devtools::test()'", description = "Run the te
 pixi_add_task("check", "Rscript -e 'devtools::check()'", description = "Run R CMD check")
 ```
 
-Then `pixi run test`, or
+Then `pixi_run("test")`, or `pixi run test` in a terminal, and
 [`pixi_tasks()`](https://roald-arboel.com/rpix/reference/pixi_tasks.md)
-to list them.
+lists them.
 
 ## Keeping DESCRIPTION and pixi.toml in step
 
