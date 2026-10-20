@@ -5,6 +5,9 @@
 * `pixi_remove_channel()` and `pixi_remove_platform()` remove channels and
   platforms from the project, as `pixi_add_channel()` and
   `pixi_add_platform()` add them (#254).
+* `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
+  `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock` without
+  checking it, as `pixi install --locked` and `--frozen` do (#253).
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed
