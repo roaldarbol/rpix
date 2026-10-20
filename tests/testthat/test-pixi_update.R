@@ -67,13 +67,15 @@ test_that("pixi_upgrade() leaves R as it is, unless asked", {
   pixi_upgrade("r-base", dry_run = TRUE)
   # Named packages leave R anyway
   pixi_upgrade("dplyr", dry_run = TRUE)
+  pixi_update(dry_run = TRUE)
   expect_equal(
     calls$args,
     list(
       c("upgrade", "--exclude", "r-base"),
       "upgrade",
       c("upgrade", "r-base"),
-      c("upgrade", "r-dplyr")
+      c("upgrade", "r-dplyr"),
+      "update"
     )
   )
 
@@ -222,4 +224,14 @@ test_that("running_environment() finds the project's environment this R runs in"
   expect_equal(running_environment(root), "r44")
   local_mocked_bindings(r_home = function() "/usr/lib/R")
   expect_null(running_environment(root))
+})
+
+test_that("the preview shows another platform when this one isn't there", {
+  calls <- local_previewed_pixi()
+  local_mocked_bindings(
+    conda_platform = function() "linux-64",
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) FALSE
+  )
+  expect_message(pixi_update(), "osx-64")
 })
