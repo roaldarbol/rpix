@@ -4,7 +4,7 @@
       invisible(find_manifest())
     Message
       ! `PIXI_WORKSPACE_ROOT` points to '<original>', so using the working directory's project, '<copy>'.
-      i If the project was copied or moved, check it with `pixi_sitrep()`.
+      i If the project was copied or moved, check it with `rpix::pixi_sitrep()`.
       This message is displayed once per session.
 
 # offers to install Pixi in an interactive session
@@ -56,5 +56,5 @@
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
       i "127.0.0.1:8765" refused access (401), so Pixi probably needs credentials for it.
-      i Log in with `pixi_auth_login("127.0.0.1:8765")`, and see `pixi_auth_login()` for other ways to log in.
+      i Log in with `rpix::pixi_auth_login("127.0.0.1:8765")`, and see `pixi_auth_login()` for other ways to log in.
 

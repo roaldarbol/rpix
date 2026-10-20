@@ -228,3 +228,17 @@ test_that("installed_pixi_version() writes Pixi's version as setup-pixi takes it
   )
   expect_equal(installed_pixi_version(), "v0.81.0")
 })
+
+test_that("use_pixi_github_action() offers to add linux-64", {
+  dir <- local_action_project(platforms = "osx-64")
+  has <- "osx-64"
+  local_mocked_bindings(
+    project_platforms = function(path) has,
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) TRUE,
+    pixi_add_platform = function(platforms, path) has <<- c(has, platforms)
+  )
+  suppressMessages(use_pixi_github_action("check"))
+  expect_equal(has, c("osx-64", "linux-64"))
+  expect_true("        os: [ubuntu-latest]" %in% workflow_file(dir, "check"))
+})

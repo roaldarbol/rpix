@@ -157,3 +157,23 @@ test_that("the helpers read the project", {
   )
   expect_equal(task_commands("/p"), "air format .")
 })
+
+test_that("pixi_scan() offers to add what's missing", {
+  calls <- local_scan_project()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) TRUE
+  )
+  suppressMessages(pixi_scan())
+  expect_equal(calls$add, list("cran::ggplot2"))
+})
+
+test_that("pixi_scan() says how to add them when the answer is no", {
+  calls <- local_scan_project()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) FALSE
+  )
+  expect_message(pixi_scan(), "rpix::pixi_scan(add = TRUE)", fixed = TRUE)
+  expect_length(calls$add, 0)
+})

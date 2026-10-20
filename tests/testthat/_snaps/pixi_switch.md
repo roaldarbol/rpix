@@ -66,7 +66,8 @@
     Code
       pixi_switch("r44", ide = "vscode")
     Message
-      ! The "default" environment doesn't have radian. Add it with `pixi_add("radian")`.
+      ! The "default" environment doesn't have radian.
+      i Add it with `rpix::pixi_add("conda::radian")`.
       v Updated '.vscode/settings.json'.
       i Run Developer: Reload Window from the Command Palette to use it.
 
@@ -75,7 +76,8 @@
     Code
       pixi_switch("r44", ide = "vscode")
     Message
-      ! The "r44" environment doesn't have radian. Add it to one of its features with `pixi_add("radian", feature = ...)`.
+      ! The "r44" environment doesn't have radian.
+      i Add it to one of its features with `rpix::pixi_add("conda::radian", feature = ...)`.
       i Close VS Code, and start it again from the environment with `pixi run --environment r44 code .`.
       i For VSCodium, Cursor or Windsurf, use `codium`, `cursor` or `windsurf` instead of `code`.
 

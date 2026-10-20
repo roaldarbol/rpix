@@ -29,7 +29,7 @@
     Condition
       Error in `pixi_add()`:
       ! r-rmpi isn't on conda-forge for "win-64", one of the project's platforms.
-      i Add it only for the platforms that have it, one at a time, e.g. `pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `pixi workspace platform remove win-64`.
+      i Add it only for the platforms that have it, one at a time, e.g. `rpix::pixi_add("Rmpi", platform = "linux-64")`, or remove the platform with `pixi workspace platform remove win-64`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -42,7 +42,7 @@
       Error in `pixi_add()`:
       ! praise isn't built for the project's version of R yet.
       i conda-forge builds packages for a new version of R some time after it's out.
-      i Use R 4.5, the newest it's built for: `pixi_add(c("r-base=4.5", "languageserver", "praise"))`.
+      i Use R 4.5, the newest it's built for: `rpix::pixi_add(c("r-base=4.5", "languageserver", "praise"))`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -55,7 +55,7 @@
       Error in `pixi_add()`:
       ! withr isn't built for the project's version of R yet.
       i conda-forge builds packages for a new version of R some time after it's out.
-      i Use R 4.5, the newest it's built for: `pixi_add(c("r-base=4.5", "withr>=3.0.3", "cli>=3.6.6", "bioc::limma", "conda::gdal", "RColorBrewer>=1.1_3", "viridisLite>=0.4.3", "github::me/mypkg@main"))`.
+      i Use R 4.5, the newest it's built for: `rpix::pixi_add(c("r-base=4.5", "withr>=3.0.3", "cli>=3.6.6", "bioc::limma", "conda::gdal", "RColorBrewer>=1.1_3", "viridisLite>=0.4.3", "github::me/mypkg@main"))`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -68,9 +68,9 @@
       Error in `pixi_add()`:
       ! ggplot2 3.4.4 is only built for R 4.3 and older.
       i Old versions of packages aren't built for a newer R. Instead:
-      * Use a newer ggplot2: `pixi_add(c("dplyr", "ggplot2"))`.
-      * Build ggplot2 3.4.4 from source: `pixi_add(c("dplyr", "github::cran/ggplot2@3.4.4"))`.
-      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "dplyr", "ggplot2==3.4.4"))`.
+      * Use a newer ggplot2: `rpix::pixi_add(c("dplyr", "ggplot2"))`.
+      * Build ggplot2 3.4.4 from source: `rpix::pixi_add(c("dplyr", "github::cran/ggplot2@3.4.4"))`.
+      * Use R 4.3 for the whole project: `rpix::pixi_add(c("r-base=4.3", "dplyr", "ggplot2==3.4.4"))`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -83,8 +83,8 @@
       Error in `pixi_add()`:
       ! ggplot2 3.4.4 is only built for R 4.3 and older.
       i Old versions of packages aren't built for a newer R. Instead:
-      * Use a newer ggplot2: `pixi_add("ggplot2")`.
-      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "ggplot2=3.4.4"))`.
+      * Use a newer ggplot2: `rpix::pixi_add("ggplot2")`.
+      * Use R 4.3 for the whole project: `rpix::pixi_add(c("r-base=4.3", "ggplot2=3.4.4"))`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -97,8 +97,8 @@
       Error in `pixi_add()`:
       ! limma 3.4.4 is only built for R 4.3 and older.
       i Old versions of packages aren't built for a newer R. Instead:
-      * Use a newer limma: `pixi_add("bioc::limma")`.
-      * Use R 4.3 for the whole project: `pixi_add(c("r-base=4.3", "bioc::limma==3.4.4"))`.
+      * Use a newer limma: `rpix::pixi_add("bioc::limma")`.
+      * Use R 4.3 for the whole project: `rpix::pixi_add(c("r-base=4.3", "bioc::limma==3.4.4"))`.
       Caused by error:
       ! `pixi add r-x` failed with exit status 1.
       i See Pixi's output above.
@@ -118,7 +118,7 @@
     Condition
       Error in `pixi_add()`:
       ! fortunes and cowsay aren't on conda-forge.
-      i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes@1.5-4", "github::cran/cowsay"))`.
+      i Pixi can build them from CRAN's source: `rpix::pixi_add(c("github::cran/fortunes@1.5-4", "github::cran/cowsay"))`.
 
 ---
 
@@ -131,7 +131,7 @@
     Condition
       Error in `pixi_add()`:
       ! Didn't add fortunes and cowsay.
-      i Pixi can build them from CRAN's source: `pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
+      i Pixi can build them from CRAN's source: `rpix::pixi_add(c("github::cran/fortunes", "github::cran/cowsay"))`.
 
 # pixi_add() doesn't offer it for packages that aren't on CRAN
 
