@@ -14,6 +14,8 @@ local_ide_project <- function(platforms = "osx-arm64", env = parent.frame()) {
   calls$args <- list()
   local_mocked_bindings(
     is_interactive = function() FALSE,
+    # The editors' commands are there, unless a test says otherwise
+    on_path = function(command) TRUE,
     project_platforms = function(path) platforms,
     run_pixi = function(args, ...) {
       calls$args <- c(calls$args, list(args))
@@ -399,4 +401,26 @@ test_that("require_project() says how when the answer is no, or it can't ask", {
     ask_yes_no = function(question) stop("shouldn't ask")
   )
   expect_error(require_project(dir), "rpix::use_pixi()", fixed = TRUE)
+})
+
+test_that("the editor setups say where to get an editor that isn't on the PATH", {
+  p <- local_ide_project()
+  local_mocked_bindings(
+    on_path = function(command) command != "nvim",
+    is_windows = function() FALSE,
+    direnv_binary = function() ""
+  )
+  expect_snapshot(use_pixi_neovim(p$root))
+  # Not when it's there
+  expect_no_message(hint_missing_editor("emacs"), message = "PATH")
+})
+
+test_that("use_pixi_vscode() says where to get VS Code's command on Windows", {
+  p <- local_ide_project(platforms = "win-64")
+  local_mocked_bindings(
+    on_path = function(command) FALSE,
+    is_windows = function() TRUE
+  )
+  expect_snapshot(hint_missing_editor("vscode"))
+  expect_message(use_pixi_vscode(p$root, console = "R"), "isn't on the")
 })
