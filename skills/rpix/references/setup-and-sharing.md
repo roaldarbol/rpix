@@ -15,7 +15,7 @@ Read this when creating a project or moving one to Pixi, setting up an IDE, shar
 | IDE | Set up | Every day | Another environment |
 |---|---|---|---|
 | Positron | `use_pixi_positron()`: turns on Pixi discovery in `.vscode/settings.json` | Pick "R (Pixi: default)" once in the interpreter picker | Pick its "(Pixi: name)" R, or `pixi_switch()` |
-| RStudio | `use_pixi_rstudio()`: an `rstudio` task, and an `.Rproj` | `pixi run rstudio`. RStudio picks its R when it starts, so opening the `.Rproj` directly gives the wrong R | `pixi_switch("name")` starts a new RStudio |
+| RStudio | `use_pixi_rstudio()`: an `rstudio` task, and an `.Rproj`. Or File > New Project > "Project with Pixi" | `pixi run rstudio`. RStudio picks its R when it starts, so opening the `.Rproj` directly gives the wrong R; the addin "Open with the project's Pixi R" fixes that. rpix's other addins add packages, install, run tasks and run the sitrep | `pixi_switch("name")` starts a new RStudio |
 | VS Code | `use_pixi_vscode()`: languageserver, sess and jgd (from rpix-forge), and the R extension pointed at the environment's R | Open the folder; on Windows start it with `pixi run code .` | `pixi_switch("name")`, then Reload Window |
 | Emacs, Neovim, Zed | `use_pixi_emacs()`, `use_pixi_neovim()`, `use_pixi_zed()`: languageserver, and a `.envrc` that activates the environment with direnv (`use_pixi_direnv()`) | direnv loads it: Emacs with the envrc package, Neovim from a shell with direnv's hook, Zed by itself. The user allows it once with `direnv allow`; on Windows, start the editor with `pixi run` | `pixi_switch("name")`, then reload direnv and restart R |
 
@@ -23,12 +23,13 @@ In the IDE's console, `R.home()` should be inside `.pixi/envs/`. When another R 
 
 ## From renv
 
+In the project's folder:
+
 ```sh
-pixi init
-Rscript --no-init-file -e 'rpix::pixi_import_renv(); rpix::use_pixi()'
+Rscript --no-init-file -e 'rpix::use_pixi(); rpix::pixi_import_renv()'
 ```
 
-`--no-init-file` keeps renv from starting, so this runs in the usual R, where rpix is installed. `pixi_import_renv()` adds the packages in `renv.lock` that nothing else there needs, at least at their locked versions (`versions = "exact"` for those versions, where conda-forge has them), with the lock file's R. Packages from GitHub are added too, built from source at the commit `renv.lock` records, and it offers to build CRAN packages that aren't on conda-forge; both are experimental, so ask the user first (an older rpix lists them instead). It lists what it still can't add (packages in a subfolder of a repository, other sources, packages on neither conda-forge nor bioconda that can't be built; see `packages.md`), and removes `source("renv/activate.R")` from `.Rprofile`. `renv.lock` and `renv/` stay; delete them only when the user says so.
+`--no-init-file` keeps renv from starting, so this runs in the usual R, where rpix is installed. In an interactive session, `rpix::use_pixi(path = )` from an R outside the project notices `renv.lock` and offers the import itself; a script doesn't get the question, so it calls both. `pixi_import_renv()` adds the packages in `renv.lock` that nothing else there needs, at least at their locked versions (`versions = "exact"` for those versions, where conda-forge has them), with the lock file's R. Packages from GitHub are added too, built from source at the commit `renv.lock` records, and it offers to build CRAN packages that aren't on conda-forge; both are experimental, so ask the user first (an older rpix lists them instead). It lists what it still can't add (packages in a subfolder of a repository, other sources, packages on neither conda-forge nor bioconda that can't be built; see `packages.md`), and removes `source("renv/activate.R")` from `.Rprofile`. `renv.lock` and `renv/` stay; delete them only when the user says so.
 
 ## Sharing and reproducing
 

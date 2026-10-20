@@ -39,17 +39,38 @@
 #' * The others: the command (invisibly) if `dry_run = TRUE`, otherwise the
 #'   result of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
+#'
 #' # An environment with R 4.4, next to the default one. It leaves out the
 #' # default feature, since that has another version of R.
-#' pixi_add(c("r-base=4.4", "dplyr"), feature = "r44")
-#' pixi_add_environment("r44", features = "r44", default_feature = FALSE)
+#' pixi_add(
+#'   c("r-base=4.4", "dplyr"),
+#'   feature = "r44",
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#' pixi_add_environment(
+#'   "r44",
+#'   features = "r44",
+#'   default_feature = FALSE,
+#'   path = project,
+#'   dry_run = TRUE
+#' )
 #'
 #' # An environment with the default packages plus testthat, on the same
 #' # versions as the default environment
-#' pixi_add("testthat", feature = "test")
-#' pixi_add_environment("test", features = "test", solve_group = "default")
+#' pixi_add("testthat", feature = "test", path = project, dry_run = TRUE)
+#' pixi_add_environment(
+#'   "test",
+#'   features = "test",
+#'   solve_group = "default",
+#'   path = project,
+#'   dry_run = TRUE
+#' )
+#'
+#' \dontrun{
+#' # Needs Pixi
 #' pixi_environments()
 #' }
 pixi_environments <- function(path = NULL) {
@@ -140,7 +161,7 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
   )
 }
 
-#' Add channels or platforms to the project
+#' Add or remove the project's channels and platforms
 #'
 #' @description
 #' * `pixi_add_channel()` adds conda channels, which packages are installed
@@ -148,10 +169,13 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
 #' * `pixi_add_platform()` adds platforms, such as `"linux-64"`, `"osx-arm64"`
 #'   or `"win-64"`, so `pixi.lock` covers them too and collaborators on them
 #'   get the same packages.
+#' * `pixi_remove_channel()` and `pixi_remove_platform()` remove them again,
+#'   e.g. a platform no one uses, which Pixi then no longer solves for, or a
+#'   channel the project no longer needs packages from.
 #'
 #' For more information, see
-#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/> and
-#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/>.
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/>
+#' and <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/>.
 #'
 #' @param channels Channel names, such as `"bioconda"`, or URLs.
 #' @param platforms Platform names.
@@ -159,11 +183,11 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result
 #'   of the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_add_channel("bioconda")
-#' pixi_add_platform(c("linux-64", "osx-arm64", "win-64"))
-#' }
+#'
+#' pixi_add_channel("bioconda", path = project, dry_run = TRUE)
+#' pixi_add_platform("osx-64", path = project, dry_run = TRUE)
 pixi_add_channel <- function(channels, path = NULL, dry_run = FALSE) {
   run_pixi(
     c("workspace", "channel", "add", channels),
@@ -178,6 +202,28 @@ pixi_add_channel <- function(channels, path = NULL, dry_run = FALSE) {
 pixi_add_platform <- function(platforms, path = NULL, dry_run = FALSE) {
   run_pixi(
     c("workspace", "platform", "add", platforms),
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
+}
+
+#' @rdname pixi_add_channel
+#' @export
+pixi_remove_channel <- function(channels, path = NULL, dry_run = FALSE) {
+  run_pixi(
+    c("workspace", "channel", "remove", channels),
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
+}
+
+#' @rdname pixi_add_channel
+#' @export
+pixi_remove_platform <- function(platforms, path = NULL, dry_run = FALSE) {
+  run_pixi(
+    c("workspace", "platform", "remove", platforms),
     path = path,
     echo = TRUE,
     dry_run = dry_run

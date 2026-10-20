@@ -94,12 +94,27 @@ test_that("pixi_add_channel() and pixi_add_platform() build the commands", {
   expect_equal(calls$args[[2]], c("workspace", "platform", "add", "win-64"))
 })
 
+test_that("pixi_remove_channel() and pixi_remove_platform() build the commands", {
+  calls <- local_recorded_pixi()
+  pixi_remove_channel(c("bioconda", "my-channel"))
+  pixi_remove_platform("osx-64")
+  expect_equal(
+    calls$args,
+    list(
+      c("workspace", "channel", "remove", "bioconda", "my-channel"),
+      c("workspace", "platform", "remove", "osx-64")
+    )
+  )
+})
+
 test_that("install, update, upgrade and lock build the commands", {
   calls <- local_recorded_pixi()
 
   pixi_install()
   pixi_install(environment = "r44")
   pixi_install(all = TRUE)
+  pixi_install(locked = TRUE)
+  pixi_install(frozen = TRUE)
   pixi_update()
   pixi_update(c("dplyr", "bioc::limma"), environment = "r44")
   pixi_upgrade()
@@ -112,6 +127,8 @@ test_that("install, update, upgrade and lock build the commands", {
       "install",
       c("install", "--environment", "r44"),
       c("install", "--all"),
+      c("install", "--locked"),
+      c("install", "--frozen"),
       "update",
       c("update", "r-dplyr", "bioconductor-limma", "--environment", "r44"),
       "upgrade",
@@ -119,6 +136,15 @@ test_that("install, update, upgrade and lock build the commands", {
       "lock"
     )
   )
+})
+
+test_that("pixi_install() takes locked or frozen, not both", {
+  calls <- local_recorded_pixi()
+  expect_snapshot(
+    pixi_install(locked = TRUE, frozen = TRUE),
+    error = TRUE
+  )
+  expect_length(calls$args, 0)
 })
 
 test_that("environments work with a real Pixi project", {

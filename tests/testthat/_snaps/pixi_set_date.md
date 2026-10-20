@@ -19,7 +19,8 @@
     Code
       previous <- pixi_set_date(NULL, path = calls$dir)
     Message
-      v Removed the date from 'pixi.toml'. Get newer packages with `pixi_update()`.
+      v Removed the date from 'pixi.toml'.
+      i Get newer packages with `rpix::pixi_update()`.
 
 # pixi_set_date() puts pixi.toml back if Pixi can't solve it
 
@@ -30,8 +31,8 @@
     Condition
       Error:
       ! Pixi couldn't solve the project with packages as of "2020-01-01", so 'pixi.toml' is as it was.
-      i The project may pin versions newer than that, e.g. ones `pixi_add()` added. See Pixi's output above.
-      i Setting the date when you create a project, with `use_pixi(date = "2020-01-01")`, avoids that.
+      i The project may pin versions newer than that, e.g. ones `rpix::pixi_add()` added. See Pixi's output above.
+      i Setting the date when you create a project, with `rpix::use_pixi(date = "2020-01-01")`, avoids that.
       Caused by error in `run_pixi()`:
       ! no solution
 

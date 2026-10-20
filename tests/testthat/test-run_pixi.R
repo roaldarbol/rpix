@@ -527,3 +527,76 @@ test_that("errors from a channel that refused access suggest logging in", {
     class = "rpix_error_access"
   )
 })
+
+test_that("run_pixi() offers to set up a project where there's none", {
+  dir <- withr::local_tempdir()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) TRUE,
+    use_pixi = function(path, ...) {
+      writeLines("[workspace]", file.path(path, "pixi.toml"))
+    }
+  )
+  command <- suppressMessages(run_pixi("list", path = dir, dry_run = TRUE))
+  expect_match(command, "pixi list --manifest-path", fixed = TRUE)
+})
+
+local_refused_pixi <- function(answer, env = parent.frame()) {
+  stderr <- paste(
+    readLines(test_path("fixtures", "pixi-access-error.txt")),
+    collapse = "\n"
+  )
+  calls <- new.env()
+  calls$runs <- 0
+  calls$logins <- character()
+  calls$host <- access_denied(stderr)$host
+  local_mocked_bindings(
+    pixi_binary = function(...) "pixi",
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) answer,
+    pixi_auth_login = function(host, ...) {
+      calls$logins <- c(calls$logins, host)
+    },
+    .env = env
+  )
+  # Refused the first time, fine after logging in
+  local_mocked_bindings(
+    run = function(command, args, ...) {
+      calls$runs <- calls$runs + 1
+      if (calls$runs == 1) {
+        list(status = 1, stdout = "", stderr = stderr)
+      } else {
+        list(status = 0, stdout = "", stderr = "")
+      }
+    },
+    .package = "processx",
+    .env = env
+  )
+  calls
+}
+
+test_that("run_pixi() offers to log in when a channel refuses access, then runs again", {
+  calls <- local_refused_pixi(answer = TRUE)
+  suppressMessages(run_pixi(c("search", "r-x"), project = "none"))
+  expect_equal(calls$runs, 2)
+  expect_equal(calls$logins, calls$host)
+})
+
+test_that("run_pixi() fails as before when the answer is no", {
+  calls <- local_refused_pixi(answer = FALSE)
+  expect_error(
+    suppressMessages(run_pixi(c("search", "r-x"), project = "none")),
+    class = "rpix_error_access"
+  )
+  expect_equal(calls$runs, 1)
+  expect_length(calls$logins, 0)
+})
+
+test_that("run_pixi() doesn't offer to log in for pixi auth itself", {
+  calls <- local_refused_pixi(answer = TRUE)
+  expect_error(
+    suppressMessages(run_pixi(c("auth", "status"), project = "none")),
+    class = "rpix_error_access"
+  )
+  expect_length(calls$logins, 0)
+})

@@ -608,3 +608,104 @@ test_that("use_pixi() only passes on settings of the IDEs it sets up", {
     "settings of the IDEs"
   )
 })
+
+local_renv_project <- function(answer, env = parent.frame()) {
+  calls <- local_mock_setup(env = env)
+  dir <- withr::local_tempdir(.local_envir = env)
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  writeLines("{}", file.path(dir, "renv.lock"))
+  calls$dir <- dir
+  calls$imported <- list()
+  local_mocked_bindings(
+    is_interactive = function() !is.null(answer),
+    ask_yes_no = function(question) {
+      calls$asked <- question
+      answer
+    },
+    pixi_import_renv = function(path, ...) {
+      calls$imported <- c(calls$imported, list(path))
+    },
+    .env = env
+  )
+  calls
+}
+
+test_that("use_pixi() offers to move a renv project's packages first", {
+  calls <- local_renv_project(answer = TRUE)
+  suppressMessages(use_pixi(path = calls$dir, install_rpix = FALSE))
+  expect_equal(
+    calls$asked,
+    "Would you like to move its packages to Pixi, and turn renv off?"
+  )
+  expect_length(calls$imported, 1)
+  expect_true(same_path(calls$imported[[1]], calls$dir))
+})
+
+test_that("use_pixi() says how to move them when the answer is no, or it can't ask", {
+  calls <- local_renv_project(answer = FALSE)
+  expect_message(
+    use_pixi(path = calls$dir, install_rpix = FALSE),
+    "rpix::pixi_import_renv()",
+    fixed = TRUE
+  )
+  expect_length(calls$imported, 0)
+
+  calls <- local_renv_project(answer = NULL)
+  expect_message(
+    use_pixi(path = calls$dir, install_rpix = FALSE),
+    "rpix::pixi_import_renv()",
+    fixed = TRUE
+  )
+  expect_null(calls$asked)
+  expect_length(calls$imported, 0)
+})
+
+test_that("use_pixi() doesn't offer it again once the project has R", {
+  calls <- local_renv_project(answer = TRUE)
+  writeLines(
+    c("[workspace]", "", "[dependencies]", 'r-base = "*"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+  suppressMessages(use_pixi(path = calls$dir, install_rpix = FALSE))
+  expect_null(calls$asked)
+  expect_length(calls$imported, 0)
+})
+
+test_that("use_pixi() offers the newest R conda-forge has packages for, and uses it", {
+  calls <- local_mock_setup()
+  dir <- withr::local_tempdir()
+  writeLines("[workspace]", file.path(dir, "pixi.toml"))
+  stderr <- paste(
+    readLines(
+      test_path("fixtures", "pixi-r-version-new-r.txt"),
+      encoding = "UTF-8"
+    ),
+    collapse = "\n"
+  )
+  error <- structure(
+    class = c("rpix_error_pixi", "error", "condition"),
+    list(message = "pixi failed", call = NULL, stderr = stderr)
+  )
+  adds <- list()
+  asked <- character()
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) {
+      asked <<- c(asked, question)
+      grepl("^Would you like to use R", question)
+    },
+    run_pixi = function(args, ...) {
+      if (args[1] == "add") {
+        adds <<- c(adds, list(args))
+        if (length(adds) == 1) stop(error)
+      }
+      invisible(list(status = 0))
+    }
+  )
+
+  suppressMessages(use_pixi(r_version = "4.6", path = dir))
+  expect_equal(asked, "Would you like to use R 4.5 instead?")
+  expect_length(adds, 2)
+  expect_true("r-base=4.6" %in% adds[[1]])
+  expect_true("r-base=4.5" %in% adds[[2]])
+})

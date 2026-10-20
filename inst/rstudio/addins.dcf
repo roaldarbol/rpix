@@ -1,0 +1,34 @@
+Name: Open with the project's Pixi R
+Description: Start RStudio with the R from the project's Pixi environment (picking one if there are several).
+Binding: addin_open_with_pixi_r
+Interactive: true
+
+Name: Add packages...
+Description: Add the selected packages, or those you name, to the project with Pixi.
+Binding: addin_add_packages
+Interactive: true
+
+Name: Add the packages this file uses
+Description: Add the packages the active file uses that pixi.toml lacks.
+Binding: addin_add_file_packages
+Interactive: true
+
+Name: Install the environment
+Description: Install the project's Pixi environment from pixi.lock, e.g. after a git pull.
+Binding: addin_install
+Interactive: true
+
+Name: Run a task...
+Description: Run one of the project's Pixi tasks.
+Binding: addin_run_task
+Interactive: true
+
+Name: Open pixi.toml
+Description: Open the project's Pixi manifest.
+Binding: addin_open_manifest
+Interactive: false
+
+Name: Situation report
+Description: Check that this R and the project's Pixi environment work together.
+Binding: addin_sitrep
+Interactive: true

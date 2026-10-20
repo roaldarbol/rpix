@@ -51,23 +51,45 @@ Each of the project's environments is listed as its own R, e.g. **R 4.4.3 (Pixi:
 
 ### Set up
 
+For a new project, use RStudio's **File > New Project > New Directory > Project with Pixi**. It does what `use_pixi(ide = "rstudio")` does, for the version of R you pick (4.5 by default: conda-forge has no R packages for R 4.6 yet), and makes the project a git repository if you ask.
+
+For a project you have already, run in RStudio:
+
 ```r
-rpix::use_pixi_rstudio()
+rpix::use_pixi(ide = "rstudio")   # or rpix::use_pixi_rstudio() in a Pixi project
 ```
 
-This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one.
+This adds an `rstudio` task to `pixi.toml`, and creates an `.Rproj` file if the project doesn't have one. Both ways need rpix in the R that RStudio runs.
+
+RStudio also applies its own "Create a git repository" and "Use renv with this project" to templates, as you last left them in its New Project dialog, without showing them. renv clashes with Pixi, as both manage the project's packages, so turn it off: run `rstudioapi::writeRStudioPreference("new_proj_use_renv", FALSE)` (or `.rs.api.writeRStudioPreference(...)` without rstudioapi), or create one project with it unticked. RStudio only saves the checkbox when a project is created, not when the dialog is cancelled. If renv got into a project, rpix says so, and that `rpix::pixi_import_renv()` turns it off.
 
 ### Every day
 
-Start RStudio with the task, in a terminal in the project folder:
+Open the project in RStudio as usual, e.g. from its recent projects or by double-clicking the `.Rproj` file. RStudio picks its R when it starts, so it opens the project in your usual R. Once it's ready, rpix asks:
 
-```sh
-pixi run rstudio
+```
+? Reopen this project in a new RStudio, with its Pixi R?
+1: Yes
+2: No
 ```
 
-RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.
+Yes starts a new RStudio with the environment's R, in the project, after installing the environment if it isn't yet, and closes this one. **Addins > Open with the project's Pixi R**, or `rpix::pixi_switch()`, does the same later. To stop the question, set `RPIX_OFFER_SWITCH=false` in your `~/.Renviron`.
 
-On Windows, the task expects RStudio in `C:/Program Files/RStudio`. If it's somewhere else, change the path in `pixi.toml`.
+From a terminal, `pixi run rstudio` in the project folder starts RStudio with the environment's R straight away. On Windows, the task expects RStudio in `C:/Program Files/RStudio`; if it's somewhere else, change the path in `pixi.toml`.
+
+### Addins
+
+rpix adds these to RStudio's **Addins** menu:
+
+- **Open with the project's Pixi R:** a new RStudio with the environment's R (pick the environment if there are several).
+- **Add packages...:** the selected packages, or the code's, or those you name.
+- **Add the packages this file uses:** those the active file uses and `pixi.toml` lacks.
+- **Install the environment:** e.g. after a `git pull`.
+- **Run a task...:** one of the project's tasks.
+- **Open pixi.toml**.
+- **Situation report:** `pixi_sitrep()`.
+
+They're there when rpix is installed in the R that RStudio runs. To give one a keyboard shortcut, use **Tools > Modify Keyboard Shortcuts**.
 
 ### Another environment
 
@@ -77,13 +99,13 @@ From RStudio, run:
 rpix::pixi_switch("r44")
 ```
 
-This starts a new RStudio with the environment's R, in the project. The first time, it can take a while to open. Close the old one when you're done with it.
+This starts a new RStudio with the environment's R, in the project. The first time, it can take a while to open. Close the old one when you're done with it. **Addins > Open with the project's Pixi R** does the same, and asks which environment.
 
 From a terminal, `pixi run --environment test rstudio` works too, for environments that include the default feature, which the task belongs to.
 
 ### If something's off
 
-- **RStudio uses another R.** You probably opened the project another way, e.g. by double-clicking the `.Rproj` file. Close RStudio and use `pixi run rstudio`.
+- **RStudio uses another R, and rpix didn't ask.** rpix isn't installed in the R that RStudio runs, so nothing can ask. Install it there, or use `pixi run rstudio` from a terminal.
 
 ## VS Code
 
@@ -164,12 +186,14 @@ Run `rpix::pixi_switch("r44")`. It points `.envrc` at that environment. Reload d
 
 ## The message at startup
 
-If you start R in a Pixi project with an R that isn't from the project's environment, e.g. by double-clicking the `.Rproj` file, which opens your usual R, the project's `.Rprofile` says so, as long as rpix is installed in that R:
+If you start R in a Pixi project with an R that isn't from the project's environment, e.g. your usual R, the project's `.Rprofile` says so, as long as rpix is installed in that R:
 
 ```
 ! This R isn't from the project's Pixi environment, so it doesn't use the project's packages.
-ℹ Start R with `pixi run R`, or see https://roald-arboel.com/rpix/articles/ide.html.
+ℹ Open the project in an IDE set up with `rpix::use_pixi(ide = ...)`, or start R with `pixi run R`. See https://roald-arboel.com/rpix/articles/ide.html.
 ```
+
+In RStudio, it asks to reopen the project with the environment's R instead (see [RStudio](#rstudio)).
 
 Your usual R can't use the environment's packages: they're built for the environment's R, and loading them can crash another R. So rpix doesn't try; start the environment's R instead, as above.
 
