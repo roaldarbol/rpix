@@ -149,7 +149,8 @@ test_that("adds languageserver and points the R extension at the environment's R
 
   suppressMessages(use_pixi_vscode(p$root))
 
-  expect_equal(p$args[[1]], c("add", "r-languageserver"))
+  # And sess's dependencies, so the R extension needn't compile them (#244)
+  expect_equal(p$args[[1]], c("add", "r-languageserver", sess_dependencies))
   r <- "${workspaceFolder}/.pixi/envs/default/bin/R"
   expect_equal(
     read_settings(p$root),
@@ -171,7 +172,10 @@ test_that("sets up arf or radian as the console, with the environment's R", {
   env <- "${workspaceFolder}/.pixi/envs/default"
 
   suppressMessages(use_pixi_vscode(p$root, console = "arf"))
-  expect_equal(p$args[[1]], c("add", "r-languageserver", "arf"))
+  expect_equal(
+    p$args[[1]],
+    c("add", "r-languageserver", sess_dependencies, "arf")
+  )
   expect_equal(
     read_settings(p$root),
     list(
@@ -212,7 +216,10 @@ test_that("asks which console to use, or keeps the one set up", {
     }
   )
   suppressMessages(use_pixi_vscode(p$root))
-  expect_equal(p$args[[1]], c("add", "r-languageserver", "arf"))
+  expect_equal(
+    p$args[[1]],
+    c("add", "r-languageserver", sess_dependencies, "arf")
+  )
   expect_equal(vscode_console(p$root), "arf")
 
   # Esc keeps it, as does not asking
@@ -294,7 +301,7 @@ test_that("adds only what's missing, and sets direnv up once", {
   )
 
   suppressMessages(use_pixi_vscode(p$root, console = "arf"))
-  expect_equal(p$args, list(c("add", "arf")))
+  expect_equal(p$args, list(c("add", sess_dependencies, "arf")))
 
   # As use_pixi(ide = c("emacs", "neovim")) does
   expect_snapshot({
