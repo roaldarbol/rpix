@@ -1,4 +1,4 @@
-# rpix (development version)
+# rpix 0.9.1
 
 ## Fixed
 
