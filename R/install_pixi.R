@@ -11,8 +11,9 @@
 #' already, nothing happens unless `force = TRUE`; update an existing Pixi with
 #' `pixi self-update` in a terminal.
 #'
-#' The installer is downloaded from <https://pixi.sh>. It may send prefix.dev
-#' an anonymous install count; set `PIXI_NO_TELEMETRY=1` to turn that off. See
+#' The installer is Pixi's own, `install.sh` (or `install.ps1` on Windows)
+#' from `pixi.sh`. It may send prefix.dev an anonymous install count; set
+#' `PIXI_NO_TELEMETRY=1` to turn that off. See
 #' <https://pixi.prefix.dev/latest/installation/>.
 #'
 #' @param version Optional. The version of Pixi, such as `"0.81.0"`. Defaults

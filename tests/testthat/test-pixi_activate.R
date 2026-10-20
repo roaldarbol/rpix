@@ -217,6 +217,7 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   offered <- NULL
   local_mocked_bindings(
     detect_ide = function() "rstudio",
+    is_interactive = function() TRUE,
     when_rstudio_ready = function(fun) offered <<- fun
   )
   messages <- capture_messages(pixi_activate(p$root, quiet = FALSE))
@@ -224,9 +225,17 @@ test_that("gives a hint, and changes nothing, in an R that isn't the project's",
   expect_no_match(paste(messages, collapse = ""), "Addins")
   expect_true(is.function(offered))
 
-  # Not when quiet; turned off, the hint to the addin instead
+  # Not when quiet, nor outside an interactive session; turned off, the hint
+  # to the addin instead
   offered <- NULL
   pixi_activate(p$root, quiet = TRUE)
+  local_mocked_bindings(is_interactive = function() FALSE)
+  expect_message(
+    pixi_activate(p$root, quiet = FALSE),
+    "Open with the project's Pixi R"
+  )
+  expect_null(offered)
+  local_mocked_bindings(is_interactive = function() TRUE)
   withr::local_envvar(RPIX_OFFER_SWITCH = "false")
   expect_message(
     pixi_activate(p$root, quiet = FALSE),

@@ -1,4 +1,11 @@
-# rpix (development version)
+# rpix 0.9.1
+
+## Fixed
+
+* The question at startup, whether to reopen the project in RStudio with
+  its Pixi R, is only asked in an interactive session.
+* Links to the rpix-forge channel go to its page on prefix.dev, rather than
+  to the channel's URL, which has no page.
 
 # rpix 0.9.0 (2026-10-20)
 
@@ -129,7 +136,7 @@
 * rpix is a dependency of the project (`r-rpix`), so it's in `pixi.lock` and
   a collaborator's environment has it, rather than installed into the
   environment from R-universe. It isn't on conda-forge yet: until it is,
-  `use_pixi()` adds the channel <https://prefix.dev/roaldarbol/rpix-forge>,
+  `use_pixi()` adds the channel [rpix-forge](https://prefix.dev/channels/rpix-forge),
   after conda-forge, which also has the R extension's sess and jgd for VS Code.
   Everything else still comes from conda-forge. The `.Rprofile` hint for an
   environment without rpix gives the Pixi commands that add it.

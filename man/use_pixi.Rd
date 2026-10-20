@@ -31,10 +31,10 @@ experimental).}
 
 \item{install_rpix}{If \code{TRUE}, add rpix to the project (\code{r-rpix}), so it's
 in \code{pixi.lock} like the other packages, and a collaborator's environment
-has it too. Until rpix is on conda-forge, it comes from
-\url{https://prefix.dev/roaldarbol/rpix-forge}, which is added to the
-project's channels after conda-forge, so everything else still comes
-from conda-forge. To try a change to rpix, set \code{options(rpix.ref)} to a
+has it too. Until rpix is on conda-forge, it comes from the
+\href{https://prefix.dev/channels/rpix-forge}{rpix-forge} channel, which is
+added to the project's channels after conda-forge, so everything else
+still comes from conda-forge. To try a change to rpix, set \code{options(rpix.ref)} to a
 branch, tag or commit, e.g. \code{"main"} or a pull request's branch: rpix is
 then also installed from GitHub, unless the environment has that commit
 already.}

@@ -64,7 +64,10 @@ pixi_activate <- function(path = getwd(), quiet = !interactive()) {
       if (is.null(env) || is.null(root) || !same_path(env$root, root)) {
         in_rstudio <- identical(detect_ide(), "rstudio") && !is.null(root)
         # In RStudio, the question once it's ready says what to do
-        ask_switch <- !quiet && in_rstudio && offer_switch_enabled()
+        ask_switch <- !quiet &&
+          in_rstudio &&
+          is_interactive() &&
+          offer_switch_enabled()
         inform(c(
           moved,
           "!" = "This R isn't from the project's Pixi environment, so it doesn't use the project's packages.",
