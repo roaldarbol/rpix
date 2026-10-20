@@ -127,27 +127,52 @@
 </h2>
 <section class="level3"><h3 id="set-up-1">Set up<a class="anchor" aria-label="anchor" href="#set-up-1"></a>
 </h3>
+<p>For a new project, use RStudio’s <strong>File &gt; New Project &gt; New Directory &gt; Project with Pixi</strong>. It does what <code>use_pixi(ide = "rstudio")</code> does, for the version of R you pick (4.5 by default: conda-forge has no R packages for R 4.6 yet), and makes the project a git repository if you ask.</p>
+<p>For a project you have already, run in RStudio:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi_ide.html">use_pixi_rstudio</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This adds an <code>rstudio</code> task to <code>pixi.toml</code>, and creates an <code>.Rproj</code> file if the project doesn’t have one.</p>
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"rstudio"</span><span class="op">)</span>   <span class="co"># or rpix::use_pixi_rstudio() in a Pixi project</span></span></code></pre></div>
+<p>This adds an <code>rstudio</code> task to <code>pixi.toml</code>, and creates an <code>.Rproj</code> file if the project doesn’t have one. Both ways need rpix in the R that RStudio runs.</p>
+<p>RStudio also applies its own “Create a git repository” and “Use renv with this project” to templates, as you last left them in its New Project dialog, without showing them. renv clashes with Pixi, as both manage the project’s packages, so turn it off: run <code>rstudioapi::writeRStudioPreference("new_proj_use_renv", FALSE)</code> (or <code>.rs.api.writeRStudioPreference(...)</code> without rstudioapi), or create one project with it unticked. RStudio only saves the checkbox when a project is created, not when the dialog is cancelled. If renv got into a project, rpix says so, and that <code><a href="../reference/pixi_import_renv.html">rpix::pixi_import_renv()</a></code> turns it off.</p>
 </section><section class="level3"><h3 id="every-day-1">Every day<a class="anchor" aria-label="anchor" href="#every-day-1"></a>
 </h3>
-<p>Start RStudio with the task, in a terminal in the project folder:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixi</span> run rstudio</span></code></pre></div>
-<p>RStudio picks its R when it starts, so it has to be started this way. The task starts a new RStudio even if one is already running, and opens the project.</p>
-<p>On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>. If it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
+<p>Open the project in RStudio as usual, e.g. from its recent projects or by double-clicking the <code>.Rproj</code> file. RStudio picks its R when it starts, so it opens the project in your usual R. Once it’s ready, rpix asks:</p>
+<pre><code>? Reopen this project in a new RStudio, with its Pixi R?
+1: Yes
+2: No</code></pre>
+<p>Yes starts a new RStudio with the environment’s R, in the project, after installing the environment if it isn’t yet, and closes this one. <strong>Addins &gt; Open with the project’s Pixi R</strong>, or <code><a href="../reference/pixi_switch.html">rpix::pixi_switch()</a></code>, does the same later. To stop the question, set <code>RPIX_OFFER_SWITCH=false</code> in your <code>~/.Renviron</code>.</p>
+<p>From a terminal, <code>pixi run rstudio</code> in the project folder starts RStudio with the environment’s R straight away. On Windows, the task expects RStudio in <code>C:/Program Files/RStudio</code>; if it’s somewhere else, change the path in <code>pixi.toml</code>.</p>
+</section><section class="level3"><h3 id="addins">Addins<a class="anchor" aria-label="anchor" href="#addins"></a>
+</h3>
+<p>rpix adds these to RStudio’s <strong>Addins</strong> menu:</p>
+<ul>
+<li>
+<strong>Open with the project’s Pixi R:</strong> a new RStudio with the environment’s R (pick the environment if there are several).</li>
+<li>
+<strong>Add packages…:</strong> the selected packages, or the code’s, or those you name.</li>
+<li>
+<strong>Add the packages this file uses:</strong> those the active file uses and <code>pixi.toml</code> lacks.</li>
+<li>
+<strong>Install the environment:</strong> e.g. after a <code>git pull</code>.</li>
+<li>
+<strong>Run a task…:</strong> one of the project’s tasks.</li>
+<li>
+<strong>Open pixi.toml</strong>.</li>
+<li>
+<strong>Situation report:</strong> <code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code>.</li>
+</ul>
+<p>They’re there when rpix is installed in the R that RStudio runs. To give one a keyboard shortcut, use <strong>Tools &gt; Modify Keyboard Shortcuts</strong>.</p>
 </section><section class="level3"><h3 id="another-environment-1">Another environment<a class="anchor" aria-label="anchor" href="#another-environment-1"></a>
 </h3>
 <p>From RStudio, run:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_switch.html">pixi_switch</a></span><span class="op">(</span><span class="st">"r44"</span><span class="op">)</span></span></code></pre></div>
-<p>This starts a new RStudio with the environment’s R, in the project. The first time, it can take a while to open. Close the old one when you’re done with it.</p>
+<p>This starts a new RStudio with the environment’s R, in the project. The first time, it can take a while to open. Close the old one when you’re done with it. <strong>Addins &gt; Open with the project’s Pixi R</strong> does the same, and asks which environment.</p>
 <p>From a terminal, <code>pixi run --environment test rstudio</code> works too, for environments that include the default feature, which the task belongs to.</p>
 </section><section class="level3"><h3 id="if-somethings-off-1">If something’s off<a class="anchor" aria-label="anchor" href="#if-somethings-off-1"></a>
 </h3>
 <ul>
 <li>
-<strong>RStudio uses another R.</strong> You probably opened the project another way, e.g. by double-clicking the <code>.Rproj</code> file. Close RStudio and use <code>pixi run rstudio</code>.</li>
+<strong>RStudio uses another R, and rpix didn’t ask.</strong> rpix isn’t installed in the R that RStudio runs, so nothing can ask. Install it there, or use <code>pixi run rstudio</code> from a terminal.</li>
 </ul></section></section><section class="level2"><h2 id="vs-code">VS Code<a class="anchor" aria-label="anchor" href="#vs-code"></a>
 </h2>
 <section class="level3"><h3 id="set-up-2">Set up<a class="anchor" aria-label="anchor" href="#set-up-2"></a>
@@ -205,9 +230,10 @@
 <p>Run <code>rpix::pixi_switch("r44")</code>. It points <code>.envrc</code> at that environment. Reload direnv in the editor (in Emacs, <code>M-x envrc-reload</code>; in Neovim, start it again from the project; in Zed, reopen the project), then restart R.</p>
 </section></section><section class="level2"><h2 id="the-message-at-startup">The message at startup<a class="anchor" aria-label="anchor" href="#the-message-at-startup"></a>
 </h2>
-<p>If you start R in a Pixi project with an R that isn’t from the project’s environment, e.g. by double-clicking the <code>.Rproj</code> file, which opens your usual R, the project’s <code>.Rprofile</code> says so, as long as rpix is installed in that R:</p>
+<p>If you start R in a Pixi project with an R that isn’t from the project’s environment, e.g. your usual R, the project’s <code>.Rprofile</code> says so, as long as rpix is installed in that R:</p>
 <pre><code>! This R isn't from the project's Pixi environment, so it doesn't use the project's packages.
-ℹ Start R with `pixi run R`, or see https://roald-arboel.com/rpix/articles/ide.html.</code></pre>
+ℹ Open the project in an IDE set up with `rpix::use_pixi(ide = ...)`, or start R with `pixi run R`. See https://roald-arboel.com/rpix/articles/ide.html.</code></pre>
+<p>In RStudio, it asks to reopen the project with the environment’s R instead (see <a href="#rstudio">RStudio</a>).</p>
 <p>Your usual R can’t use the environment’s packages: they’re built for the environment’s R, and loading them can crash another R. So rpix doesn’t try; start the environment’s R instead, as above.</p>
 </section><section class="level2"><h2 id="check">Check<a class="anchor" aria-label="anchor" href="#check"></a>
 </h2>

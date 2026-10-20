@@ -23,7 +23,12 @@ pixi_import_description(). It also says when DESCRIPTION no longer
 lists a package, which you can remove with pixi_remove(). Turn this off
 with options(rpix.watch_description = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
-in an interactive session you get a hint instead.
+in an interactive session you get a hint instead. In RStudio, it also
+offers to reopen the project in a new RStudio with the environment's R,
+and to close this one. Turn that off with RPIX_OFFER_SWITCH=false in
+your .Renviron.
+If the project also has renv, e.g. because RStudio's New Project set it
+up, it says so: renv and Pixi both manage the project's packages.
 If the project was moved or copied, Pixi's activation cache, which has
 the old location, is removed, and environments that need reinstalling
 are named.
@@ -53,7 +58,12 @@ pixi_import_description(). It also says when DESCRIPTION no longer
 lists a package, which you can remove with pixi_remove(). Turn this off
 with options(rpix.watch_description = FALSE).
 If R isn't the R of a Pixi environment in this project, nothing changes;
-in an interactive session you get a hint instead.
+in an interactive session you get a hint instead. In RStudio, it also
+offers to reopen the project in a new RStudio with the environment's R,
+and to close this one. Turn that off with RPIX_OFFER_SWITCH=false in
+your .Renviron.
+If the project also has renv, e.g. because RStudio's New Project set it
+up, it says so: renv and Pixi both manage the project's packages.
 If the project was moved or copied, Pixi's activation cache, which has
 the old location, is removed, and environments that need reinstalling
 are named.
@@ -143,7 +153,12 @@ comes to need packages that <code>pixi.toml</code> doesn't have, e.g. after
 lists a package, which you can remove with <code><a href="pixi_remove.html">pixi_remove()</a></code>. Turn this off
 with <code>options(rpix.watch_description = FALSE)</code>.</p></li>
 <li><p>If R isn't the R of a Pixi environment in this project, nothing changes;
-in an interactive session you get a hint instead.</p></li>
+in an interactive session you get a hint instead. In RStudio, it also
+offers to reopen the project in a new RStudio with the environment's R,
+and to close this one. Turn that off with <code>RPIX_OFFER_SWITCH=false</code> in
+your <code>.Renviron</code>.</p></li>
+<li><p>If the project also has renv, e.g. because RStudio's New Project set it
+up, it says so: renv and Pixi both manage the project's packages.</p></li>
 <li><p>If the project was moved or copied, Pixi's activation cache, which has
 the old location, is removed, and environments that need reinstalling
 are named.</p></li>

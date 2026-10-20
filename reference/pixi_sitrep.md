@@ -94,7 +94,7 @@ pixi_sitrep(path = project)
 #> 
 #> ── Project ──
 #> 
-#> ✔ /tmp/Rtmp8GKK9S/rpix-example
+#> ✔ /tmp/Rtmpm1GKay/rpix-example
 #> ! pixi.lock isn't up to date with pixi.toml.
 #>   Run `pixi install`.
 #> 
@@ -103,7 +103,7 @@ pixi_sitrep(path = project)
 #> ℹ R 4.5.3 at /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R
 #> ✖ This R is from another project's Pixi environment, in /home/runner/work/rpix/rpix.
 #> ! Libraries from outside the project:
-#> • /tmp/Rtmp8GKK9S/temp_libpatha1d24858b16
+#> • /tmp/Rtmpm1GKay/temp_libpath94d52fb4d4e
 #> • /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R/library
 #>   Packages built for another R can crash this one. See
 #>   <https://roald-arboel.com/rpix/articles/how-rpix-works.html>.

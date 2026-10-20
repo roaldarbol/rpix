@@ -115,7 +115,7 @@ pixi_add(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi add r-base=4.4 r-dplyr --feature r44 --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-base=4.4 r-dplyr --feature r44 --manifest-path /tmp/Rtmpm1GKay/rpix-example/pixi.toml`
 pixi_add_environment(
   "r44",
   features = "r44",
@@ -123,12 +123,12 @@ pixi_add_environment(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace environment add r44 --feature r44 --no-default-feature --manifest-path /tmp/Rtmpm1GKay/rpix-example/pixi.toml`
 
 # An environment with the default packages plus testthat, on the same
 # versions as the default environment
 pixi_add("testthat", feature = "test", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi add r-testthat --feature test --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi add r-testthat --feature test --manifest-path /tmp/Rtmpm1GKay/rpix-example/pixi.toml`
 pixi_add_environment(
   "test",
   features = "test",
@@ -136,7 +136,7 @@ pixi_add_environment(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/Rtmp8GKK9S/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi workspace environment add test --feature test --solve-group default --manifest-path /tmp/Rtmpm1GKay/rpix-example/pixi.toml`
 
 if (FALSE) { # \dontrun{
 # Needs Pixi
