@@ -1,6 +1,6 @@
 # Changelog
 
-## rpix (development version)
+## rpix 0.9.0 (2026-10-20)
 
 ### Added
 
@@ -45,9 +45,6 @@
   Project set it up, as renv and Pixi clash, and that
   [`pixi_import_renv()`](https://roald-arboel.com/rpix/reference/pixi_import_renv.md)
   turns renv off.
-- In R that isn’t the project’s, outside RStudio, the startup message
-  now points to opening the project in an IDE set up with
-  `use_pixi(ide = )`, before `pixi run R`.
 - `pixi_add(type = )` and `pixi_remove(type = )` also add packages to,
   or remove them from, a field of the package’s `DESCRIPTION`, such as
   `"Imports"` or `"Suggests"`, as
@@ -161,16 +158,17 @@
 
 ### Changed
 
+- In R that isn’t the project’s, outside RStudio, the startup message
+  now points to opening the project in an IDE set up with
+  `use_pixi(ide = )`, before `pixi run R`.
 - Messages write rpix’s functions with `rpix::`, so the code they
   suggest runs as shown, as rpix usually isn’t attached
   ([\#251](https://github.com/roaldarbol/rpix/issues/251)).
-
 - rpix needs Pixi 0.77 or later, which `SystemRequirements` now says.
   It’s the first Pixi that can build packages with pixi-build-r 0.2.0,
   for `github::` packages and CRAN packages that aren’t on conda-forge.
   A CI job checks rpix with it
   ([\#84](https://github.com/roaldarbol/rpix/issues/84)).
-
 - The examples of
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   [`pixi_remove()`](https://roald-arboel.com/rpix/reference/pixi_remove.md),
@@ -184,7 +182,6 @@
   run without Pixi: they set up a throwaway project in R’s temporary
   folder, and show the Pixi commands with `dry_run = TRUE`
   ([\#84](https://github.com/roaldarbol/rpix/issues/84)).
-
 - rpix is a dependency of the project (`r-rpix`), so it’s in `pixi.lock`
   and a collaborator’s environment has it, rather than installed into
   the environment from R-universe. It isn’t on conda-forge yet: until it
@@ -195,26 +192,22 @@
   Code. Everything else still comes from conda-forge. The `.Rprofile`
   hint for an environment without rpix gives the Pixi commands that add
   it.
-
 - In a Pixi environment,
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
   of a package already in `pixi.toml` says so, and how to update it with
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md),
   rather than passing on Pixi’s “already a dependency”
   ([\#210](https://github.com/roaldarbol/rpix/issues/210)).
-
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   creates a project for Linux, macOS (Intel and Apple Silicon) and
   Windows, and your computer’s platform if it’s another one, so
   collaborators on any of them can install it; `platforms` chooses
   others. Before, a project only had the platform it was created on
   ([\#215](https://github.com/roaldarbol/rpix/issues/215)).
-
 - [`use_pixi_rstudio()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   adds the `rstudio` task for all four of those platforms, whichever the
   project has; Pixi adds any it doesn’t
   ([\#215](https://github.com/roaldarbol/rpix/issues/215)).
-
 - Packages from GitHub build with `pixi-build-r` 0.2.0 or later, which
   rpix now asks for. It adds Rust, CMake, pkg-config and R’s recommended
   packages, and installs into R’s library on Windows, so rpix no longer
@@ -225,7 +218,6 @@
   adds Java, and on Windows, MSYS2’s tools and MinGW’s compilers. A
   project with packages as of a date before 2026-10-15 can’t get that
   `pixi-build-r`, so rpix stops and says so.
-
 - On Windows,
   [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   and
@@ -233,12 +225,10 @@
   also give the commands that start VSCodium, Cursor and Windsurf from
   the environment, and the IDE guide says the VS Code setup works in
   them too.
-
 - rpix finds the project of the running Pixi environment from
   `PIXI_WORKSPACE_ROOT`, as Pixi 0.82 names it, and otherwise from
   `PIXI_PROJECT_ROOT`, which Pixi keeps as an alias and older versions
   set.
-
 - [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
   and
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
@@ -247,14 +237,12 @@
   [`pixi_check_matrix()`](https://roald-arboel.com/rpix/reference/pixi_check_matrix.md)
   now installs before the run, so its time doesn’t include the install
   ([\#223](https://github.com/roaldarbol/rpix/issues/223)).
-
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   and the IDE setups only add the packages the project doesn’t have yet,
   rather than having Pixi say of each of the others that it’s there, and
   `use_pixi(ide = )` sets direnv up once for several editors, so running
   them again, or for several IDEs, says each thing once
   ([\#222](https://github.com/roaldarbol/rpix/issues/222)).
-
 - [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md),
   and
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
@@ -263,11 +251,9 @@
   building from source, Pixi’s error isn’t shown; when rpix can’t, all
   of Pixi’s output is
   ([\#222](https://github.com/roaldarbol/rpix/issues/222)).
-
 - A package from GitHub shows a line while it builds, rather than the
   build’s log, which is shown if the build fails
   ([\#222](https://github.com/roaldarbol/rpix/issues/222)).
-
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   installs rpix into the environment quietly, and only if the
   environment doesn’t have this version or a newer one
@@ -275,11 +261,6 @@
 
 ### Fixed
 
-- When VS Code’s console is missing,
-  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
-  now suggests `pixi_add("conda::arf")`; `pixi_add("arf")` would look
-  for an R package called arf
-  ([\#251](https://github.com/roaldarbol/rpix/issues/251)).
 - When a package isn’t on conda-forge for one of the project’s
   platforms,
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)
