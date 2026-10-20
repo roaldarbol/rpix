@@ -54,3 +54,20 @@
     Message
       i Start Neovim from a shell with direnv's hook, or load direnv with a plugin such as direnv.vim. R.nvim and languageserver then use the project's R.
 
+# the editor setups say where to get an editor that isn't on the PATH
+
+    Code
+      use_pixi_neovim(p$root)
+    Message
+      i Neovim's `nvim` command isn't on the `PATH`. If Neovim isn't installed, `pixi global install nvim` installs it. See <https://roald-arboel.com/rpix/articles/ide.html#installing-the-ides>.
+      v Set '.envrc' to activate the "default" environment.
+      i Install direnv with `pixi global install direnv`, and hook it into your shell (<https://direnv.net/docs/hook.html>). Then run `direnv allow` in the project.
+      i Start Neovim from a shell with direnv's hook, or load direnv with a plugin such as direnv.vim. R.nvim and languageserver then use the project's R.
+
+# use_pixi_vscode() says where to get VS Code's command on Windows
+
+    Code
+      hint_missing_editor("vscode")
+    Message
+      i VS Code's `code` command isn't on the `PATH`. See <https://roald-arboel.com/rpix/articles/ide.html#installing-the-ides>.
+

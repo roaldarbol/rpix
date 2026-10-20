@@ -7,6 +7,10 @@
   be, so the other package may not work. It says when it's Strawberry Perl's
   MinGW runtime over conda-forge's, which on Windows stops compiled R
   packages from loading, and how to find what brings perl in (#176, #177).
+* The IDE guide says how to install each IDE, and which `pixi global install`
+  can install (Emacs, Neovim, Zed and direnv). `use_pixi_emacs()`,
+  `use_pixi_neovim()`, `use_pixi_zed()`, and `use_pixi_vscode()` on Windows,
+  link to it when the editor's command isn't on the `PATH` (#193).
 * RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task, open
   `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
