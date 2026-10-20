@@ -47,7 +47,7 @@ pixi_sitrep <- function(path = NULL) {
   cli::cli_h2("Pixi")
   if (is.null(report[["pixi"]])) {
     cli::cli_alert_danger("Pixi isn't installed, or rpix can't find it.")
-    hint("Install it with {.code install_pixi()}.")
+    hint("Install it with {.code rpix::install_pixi()}.")
   } else {
     cli::cli_alert_success(
       "{report$pixi_version} at {.path {report[['pixi']]}}"
@@ -57,7 +57,7 @@ pixi_sitrep <- function(path = NULL) {
   cli::cli_h2("Project")
   if (is.null(report$project)) {
     cli::cli_alert_danger("There's no Pixi project here.")
-    hint("Create one with {.code use_pixi()}.")
+    hint("Create one with {.code rpix::use_pixi()}.")
   } else {
     cli::cli_alert_success("{.path {report$project}}")
     if (isFALSE(report$lock_up_to_date)) {
@@ -80,7 +80,7 @@ pixi_sitrep <- function(path = NULL) {
         "{.val {denied$host}} refused access ({denied$status}), so Pixi can't install packages from it."
       )
       hint(
-        "Log in with {.code pixi_auth_login(\"{denied$host}\")}."
+        "Log in with {.code rpix::pixi_auth_login(\"{denied$host}\")}."
       )
     }
     if (length(report$logins) > 0) {
@@ -129,7 +129,7 @@ pixi_sitrep <- function(path = NULL) {
       )
     }
     if (length(check$missing) + length(check$missing_suggests) > 0) {
-      hint("Add them with {.code pixi_import_description()}.")
+      hint("Add them with {.code rpix::pixi_import_description()}.")
     }
     old <- check$too_old
     if (nrow(old) > 0) {
@@ -145,7 +145,7 @@ pixi_sitrep <- function(path = NULL) {
         "Older than {.file DESCRIPTION} asks for: {versions}."
       )
       hint(
-        "Update them with {.code pixi_update()}, or raise their constraints in {.file pixi.toml}."
+        "Update them with {.code rpix::pixi_update()}, or raise their constraints in {.file pixi.toml}."
       )
     }
     if (
@@ -165,7 +165,7 @@ pixi_sitrep <- function(path = NULL) {
       hint("Start R with {.code pixi run R}, or in the IDE as below.")
     } else {
       hint(
-        "Start R with {.code pixi run R}, or set your IDE up with {.code use_pixi(ide = ...)}."
+        "Start R with {.code pixi run R}, or set your IDE up with {.code rpix::use_pixi(ide = ...)}."
       )
     }
   } else if (!report$in_project) {
@@ -181,7 +181,7 @@ pixi_sitrep <- function(path = NULL) {
     } else {
       cli::cli_alert_warning("The environment isn't activated.")
       hint(
-        "Run {.code pixi_activate()}, or check the project's {.file .Rprofile}."
+        "Run {.code rpix::pixi_activate()}, or check the project's {.file .Rprofile}."
       )
     }
   }
@@ -208,7 +208,7 @@ pixi_sitrep <- function(path = NULL) {
       "Installed without Pixi, so not in {.file pixi.toml}: {.pkg {report$packages_unrecorded}}"
     )
     hint(
-      "Add them with {.code pixi_add()}, so the project records them."
+      "Add them with {.code rpix::pixi_add()}, so the project records them."
     )
   }
 
@@ -221,7 +221,7 @@ pixi_sitrep <- function(path = NULL) {
       cli::cli_alert_info(
         "{.file .Rprofile} doesn't activate the environment when an IDE starts R."
       )
-      hint("Run {.code use_pixi()} to add it.")
+      hint("Run {.code rpix::use_pixi()} to add it.")
     }
   }
 
@@ -507,7 +507,7 @@ ide_step <- function(ide, project) {
   if (ide == "vscode") {
     if (!file.exists(environment_r(project, "default"))) {
       return(
-        "Run {.code pixi_install()}, then {.strong Developer: Reload Window} from the Command Palette."
+        "Run {.code rpix::pixi_install()}, then {.strong Developer: Reload Window} from the Command Palette."
       )
     }
     return(
