@@ -144,11 +144,11 @@ pixi_add_task(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi task add test "Rscript -e 'devtools::test()'" --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi task add test "Rscript -e 'devtools::test()'" --manifest-path /tmp/RtmpryExC7/rpix-example/pixi.toml`
 pixi_run("test", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi run --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml test`
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpryExC7/rpix-example/pixi.toml test`
 pixi_run("test", environment = "r44", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi run --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml --environment r44 test`
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpryExC7/rpix-example/pixi.toml --environment r44 test`
 
 # A task with an argument
 pixi_add_task(
@@ -158,9 +158,9 @@ pixi_add_task(
   path = project,
   dry_run = TRUE
 )
-#> ℹ Would run: `pixi task add render "quarto render {{ file }}" --arg file --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi task add render "quarto render {{ file }}" --arg file --manifest-path /tmp/RtmpryExC7/rpix-example/pixi.toml`
 pixi_run("render", "analysis.qmd", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi run --manifest-path /tmp/RtmplYfoSy/rpix-example/pixi.toml render analysis.qmd`
+#> ℹ Would run: `pixi run --manifest-path /tmp/RtmpryExC7/rpix-example/pixi.toml render analysis.qmd`
 
 if (FALSE) { # \dontrun{
 # Needs Pixi

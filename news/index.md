@@ -4,6 +4,23 @@
 
 ### Added
 
+- In an interactive session, rpix offers to do the next step itself,
+  rather than only saying how, as
+  [`rlang::check_installed()`](https://rlang.r-lib.org/reference/is_installed.html)
+  does: setting up a project where there’s none (with
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)),
+  logging in to a channel that refused access and trying again, adding
+  the packages
+  [`pixi_scan()`](https://roald-arboel.com/rpix/reference/pixi_scan.md)
+  finds, updating the packages after `pixi_set_date(NULL)`, adding VS
+  Code’s console (arf or radian) when
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  finds it missing, adding linux-64 for
+  [`use_pixi_github_action()`](https://roald-arboel.com/rpix/reference/use_pixi_github_action.md),
+  and using the newest R conda-forge has packages for when
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  asks for a newer one
+  ([\#251](https://github.com/roaldarbol/rpix/issues/251)).
 - [`pixi_remove_channel()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
   and
   [`pixi_remove_platform()`](https://roald-arboel.com/rpix/reference/pixi_add_channel.md)
@@ -73,6 +90,10 @@
   ([\#216](https://github.com/roaldarbol/rpix/issues/216)).
 
 ### Changed
+
+- Messages write rpix’s functions with `rpix::`, so the code they
+  suggest runs as shown, as rpix usually isn’t attached
+  ([\#251](https://github.com/roaldarbol/rpix/issues/251)).
 
 - rpix needs Pixi 0.77 or later, which `SystemRequirements` now says.
   It’s the first Pixi that can build packages with pixi-build-r 0.2.0,
@@ -184,6 +205,11 @@
 
 ### Fixed
 
+- When VS Code’s console is missing,
+  [`pixi_switch()`](https://roald-arboel.com/rpix/reference/pixi_switch.md)
+  now suggests `pixi_add("conda::arf")`; `pixi_add("arf")` would look
+  for an R package called arf
+  ([\#251](https://github.com/roaldarbol/rpix/issues/251)).
 - When a package isn’t on conda-forge for one of the project’s
   platforms,
   [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md)

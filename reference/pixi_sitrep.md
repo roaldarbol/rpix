@@ -94,7 +94,7 @@ pixi_sitrep(path = project)
 #> 
 #> ── Project ──
 #> 
-#> ✔ /tmp/RtmplYfoSy/rpix-example
+#> ✔ /tmp/RtmpryExC7/rpix-example
 #> ! pixi.lock isn't up to date with pixi.toml.
 #>   Run `pixi install`.
 #> 
@@ -103,13 +103,13 @@ pixi_sitrep(path = project)
 #> ℹ R 4.5.3 at /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R
 #> ✖ This R is from another project's Pixi environment, in /home/runner/work/rpix/rpix.
 #> ! Libraries from outside the project:
-#> • /tmp/RtmplYfoSy/temp_libpath95d61ad84af
+#> • /tmp/RtmpryExC7/temp_libpatha102d77f7d1
 #> • /home/runner/work/rpix/rpix/.pixi/envs/default/lib/R/library
 #>   Packages built for another R can crash this one. See
 #>   <https://roald-arboel.com/rpix/articles/how-rpix-works.html>.
 #> ! Loaded from outside the project: R6, Rcpp, askpass, brio, bslib, cachem, callr, cli, curl, desc, devtools, digest, downlit, ellipsis, evaluate, fansi, fastmap, fontawesome, …, xopen, and yaml
 #> ℹ .Rprofile doesn't activate the environment when an IDE starts R.
-#>   Run `use_pixi()` to add it.
+#>   Run `rpix::use_pixi()` to add it.
 #> 
 #> ── IDE ──
 #> 
