@@ -18,11 +18,13 @@ calls these with its `ide` argument.
   another R there. The path is for the operating system you run it on;
   on another one, Positron ignores it.
 
-- `use_pixi_vscode()` adds languageserver, the packages the R
-  extension's sess package needs (so the extension needn't build them
-  from source), and the console if it isn't R, to the environment. It
-  points the R extension for VS Code, and the editors based on it such
-  as VSCodium, Cursor and Windsurf, at the environment's R and the
+- `use_pixi_vscode()` adds languageserver, the R extension's sess (how
+  it talks to R) and jgd (its plots), and the console if it isn't R, to
+  the environment. sess and jgd come from
+  <https://prefix.dev/roaldarbol/rpix-forge> until they're on
+  conda-forge; it's added to the project's channels after conda-forge.
+  It points the R extension for VS Code, and the editors based on it
+  such as VSCodium, Cursor and Windsurf, at the environment's R and the
   console, in `.vscode/settings.json`. On Windows, the environment's R
   only starts when the environment is activated, so it leaves R and the
   console to be found on the `PATH` instead: start VS Code with

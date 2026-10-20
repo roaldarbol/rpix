@@ -137,7 +137,8 @@ to.
 rpix::use_pixi_vscode()
 ```
 
-This adds the languageserver package to the environment, and points the
+This adds the languageserver package to the environment, with the R
+extension’s sess (how it talks to R) and jgd (its plots), and points the
 [R
 extension](https://marketplace.visualstudio.com/items?itemName=REditorSupport.r)
 at the environment’s R, in the project’s `.vscode/settings.json`. It
@@ -146,9 +147,13 @@ and Windsurf: they read the same settings, and get the R extension from
 [Open VSX](https://open-vsx.org/extension/REditorSupport/r). A project
 set up once works in all of them.
 
-When the R extension offers to install its sess package, accept: Pixi
-adds the packages sess needs, and sess, which isn’t on conda-forge yet,
-installs into the environment without being recorded in `pixi.toml`.
+sess and jgd aren’t on conda-forge yet, so they come from
+[rpix-forge](https://prefix.dev/roaldarbol/rpix-forge), a channel rpix
+adds to the project after conda-forge. The extension only uses a sess
+built from its own release, so when the extension is newer than
+rpix-forge’s sess, it offers to install its bundled copy: accept. It
+installs into a library of its own, and the packages sess needs are
+there already.
 
 ### Another console
 

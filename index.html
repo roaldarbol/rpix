@@ -103,7 +103,7 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>Set up the project in the working directory, for your IDE. This creates a Pixi project, adds R to it, installs rpix into its environment, and points the IDE at that R:</p>
+<p>Set up the project in the working directory, for your IDE. This creates a Pixi project, adds R and rpix to it, and points the IDE at that R. Until rpix is on conda-forge, it comes from the <a href="https://prefix.dev/roaldarbol/rpix-forge" class="external-link">rpix-forge</a> channel, which is added to the project after conda-forge:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="reference/use_pixi.html">use_pixi</a></span><span class="op">(</span>ide <span class="op">=</span> <span class="st">"positron"</span><span class="op">)</span> <span class="co"># or "rstudio", or "vscode"</span></span></code></pre></div>
 <p>From then on, work in R started by Pixi: in your IDE (see <a href="https://roald-arboel.com/rpix/articles/ide.html">Using rpix with an IDE</a>), or with <code>pixi run R</code> in a terminal in the project folder. Add and remove packages from there:</p>

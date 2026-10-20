@@ -25,8 +25,10 @@ rpix::install_pixi()
 ## Example
 
 Set up the project in the working directory, for your IDE. This creates
-a Pixi project, adds R to it, installs rpix into its environment, and
-points the IDE at that R:
+a Pixi project, adds R and rpix to it, and points the IDE at that R.
+Until rpix is on conda-forge, it comes from the
+[rpix-forge](https://prefix.dev/roaldarbol/rpix-forge) channel, which is
+added to the project after conda-forge:
 
 ``` r
 

@@ -4,6 +4,14 @@
 
 ### Added
 
+- `options(rpix.ref)` makes
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  also install rpix into the environment from GitHub, at a branch, tag
+  or commit (e.g. `"main"`, or a pull request’s branch), to try a change
+  before it’s released. The installed rpix records the commit, so
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  reinstalls only when it changes
+  ([\#245](https://github.com/roaldarbol/rpix/issues/245)).
 - [`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
   [`use_pixi_neovim()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md)
   and
@@ -53,6 +61,17 @@
   ([\#216](https://github.com/roaldarbol/rpix/issues/216)).
 
 ### Changed
+
+- rpix is a dependency of the project (`r-rpix`), so it’s in `pixi.lock`
+  and a collaborator’s environment has it, rather than installed into
+  the environment from R-universe. It isn’t on conda-forge yet: until it
+  is,
+  [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
+  adds the channel <https://prefix.dev/roaldarbol/rpix-forge>, after
+  conda-forge, which also has the R extension’s sess and jgd for VS
+  Code. Everything else still comes from conda-forge. The `.Rprofile`
+  hint for an environment without rpix gives the Pixi commands that add
+  it.
 
 - In a Pixi environment,
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
@@ -152,13 +171,14 @@
   install its sess package
   ([\#209](https://github.com/roaldarbol/rpix/issues/209)).
 - [`use_pixi_vscode()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
-  and `use_pixi(ide = "vscode")`, add the packages the R extension’s
-  sess package needs (later, rstudioapi, processx and jsonlite) from
-  conda-forge. Version 3.2 of the extension installs them from CRAN,
-  past rpix’s
+  and `use_pixi(ide = "vscode")`, add the R extension’s sess and jgd
+  (from rpix-forge, see Changed). Version 3.2 of the extension installed
+  sess’s dependencies from CRAN, past rpix’s
   [`install.packages()`](https://rdrr.io/r/utils/install.packages.html),
   and later needs a compiler the environment doesn’t have, so it
-  couldn’t start an R Interactive session
+  couldn’t start an R Interactive session. r-sess brings them from
+  conda-forge, and is built from the extension’s release, so the
+  extension uses it as it is
   ([\#244](https://github.com/roaldarbol/rpix/issues/244)).
 - [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   sets up the folder it’s given, or the working directory, rather than a
