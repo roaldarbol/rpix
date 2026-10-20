@@ -161,7 +161,7 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
   )
 }
 
-#' Add channels or platforms to the project
+#' Add or remove the project's channels and platforms
 #'
 #' @description
 #' * `pixi_add_channel()` adds conda channels, which packages are installed
@@ -169,10 +169,13 @@ pixi_remove_environment <- function(name, path = NULL, dry_run = FALSE) {
 #' * `pixi_add_platform()` adds platforms, such as `"linux-64"`, `"osx-arm64"`
 #'   or `"win-64"`, so `pixi.lock` covers them too and collaborators on them
 #'   get the same packages.
+#' * `pixi_remove_channel()` and `pixi_remove_platform()` remove them again,
+#'   e.g. a platform no one uses, which Pixi then no longer solves for, or a
+#'   channel the project no longer needs packages from.
 #'
 #' For more information, see
-#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/add/> and
-#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/add/>.
+#' <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/channel/>
+#' and <https://pixi.prefix.dev/latest/reference/cli/pixi/workspace/platform/>.
 #'
 #' @param channels Channel names, such as `"bioconda"`, or URLs.
 #' @param platforms Platform names.
@@ -199,6 +202,28 @@ pixi_add_channel <- function(channels, path = NULL, dry_run = FALSE) {
 pixi_add_platform <- function(platforms, path = NULL, dry_run = FALSE) {
   run_pixi(
     c("workspace", "platform", "add", platforms),
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
+}
+
+#' @rdname pixi_add_channel
+#' @export
+pixi_remove_channel <- function(channels, path = NULL, dry_run = FALSE) {
+  run_pixi(
+    c("workspace", "channel", "remove", channels),
+    path = path,
+    echo = TRUE,
+    dry_run = dry_run
+  )
+}
+
+#' @rdname pixi_add_channel
+#' @export
+pixi_remove_platform <- function(platforms, path = NULL, dry_run = FALSE) {
+  run_pixi(
+    c("workspace", "platform", "remove", platforms),
     path = path,
     echo = TRUE,
     dry_run = dry_run

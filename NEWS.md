@@ -2,6 +2,9 @@
 
 ## Added
 
+* `pixi_remove_channel()` and `pixi_remove_platform()` remove channels and
+  platforms from the project, as `pixi_add_channel()` and
+  `pixi_add_platform()` add them (#254).
 * `pixi_install(locked = TRUE)` fails if `pixi.lock` is out of date with
   `pixi.toml`, and `pixi_install(frozen = TRUE)` installs `pixi.lock` without
   checking it, as `pixi install --locked` and `--frozen` do (#253).

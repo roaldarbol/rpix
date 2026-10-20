@@ -94,6 +94,19 @@ test_that("pixi_add_channel() and pixi_add_platform() build the commands", {
   expect_equal(calls$args[[2]], c("workspace", "platform", "add", "win-64"))
 })
 
+test_that("pixi_remove_channel() and pixi_remove_platform() build the commands", {
+  calls <- local_recorded_pixi()
+  pixi_remove_channel(c("bioconda", "my-channel"))
+  pixi_remove_platform("osx-64")
+  expect_equal(
+    calls$args,
+    list(
+      c("workspace", "channel", "remove", "bioconda", "my-channel"),
+      c("workspace", "platform", "remove", "osx-64")
+    )
+  )
+})
+
 test_that("install, update, upgrade and lock build the commands", {
   calls <- local_recorded_pixi()
 
