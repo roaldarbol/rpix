@@ -301,13 +301,15 @@ run_rprofile_block <- function(home, rpix = FALSE, interactive = TRUE) {
   eval(parse(text = rprofile_block), envir = env)
 }
 
-test_that("the block says how to install rpix in an environment without it", {
+test_that("the block says how to add rpix to an environment without it", {
   home <- "/project/.pixi/envs/r44/lib/R"
   message <- expect_message(run_rprofile_block(home), "doesn't have rpix")
-  command <- strsplit(conditionMessage(message), "\n")[[1]][2]
-  expect_match(command, "lib = .Library", fixed = TRUE)
-  # A command that runs as it's shown
-  expect_equal(as.character(str2lang(command)[[1]]), "install.packages")
+  commands <- strsplit(conditionMessage(message), "\n")[[1]][2:3]
+  # Terminal commands, as they're shown
+  expect_equal(
+    commands,
+    c(paste("pixi workspace channel add", rpix_forge), "pixi add r-rpix")
+  )
 
   # Not when it isn't interactive, outside Pixi, or with rpix there
   expect_silent(run_rprofile_block(home, interactive = FALSE))

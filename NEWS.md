@@ -2,6 +2,11 @@
 
 ## Added
 
+* `options(rpix.ref)` makes `use_pixi()` also install rpix into the
+  environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
+  pull request's branch), to try a change before it's released. The installed
+  rpix records the commit, so `use_pixi()` reinstalls only when it changes
+  (#245).
 * `use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` set up those
   editors, and `use_pixi(ide = )` takes them too. They add languageserver,
   and a `.envrc` from the new `use_pixi_direnv()`, which activates the
@@ -30,6 +35,13 @@
 
 ## Changed
 
+* rpix is a dependency of the project (`r-rpix`), so it's in `pixi.lock` and
+  a collaborator's environment has it, rather than installed into the
+  environment from R-universe. It isn't on conda-forge yet: until it is,
+  `use_pixi()` adds the channel <https://prefix.dev/roaldarbol/rpix-forge>,
+  after conda-forge, which also has the R extension's sess and jgd for VS Code.
+  Everything else still comes from conda-forge. The `.Rprofile` hint for an
+  environment without rpix gives the Pixi commands that add it.
 * In a Pixi environment, `install.packages()` of a package already in
   `pixi.toml` says so, and how to update it with `pixi_update()`, rather than
   passing on Pixi's "already a dependency" (#210).
@@ -81,11 +93,13 @@
   packages with Pixi as usual. Package files and folders (`repos = NULL`) go
   to `utils::install.packages()`, which `pixi.toml` doesn't record. VS Code's
   R extension can now install its sess package (#209).
-* `use_pixi_vscode()`, and `use_pixi(ide = "vscode")`, add the packages the R
-  extension's sess package needs (later, rstudioapi, processx and jsonlite)
-  from conda-forge. Version 3.2 of the extension installs them from CRAN, past
-  rpix's `install.packages()`, and later needs a compiler the environment
-  doesn't have, so it couldn't start an R Interactive session (#244).
+* `use_pixi_vscode()`, and `use_pixi(ide = "vscode")`, add the R extension's
+  sess and jgd (from rpix-forge, see Changed). Version 3.2 of the extension
+  installed sess's dependencies from CRAN, past rpix's `install.packages()`,
+  and later needs a compiler the environment doesn't have, so it couldn't
+  start an R Interactive session. r-sess brings them from conda-forge, and is
+  built from the extension's release, so the extension uses it as it is
+  (#244).
 * `use_pixi()` sets up the folder it's given, or the working directory, rather
   than a Pixi project in a parent folder. It says when a parent folder is a
   Pixi project, and in an interactive session asks whether to set that one up

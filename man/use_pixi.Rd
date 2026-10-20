@@ -27,9 +27,15 @@ before its packages are built for it.}
 
 \item{init_if_missing}{If \code{TRUE}, create a Pixi project if there isn't one.}
 
-\item{install_rpix}{If \code{TRUE}, install rpix into the project's environment,
-unless it has this version or a newer one. Its dependencies come from
-conda-forge, and rpix itself from R-universe until it's on conda-forge.}
+\item{install_rpix}{If \code{TRUE}, add rpix to the project (\code{r-rpix}), so it's
+in \code{pixi.lock} like the other packages, and a collaborator's environment
+has it too. Until rpix is on conda-forge, it comes from
+\url{https://prefix.dev/roaldarbol/rpix-forge}, which is added to the
+project's channels after conda-forge, so everything else still comes
+from conda-forge. To try a change to rpix, set \code{options(rpix.ref)} to a
+branch, tag or commit, e.g. \code{"main"} or a pull request's branch: rpix is
+then also installed from GitHub, unless the environment has that commit
+already.}
 
 \item{date}{Optional. Use packages as they were on this date, such as
 \code{"2025-06-01"}, e.g. to rerun an old analysis. Set before anything is
@@ -54,7 +60,7 @@ The path to the project's manifest, invisibly.
 }
 \description{
 Create a Pixi project in the working directory, or \code{path}, if there isn't
-one there, add R to it, and install rpix into its environment.
+one there, and add R and rpix to it.
 
 It sets up that folder even inside another Pixi project. If a parent folder
 is a Pixi project, it says so, and in an interactive session asks whether to

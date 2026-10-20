@@ -64,17 +64,15 @@ test_that("use_pixi() creates a project and adds R and rpix", {
     )
   )
   calls$args <- calls$args[-2]
-  expect_equal(calls$args[[2]][1:2], c("add", "r-base"))
-  expect_true(all(c("r-cli", "r-jsonlite", "r-processx") %in% calls$args[[2]]))
-  expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[2]])
-  expect_equal(calls$args[[3]][1:3], c("run", "Rscript", "-e"))
-  # utils' own, not rpix's, which adds packages with Pixi
-  expect_match(
-    calls$args[[3]][4],
-    "utils::install.packages('rpix'",
-    fixed = TRUE
+  # rpix comes from rpix-forge until it's on conda-forge
+  expect_equal(
+    calls$args[[2]],
+    c("workspace", "channel", "add", rpix_forge, "--no-install")
   )
-  expect_match(calls$args[[3]][4], "lib = .Library", fixed = TRUE)
+  expect_equal(calls$args[[3]][1:2], c("add", "r-base"))
+  # rpix is a dependency, so it's in pixi.lock
+  expect_true("r-rpix" %in% calls$args[[3]])
+  expect_true("conda-ecosystem-user-package-isolation" %in% calls$args[[3]])
   expect_equal(calls$args[[4]], activation_cache_args)
   # Commands target the project, not the environment R happens to run in
   expect_true(all(vapply(calls$paths[-1], identical, logical(1), dir)))
@@ -94,6 +92,27 @@ test_that("use_pixi() only adds what the project doesn't have", {
 
   suppressMessages(use_pixi(path = dir, ide = "zed", install_rpix = FALSE))
   expect_equal(calls$args[[2]], c("add", "r-languageserver"))
+})
+
+test_that("use_pixi() adds rpix-forge, and rpix, once", {
+  calls <- local_mock_setup()
+  dir <- normalizePath(withr::local_tempdir(), winslash = "/")
+  deps <- c("r-base", isolation_package, "r-rpix")
+  writeLines(
+    c(
+      "[workspace]",
+      paste0('channels = ["conda-forge", "', rpix_forge, '"]'),
+      "",
+      "[dependencies]",
+      paste0(deps, ' = "*"')
+    ),
+    file.path(dir, "pixi.toml")
+  )
+
+  suppressMessages(use_pixi(path = dir))
+  commands <- vapply(calls$args, paste, character(1), collapse = " ")
+  expect_false(any(grepl("channel add", commands, fixed = TRUE)))
+  expect_false(any(startsWith(commands, "add ")))
 })
 
 test_that("has_dependency() reads the default feature's dependencies", {
@@ -122,35 +141,119 @@ test_that("has_dependency() reads the default feature's dependencies", {
   expect_true(has_dependency("r-cli", dir))
 })
 
-test_that("use_pixi() installs rpix quietly, unless it's there already", {
+test_that("without options(rpix.ref), there's nothing to install", {
   dir <- withr::local_tempdir()
+  local_mocked_bindings(
+    run_pixi_step = function(...) stop("Nothing should be installed")
+  )
+  # r-rpix is a dependency of the project
+  expect_false(install_rpix_into(dir))
+})
+
+test_that("with options(rpix.ref), rpix comes from GitHub, unless it has that commit", {
+  dir <- withr::local_tempdir()
+  withr::local_options(rpix.ref = "fix/1-something")
   steps <- list()
   local_mocked_bindings(
+    rpix_commit = function(ref, ...) {
+      expect_equal(ref, "fix/1-something")
+      "abc123"
+    },
+    rpix_source = function(commit, ref) {
+      expect_equal(ref, "fix/1-something")
+      paste0("/tmp/rpix-", commit)
+    },
     run_pixi_step = function(args, step, done, path) {
+      expect_match(step, "GitHub .*fix/1-something")
       steps <<- c(steps, list(args))
     }
   )
   # Not there
   expect_true(install_rpix_into(dir))
-  expect_equal(steps[[1]][1:3], c("run", "Rscript", "-e"))
-  # A failed install fails Rscript
-  expect_match(steps[[1]][4], "^options\\(warn = 2\\); utils::install")
+  # From the downloaded source, and a failed install fails Rscript
+  expect_match(
+    steps[[1]][4],
+    "^options\\(warn = 2\\); utils::install.packages\\(\"/tmp/rpix-abc123\", repos = NULL"
+  )
 
   library <- file.path(dir, ".pixi", "envs", "default", "lib", "R", "library")
   dir.create(file.path(library, "rpix"), recursive = TRUE)
   description <- file.path(library, "rpix", "DESCRIPTION")
-  # Older than this rpix
-  writeLines("Version: 0.0.1", description)
+  # At another commit, e.g. from R-universe, or without one recorded: a newer
+  # version doesn't count, as a branch's version can be the same or lower
+  writeLines(c("Version: 99.0.0", "RemoteSha: def456"), description)
   expect_true(install_rpix_into(dir))
-  expect_length(steps, 2)
+  writeLines("Version: 99.0.0", description)
+  expect_true(install_rpix_into(dir))
+  expect_length(steps, 3)
 
-  # This version, or newer
-  writeLines(paste("Version:", utils::packageVersion("rpix")), description)
+  # That commit
+  writeLines(c("Version: 0.8.0.9000", "RemoteSha: abc123"), description)
   expect_message(
     expect_false(install_rpix_into(dir)),
-    "has rpix .* already"
+    "has rpix from .*fix/1-something.* already"
   )
-  expect_length(steps, 2)
+  expect_length(steps, 3)
+})
+
+test_that("rpix_commit() asks GitHub which commit a branch or tag is", {
+  commit <- strrep("a", 40)
+  expect_equal(rpix_commit(commit), commit)
+
+  local_mocked_bindings(
+    read_url = function(url) {
+      expect_equal(
+        url,
+        "https://api.github.com/repos/roaldarbol/rpix/commits/main"
+      )
+      c("{", '  "sha": "0123abc",', '  "commit": {}', "}")
+    }
+  )
+  expect_equal(rpix_commit("main"), "0123abc")
+
+  local_mocked_bindings(read_url = function(url) stop("HTTP status 404"))
+  expect_error(rpix_commit("no-such-branch"), class = "rpix_error_github")
+})
+
+test_that("rpix_source() records where rpix came from in its DESCRIPTION", {
+  # A GitHub archive: one folder, named after the repository and commit
+  dir <- withr::local_tempdir()
+  dir.create(file.path(dir, "rpix-abc123"))
+  writeLines(
+    c("Package: rpix", "Version: 0.8.0.9000"),
+    file.path(dir, "rpix-abc123", "DESCRIPTION")
+  )
+  archive <- file.path(withr::local_tempdir(), "rpix.tar.gz")
+  withr::with_dir(dir, utils::tar(archive, "rpix-abc123", compression = "gzip"))
+  local_mocked_bindings(
+    download_archive = function(url, destfile) {
+      expect_equal(
+        url,
+        "https://github.com/roaldarbol/rpix/archive/abc123.tar.gz"
+      )
+      file.copy(archive, destfile)
+    }
+  )
+
+  source <- rpix_source("abc123", "main")
+  expect_equal(basename(source), "rpix-abc123")
+  description <- read.dcf(file.path(source, "DESCRIPTION"))
+  expect_equal(description[1, "Package"], c(Package = "rpix"))
+  expect_equal(description[1, "RemoteSha"], c(RemoteSha = "abc123"))
+  expect_equal(description[1, "RemoteRef"], c(RemoteRef = "main"))
+  expect_equal(description[1, "RemoteRepo"], c(RemoteRepo = "rpix"))
+  expect_equal(installed_commit(file.path(source, "DESCRIPTION")), "abc123")
+})
+
+test_that("download_archive() downloads an archive from GitHub", {
+  skip_on_cran()
+  skip_if_offline("github.com")
+  file <- withr::local_tempfile(fileext = ".tar.gz")
+  download_archive(
+    "https://github.com/roaldarbol/rpix/archive/refs/tags/v0.8.0.tar.gz",
+    file
+  )
+  expect_true("rpix-0.8.0/DESCRIPTION" %in% utils::untar(file, list = TRUE))
 })
 
 test_that("use_pixi() uses an existing project and can skip rpix", {
@@ -212,7 +315,12 @@ test_that("use_pixi() says when conda-forge has no R packages for the R asked fo
     class = c("rpix_error_pixi", "error", "condition"),
     list(message = "pixi failed", call = NULL, stderr = stderr)
   )
-  local_mocked_bindings(run_pixi = function(args, ...) stop(error))
+  # Adding the packages fails; adding rpix-forge to the channels doesn't
+  local_mocked_bindings(
+    run_pixi = function(args, ...) {
+      if (args[1] == "add") stop(error) else invisible(list(status = 0))
+    }
+  )
 
   expect_snapshot(
     use_pixi(r_version = "4.6", path = dir),
@@ -404,14 +512,19 @@ test_that("use_pixi() sets up the IDEs it's asked to", {
   # Each IDE gets its own settings
   expect_equal(ides, c(vscode = "arf", positron = NA))
   # Added with R, so Pixi picks an R that languageserver is built for
+  # sess and jgd come from rpix-forge
   expect_equal(
     calls$args[[1]],
+    c("workspace", "channel", "add", rpix_forge, "--no-install")
+  )
+  expect_equal(
+    calls$args[[2]],
     c(
       "add",
       "r-base",
       "conda-ecosystem-user-package-isolation",
       "r-languageserver",
-      sess_dependencies
+      vscode_r_packages
     )
   )
   expect_error(use_pixi(ide = "notepad"), "should be one of")
