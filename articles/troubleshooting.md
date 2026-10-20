@@ -41,6 +41,30 @@ library outside it. If it does:
   [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
   removes it; for one in `~/.Rprofile`, remove it by hand.
 
+## A package fails to load on Windows
+
+`The specified procedure could not be found`, when R loads a compiled
+package such as dplyr, means Windows found a DLL the package needs, but
+an older copy, without a function it uses. Within an environment, that
+happens when two packages install the same file, and the older copy
+wins: conda-forge’s Strawberry Perl puts its own MinGW runtime
+(`libstdc++-6.dll` and others) over conda-forge’s
+([conda-forge/perl-feedstock#89](https://github.com/conda-forge/perl-feedstock/issues/89)).
+freetds, and so pymssql, bring perl into an environment on Windows.
+
+[`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+lists files that more than one package in an environment installs, and
+says when it’s Strawberry Perl’s runtime. To see what brings perl in:
+
+``` r
+
+rpix::pixi_tree("perl", invert = TRUE)
+```
+
+Then drop that package, or move it to an environment without R (see
+[Several
+environments](https://roald-arboel.com/rpix/articles/environments.md)).
+
 ## RStudio uses the wrong R
 
 RStudio picks its R when it starts, so it has to be started from the

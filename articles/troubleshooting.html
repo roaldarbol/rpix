@@ -113,7 +113,14 @@
 <strong>Your personal library is listed.</strong> Keep it out of the environment; see <a href="how-rpix-works.html#keep-your-personal-library-out">How rpix works</a>.</li>
 <li>
 <strong>The project’s <code>.Rprofile</code> changes <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code>.</strong> rpix 0.3.0 and earlier added a block starting with <code># Pixi R library setup</code>. <code><a href="../reference/use_pixi.html">use_pixi()</a></code> removes it; for one in <code>~/.Rprofile</code>, remove it by hand.</li>
-</ul></section><section class="level2"><h2 id="rstudio-uses-the-wrong-r">RStudio uses the wrong R<a class="anchor" aria-label="anchor" href="#rstudio-uses-the-wrong-r"></a>
+</ul></section><section class="level2"><h2 id="a-package-fails-to-load-on-windows">A package fails to load on Windows<a class="anchor" aria-label="anchor" href="#a-package-fails-to-load-on-windows"></a>
+</h2>
+<p><code>The specified procedure could not be found</code>, when R loads a compiled package such as dplyr, means Windows found a DLL the package needs, but an older copy, without a function it uses. Within an environment, that happens when two packages install the same file, and the older copy wins: conda-forge’s Strawberry Perl puts its own MinGW runtime (<code>libstdc++-6.dll</code> and others) over conda-forge’s (<a href="https://github.com/conda-forge/perl-feedstock/issues/89" class="external-link">conda-forge/perl-feedstock#89</a>). freetds, and so pymssql, bring perl into an environment on Windows.</p>
+<p><code><a href="../reference/pixi_sitrep.html">pixi_sitrep()</a></code> lists files that more than one package in an environment installs, and says when it’s Strawberry Perl’s runtime. To see what brings perl in:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rpix</span><span class="fu">::</span><span class="fu"><a href="../reference/pixi_info.html">pixi_tree</a></span><span class="op">(</span><span class="st">"perl"</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Then drop that package, or move it to an environment without R (see <a href="environments.html">Several environments</a>).</p>
+</section><section class="level2"><h2 id="rstudio-uses-the-wrong-r">RStudio uses the wrong R<a class="anchor" aria-label="anchor" href="#rstudio-uses-the-wrong-r"></a>
 </h2>
 <p>RStudio picks its R when it starts, so it has to be started from the project’s environment, as a new RStudio: set the project up with <code><a href="../reference/use_pixi_ide.html">use_pixi_rstudio()</a></code>, then run <code><a href="../reference/pixi_switch.html">rpix::pixi_switch()</a></code> in RStudio, which starts one (or <code>pixi run rstudio</code> in a terminal). See <a href="ide.html#rstudio">Using rpix with an IDE</a>.</p>
 </section><section class="level2"><h2 id="r-doesnt-start-in-vs-code-on-windows">R doesn’t start in VS Code on Windows<a class="anchor" aria-label="anchor" href="#r-doesnt-start-in-vs-code-on-windows"></a>
@@ -127,7 +134,7 @@
 </h2>
 <pre><code>! Could not find Pixi.</code></pre>
 <p>rpix looks for Pixi on the <code>PATH</code>, and then where the installer puts it, <code>~/.pixi/bin</code>. If you installed it somewhere else, tell rpix where:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>rpix.pixi_path <span class="op">=</span> <span class="st">"/path/to/pixi"</span><span class="op">)</span></span></code></pre></div>
 </section><section class="level2"><h2 id="rpix-cant-find-the-project">rpix can’t find the project<a class="anchor" aria-label="anchor" href="#rpix-cant-find-the-project"></a>
 </h2>

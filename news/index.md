@@ -4,6 +4,14 @@
 
 ### Added
 
+- [`pixi_sitrep()`](https://roald-arboel.com/rpix/reference/pixi_sitrep.md)
+  lists files that more than one package in an environment installs,
+  such as shared libraries, and whose copy is there: only one can be, so
+  the other package may not work. It says when it’s Strawberry Perl’s
+  MinGW runtime over conda-forge’s, which on Windows stops compiled R
+  packages from loading, and how to find what brings perl in
+  ([\#176](https://github.com/roaldarbol/rpix/issues/176),
+  [\#177](https://github.com/roaldarbol/rpix/issues/177)).
 - The IDE guide says how to install each IDE, and which
   `pixi global install` can install (Emacs, Neovim, Zed and direnv).
   [`use_pixi_emacs()`](https://roald-arboel.com/rpix/reference/use_pixi_ide.md),
