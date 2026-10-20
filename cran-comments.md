@@ -8,8 +8,6 @@ records them in a lock file, and works with that project from the R console.
 
 ## Test environments
 
-<!-- Fill in the builders' results before submitting. -->
-
 * GitHub Actions: R CMD check on macOS, Windows and Ubuntu (R release; Ubuntu
   also R-devel and oldrel-1), and with Pixi installed (the newest Pixi, and
   0.77, the oldest rpix supports).
@@ -17,16 +15,20 @@ records them in a lock file, and works with that project from the R console.
   `NOT_CRAN=false` and without Pixi, as on CRAN's machines.
 * Local, macOS (Intel), R 4.5: `R CMD check --as-cran` with CRAN's incoming
   checks, without Pixi on the `PATH`.
-* win-builder (R-devel and release):
-* macOS builder (R release):
-* R-hub:
+* win-builder: R-devel (2026-10-18 r90707 ucrt) and R 4.6.1, Windows.
+* macOS builder: R 4.6.1, macOS 26.6 (Apple Silicon).
+* R-hub: Linux, Windows and macOS (Apple Silicon) with R-devel, and the
+  `nosuggests` and `clang-asan` checks.
 
 ## R CMD check results
-
 
 0 errors | 0 warnings | 1 note
 
 * This is a new submission.
+
+The macOS builder and R-hub report no notes. win-builder also flagged the
+package's name, "rpix", as possibly misspelled in the Description; it's now
+in single quotes, like the other names there.
 
 ## Pixi, an external program
 

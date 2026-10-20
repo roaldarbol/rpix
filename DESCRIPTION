@@ -13,7 +13,7 @@ Authors@R:
 Description: An interface to the 'Pixi' package manager
     (<https://pixi.prefix.dev>) from R. Add, remove and search for 'conda'
     packages, and set up and work with 'Pixi' projects from the R console.
-    If 'Pixi' isn't installed, rpix can install it.
+    If 'Pixi' isn't installed, 'rpix' can install it.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-GB
