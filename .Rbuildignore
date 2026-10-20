@@ -14,6 +14,7 @@
 # vignettes/ only holds pkgdown articles
 ^vignettes$
 ^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$
 ^data-raw$
 # The agent skill, its plugin manifests and its evals
 ^skills$
