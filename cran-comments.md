@@ -27,8 +27,8 @@ records them in a lock file, and works with that project from the R console.
 * This is a new submission.
 
 The macOS builder and R-hub report no notes. win-builder also flagged the
-package's name, "rpix", as possibly misspelled in the Description; it no
-longer appears there.
+package's name, "rpix", as possibly misspelled in the Description; it's now
+in single quotes, like the other names there.
 
 ## Pixi, an external program
 
