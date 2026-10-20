@@ -2,6 +2,19 @@
 
 ## Added
 
+* RStudio addins: open the project with its Pixi R, add packages (the
+  selection, or those a file uses), install the environment, run a task, open
+  `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
+  sets up a project as `use_pixi(ide = "rstudio")` does, for the version of
+  R picked there, optionally as a git repository. In
+  RStudio, when the project opens in an R that isn't its Pixi R, rpix offers
+  to reopen it in a new RStudio with that R (#137, #143).
+* At startup and in `pixi_sitrep()`, rpix says when a project also has renv,
+  e.g. because RStudio's New Project set it up, as renv and Pixi clash, and
+  that `pixi_import_renv()` turns renv off.
+* In R that isn't the project's, outside RStudio, the startup message now
+  points to opening the project in an IDE set up with `use_pixi(ide = )`,
+  before `pixi run R`.
 * `options(rpix.ref)` makes `use_pixi()` also install rpix into the
   environment from GitHub, at a branch, tag or commit (e.g. `"main"`, or a
   pull request's branch), to try a change before it's released. The installed

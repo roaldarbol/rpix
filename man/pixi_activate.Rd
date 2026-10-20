@@ -37,7 +37,12 @@ instead. \code{repos} is ignored, and other arguments Pixi can't use, such as
 \code{utils::install.packages()}, so \code{pixi.toml} doesn't record them. Turn
 this off with \code{options(rpix.install_packages = FALSE)}.
 \item If R isn't the R of a Pixi environment in this project, nothing changes;
-in an interactive session you get a hint instead.
+in an interactive session you get a hint instead. In RStudio, it also
+offers to reopen the project in a new RStudio with the environment's R,
+and to close this one. Turn that off with \code{RPIX_OFFER_SWITCH=false} in
+your \code{.Renviron}.
+\item If the project also has renv, e.g. because RStudio's New Project set it
+up, it says so: renv and Pixi both manage the project's packages.
 \item If the project was moved or copied, Pixi's activation cache, which has
 the old location, is removed, and environments that need reinstalling
 are named.

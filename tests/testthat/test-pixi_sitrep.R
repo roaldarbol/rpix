@@ -49,10 +49,12 @@ test_that("reports problems, with hints", {
     packages_outside = "cli",
     packages_unrecorded = "pak",
     rprofile = FALSE,
+    renv = TRUE,
     ide = "rstudio",
     ide_set_up = FALSE,
     build_unignored = c(".pixi", "pixi.lock")
   ))
+  expect_match(out, "also has renv")
   expect_match(out, "pixi install")
   expect_match(out, "builds include '.pixi' and 'pixi.lock'")
   expect_match(out, 'use_build_ignore\\(c\\(".pixi", "pixi.lock"\\)\\)')
