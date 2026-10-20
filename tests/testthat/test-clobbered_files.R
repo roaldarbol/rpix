@@ -6,13 +6,15 @@ local_clobbered_project <- function(env = parent.frame()) {
   dir.create(file.path(prefix, "conda-meta"), recursive = TRUE)
   dir.create(file.path(prefix, "Library", "bin"), recursive = TRUE)
   dir.create(file.path(prefix, "share", "doc"), recursive = TRUE)
-  # On disk: Strawberry Perl's copy of the runtime, and some licence
-  writeLines(
+  # On disk: Strawberry Perl's copy of the runtime, and some licence. Written
+  # as bytes, so their checksums are the same on Windows.
+  write_bytes <- function(text, file) writeBin(charToRaw(text), file)
+  write_bytes(
     "perl's runtime",
     file.path(prefix, "Library", "bin", "libstdc++-6.dll")
   )
-  writeLines("licence", file.path(prefix, "share", "doc", "LICENSE"))
-  hash <- function(text) cli::hash_sha256(paste0(text, "\n"))
+  write_bytes("licence", file.path(prefix, "share", "doc", "LICENSE"))
+  hash <- function(text) cli::hash_sha256(text)
   record <- function(name, build, paths) {
     jsonlite::write_json(
       list(
@@ -45,6 +47,12 @@ local_clobbered_project <- function(env = parent.frame()) {
     )
   )
   record("r-cli", "r45_0", list("lib/R/library/cli/libs/cli.dll" = hash("x")))
+  # A record without files, e.g. a metapackage
+  jsonlite::write_json(
+    list(name = "r-recommended", build = "0"),
+    file.path(prefix, "conda-meta", "r-recommended.json"),
+    auto_unbox = TRUE
+  )
   root
 }
 
