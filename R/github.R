@@ -187,7 +187,7 @@ add_github_packages <- function(
     cli::cli_abort(
       c(
         "The project uses packages as of {.val {date}}, which hides the {.code pixi-build-r} that builds packages from GitHub.",
-        "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14. Use a later date, e.g. with {.code pixi_set_date()}."
+        "i" = "{.code exclude-newer} applies to Pixi's build backend too, and {.code pixi-build-r} 0.2.0 came out on 2026-10-14. Use a later date, e.g. with {.code rpix::pixi_set_date()}."
       ),
       call = call
     )

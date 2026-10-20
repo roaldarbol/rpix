@@ -74,16 +74,26 @@ use_pixi_github_action <- function(
 
   platforms <- project_platforms(root)
   runners <- github_runners[github_runners$platform %in% platforms, ]
+  if (nrow(runners) == 0 && is_interactive()) {
+    cli::cli_alert_warning(
+      "The project has none of the platforms GitHub runs: {.val {github_runners$platform}}."
+    )
+    if (isTRUE(ask_yes_no("Would you like to add linux-64?"))) {
+      pixi_add_platform("linux-64", path = root)
+      platforms <- project_platforms(root)
+      runners <- github_runners[github_runners$platform %in% platforms, ]
+    }
+  }
   if (nrow(runners) == 0) {
     cli::cli_abort(c(
       "The project has none of the platforms GitHub runs: {.val {github_runners$platform}}.",
-      "i" = "Add one with {.code pixi_add_platform(\"linux-64\")}."
+      "i" = "Add one with {.code rpix::pixi_add_platform(\"linux-64\")}."
     ))
   }
   missing <- setdiff(github_runners$platform, platforms)
   if (workflow %in% c("check", "task") && length(missing) > 0) {
     cli::cli_alert_info(
-      "Not on {.val {github_runners$os[github_runners$platform %in% missing]}}: the project doesn't have {.val {missing}}. Add {cli::qty(length(missing))}{?it/them} with {.code pixi_add_platform()}."
+      "Not on {.val {github_runners$os[github_runners$platform %in% missing]}}: the project doesn't have {.val {missing}}. Add {cli::qty(length(missing))}{?it/them} with {.code rpix::pixi_add_platform()}."
     )
   }
 
@@ -176,7 +186,7 @@ workflow_environments <- function(
       cli::cli_abort(
         c(
           "No environment has what {.code R CMD check} needs.",
-          "i" = "Add environments that do with {.code use_pixi_check_matrix()}, or add what {.val {best}} lacks with {.code {add_hint(lacking[[best]], features[[best]])}}."
+          "i" = "Add environments that do with {.code rpix::use_pixi_check_matrix()}, or add what {.val {best}} lacks with {.code {add_hint(lacking[[best]], features[[best]])}}."
         ),
         call = call
       )
@@ -242,7 +252,7 @@ add_hint <- function(packages, feature) {
   } else {
     paste0(', feature = "', feature, '"')
   }
-  paste0("pixi_add(", quoted, feature, ")")
+  paste0("rpix::pixi_add(", quoted, feature, ")")
 }
 
 setup_pixi_version <- "v0.10.2"

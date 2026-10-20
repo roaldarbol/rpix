@@ -17,8 +17,9 @@ inst/doc
 # pkgdown site, built and deployed by CI
 docs
 
-# Reproductions testthat writes for failing tests
+# What testthat writes about failing tests
 tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
 
 # Downloads cached by data-raw/package-availability.R (AVAILABILITY_CACHE)
 data-raw/cache/

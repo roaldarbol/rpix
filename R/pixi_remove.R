@@ -17,10 +17,10 @@
 #' @returns The command (invisibly) if `dry_run = TRUE`, otherwise the result of
 #'   the Pixi call (invisibly).
 #' @export
+#' @example man/examples/project.R
 #' @examples
-#' \dontrun{
-#' pixi_remove("tibble")
-#' }
+#'
+#' pixi_remove("tibble", path = project, dry_run = TRUE)
 pixi_remove <- function(
   packages,
   feature = NULL,

@@ -45,19 +45,40 @@ run_pixi <- function(
   dry_run = FALSE,
   secrets = NULL,
   on_output = NULL,
-  call = parent.frame()
+  call = parent.frame(),
+  login = TRUE
 ) {
   project <- match.arg(project)
+  # As given, to run it again after logging in (args and echo change below)
+  given_args <- args
+  given_echo <- echo
+  again <- function() {
+    run_pixi(
+      given_args,
+      project = project,
+      path = path,
+      json = json,
+      echo = given_echo,
+      announce = announce,
+      secrets = secrets,
+      on_output = on_output,
+      call = call,
+      login = FALSE
+    )
+  }
 
   manifest <- NULL
   if (project != "none") {
     manifest <- find_manifest(path)
+    if (is.null(manifest) && project == "required" && offer_project(path)) {
+      manifest <- find_manifest(path)
+    }
     if (is.null(manifest) && project == "required") {
       cli::cli_abort(
         c(
           "Could not find a Pixi project.",
           "i" = "Looked for {.file pixi.toml} or a {.file pyproject.toml} with a {.code [tool.pixi]} table in {.path {path %||% getwd()}} and its parents.",
-          "i" = "Create one with {.code pixi init}."
+          "i" = "Create one with {.code rpix::use_pixi()}."
         ),
         class = "rpix_error_no_project",
         call = call
@@ -119,6 +140,10 @@ run_pixi <- function(
   result$output <- hide_secrets(paste(output, collapse = ""), secrets)
 
   if (result$status != 0) {
+    denied <- access_denied(paste(result$stderr, result$stdout))
+    if (login && !is.null(denied) && offer_login(denied, args)) {
+      return(again())
+    }
     abort_pixi_failure(command, result, echoed = echo, call = call)
   }
 
@@ -261,7 +286,7 @@ pixi_binary <- function(offer_install = TRUE, call = parent.frame()) {
   cli::cli_abort(
     c(
       "Could not find Pixi.",
-      "i" = "Install it with {.code install_pixi()}, or as {.url https://pixi.prefix.dev/latest/installation/} describes.",
+      "i" = "Install it with {.code rpix::install_pixi()}, or as {.url https://pixi.prefix.dev/latest/installation/} describes.",
       "i" = "If it's installed somewhere unusual, set {.code options(rpix.pixi_path = \"/path/to/pixi\")}."
     ),
     class = "rpix_error_pixi_not_found",
@@ -331,7 +356,7 @@ running_manifest <- function() {
   cli::cli_inform(
     c(
       "!" = "{.envvar {var}} points to {.path {root}}, so using the working directory's project, {.path {dirname(here)}}.",
-      "i" = "If the project was copied or moved, check it with {.code pixi_sitrep()}."
+      "i" = "If the project was copied or moved, check it with {.code rpix::pixi_sitrep()}."
     ),
     .frequency = "once",
     .frequency_id = "rpix_other_workspace_root"
@@ -422,6 +447,22 @@ display_path <- function(path) {
   if (startsWith(path, wd)) substring(path, nchar(wd) + 1) else path
 }
 
+# Offer to log in to a host that refused access, so the command can run again.
+# Not for `pixi auth` itself.
+offer_login <- function(denied, args) {
+  if (!is_interactive() || identical(args[1], "auth")) {
+    return(FALSE)
+  }
+  cli::cli_alert_warning(
+    "{.val {denied$host}} refused access ({denied$status}), so Pixi probably needs credentials for it."
+  )
+  if (!isTRUE(ask_yes_no("Would you like to log in to it now?"))) {
+    return(FALSE)
+  }
+  pixi_auth_login(denied$host)
+  TRUE
+}
+
 abort_pixi_failure <- function(command, result, echoed, call) {
   # Pixi's output has already been shown, so don't repeat it
   if (echoed) {
@@ -434,7 +475,7 @@ abort_pixi_failure <- function(command, result, echoed, call) {
     details <- c(
       details,
       "i" = "{.val {denied$host}} refused access ({denied$status}), so Pixi probably needs credentials for it.",
-      "i" = "Log in with {.code pixi_auth_login(\"{denied$host}\")}, and see {.fn pixi_auth_login} for other ways to log in."
+      "i" = "Log in with {.code rpix::pixi_auth_login(\"{denied$host}\")}, and see {.fn pixi_auth_login} for other ways to log in."
     )
   }
 

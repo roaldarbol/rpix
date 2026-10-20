@@ -97,3 +97,18 @@ test_that("pixi_set_date() needs a pixi.toml", {
   writeLines("[tool.pixi.workspace]", file.path(dir, "pyproject.toml"))
   expect_error(pixi_set_date("7d", path = dir), "pixi.toml")
 })
+
+test_that("pixi_set_date(NULL) offers to update the packages", {
+  calls <- local_date_project()
+  writeLines(
+    c("[workspace]", 'exclude-newer = "2025-06-01"'),
+    file.path(calls$dir, "pixi.toml")
+  )
+  local_mocked_bindings(
+    is_interactive = function() TRUE,
+    ask_yes_no = function(question) TRUE,
+    pixi_update = function(path) calls$updated <- path
+  )
+  suppressMessages(pixi_set_date(NULL, path = calls$dir))
+  expect_true(same_path(calls$updated, calls$dir))
+})
