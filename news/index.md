@@ -4,6 +4,19 @@
 
 ### Added
 
+- [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  leaves R as it is, unless `r = TRUE` (or `"r-base"` is named):
+  upgrading everything used to take a project to a new version of R, for
+  which conda-forge has fewer packages. In an interactive session,
+  [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  and
+  [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+  show what would change, and ask before going ahead. Afterwards they
+  install the environment, as `pixi update` doesn’t; in the project’s
+  own R they say to restart it (and offer to, in RStudio), and on
+  Windows only update `pixi.lock`, as a running R keeps Pixi from
+  replacing its packages’ files
+  ([\#200](https://github.com/roaldarbol/rpix/issues/200)).
 - [`use_pixi_jupyter()`](https://roald-arboel.com/rpix/reference/use_pixi_jupyter.md),
   and `use_pixi(ide = "jupyter")`, set the project up for Jupyter
   notebooks: a kernel for each environment with R, which starts that

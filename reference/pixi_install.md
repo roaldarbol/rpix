@@ -6,13 +6,27 @@
   unless `locked` or `frozen` says otherwise.
 
 - `pixi_update()` updates packages to the newest versions `pixi.toml`
-  allows, in `pixi.lock`.
+  allows, in `pixi.lock`, and installs them.
 
 - `pixi_upgrade()` updates packages beyond that, and raises the versions
-  in `pixi.toml` to match.
+  in `pixi.toml` to match. It leaves R as it is, unless `r = TRUE`.
 
 - `pixi_lock()` updates `pixi.lock` to match `pixi.toml`, without
   installing anything.
+
+In an interactive session, `pixi_update()` and `pixi_upgrade()` first
+show what would change, and ask before going ahead. Then they install
+the environment this R runs in, or else the default one (or
+`environment`). If that's this R's own environment, restart R
+afterwards, as the packages it has loaded still use the old files: in
+RStudio, they offer to. On Windows, a running R keeps Pixi from
+replacing its packages' files, so there they only update `pixi.lock`,
+and say how to install it after closing R.
+
+Upgrading R (`r = TRUE`) means every R package needs a build for the new
+R. conda-forge has fewer packages for a new version of R at first, and
+packages built from source are pinned to the R they were added for, so R
+only moves as far as all the project's packages allow.
 
 Package names are translated like in
 [`pixi_add()`](https://roald-arboel.com/rpix/reference/pixi_add.md). If
@@ -42,7 +56,13 @@ pixi_install(
 
 pixi_update(packages = NULL, environment = NULL, path = NULL, dry_run = FALSE)
 
-pixi_upgrade(packages = NULL, feature = NULL, path = NULL, dry_run = FALSE)
+pixi_upgrade(
+  packages = NULL,
+  feature = NULL,
+  r = FALSE,
+  path = NULL,
+  dry_run = FALSE
+)
 
 pixi_lock(path = NULL, dry_run = FALSE)
 ```
@@ -85,6 +105,11 @@ pixi_lock(path = NULL, dry_run = FALSE)
 
   Optional. Only upgrade the packages of this feature.
 
+- r:
+
+  If `TRUE`, upgrade R too (`r-base`), as far as the project's packages
+  allow. Naming `"r-base"` in `packages` does the same.
+
 ## Value
 
 The command (invisibly) if `dry_run = TRUE`, otherwise the result of the
@@ -112,9 +137,9 @@ writeLines(
 )
 
 pixi_install(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi install --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi install --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`
 pixi_update("dplyr", path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi update r-dplyr --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`
 pixi_upgrade(path = project, dry_run = TRUE)
-#> ℹ Would run: `pixi upgrade --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`
+#> ℹ Would run: `pixi upgrade --exclude r-base --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`
 ```

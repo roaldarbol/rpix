@@ -128,7 +128,9 @@
 <p>Packages stay at the versions in <code>pixi.lock</code> until you update them:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pixi_install.html">pixi_update</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This updates to the newest versions <code>pixi.toml</code> allows. <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> also raises the version constraints in <code>pixi.toml</code>.</p>
+<p>This updates to the newest versions <code>pixi.toml</code> allows. <code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> also raises the version constraints in <code>pixi.toml</code>. Both show what would change first, and ask.</p>
+<p><code><a href="../reference/pixi_install.html">pixi_upgrade()</a></code> leaves R as it is. A new version of R means a new build of every R package, and conda-forge has fewer packages for a new R at first, so upgrading R is a step of its own: <code>pixi_upgrade(r = TRUE)</code>.</p>
+<p>If you update from the project’s own R, restart R afterwards, as the packages it has loaded still use the old files; in RStudio, rpix offers to. On Windows, R keeps Pixi from replacing the files of packages it has loaded, so there rpix only updates <code>pixi.lock</code>, and says how to install it once R is closed.</p>
 </section><section class="level2"><h2 id="packages-as-of-a-date">Packages as of a date<a class="anchor" aria-label="anchor" href="#packages-as-of-a-date"></a>
 </h2>
 <p>Pixi can leave out every package published after a date, so a project gets packages as they were on that day. That’s useful to rerun an old analysis with the versions it was written for, without its lock file, or to check that a package still works with what users had a year ago. Set the date when you create the project, so R and every package you add are as of that day:</p>

@@ -87,7 +87,19 @@ pixi_update()
 
 This updates to the newest versions `pixi.toml` allows.
 [`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
-also raises the version constraints in `pixi.toml`.
+also raises the version constraints in `pixi.toml`. Both show what would
+change first, and ask.
+
+[`pixi_upgrade()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
+leaves R as it is. A new version of R means a new build of every R
+package, and conda-forge has fewer packages for a new R at first, so
+upgrading R is a step of its own: `pixi_upgrade(r = TRUE)`.
+
+If you update from the project’s own R, restart R afterwards, as the
+packages it has loaded still use the old files; in RStudio, rpix offers
+to. On Windows, R keeps Pixi from replacing the files of packages it has
+loaded, so there rpix only updates `pixi.lock`, and says how to install
+it once R is closed.
 
 ## Packages as of a date
 

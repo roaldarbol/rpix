@@ -6,13 +6,24 @@ e.g. after cloning a project. pixi run does this by itself, too. If
 pixi.lock is out of date with pixi.toml, Pixi updates it first,
 unless locked or frozen says otherwise.
 pixi_update() updates packages to the newest versions pixi.toml
-allows, in pixi.lock.
+allows, in pixi.lock, and installs them.
 pixi_upgrade() updates packages beyond that, and raises the versions in
-pixi.toml to match.
+pixi.toml to match. It leaves R as it is, unless r = TRUE.
 pixi_lock() updates pixi.lock to match pixi.toml, without
 installing anything.
 
 
+In an interactive session, pixi_update() and pixi_upgrade() first show
+what would change, and ask before going ahead. Then they install the
+environment this R runs in, or else the default one (or environment). If
+that's this R's own environment, restart R afterwards, as the packages it
+has loaded still use the old files: in RStudio, they offer to. On Windows,
+a running R keeps Pixi from replacing its packages' files, so there they
+only update pixi.lock, and say how to install it after closing R.
+Upgrading R (r = TRUE) means every R package needs a build for the new R.
+conda-forge has fewer packages for a new version of R at first, and
+packages built from source are pinned to the R they were added for, so R
+only moves as far as all the project's packages allow.
 Package names are translated like in pixi_add(). If Pixi skips an install
 script that a package needs, such as the ones Bioconductor's data packages
 download their data with, these functions offer to allow them in the
@@ -27,13 +38,24 @@ e.g. after cloning a project. pixi run does this by itself, too. If
 pixi.lock is out of date with pixi.toml, Pixi updates it first,
 unless locked or frozen says otherwise.
 pixi_update() updates packages to the newest versions pixi.toml
-allows, in pixi.lock.
+allows, in pixi.lock, and installs them.
 pixi_upgrade() updates packages beyond that, and raises the versions in
-pixi.toml to match.
+pixi.toml to match. It leaves R as it is, unless r = TRUE.
 pixi_lock() updates pixi.lock to match pixi.toml, without
 installing anything.
 
 
+In an interactive session, pixi_update() and pixi_upgrade() first show
+what would change, and ask before going ahead. Then they install the
+environment this R runs in, or else the default one (or environment). If
+that's this R's own environment, restart R afterwards, as the packages it
+has loaded still use the old files: in RStudio, they offer to. On Windows,
+a running R keeps Pixi from replacing its packages' files, so there they
+only update pixi.lock, and say how to install it after closing R.
+Upgrading R (r = TRUE) means every R package needs a build for the new R.
+conda-forge has fewer packages for a new version of R at first, and
+packages built from source are pinned to the R they were added for, so R
+only moves as far as all the project's packages allow.
 Package names are translated like in pixi_add(). If Pixi skips an install
 script that a package needs, such as the ones Bioconductor's data packages
 download their data with, these functions offer to allow them in the
@@ -110,12 +132,23 @@ e.g. after cloning a project. <code>pixi run</code> does this by itself, too. If
 <code>pixi.lock</code> is out of date with <code>pixi.toml</code>, Pixi updates it first,
 unless <code>locked</code> or <code>frozen</code> says otherwise.</p></li>
 <li><p><code>pixi_update()</code> updates packages to the newest versions <code>pixi.toml</code>
-allows, in <code>pixi.lock</code>.</p></li>
+allows, in <code>pixi.lock</code>, and installs them.</p></li>
 <li><p><code>pixi_upgrade()</code> updates packages beyond that, and raises the versions in
-<code>pixi.toml</code> to match.</p></li>
+<code>pixi.toml</code> to match. It leaves R as it is, unless <code>r = TRUE</code>.</p></li>
 <li><p><code>pixi_lock()</code> updates <code>pixi.lock</code> to match <code>pixi.toml</code>, without
 installing anything.</p></li>
-</ul><p>Package names are translated like in <code><a href="pixi_add.html">pixi_add()</a></code>. If Pixi skips an install
+</ul><p>In an interactive session, <code>pixi_update()</code> and <code>pixi_upgrade()</code> first show
+what would change, and ask before going ahead. Then they install the
+environment this R runs in, or else the default one (or <code>environment</code>). If
+that's this R's own environment, restart R afterwards, as the packages it
+has loaded still use the old files: in RStudio, they offer to. On Windows,
+a running R keeps Pixi from replacing its packages' files, so there they
+only update <code>pixi.lock</code>, and say how to install it after closing R.</p>
+<p>Upgrading R (<code>r = TRUE</code>) means every R package needs a build for the new R.
+conda-forge has fewer packages for a new version of R at first, and
+packages built from source are pinned to the R they were added for, so R
+only moves as far as all the project's packages allow.</p>
+<p>Package names are translated like in <code><a href="pixi_add.html">pixi_add()</a></code>. If Pixi skips an install
 script that a package needs, such as the ones Bioconductor's data packages
 download their data with, these functions offer to allow them in the
 project, as <code><a href="pixi_add.html">pixi_add()</a></code> does.</p>
@@ -138,7 +171,13 @@ project, as <code><a href="pixi_add.html">pixi_add()</a></code> does.</p>
 <span></span>
 <span><span class="fu">pixi_update</span><span class="op">(</span>packages <span class="op">=</span> <span class="cn">NULL</span>, environment <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">pixi_upgrade</span><span class="op">(</span>packages <span class="op">=</span> <span class="cn">NULL</span>, feature <span class="op">=</span> <span class="cn">NULL</span>, path <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">pixi_upgrade</span><span class="op">(</span></span>
+<span>  packages <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  feature <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  r <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pixi_lock</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -182,6 +221,11 @@ environment, or the working directory.</p></dd>
 <dt id="arg-feature">feature<a class="anchor" aria-label="anchor" href="#arg-feature"></a></dt>
 <dd><p>Optional. Only upgrade the packages of this feature.</p></dd>
 
+
+<dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
+<dd><p>If <code>TRUE</code>, upgrade R too (<code>r-base</code>), as far as the project's
+packages allow. Naming <code>"r-base"</code> in <code>packages</code> does the same.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -210,11 +254,11 @@ of the Pixi call (invisibly).</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pixi_install</span><span class="op">(</span>path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi install --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi install --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_update</span><span class="op">(</span><span class="st">"dplyr"</span>, path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi update r-dplyr --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi update r-dplyr --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`</span>
 <span class="r-in"><span><span class="fu">pixi_upgrade</span><span class="op">(</span>path <span class="op">=</span> <span class="va">project</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --manifest-path /tmp/RtmpJzlolV/rpix-example/pixi.toml`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Would run: `pixi upgrade --exclude r-base --manifest-path /tmp/Rtmp0owguO/rpix-example/pixi.toml`</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
