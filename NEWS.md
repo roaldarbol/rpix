@@ -2,6 +2,11 @@
 
 ## Added
 
+* `pixi_sitrep()` lists files that more than one package in an environment
+  installs, such as shared libraries, and whose copy is there: only one can
+  be, so the other package may not work. It says when it's Strawberry Perl's
+  MinGW runtime over conda-forge's, which on Windows stops compiled R
+  packages from loading, and how to find what brings perl in (#176, #177).
 * RStudio addins: open the project with its Pixi R, add packages (the
   selection, or those a file uses), install the environment, run a task, open
   `pixi.toml`, and the sitrep. A New Project template, "Project with Pixi",
