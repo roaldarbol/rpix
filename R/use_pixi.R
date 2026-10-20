@@ -73,6 +73,8 @@
 #'   computer's. Defaults to `"linux-64"`, `"osx-64"`, `"osx-arm64"` and
 #'   `"win-64"`. To add platforms to an existing project, use
 #'   [pixi_add_platform()].
+#' @param python If `TRUE`, add Python for reticulate, with
+#'   [use_pixi_python()] (experimental).
 #' @param ... Passed on to the IDE setup, e.g. `console = "arf"` for
 #'   [use_pixi_vscode()], or `default_r = FALSE` for [use_pixi_positron()].
 #' @returns The path to the project's manifest, invisibly.
@@ -93,6 +95,7 @@ use_pixi <- function(
   path = NULL,
   activation_cache = TRUE,
   platforms = NULL,
+  python = FALSE,
   ...
 ) {
   setup_ide <- list(
@@ -226,6 +229,9 @@ use_pixi <- function(
     use_activation_cache(path)
   }
 
+  if (isTRUE(python)) {
+    use_pixi_python(path = path)
+  }
   for (i in ide) {
     args <- ide_args[intersect(names(ide_args), names(formals(setup_ide[[i]])))]
     do.call(setup_ide[[i]], c(list(path), args))

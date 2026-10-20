@@ -41,6 +41,24 @@ pixi_remove <- function(
     remove_from_description(entries, dry_run = dry_run)
     return(invisible(result))
   }
+  pypi <- packages[is_pypi(packages)]
+  if (length(pypi) > 0) {
+    result <- run_pixi(
+      c(
+        "remove",
+        "--pypi",
+        sub("^pypi::", "", pypi, ignore.case = TRUE),
+        scope_args(feature, platform)
+      ),
+      path = path,
+      echo = TRUE,
+      dry_run = dry_run
+    )
+    packages <- packages[!is_pypi(packages)]
+    if (length(packages) == 0) {
+      return(invisible(result))
+    }
+  }
   github <- packages[is_github(packages)]
   names <- vapply(github, function(p) parse_github(p)$name, character(1))
   others <- packages[!is_github(packages)]

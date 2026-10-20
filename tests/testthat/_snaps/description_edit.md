@@ -18,6 +18,11 @@
       Error:
       ! "conda::gdal" isn't an R package, so it doesn't go in Imports.
       i For software the package needs, use `type = "SystemRequirements"`.
+    Code
+      description_entries("pypi::pydytuesday", NULL, "Imports", path = root)
+    Condition
+      Error:
+      ! "pypi::pydytuesday" is a Python package, so it doesn't go in 'DESCRIPTION'.
 
 # SystemRequirements gets conda packages, after what it says already
 
