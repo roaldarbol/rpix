@@ -248,6 +248,17 @@ test_that("rpix_source() records where rpix came from in its DESCRIPTION", {
   expect_equal(installed_commit(file.path(source, "DESCRIPTION")), "abc123")
 })
 
+test_that("download_archive() downloads an archive from GitHub", {
+  skip_on_cran()
+  skip_if_offline("github.com")
+  file <- withr::local_tempfile(fileext = ".tar.gz")
+  download_archive(
+    "https://github.com/roaldarbol/rpix/archive/refs/tags/v0.8.0.tar.gz",
+    file
+  )
+  expect_true("rpix-0.8.0/DESCRIPTION" %in% utils::untar(file, list = TRUE))
+})
+
 test_that("use_pixi() uses an existing project and can skip rpix", {
   calls <- local_mock_setup()
   dir <- normalizePath(withr::local_tempdir(), winslash = "/")
