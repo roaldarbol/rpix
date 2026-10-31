@@ -1,7 +1,7 @@
 # Add a package's dependencies from its DESCRIPTION
 
 For package developers: add what the package in the project needs to the
-project, from its `DESCRIPTION`.
+project, from its `DESCRIPTION`, and install it.
 
 - `Depends` and `Imports` (and `LinkingTo`) go into the default feature,
   with their version constraints.

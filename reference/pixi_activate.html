@@ -13,9 +13,10 @@ recorded in pixi.toml and pixi.lock. For a CRAN package that isn't on
 conda-forge, pixi_add() offers to build it from source. For a package
 already in pixi.toml, it says to update it with pixi_update()
 instead. repos is ignored, and other arguments Pixi can't use, such as
-lib, give an error. Package files and folders are installed with
-utils::install.packages(), so pixi.toml doesn't record them. Turn
-this off with options(rpix.install_packages = FALSE).
+lib, give an error, as do package files and folders, which Pixi can't
+add: install those with utils::install.packages(), which pixi.toml
+doesn't record. Turn this off with
+options(rpix.install_packages = FALSE) in the project's .Rprofile.
 In a package, in an interactive session, rpix notices when DESCRIPTION
 comes to need packages that pixi.toml doesn't have, e.g. after
 usethis::use_package() or an edit, and offers to add them with
@@ -48,9 +49,10 @@ recorded in pixi.toml and pixi.lock. For a CRAN package that isn't on
 conda-forge, pixi_add() offers to build it from source. For a package
 already in pixi.toml, it says to update it with pixi_update()
 instead. repos is ignored, and other arguments Pixi can't use, such as
-lib, give an error. Package files and folders are installed with
-utils::install.packages(), so pixi.toml doesn't record them. Turn
-this off with options(rpix.install_packages = FALSE).
+lib, give an error, as do package files and folders, which Pixi can't
+add: install those with utils::install.packages(), which pixi.toml
+doesn't record. Turn this off with
+options(rpix.install_packages = FALSE) in the project's .Rprofile.
 In a package, in an interactive session, rpix notices when DESCRIPTION
 comes to need packages that pixi.toml doesn't have, e.g. after
 usethis::use_package() or an edit, and offers to add them with
@@ -77,7 +79,7 @@ It never fails: problems are reported as messages."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">rpix</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,9 +147,10 @@ recorded in <code>pixi.toml</code> and <code>pixi.lock</code>. For a CRAN packag
 conda-forge, <code><a href="pixi_add.html">pixi_add()</a></code> offers to build it from source. For a package
 already in <code>pixi.toml</code>, it says to update it with <code><a href="pixi_install.html">pixi_update()</a></code>
 instead. <code>repos</code> is ignored, and other arguments Pixi can't use, such as
-<code>lib</code>, give an error. Package files and folders are installed with
-<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, so <code>pixi.toml</code> doesn't record them. Turn
-this off with <code>options(rpix.install_packages = FALSE)</code>.</p></li>
+<code>lib</code>, give an error, as do package files and folders, which Pixi can't
+add: install those with <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">utils::install.packages()</a></code>, which <code>pixi.toml</code>
+doesn't record. Turn this off with
+<code>options(rpix.install_packages = FALSE)</code> in the project's <code>.Rprofile</code>.</p></li>
 <li><p>In a package, in an interactive session, rpix notices when <code>DESCRIPTION</code>
 comes to need packages that <code>pixi.toml</code> doesn't have, e.g. after
 <code><a href="https://usethis.r-lib.org/reference/use_package.html" class="external-link">usethis::use_package()</a></code> or an edit, and offers to add them with

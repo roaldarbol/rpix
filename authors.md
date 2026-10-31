@@ -11,12 +11,12 @@ Source:
 [`DESCRIPTION`](https://github.com/roaldarbol/rpix/blob/main/DESCRIPTION)
 
 Roald-Arbøl M (2026). *rpix: Manage R Project Dependencies with 'Pixi'*.
-R package version 0.9.1, <https://roald-arboel.com/rpix/>.
+R package version 0.9.2, <https://roald-arboel.com/rpix/>.
 
     @Manual{,
       title = {rpix: Manage R Project Dependencies with 'Pixi'},
       author = {Mikkel Roald-Arbøl},
       year = {2026},
-      note = {R package version 0.9.1},
+      note = {R package version 0.9.2},
       url = {https://roald-arboel.com/rpix/},
     }

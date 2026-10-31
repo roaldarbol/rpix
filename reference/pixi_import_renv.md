@@ -1,7 +1,7 @@
 # Move a project from renv
 
-Add the packages in a project's `renv.lock` to its Pixi project, and
-turn renv off.
+Add the packages in a project's `renv.lock` to its Pixi project, install
+them, and turn renv off.
 
 - Packages from CRAN, or another CRAN-like repository, are looked up on
   conda-forge, and Bioconductor packages on bioconda. CRAN packages that

@@ -10,6 +10,10 @@ By default, the installer also adds Pixi to your shell's `PATH`, so
 installed already, nothing happens unless `force = TRUE`; update an
 existing Pixi with `pixi self-update` in a terminal.
 
+It writes to your home folder, so it asks first, and only runs in an
+interactive session. In a script, install Pixi as
+<https://pixi.prefix.dev/latest/installation/> describes.
+
 The installer is Pixi's own, `install.sh` (or `install.ps1` on Windows)
 from `pixi.sh`. It may send prefix.dev an anonymous install count; set
 `PIXI_NO_TELEMETRY=1` to turn that off. See

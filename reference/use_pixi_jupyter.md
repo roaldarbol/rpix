@@ -4,7 +4,8 @@
 <https://github.com/roaldarbol/rpix/issues/184>.
 
 Set the project up for Jupyter notebooks, so they run with the R of the
-project's environments:
+project's environments. It installs what it adds below into those
+environments.
 
 - It adds a `jupyter` environment with JupyterLab, of its own, so the
   environments with R don't get Python and JupyterLab.

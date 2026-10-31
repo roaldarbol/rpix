@@ -1,5 +1,29 @@
 # Changelog
 
+## rpix 0.9.2 (2026-10-31)
+
+### Changed
+
+- [`install_pixi()`](https://roald-arboel.com/rpix/reference/install_pixi.md)
+  needs an interactive session, as it asks before it writes to your home
+  folder. In a script, install Pixi with its own installer.
+- In a Pixi environment’s R,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  gives an error for package files and folders. Use
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  for those.
+- `options(rpix.install_packages = FALSE)` takes effect in the project’s
+  `.Rprofile`. Set later,
+  [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+  says to use
+  [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html).
+
+### Removed
+
+- `options(rpix.ref)`. To try a change to rpix, use
+  `pixi_add("github::roaldarbol/rpix@main")`, with a branch, tag or
+  commit.
+
 ## rpix 0.9.1 (2026-10-21)
 
 ### Fixed

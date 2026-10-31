@@ -25,10 +25,11 @@ up.
   it says to update it with
   [`pixi_update()`](https://roald-arboel.com/rpix/reference/pixi_install.md)
   instead. `repos` is ignored, and other arguments Pixi can't use, such
-  as `lib`, give an error. Package files and folders are installed with
+  as `lib`, give an error, as do package files and folders, which Pixi
+  can't add: install those with
   [`utils::install.packages()`](https://rdrr.io/r/utils/install.packages.html),
-  so `pixi.toml` doesn't record them. Turn this off with
-  `options(rpix.install_packages = FALSE)`.
+  which `pixi.toml` doesn't record. Turn this off with
+  `options(rpix.install_packages = FALSE)` in the project's `.Rprofile`.
 
 - In a package, in an interactive session, rpix notices when
   `DESCRIPTION` comes to need packages that `pixi.toml` doesn't have,

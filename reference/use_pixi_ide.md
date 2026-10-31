@@ -2,7 +2,9 @@
 
 Set an IDE or editor up to use the R in the project's Pixi environment.
 [`use_pixi()`](https://roald-arboel.com/rpix/reference/use_pixi.md)
-calls these with its `ide` argument.
+calls these with its `ide` argument. `use_pixi_vscode()`,
+`use_pixi_emacs()`, `use_pixi_neovim()` and `use_pixi_zed()` install the
+packages they add into that environment.
 
 - `use_pixi_rstudio()` adds, or replaces, an `rstudio` task in
   `pixi.toml` that starts a new RStudio with the environment's R and the

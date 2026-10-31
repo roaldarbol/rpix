@@ -1,7 +1,7 @@
 # Set up a Pixi project for R
 
 Create a Pixi project in the working directory, or `path`, if there
-isn't one there, and add R and rpix to it.
+isn't one there, and install R and rpix into its environment.
 
 It sets up that folder even inside another Pixi project. If a parent
 folder is a Pixi project, it says so, and in an interactive session asks
@@ -95,10 +95,7 @@ use_pixi(
   Until rpix is on conda-forge, it comes from the
   [rpix-forge](https://prefix.dev/channels/rpix-forge) channel, which is
   added to the project's channels after conda-forge, so everything else
-  still comes from conda-forge. To try a change to rpix, set
-  `options(rpix.ref)` to a branch, tag or commit, e.g. `"main"` or a
-  pull request's branch: rpix is then also installed from GitHub, unless
-  the environment has that commit already.
+  still comes from conda-forge.
 
 - date:
 
