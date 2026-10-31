@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Create a Pixi project in the working directory, or `path`, if there isn't
-#' one there, and add R and rpix to it.
+#' one there, and install R and rpix into its environment.
 #'
 #' It sets up that folder even inside another Pixi project. If a parent folder
 #' is a Pixi project, it says so, and in an interactive session asks whether to
@@ -62,10 +62,7 @@
 #'   has it too. Until rpix is on conda-forge, it comes from the
 #'   [rpix-forge](https://prefix.dev/channels/rpix-forge) channel, which is
 #'   added to the project's channels after conda-forge, so everything else
-#'   still comes from conda-forge. To try a change to rpix, set `options(rpix.ref)` to a
-#'   branch, tag or commit, e.g. `"main"` or a pull request's branch: rpix is
-#'   then also installed from GitHub, unless the environment has that commit
-#'   already.
+#'   still comes from conda-forge.
 #' @param path The folder to set up. Defaults to the working directory.
 #' @param activation_cache If `TRUE`, turn on Pixi's activation cache for the
 #'   project.
@@ -218,10 +215,6 @@ use_pixi <- function(
     run_pixi(c("remove", probe), path = path, echo = TRUE)
   }
 
-  if (install_rpix) {
-    install_rpix_into(path)
-  }
-
   remove_legacy_rprofile(file.path(path, ".Rprofile"))
   warn_legacy_rprofile(file.path(home_dir(), ".Rprofile"))
   add_rprofile_block(file.path(path, ".Rprofile"))
@@ -312,129 +305,6 @@ abort_r_without_packages <- function(e, newest, call) {
     parent = e,
     call = call
   )
-}
-
-# rpix is a dependency of the project, r-rpix (see rpix_forge). With
-# `options(rpix.ref)`, rpix is also installed from GitHub, at that ref, to try
-# a change (#245). From inside the environment's R, so rpix is installed for
-# that R; its dependencies are there already, with r-rpix.
-install_rpix_into <- function(path) {
-  installed <- file.path(
-    path,
-    ".pixi",
-    "envs",
-    "default",
-    "lib",
-    "R",
-    "library",
-    "rpix",
-    "DESCRIPTION"
-  )
-  ref <- getOption("rpix.ref")
-  if (is.null(ref)) {
-    return(invisible(FALSE))
-  }
-  install_rpix_from_github(path, installed, ref)
-}
-
-# rpix from GitHub, at a branch, tag or commit, to try a change before it's
-# released. Skipped when the environment has that commit, which the installed
-# DESCRIPTION records.
-install_rpix_from_github <- function(path, installed, ref) {
-  commit <- rpix_commit(ref)
-  if (
-    file.exists(installed) && identical(installed_commit(installed), commit)
-  ) {
-    cli::cli_alert_success(
-      "The environment has rpix from {.val {ref}} already."
-    )
-    return(invisible(FALSE))
-  }
-  source <- rpix_source(commit, ref)
-  # A failed install is only a warning, which would let Rscript succeed
-  install <- paste0(
-    "options(warn = 2); ",
-    "utils::install.packages(",
-    deparse(source),
-    ", repos = NULL, lib = .Library, dependencies = FALSE, type = 'source')"
-  )
-  run_pixi_step(
-    c("run", "Rscript", "-e", install),
-    step = paste0(
-      "Installing rpix into the environment from GitHub (",
-      ref,
-      ")"
-    ),
-    done = paste0(
-      "Installed rpix into the environment from GitHub (",
-      ref,
-      ")"
-    ),
-    path = path
-  )
-  invisible(TRUE)
-}
-
-# The commit of rpix a branch or tag points to on GitHub. A commit is taken
-# as it is.
-rpix_commit <- function(ref = "main", call = parent.frame()) {
-  if (grepl("^[0-9a-f]{40}$", ref)) {
-    return(ref)
-  }
-  url <- paste0("https://api.github.com/repos/roaldarbol/rpix/commits/", ref)
-  commit <- tryCatch(
-    jsonlite::fromJSON(paste(read_url(url), collapse = "\n"))$sha,
-    error = function(e) NULL
-  )
-  if (!is.character(commit) || length(commit) != 1) {
-    cli::cli_abort(
-      c(
-        "Couldn't find rpix's {.val {ref}} on GitHub, to install it into the environment.",
-        "i" = "Check your internet connection, and the branch, tag or commit in {.code options(rpix.ref)}."
-      ),
-      class = "rpix_error_github",
-      call = call
-    )
-  }
-  commit
-}
-
-# The commit an installed rpix came from, or NULL, e.g. for one installed
-# before rpix recorded it
-installed_commit <- function(description) {
-  commit <- unname(read.dcf(description, "RemoteSha")[1, 1])
-  if (is.na(commit)) NULL else commit
-}
-
-# rpix's source at `commit`, downloaded from GitHub, with where it came from
-# added to its DESCRIPTION, as remotes and R-universe do
-rpix_source <- function(commit, ref) {
-  archive <- tempfile(fileext = ".tar.gz")
-  download_archive(
-    paste0("https://github.com/roaldarbol/rpix/archive/", commit, ".tar.gz"),
-    archive
-  )
-  dir <- tempfile("rpix-")
-  utils::untar(archive, exdir = dir)
-  source <- list.files(dir, full.names = TRUE)[1]
-  description <- file.path(source, "DESCRIPTION")
-  writeLines(
-    c(
-      readLines(description, warn = FALSE),
-      "RemoteType: github",
-      "RemoteHost: api.github.com",
-      "RemoteUsername: roaldarbol",
-      "RemoteRepo: rpix",
-      paste0("RemoteRef: ", ref),
-      paste0("RemoteSha: ", commit)
-    ),
-    description
-  )
-  normalizePath(source, winslash = "/")
-}
-
-download_archive <- function(url, destfile) {
-  utils::download.file(url, destfile, quiet = TRUE, mode = "wb")
 }
 
 # The manifest of a Pixi project in a parent folder of `dir`, if the user

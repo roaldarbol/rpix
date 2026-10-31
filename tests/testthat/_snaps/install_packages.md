@@ -37,10 +37,21 @@
       i Pixi takes packages from conda-forge and bioconda, not `repos`.
       i Adding later and rstudioapi with Pixi, so they're recorded in 'pixi.toml'.
 
-# install.packages() leaves package files to utils
+# install.packages() says to use utils for package files
 
     Code
       install_with_pixi("/ext/sess", repos = NULL, type = "source", root = "/p")
-    Message
-      i Installing '/ext/sess' with `utils::install.packages()`, as Pixi can't add package files. 'pixi.toml' doesn't record it.
+    Condition
+      Error:
+      ! Pixi can't add package files, such as '/ext/sess'.
+      i Use `utils::install.packages()` instead. 'pixi.toml' doesn't record what it installs.
+
+# install.packages() can be turned off
+
+    Code
+      install_with_pixi("dplyr", root = "/p")
+    Condition
+      Error:
+      ! `install.packages()` goes through rpix until R restarts.
+      i Use `utils::install.packages()` instead. 'pixi.toml' doesn't record what it installs.
 

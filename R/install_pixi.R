@@ -11,6 +11,10 @@
 #' already, nothing happens unless `force = TRUE`; update an existing Pixi with
 #' `pixi self-update` in a terminal.
 #'
+#' It writes to your home folder, so it asks first, and only runs in an
+#' interactive session. In a script, install Pixi as
+#' <https://pixi.prefix.dev/latest/installation/> describes.
+#'
 #' The installer is Pixi's own, `install.sh` (or `install.ps1` on Windows)
 #' from `pixi.sh`. It may send prefix.dev an anonymous install count; set
 #' `PIXI_NO_TELEMETRY=1` to turn that off. See
@@ -39,25 +43,33 @@ install_pixi <- function(version = NULL, update_path = TRUE, force = FALSE) {
     return(invisible(existing))
   }
 
+  if (!is_interactive()) {
+    cli::cli_abort(
+      c(
+        "{.fn install_pixi} asks before it writes to your home folder, so it needs an interactive R session.",
+        "i" = "In a script, install Pixi as {.url https://pixi.prefix.dev/latest/installation/} describes. In continuous integration, use the setup-pixi action."
+      ),
+      call = NULL
+    )
+  }
+
   home <- Sys.getenv("PIXI_HOME", file.path(home_dir(), ".pixi"))
-  if (is_interactive()) {
-    bin <- file.path(home, "bin")
-    cli::cli_alert_info("Pixi's official installer will:")
-    cli::cli_bullets(c(
-      " " = "{cli::symbol$bullet} put Pixi in {.path {bin}}",
-      if (update_path) {
-        c(
-          " " = "{cli::symbol$bullet} add it to your shell's {.envvar PATH}, so {.code pixi} works in a terminal"
-        )
-      }
-    ))
-    if (!isTRUE(ask_yes_no("Would you like to install Pixi?"))) {
-      cli::cli_abort(
-        "Cancelled: Pixi wasn't installed.",
-        class = "rpix_cancelled",
-        call = NULL
+  bin <- file.path(home, "bin")
+  cli::cli_alert_info("Pixi's official installer will:")
+  cli::cli_bullets(c(
+    " " = "{cli::symbol$bullet} put Pixi in {.path {bin}}",
+    if (update_path) {
+      c(
+        " " = "{cli::symbol$bullet} add it to your shell's {.envvar PATH}, so {.code pixi} works in a terminal"
       )
     }
+  ))
+  if (!isTRUE(ask_yes_no("Would you like to install Pixi?"))) {
+    cli::cli_abort(
+      "Cancelled: Pixi wasn't installed.",
+      class = "rpix_cancelled",
+      call = NULL
+    )
   }
 
   windows <- is_windows()

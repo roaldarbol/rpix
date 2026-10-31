@@ -1,6 +1,29 @@
-## Submission
+## Resubmission
 
-This is a new submission.
+This is a resubmission of a new package, 0.9.2 after 0.9.1. It addresses the
+review of 0.9.1:
+
+* **`installed.packages()`** is gone. rpix uses a fixed list of R's base
+  packages, and `.packages(all.available = TRUE, lib.loc = .Library)` to list
+  what's in a library, which only checks that a file exists for each package.
+* **Installing packages:** rpix no longer calls `install.packages()`.
+  - `use_pixi()` used to install rpix from GitHub with it when a developer set
+    `options(rpix.ref)`. That option is removed.
+  - The `install.packages()` that rpix attaches in a Pixi project (see below)
+    used to forward package files to `utils::install.packages()`. It now stops,
+    and says to call that function.
+  - `install_pixi()`, which writes to the user's home folder, now only runs in
+    an interactive session, after the user confirms. It used to run without
+    asking outside interactive sessions.
+
+Installing software is rpix's purpose, as an interface to a package manager,
+which the CRAN Cookbook allows. `install_pixi()`, `pixi_add()`, `pixi_install()`,
+`pixi_update()`, `use_pixi()` and the like only install when the user calls
+them, their help pages say so, and examples, tests and vignettes don't run them:
+examples use `dry_run = TRUE` or `\dontrun{}`, tests that need Pixi are skipped
+on CRAN, and the package has no vignettes.
+
+## Submission
 
 rpix is an R interface to Pixi (<https://pixi.prefix.dev>), a package manager
 for conda packages: it sets up a project's R and packages from conda-forge,
@@ -13,22 +36,25 @@ records them in a lock file, and works with that project from the R console.
   0.77, the oldest rpix supports).
 * GitHub Actions: `R CMD check --as-cran` on Ubuntu (R release), with
   `NOT_CRAN=false` and without Pixi, as on CRAN's machines.
-* Local, macOS (Intel), R 4.5: `R CMD check --as-cran` with CRAN's incoming
-  checks, without Pixi on the `PATH`.
-* win-builder: R-devel (2026-10-18 r90707 ucrt) and R 4.6.1, Windows.
+* Local, macOS (Intel), R 4.6.1: `R CMD check --as-cran` with CRAN's incoming
+  checks, with `NOT_CRAN=false` and without Pixi.
+* win-builder: R-devel (2026-10-30 r90805 ucrt) and R 4.6.2, Windows.
 * macOS builder: R 4.6.1, macOS 26.6 (Apple Silicon).
 * R-hub: Linux, Windows and macOS (Apple Silicon) with R-devel, and the
   `nosuggests` and `clang-asan` checks.
 
+The macOS builder result is from 0.9.1. The others are from 0.9.2.
+
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
 * This is a new submission.
+* `attach()` in `R/install_packages.R`. See "install.packages() in a Pixi
+  project" below.
 
-The macOS builder and R-hub report no notes. win-builder also flagged the
-package's name, "rpix", as possibly misspelled in the Description; it's now
-in single quotes, like the other names there.
+R-hub's Linux, Windows and macOS checks and win-builder report the `attach()`
+note, and R-hub's `nosuggests` and `clang-asan` checks report no notes.
 
 ## Pixi, an external program
 
@@ -58,9 +84,9 @@ Examples and tests only write in `tempdir()`.
 
 `install_pixi()` installs Pixi with Pixi's official installer, into
 `~/.pixi`, and by default lets the installer add it to the shell's `PATH`
-(`update_path = FALSE` doesn't). It only runs when the user calls it, or
-agrees to it in an interactive session, much like
-`tinytex::install_tinytex()`.
+(`update_path = FALSE` doesn't). It only runs in an interactive session, after
+saying what it will do and asking the user to confirm. Otherwise it stops with
+an error, unless Pixi is installed already.
 
 ## install.packages() in a Pixi project
 
@@ -71,6 +97,11 @@ with `attach()`, putting an environment named `rpix:install` with its own
 `.Rprofile`, which `use_pixi()` writes, calls `pixi_activate()` in R started
 from that project's Pixi environment. Loading or attaching rpix never changes
 the search path, and `options(rpix.install_packages = FALSE)` turns it off.
+This `attach()` is what the check's note about it refers to. renv masks
+`install.packages()` the same way, with an attached `renv:shims` environment.
+
+It doesn't install anything itself: it calls `pixi_add()`, or stops with an
+error for what Pixi can't add. `utils::install.packages()` is unaffected.
 
 ## RStudio and Positron
 
@@ -93,5 +124,4 @@ off. Loading or attaching rpix by itself never asks anything.
 ## Network
 
 Examples and tests don't use the network on CRAN. Functions that do (Pixi
-itself, `install_pixi()`, `pixi_search()`, and installing rpix from GitHub
-with `options(rpix.ref)`) only do so when the user calls them.
+itself, `install_pixi()`, `pixi_search()`) only do so when the user calls them.

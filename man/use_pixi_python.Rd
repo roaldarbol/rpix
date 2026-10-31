@@ -22,7 +22,7 @@ The path to the project's manifest, invisibly.
 
 Add Python to the project's environment, and point reticulate at it, so
 Python and its packages are in the same environment and \code{pixi.lock} as R
-and its packages.
+and its packages. It installs what it adds below into that environment.
 \itemize{
 \item It adds \code{python} (at \code{python_version}, if given), \code{r-reticulate}, and
 for Python 3.15 or later \code{libpython}: conda-forge has Python's shared

@@ -29,6 +29,10 @@ works in a terminal too, after you open a new one. If Pixi is installed
 already, nothing happens unless \code{force = TRUE}; update an existing Pixi with
 \verb{pixi self-update} in a terminal.
 
+It writes to your home folder, so it asks first, and only runs in an
+interactive session. In a script, install Pixi as
+\url{https://pixi.prefix.dev/latest/installation/} describes.
+
 The installer is Pixi's own, \code{install.sh} (or \code{install.ps1} on Windows)
 from \code{pixi.sh}. It may send prefix.dev an anonymous install count; set
 \code{PIXI_NO_TELEMETRY=1} to turn that off. See

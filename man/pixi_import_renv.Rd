@@ -43,8 +43,8 @@ because rpix can't add them from where they came
 (\code{not_from_repository}) or they weren't found (\code{missing}).
 }
 \description{
-Add the packages in a project's \code{renv.lock} to its Pixi project, and turn
-renv off.
+Add the packages in a project's \code{renv.lock} to its Pixi project, install
+them, and turn renv off.
 \itemize{
 \item Packages from CRAN, or another CRAN-like repository, are looked up on
 conda-forge, and Bioconductor packages on bioconda. CRAN packages that

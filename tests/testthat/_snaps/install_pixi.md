@@ -17,6 +17,15 @@
       v Installed pixi 0.81.0 at '/home/me/.pixi/bin/pixi'.
       i Open a new terminal to use `pixi` there.
 
+# install_pixi() only installs in an interactive session
+
+    Code
+      install_pixi()
+    Condition
+      Error:
+      ! `install_pixi()` asks before it writes to your home folder, so it needs an interactive R session.
+      i In a script, install Pixi as <https://pixi.prefix.dev/latest/installation/> describes. In continuous integration, use the setup-pixi action.
+
 # install_pixi() stops if the answer is no, or something fails
 
     Code

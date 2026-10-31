@@ -37,7 +37,9 @@ The file they changed, invisibly.
 }
 \description{
 Set an IDE or editor up to use the R in the project's Pixi environment. \code{\link[=use_pixi]{use_pixi()}}
-calls these with its \code{ide} argument.
+calls these with its \code{ide} argument. \code{use_pixi_vscode()}, \code{use_pixi_emacs()},
+\code{use_pixi_neovim()} and \code{use_pixi_zed()} install the packages they add into
+that environment.
 \itemize{
 \item \code{use_pixi_rstudio()} adds, or replaces, an \code{rstudio} task in \code{pixi.toml}
 that starts a new RStudio with the environment's R and the project's

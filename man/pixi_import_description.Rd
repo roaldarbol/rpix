@@ -22,7 +22,7 @@ weren't found (\code{missing}), invisibly.
 }
 \description{
 For package developers: add what the package in the project needs to the
-project, from its \code{DESCRIPTION}.
+project, from its \code{DESCRIPTION}, and install it.
 \itemize{
 \item \code{Depends} and \code{Imports} (and \code{LinkingTo}) go into the default feature,
 with their version constraints.

@@ -449,7 +449,7 @@ test_that("tells whether an editor is set up with direnv", {
 })
 
 test_that("finds packages in the environment that Pixi didn't install", {
-  installed <- rownames(utils::installed.packages(lib.loc = .Library))
+  installed <- .packages(all.available = TRUE, lib.loc = .Library)
   extra <- setdiff(installed, base_packages())
   skip_if(length(extra) == 0, "only base packages in this R's library")
   local_mocked_bindings(

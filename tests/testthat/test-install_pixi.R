@@ -63,19 +63,37 @@ test_that("install_pixi() asks, then runs Pixi's installer", {
 test_that("install_pixi() passes the version and PATH choice to the installer", {
   calls <- local_install_pixi(
     installed = "/usr/local/bin/pixi",
-    interactive = FALSE,
     windows = TRUE
   )
   suppressMessages(
     install_pixi(version = "0.81.0", update_path = FALSE, force = TRUE)
   )
-  expect_length(calls$asked, 0)
   expect_equal(calls$url, "https://pixi.sh/install.ps1")
   expect_true(calls$windows)
   expect_equal(
     calls$env,
     c("current", PIXI_VERSION = "0.81.0", PIXI_NO_PATH_UPDATE = "1")
   )
+})
+
+test_that("install_pixi() only installs in an interactive session", {
+  calls <- local_install_pixi(interactive = FALSE)
+  expect_snapshot(install_pixi(), error = TRUE)
+  expect_length(calls$asked, 0)
+  expect_null(calls$url)
+  expect_null(calls$env)
+
+  # An installed Pixi is fine, but isn't reinstalled
+  calls <- local_install_pixi(
+    installed = "/usr/local/bin/pixi",
+    interactive = FALSE
+  )
+  expect_equal(
+    suppressMessages(install_pixi()),
+    "/usr/local/bin/pixi"
+  )
+  expect_error(install_pixi(force = TRUE), "interactive R session")
+  expect_null(calls$env)
 })
 
 test_that("install_pixi() stops if the answer is no, or something fails", {

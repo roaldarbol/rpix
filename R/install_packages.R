@@ -12,6 +12,9 @@ attach_install_packages <- function(root, now = "package:utils" %in% search()) {
     )
     return(invisible(FALSE))
   }
+  if (isFALSE(getOption("rpix.install_packages"))) {
+    return(invisible(FALSE))
+  }
   if ("rpix:install" %in% search()) {
     detach("rpix:install", character.only = TRUE)
   }
@@ -20,16 +23,21 @@ attach_install_packages <- function(root, now = "package:utils" %in% search()) {
     install_with_pixi(pkgs, ..., root = root)
   }
   # attach() rather than a package, so it only masks install.packages() in
-  # a Pixi environment's R. Fetched from base to keep R CMD check's attach()
-  # note away; it's attached on purpose.
-  attach_env <- get("attach", envir = baseenv())
-  attach_env(shims, name = "rpix:install", warn.conflicts = FALSE)
+  # a Pixi environment's R
+  attach(shims, name = "rpix:install", warn.conflicts = FALSE)
   invisible(TRUE)
 }
 
 install_with_pixi <- function(pkgs, ..., root) {
+  # Turned off after R started, when it's attached already
   if (isFALSE(getOption("rpix.install_packages"))) {
-    return(utils_install_packages(pkgs, ...))
+    cli::cli_abort(
+      c(
+        "{.fn install.packages} goes through rpix until R restarts.",
+        "i" = "Use {.fn utils::install.packages} instead. {.file pixi.toml} doesn't record what it installs."
+      ),
+      call = NULL
+    )
   }
   args <- list(...)
   # Package files and folders, which utils installs with repos = NULL, or
@@ -37,10 +45,13 @@ install_with_pixi <- function(pkgs, ..., root) {
   local <- ("repos" %in% names(args) && is.null(args$repos)) ||
     any(grepl("[/\\\\]|\\.(tar\\.gz|tgz|zip)$", pkgs))
   if (local) {
-    cli::cli_alert_info(
-      "Installing {.file {pkgs}} with {.fn utils::install.packages}, as Pixi can't add package files. {.file pixi.toml} doesn't record {?it/them}."
+    cli::cli_abort(
+      c(
+        "Pixi can't add package files, such as {.file {pkgs}}.",
+        "i" = "Use {.fn utils::install.packages} instead. {.file pixi.toml} doesn't record what it installs."
+      ),
+      call = NULL
     )
-    return(utils_install_packages(pkgs, ...))
   }
   extra <- names(args)
   extra <- setdiff(
@@ -110,8 +121,4 @@ listed_packages <- function(pkgs, root) {
     pkgs[listed]
   )
   stats::setNames(references, pkgs[listed])
-}
-
-utils_install_packages <- function(...) {
-  utils::install.packages(...)
 }
