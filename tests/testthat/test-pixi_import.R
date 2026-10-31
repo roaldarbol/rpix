@@ -237,3 +237,9 @@ test_that("project_dependencies() reads the default environment's packages", {
   )
   expect_equal(project_dependencies("/p"), c("r-base", "r-cli"))
 })
+
+test_that("base_packages() are R's base packages", {
+  skip_if(getRversion() < "4.4.0", "needs tools::standard_package_names()")
+  standard <- get("standard_package_names", asNamespace("tools"))
+  expect_setequal(base_packages(), standard()$base)
+})

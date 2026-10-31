@@ -358,10 +358,9 @@ sitrep_data <- function(path = NULL) {
 }
 
 # Packages in the environment's library that Pixi didn't install, e.g. with
-# utils::install.packages(). rpix itself may come from GitHub (options(rpix.ref)), and
-# the project's own package from the project.
+# utils::install.packages(). The project's own package comes from the project.
 unrecorded_packages <- function(environment, root) {
-  installed <- rownames(utils::installed.packages(lib.loc = .Library))
+  installed <- .packages(all.available = TRUE, lib.loc = .Library)
   from_pixi <- tryCatch(
     stats::na.omit(pixi_list(environment, path = root)$r_package),
     error = function(e) NULL
@@ -369,7 +368,7 @@ unrecorded_packages <- function(environment, root) {
   if (is.null(from_pixi)) {
     return(character())
   }
-  known <- tolower(c(from_pixi, base_packages(), "rpix", package_name(root)))
+  known <- tolower(c(from_pixi, base_packages(), package_name(root)))
   sort(installed[!tolower(installed) %in% known])
 }
 

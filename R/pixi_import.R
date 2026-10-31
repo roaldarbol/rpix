@@ -2,7 +2,7 @@
 #'
 #' @description
 #' For package developers: add what the package in the project needs to the
-#' project, from its `DESCRIPTION`.
+#' project, from its `DESCRIPTION`, and install it.
 #'
 #' * `Depends` and `Imports` (and `LinkingTo`) go into the default feature,
 #'   with their version constraints.
@@ -169,7 +169,22 @@ package_dependencies <- function(description) {
 }
 
 base_packages <- function() {
-  rownames(utils::installed.packages(priority = "base"))
+  c(
+    "base",
+    "compiler",
+    "datasets",
+    "graphics",
+    "grDevices",
+    "grid",
+    "methods",
+    "parallel",
+    "splines",
+    "stats",
+    "stats4",
+    "tcltk",
+    "tools",
+    "utils"
+  )
 }
 
 # Look R packages up on conda-forge and bioconda. Returns a reference for each,
@@ -204,8 +219,8 @@ find_r_packages <- function(packages) {
 #' Move a project from renv
 #'
 #' @description
-#' Add the packages in a project's `renv.lock` to its Pixi project, and turn
-#' renv off.
+#' Add the packages in a project's `renv.lock` to its Pixi project, install
+#' them, and turn renv off.
 #'
 #' * Packages from CRAN, or another CRAN-like repository, are looked up on
 #'   conda-forge, and Bioconductor packages on bioconda. CRAN packages that

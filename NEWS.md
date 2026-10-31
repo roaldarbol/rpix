@@ -1,3 +1,20 @@
+# rpix 0.9.2 (2026-10-31)
+
+## Changed
+
+* `install_pixi()` needs an interactive session, as it asks before it writes
+  to your home folder. In a script, install Pixi with its own installer.
+* In a Pixi environment's R, `install.packages()` gives an error for package
+  files and folders. Use `utils::install.packages()` for those.
+* `options(rpix.install_packages = FALSE)` takes effect in the project's
+  `.Rprofile`. Set later, `install.packages()` says to use
+  `utils::install.packages()`.
+
+## Removed
+
+* `options(rpix.ref)`. To try a change to rpix, use
+  `pixi_add("github::roaldarbol/rpix@main")`, with a branch, tag or commit.
+
 # rpix 0.9.1 (2026-10-21)
 
 ## Fixed

@@ -24,3 +24,4 @@
 # Rd files, so the package doesn't need it
 ^man/examples$
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

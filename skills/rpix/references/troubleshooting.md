@@ -18,7 +18,7 @@ Read this when something fails, after `pixi run Rscript -e 'rpix::pixi_sitrep()'
 - **"... refused access (401)" or "(403)":** a private channel. The user logs in with `pixi_auth_login("<host>")` in their own R.
 - **"Pixi couldn't build ..., so pixi.toml is as it was."** A source build failed; Pixi's output above it says why. Common causes: a dependency that is itself only on GitHub, a Bioconductor dependency, a system library R doesn't bring along, or an `exclude-newer` date older than the build backend.
 - **"Pixi couldn't solve the project with packages as of ..."** from `pixi_set_date()`: the project pins versions newer than the date.
-- **`install.packages()` fails with "... adds packages with Pixi, which can't use ..."** In the environment's R, `install.packages()` goes through `pixi_add()`, which takes package names only, not `lib` or `type`. `repos` is ignored, and package files go to `utils::install.packages()`, unrecorded. Use `pixi_add()` with the package's name or reference.
+- **`install.packages()` fails with "... adds packages with Pixi, which can't use ..."** In the environment's R, `install.packages()` goes through `pixi_add()`, which takes package names only, not `lib` or `type`. `repos` is ignored. Use `pixi_add()` with the package's name or reference. Package files give an error too: install those with `utils::install.packages()`, which `pixi.toml` doesn't record.
 
 ## R
 

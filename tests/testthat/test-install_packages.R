@@ -46,7 +46,6 @@ local_install <- function(
       calls$added <- packages
       calls$path <- path
     },
-    utils_install_packages = function(...) calls$utils <- list(...),
     .env = env
   )
   calls
@@ -140,37 +139,37 @@ test_that("install.packages() takes packages from conda-forge, not `repos`", {
   expect_equal(calls$added, c("cran::later", "rstudioapi"))
 })
 
-test_that("install.packages() leaves package files to utils", {
+test_that("install.packages() says to use utils for package files", {
   calls <- local_install(c(dplyr = "cran::dplyr"))
 
-  # As VS Code's R extension installs sess
-  expect_snapshot(install_with_pixi(
-    "/ext/sess",
-    repos = NULL,
-    type = "source",
-    root = "/p"
-  ))
-  expect_equal(calls$utils, list("/ext/sess", repos = NULL, type = "source"))
-  expect_null(calls$added)
-
+  expect_snapshot(error = TRUE, {
+    install_with_pixi("/ext/sess", repos = NULL, type = "source", root = "/p")
+  })
   # A folder in the working directory, or an archive, for which utils infers
   # `repos = NULL`
-  suppressMessages(install_with_pixi("sess", repos = NULL, root = "/p"))
-  expect_equal(calls$utils, list("sess", repos = NULL))
-  suppressMessages(install_with_pixi(c("a.tar.gz", "b.zip"), root = "/p"))
-  expect_equal(calls$utils, list(c("a.tar.gz", "b.zip")))
+  expect_error(
+    install_with_pixi("sess", repos = NULL, root = "/p"),
+    "package files"
+  )
+  expect_error(
+    install_with_pixi(c("a.tar.gz", "b.zip"), root = "/p"),
+    "package files"
+  )
   expect_null(calls$added)
 })
 
-test_that("install.packages() can be left to utils", {
-  calls <- local_install(c(dplyr = "cran::dplyr"))
+test_that("install.packages() can be turned off", {
+  withr::defer(if ("rpix:install" %in% search()) detach("rpix:install"))
   withr::local_options(rpix.install_packages = FALSE)
 
-  install_with_pixi("dplyr", lib = "/lib", root = "/p")
-  expect_equal(calls$utils, list("dplyr", lib = "/lib"))
-  expect_null(calls$added)
-})
+  # At startup
+  expect_false(attach_install_packages("/p", now = TRUE))
+  expect_false("rpix:install" %in% search())
 
-test_that("utils_install_packages() calls utils' install.packages()", {
-  expect_no_error(utils_install_packages(character(), repos = NULL))
+  # After R started, it's there already
+  calls <- local_install(c(dplyr = "cran::dplyr"))
+  expect_snapshot(error = TRUE, {
+    install_with_pixi("dplyr", root = "/p")
+  })
+  expect_null(calls$added)
 })

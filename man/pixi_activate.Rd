@@ -33,9 +33,10 @@ recorded in \code{pixi.toml} and \code{pixi.lock}. For a CRAN package that isn't
 conda-forge, \code{pixi_add()} offers to build it from source. For a package
 already in \code{pixi.toml}, it says to update it with \code{\link[=pixi_update]{pixi_update()}}
 instead. \code{repos} is ignored, and other arguments Pixi can't use, such as
-\code{lib}, give an error. Package files and folders are installed with
-\code{utils::install.packages()}, so \code{pixi.toml} doesn't record them. Turn
-this off with \code{options(rpix.install_packages = FALSE)}.
+\code{lib}, give an error, as do package files and folders, which Pixi can't
+add: install those with \code{utils::install.packages()}, which \code{pixi.toml}
+doesn't record. Turn this off with
+\code{options(rpix.install_packages = FALSE)} in the project's \code{.Rprofile}.
 \item In a package, in an interactive session, rpix notices when \code{DESCRIPTION}
 comes to need packages that \code{pixi.toml} doesn't have, e.g. after
 \code{usethis::use_package()} or an edit, and offers to add them with
