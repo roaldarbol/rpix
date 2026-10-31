@@ -38,13 +38,12 @@ records them in a lock file, and works with that project from the R console.
   `NOT_CRAN=false` and without Pixi, as on CRAN's machines.
 * Local, macOS (Intel), R 4.6.1: `R CMD check --as-cran` with CRAN's incoming
   checks, with `NOT_CRAN=false` and without Pixi.
-* win-builder: R-devel (2026-10-18 r90707 ucrt) and R 4.6.2, Windows.
+* win-builder: R-devel (2026-10-30 r90805 ucrt) and R 4.6.2, Windows.
 * macOS builder: R 4.6.1, macOS 26.6 (Apple Silicon).
 * R-hub: Linux, Windows and macOS (Apple Silicon) with R-devel, and the
   `nosuggests` and `clang-asan` checks.
 
-The win-builder R-devel and macOS builder results are from 0.9.1. The others
-are from 0.9.2.
+The macOS builder result is from 0.9.1. The others are from 0.9.2.
 
 ## R CMD check results
 
