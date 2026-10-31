@@ -38,12 +38,13 @@ records them in a lock file, and works with that project from the R console.
   `NOT_CRAN=false` and without Pixi, as on CRAN's machines.
 * Local, macOS (Intel), R 4.6.1: `R CMD check --as-cran` with CRAN's incoming
   checks, with `NOT_CRAN=false` and without Pixi.
-* win-builder: R-devel (2026-10-18 r90707 ucrt) and R 4.6.1, Windows.
+* win-builder: R-devel (2026-10-18 r90707 ucrt) and R 4.6.2, Windows.
 * macOS builder: R 4.6.1, macOS 26.6 (Apple Silicon).
 * R-hub: Linux, Windows and macOS (Apple Silicon) with R-devel, and the
   `nosuggests` and `clang-asan` checks.
 
-The local check is of 0.9.2. The others above are from 0.9.1.
+The win-builder R-devel and macOS builder results are from 0.9.1. The others
+are from 0.9.2.
 
 ## R CMD check results
 
@@ -52,6 +53,9 @@ The local check is of 0.9.2. The others above are from 0.9.1.
 * This is a new submission.
 * `attach()` in `R/install_packages.R`. See "install.packages() in a Pixi
   project" below.
+
+R-hub's Linux, Windows and macOS checks and win-builder report the `attach()`
+note, and R-hub's `nosuggests` and `clang-asan` checks report no notes.
 
 ## Pixi, an external program
 
